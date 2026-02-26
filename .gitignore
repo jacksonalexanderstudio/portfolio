@@ -1,0 +1,10 @@
+# OS files
+.DS_Store
+*.rx0BGv
+*.xBKWmy
+
+# Claude config
+.claude/
+
+# Raw 2002 photo archive (not used by site)
+2002 images/

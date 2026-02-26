@@ -1,0 +1,328 @@
+<!--
+  ============================================================
+  JACKSON ALEXANDER STUDIO — SQUARESPACE CODE INJECTION
+  ============================================================
+
+  HOW TO USE:
+  ─────────────────────────────────────────────────────────────
+  PART 1 → Settings > Advanced > Code Injection > HEADER
+  PART 2 → Design > Custom CSS
+  ─────────────────────────────────────────────────────────────
+-->
+
+
+<!-- ============================================================ -->
+<!-- PART 1: PASTE INTO Settings > Advanced > Code Injection > Header -->
+<!-- ============================================================ -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fragment+Mono:ital@0;1&display=swap" rel="stylesheet" />
+
+<script>
+  // ── Scroll-aware nav ──
+  document.addEventListener('DOMContentLoaded', function () {
+    const header = document.querySelector('header');
+    if (!header) return;
+
+    function onScroll() {
+      if (window.scrollY > 50) {
+        header.classList.add('ja-scrolled');
+      } else {
+        header.classList.remove('ja-scrolled');
+      }
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  });
+</script>
+
+
+<!-- ============================================================ -->
+<!-- PART 2: PASTE INTO Design > Custom CSS                        -->
+<!-- ============================================================ -->
+<!--
+
+/* ────────────────────────────────────────
+   JACKSON ALEXANDER STUDIO — CUSTOM CSS
+   ──────────────────────────────────────── */
+
+/* ── Font: Fragment Mono throughout ── */
+body,
+p, span, a, li, button, input, textarea, label,
+.header-nav-item a,
+.header-title-text,
+.header-display-name,
+.header-actions-action,
+h1, h2, h3, h4, h5, h6,
+.sqs-html-content,
+.image-title-wrapper,
+.image-subtitle-wrapper,
+.block-field,
+.sqs-block-html p,
+.sqs-block-html li {
+  font-family: 'Fragment Mono', monospace !important;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Base: white background, black text ── */
+body {
+  background-color: #ffffff !important;
+  color: #111111 !important;
+}
+
+
+/* ────────────────────────────────────────
+   NAV
+   ──────────────────────────────────────── */
+
+header {
+  transition: background 0.4s ease, border-color 0.4s ease, padding 0.4s ease !important;
+  background: transparent !important;
+  border-bottom: 1px solid transparent !important;
+}
+
+/* Nav gains background + border on scroll */
+header.ja-scrolled {
+  background: rgba(255, 255, 255, 0.96) !important;
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Nav links */
+.header-nav-item a,
+.header-nav-folder-title {
+  font-family: 'Fragment Mono', monospace !important;
+  font-size: 10px !important;
+  letter-spacing: 0.12em !important;
+  text-transform: uppercase !important;
+  color: #111111 !important;
+  opacity: 0.5;
+  transition: opacity 0.25s ease !important;
+  position: relative;
+}
+
+.header-nav-item a:hover,
+.header-nav-folder-title:hover {
+  opacity: 1 !important;
+  color: #111111 !important;
+}
+
+/* Nav link underline on hover */
+.header-nav-item a::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: #111111;
+  transition: width 0.3s ease;
+}
+.header-nav-item a:hover::after {
+  width: 100%;
+}
+
+/* CTA / Get in Touch button */
+.header-actions-action--cta a,
+.header-actions-action--cta {
+  font-family: 'Fragment Mono', monospace !important;
+  font-size: 10px !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+  color: #ffffff !important;
+  background: #111111 !important;
+  border: 1px solid #111111 !important;
+  border-radius: 1px !important;
+  padding: 9px 20px !important;
+  transition: background 0.25s ease, color 0.25s ease !important;
+  opacity: 1 !important;
+}
+.header-actions-action--cta a:hover,
+.header-actions-action--cta:hover {
+  background: #ffffff !important;
+  color: #111111 !important;
+}
+
+/* Logo image — give it room, don't over-constrain */
+.header-title img,
+.header-branding img,
+.site-title img {
+  height: 48px !important;
+  width: auto !important;
+  object-fit: contain !important;
+  display: block !important;
+}
+
+/* Site title text fallback (if logo is text-based) */
+.header-title-text,
+.header-display-name {
+  font-family: 'Fragment Mono', monospace !important;
+  font-size: 13px !important;
+  letter-spacing: 0.3em !important;
+  text-transform: lowercase !important;
+  color: #111111 !important;
+}
+
+/* Mobile nav */
+.mobile-nav-toggle-icon line {
+  stroke: #111111 !important;
+}
+
+
+/* ────────────────────────────────────────
+   IMAGES — show full, no harsh cropping
+   ──────────────────────────────────────── */
+
+/* Image blocks */
+.sqs-block-image img,
+.sqs-image img {
+  object-fit: contain !important;
+  object-position: center !important;
+  background: #ffffff;
+}
+
+/* Gallery grids */
+.gallery-grid-item .grid-image,
+.gallery-grid-item img {
+  object-fit: contain !important;
+  object-position: center !important;
+  background: #ffffff;
+}
+
+/* Slideshow / carousel images */
+.gallery-slideshow-image img,
+.gallery-masonry-item img {
+  object-fit: contain !important;
+  object-position: center !important;
+}
+
+/* Fluid / responsive image wrappers */
+.fluid-image-container img,
+.thumb-image {
+  object-fit: contain !important;
+  object-position: center !important;
+}
+
+/* Add breathing room around images */
+.sqs-block-image {
+  padding: 8px 0 !important;
+}
+
+
+/* ────────────────────────────────────────
+   TYPOGRAPHY
+   ──────────────────────────────────────── */
+
+/* Headings */
+h1, h2, h3 {
+  font-family: 'Fragment Mono', monospace !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.02em !important;
+  color: #111111 !important;
+  line-height: 1.05 !important;
+}
+
+h4, h5, h6 {
+  font-family: 'Fragment Mono', monospace !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.04em !important;
+  color: #111111 !important;
+}
+
+/* Body text */
+p, li {
+  font-family: 'Fragment Mono', monospace !important;
+  font-size: 13px !important;
+  line-height: 1.8 !important;
+  color: #111111 !important;
+}
+
+/* Muted / secondary text */
+.image-subtitle-wrapper p,
+.image-caption,
+.caption-inner p {
+  font-size: 10px !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+  opacity: 0.45 !important;
+  color: #111111 !important;
+}
+
+/* Links */
+a {
+  color: #111111 !important;
+  text-decoration: none !important;
+  transition: opacity 0.2s ease !important;
+}
+a:hover {
+  opacity: 0.5 !important;
+}
+
+/* Buttons */
+.sqs-block-button-element,
+.btn {
+  font-family: 'Fragment Mono', monospace !important;
+  font-size: 10px !important;
+  letter-spacing: 0.12em !important;
+  text-transform: uppercase !important;
+  border-radius: 1px !important;
+  border-width: 1px !important;
+  padding: 12px 24px !important;
+}
+
+
+/* ────────────────────────────────────────
+   LAYOUT & SPACING
+   ──────────────────────────────────────── */
+
+/* Slightly more breathing room between sections */
+.page-section {
+  padding-top: 80px !important;
+  padding-bottom: 80px !important;
+}
+
+/* Dividers */
+hr,
+.sqs-block-horizontalrule hr {
+  border: none !important;
+  border-top: 1px solid rgba(0, 0, 0, 0.1) !important;
+  margin: 40px 0 !important;
+}
+
+/* Remove Squarespace footer branding */
+.sqs-layout .sqs-col-12:last-child #footer-sections {
+  padding-bottom: 0;
+}
+
+
+/* ────────────────────────────────────────
+   FOOTER
+   ──────────────────────────────────────── */
+
+footer,
+#footer-sections {
+  background: #ffffff !important;
+  border-top: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+
+footer p,
+footer a,
+footer span,
+#footer-sections p,
+#footer-sections a {
+  font-family: 'Fragment Mono', monospace !important;
+  font-size: 10px !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+  color: #111111 !important;
+  opacity: 0.4;
+}
+
+footer a:hover,
+#footer-sections a:hover {
+  opacity: 1 !important;
+}
+
+-->
