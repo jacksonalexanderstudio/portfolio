@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Case Studies — Jackson Alexander Studio</title>
+<meta name="description" content="In-depth case studies from Jackson Alexander Studio — brand identity, fabrication, creative direction, and more.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fragment+Mono&family=DM+Sans:wght@200;300;400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;cursor:none!important}
+:root{--bg:#FFFFFF;--alt:#FFFFFF;--tx:#1A1919;--sec:#000;--br:#EBEBEB;--fn:'Fragment Mono','Courier New',monospace;--sf:'DM Sans',sans-serif;--accent:#D95740}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--tx);font-family:var(--fn);line-height:1.6;overflow-x:hidden}
+img{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+
+/* ── CURSOR ── */
+#cur{position:fixed;top:0;left:0;width:52px;height:52px;pointer-events:none;z-index:10000;will-change:transform;transform:translate(-200px,-200px);transition:filter .15s ease}
+body.img-hover #cur{filter:invert(1)}
+
+/* ── HEADER ── */
+#hdr{position:fixed;top:0;left:0;right:0;z-index:1000;height:140px;background:#0c0c0c;border-bottom:1px solid rgba(255,255,255,.1);display:flex;align-items:center;transition:height .4s,box-shadow .4s}
+#hdr.sc{box-shadow:0 1px 32px rgba(0,0,0,.06);height:88px}
+.hi{width:100%;padding:0 28px;display:flex;align-items:center;justify-content:space-between}
+.hl img{height:102px;width:auto;transition:height .4s;filter:invert(1)}
+#hdr.sc .hl img{height:61px}
+.hn{display:flex;align-items:center;gap:36px}
+.hn a,.nb{font:400 11px/1 var(--fn);letter-spacing:.13em;text-transform:uppercase;color:#fff;background:none;border:none;padding:0;position:relative}
+.hn a::after,.nb::after{content:'';position:absolute;bottom:-3px;left:0;width:0;height:1px;background:#fff;transition:width .3s ease}
+.hn a:hover::after,.nb:hover::after{width:100%}
+.nw{position:relative}
+.nb{display:flex;align-items:center;gap:5px}
+.nw::before{content:'';position:absolute;top:100%;left:-20px;right:-20px;height:28px;z-index:99}
+.nd{position:absolute;top:calc(100% + 28px);right:0;background:#0c0c0c;border:1px solid rgba(255,255,255,.1);min-width:260px;opacity:0;pointer-events:none;transform:translateY(-8px);transition:opacity .2s,transform .2s;z-index:100}
+.nw:hover .nd,.nw:focus-within .nd,.nd.nd-open{opacity:1;pointer-events:all;transform:translateY(0)}
+.nd a{display:flex;align-items:center;padding:12px 18px;font-size:11px;letter-spacing:.08em;border-bottom:1px solid rgba(255,255,255,.08);color:#fff}
+.nd a:last-child{border-bottom:none}
+.nd a:hover{background:rgba(255,255,255,.06)}
+.nd a::after{display:none}
+.dn{color:var(--accent);margin-right:10px;font-size:10px;font-family:var(--sf)}
+
+/* ── PAGE HERO ── */
+.page-hero{padding-top:140px;background:#0c0c0c;border-bottom:none;padding-bottom:80px;position:relative;overflow:hidden}
+.page-hero-inner{padding:80px 28px 0;max-width:900px;position:relative;z-index:2}
+.page-hero h1{font-size:clamp(18px,2.2vw,32px);font-weight:400;letter-spacing:.18em;text-transform:uppercase;color:#fff;margin-bottom:24px}
+.page-hero p{font-size:15px;font-family:var(--sf);font-weight:300;color:rgba(255,255,255,.7);line-height:1.9;max-width:600px}
+
+/* ── CASE STUDY LAYOUT ── */
+.cs-layout{display:flex;position:relative}
+.cs-sidebar{position:sticky;top:100px;width:280px;flex-shrink:0;align-self:flex-start;height:fit-content;padding:52px 36px}
+.cs-main{flex:1;min-width:0;border-left:1px solid var(--br)}
+
+/* ── CASE STUDY INDEX (sidebar) ── */
+.cs-index-label{font-size:9px;font-weight:400;letter-spacing:.28em;color:#1A1919;text-transform:uppercase;margin-bottom:28px}
+.cs-index-row{display:flex;align-items:baseline;gap:10px;padding:10px 0;transition:opacity .3s,color .3s;opacity:.25;text-decoration:none;border-bottom:1px solid transparent}
+.cs-index-row:hover{opacity:.6}
+.cs-index-row.active{opacity:1;border-bottom:1px solid var(--accent)}
+.cs-index-row.active .cs-index-title{color:var(--tx)}
+.cs-index-row.active .cs-index-num{color:var(--accent)}
+.cs-index-num{font-size:9px;color:var(--accent);letter-spacing:.06em;font-family:var(--sf);flex-shrink:0}
+.cs-index-title{font-size:10px;font-weight:300;letter-spacing:.14em;text-transform:uppercase;font-family:var(--fn)}
+
+/* ── CASE STUDY CARDS ── */
+.cs-card{padding:100px 0}
+.cs-card:first-child{padding-top:0}
+.cs-inner{margin:0;padding:0 24px}
+
+/* Case study header — black band */
+.cs-header{background:#0c0c0c;margin:0;padding:32px 28px;margin-bottom:0;display:grid;grid-template-columns:1fr minmax(0,420px);gap:40px;align-items:center;border-top:1px solid rgba(255,255,255,.15)}
+.cs-header-left{}
+.cs-title-row{display:flex;align-items:center;gap:24px;margin-bottom:0}
+.cs-num{font-size:11px;color:#D95740;letter-spacing:.12em;font-family:var(--sf);flex-shrink:0}
+.cs-title{font-size:clamp(16px,2vw,26px);font-weight:400;letter-spacing:.18em;text-transform:uppercase;line-height:1.2;font-family:var(--fn);color:#fff}
+.cs-tagline{font-size:15px;font-family:var(--sf);font-weight:300;color:#fff;line-height:1.9;letter-spacing:.01em;max-width:none}
+
+/* Hero image / video */
+.cs-hero-wrap{margin-bottom:48px;overflow:hidden}
+.cs-hero-img{width:100%;aspect-ratio:3/1;object-fit:cover;object-position:center;display:block}
+.cs-hero-video{width:100%;aspect-ratio:3/1;object-fit:cover;object-position:center;display:block;background:#0c0c0c}
+
+/* Meta info — flush left above brief */
+.cs-meta{display:flex;flex-direction:row;gap:48px;justify-content:flex-start;text-align:left;padding-top:24px;margin-bottom:48px;border-top:1px solid var(--br)}
+.cs-meta-item{}
+.cs-meta-label{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:rgba(26,25,25,.4);margin-bottom:6px}
+.cs-meta-value{font-size:12px;font-family:var(--sf);font-weight:300;letter-spacing:.04em;line-height:1.6}
+
+/* Brief */
+.cs-brief{margin-bottom:80px}
+.cs-section-label{font-size:13px;letter-spacing:.25em;text-transform:uppercase;color:var(--accent);margin-bottom:24px;font-weight:400}
+.cs-brief p{font-size:15px;font-family:var(--sf);font-weight:300;line-height:2.0;max-width:700px}
+
+/* Process gallery */
+.cs-process{margin-bottom:0;padding-bottom:80px;border-bottom:1px solid var(--br)}
+.cs-gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:48px;margin-top:24px}
+.cs-gallery img{width:100%;aspect-ratio:16/9;object-fit:cover}
+.cs-gallery img.cs-contain{object-fit:contain}
+.cs-caption{font-size:11px;font-family:var(--sf);font-weight:300;color:rgba(26,25,25,.5);letter-spacing:.04em;margin-top:8px;line-height:1.5}
+
+/* Outcome */
+.cs-outcome{margin-bottom:0;padding-top:80px;padding-bottom:80px;border-bottom:1px solid var(--br)}
+.cs-outcome-gallery{display:grid;grid-template-columns:repeat(2,1fr);gap:48px;margin-top:24px}
+.cs-outcome-gallery.cs-grid-3{grid-template-columns:repeat(3,1fr)}
+.cs-outcome-gallery img{width:100%;aspect-ratio:16/9;object-fit:contain}
+
+/* Takeaway */
+.cs-takeaway{padding-top:80px}
+.cs-takeaway p{font-size:14px;font-family:var(--sf);font-weight:300;line-height:2.0;max-width:660px;color:var(--sec)}
+
+/* ── VIDEO PLAY BUTTON ── */
+.video-wrap{position:relative;cursor:pointer}
+.video-wrap video{display:block;width:100%}
+.video-play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:10;transition:opacity .4s ease}
+.video-play.hidden{opacity:0;pointer-events:none}
+.video-play-btn{width:72px;height:72px;border-radius:50%;border:1.5px solid rgba(255,255,255,.7);background:rgba(0,0,0,.25);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;transition:transform .3s ease,background .3s ease}
+.video-wrap:hover .video-play-btn{transform:scale(1.08);background:rgba(0,0,0,.4)}
+.video-play-tri{width:0;height:0;border-style:solid;border-width:11px 0 11px 20px;border-color:transparent transparent transparent rgba(255,255,255,.9);margin-left:4px}
+
+/* ── PHOTO FILTERS FOR CONTINUITY ── */
+#cs-2 img:not(.cs-contain),
+#cs-6 .cs-gallery img,#cs-6 .cs-outcome-gallery img:not(.no-filter),
+#cs-7 img,
+#cs-9 .cs-outcome img{filter:sepia(.15) saturate(.85) contrast(1.08) brightness(.97)}
+
+/* Compensate background for sepia-filtered images so grey stays neutral */
+#cs-2 img:not(.cs-contain),
+#cs-6 .cs-gallery img,#cs-6 .cs-outcome-gallery img:not(.no-filter),
+#cs-7 img,
+#cs-9 .cs-outcome img{background:#ebebf1}
+
+/* Jericho Ridge — no internal dividers */
+#cs-5 .cs-process,#cs-5 .cs-outcome,#cs-5 .cs-meta{border:none}
+
+/* ── BACK LINK ── */
+.cs-back{display:inline-block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--tx);border:1px solid var(--br);padding:14px 28px;transition:background .2s,color .2s,border-color .2s;margin-top:80px}
+.cs-back:hover{background:var(--tx);color:var(--bg);border-color:var(--tx)}
+
+/* ── CTA ── */
+#cta{background:var(--alt);border-top:1px solid var(--br)}
+.cta-i{padding:80px 28px;text-align:center}
+.cta-i h2{font-size:clamp(18px,2vw,26px);font-weight:400;letter-spacing:.08em;text-transform:uppercase;margin-bottom:24px}
+.cta-email{display:inline-block;margin-top:32px;font-size:13px;letter-spacing:.1em;color:var(--tx);border:1px solid var(--tx);padding:16px 36px;text-transform:lowercase;transition:background .2s,color .2s}
+.cta-email:hover{background:var(--tx);color:var(--bg)}
+
+/* ── FOOTER ── */
+#ftr{border-top:none;background:#0c0c0c}
+.fi2{padding:24px 28px;display:grid;grid-template-columns:1fr 1fr 1fr;align-items:center;font-size:10px;letter-spacing:.1em;color:rgba(255,255,255,.7);text-transform:uppercase}
+.fc{text-align:center}
+.fr{display:flex;justify-content:flex-end;gap:24px}
+.fr a{transition:color .2s;color:rgba(255,255,255,.7)}
+.fr a:hover{color:#fff}
+
+/* ── LIGHTBOX ── */
+#lb{position:fixed;inset:0;z-index:9000;display:none;align-items:center;justify-content:center;background:rgba(255,255,255,.97)}
+#lb.on{display:flex}
+.lbi{position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center}
+.lbc{position:absolute;top:28px;right:36px;font:400 20px/1 var(--fn);color:var(--tx);background:none;border:none;padding:8px;letter-spacing:.05em}
+#limg{max-width:90vw;max-height:82vh;object-fit:contain}
+.lnv{position:absolute;top:50%;transform:translateY(-50%);font:400 16px/1 var(--fn);background:none;border:1px solid var(--br);color:var(--tx);width:44px;height:44px;display:flex;align-items:center;justify-content:center;transition:background .2s,border-color .2s,color .2s}
+.lnv:hover{background:var(--tx);border-color:var(--tx);color:var(--bg)}
+#lprev{left:28px}#lnext{right:28px}
+.cs-gallery img,.cs-outcome-gallery img{cursor:pointer!important}
+
+/* ── SCROLL FADE ── */
+.fi{opacity:0;transform:translateY(20px);transition:opacity .7s ease,transform .7s ease}
+.fi.on{opacity:1;transform:none}
+.cs-gallery img,.cs-outcome-gallery img,.cs-hero-img{background:#f0f0f0}
+#cs-10 .cs-outcome-gallery img,#cs-10 .cs-hero-img{background:none}
+#cs-10 .cs-outcome-gallery{grid-template-columns:repeat(2,1fr);gap:1px;margin-top:0;background:#d0d0d0}
+#cs-10 .cs-outcome-gallery img{aspect-ratio:auto;width:100%;display:block;background:#fff}
+.js-on .swp{opacity:0;transform:translateX(-28px);transition:opacity .8s ease,transform .8s ease}
+.js-on .swp.on{opacity:1;transform:none}
+.js-on .swp-d{opacity:0;transform:translateX(-28px);transition:opacity .8s ease .2s,transform .8s ease .2s}
+.js-on .swp-d.on{opacity:1;transform:none}
+.js-on .swp-d2{opacity:0;transform:translateX(-28px);transition:opacity .8s ease .42s,transform .8s ease .42s}
+.js-on .swp-d2.on{opacity:1;transform:none}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  #cur{display:none!important}
+  *,*::before,*::after{cursor:auto!important}
+  a,button{cursor:pointer!important}
+  .page-hero{padding-top:72px}
+  #hdr{height:72px}
+  .hl img{height:48px}
+  .hn{gap:16px}
+  .hn a,.nb{font-size:9px;letter-spacing:.08em}
+  .page-hero-inner{padding:60px 20px 0}
+  .cs-layout{flex-direction:column}
+  .cs-sidebar{position:static;width:100%;border-bottom:1px solid var(--br);padding:20px 20px;display:flex;flex-direction:column;gap:0}
+  .cs-main{border-left:none}
+  .cs-sidebar .cs-index-label{margin-bottom:0;cursor:pointer;display:flex;align-items:center;gap:8px}
+  .cs-sidebar .cs-index-label::after{content:'▾';font-size:10px;opacity:.4;transition:transform .3s}
+  .cs-sidebar.nav-open .cs-index-label::after{transform:rotate(180deg)}
+  .cs-index-row{padding:8px 0;display:none}
+  .cs-sidebar.nav-open .cs-index-row{display:flex}
+  .hi,.cta-i,.fi2{padding-left:16px;padding-right:16px}
+  .page-hero h1{font-size:clamp(14px,3.5vw,22px);letter-spacing:.14em;margin-bottom:16px}
+  .page-hero p{font-size:12px;line-height:1.7}
+  .cs-header{margin:0;padding:24px 16px;grid-template-columns:1fr;gap:8px;margin-left:-24px;margin-right:-24px}
+  .cs-title{font-size:14px;letter-spacing:.14em}
+  .cs-tagline{font-size:12px;line-height:1.7}
+  .cs-card{padding:48px 0}
+  .cs-meta{flex-direction:column;align-items:flex-start;text-align:left;gap:10px;margin-bottom:24px;padding-top:14px}
+  .cs-meta-label{font-size:9px;letter-spacing:.18em;margin-bottom:4px}
+  .cs-meta-value{font-size:11px;line-height:1.5}
+  .cs-brief{margin-bottom:36px}
+  .cs-brief p{font-size:12px;line-height:1.8}
+  .cs-process{padding-bottom:36px}
+  .cs-outcome{padding-top:36px;padding-bottom:36px}
+  .cs-takeaway{padding-top:36px}
+  .cs-takeaway p{font-size:12px;line-height:1.8}
+  .cs-section-label{font-size:11px;letter-spacing:.2em;margin-bottom:14px}
+  .cs-caption{font-size:10px;margin-top:6px}
+  .cs-hero-wrap{margin-left:-24px;margin-right:-24px;margin-bottom:24px}
+  .cs-gallery{grid-template-columns:repeat(2,1fr);gap:8px;margin-left:-24px;margin-right:-24px}
+  .cs-outcome-gallery{grid-template-columns:1fr;gap:8px;margin-left:-24px;margin-right:-24px}
+  .cs-outcome-gallery.cs-grid-3{grid-template-columns:repeat(2,1fr)}
+  .cs-film .video-wrap{margin-left:-24px;margin-right:-24px}
+  .video-play-btn{width:56px;height:56px}
+  .video-play-tri{border-width:9px 0 9px 16px}
+  .cs-back{font-size:10px;padding:12px 24px;margin-top:48px}
+  .cta-i{padding:48px 16px}
+  .cta-i h2{font-size:14px;letter-spacing:.1em;margin-bottom:16px}
+  .cta-email{font-size:11px;padding:14px 28px;margin-top:20px}
+  .fi2{grid-template-columns:1fr;gap:12px;text-align:center}
+  .fr{justify-content:center}
+}
+@media(max-width:600px){
+  .cs-gallery{grid-template-columns:1fr;gap:8px}
+}
+</style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<svg id="cur" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" overflow="visible" fill="none" stroke="#1A1919" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M40,40 C37,32 37,18 40,11 C43,18 43,32 40,40"/>
+  <path d="M40,40 C37,32 37,18 40,11 C43,18 43,32 40,40" transform="rotate(60 40 40)"/>
+  <path d="M40,40 C37,32 37,18 40,11 C43,18 43,32 40,40" transform="rotate(120 40 40)"/>
+  <path d="M40,40 C37,32 37,18 40,11 C43,18 43,32 40,40" transform="rotate(180 40 40)"/>
+  <path d="M40,40 C37,32 37,18 40,11 C43,18 43,32 40,40" transform="rotate(240 40 40)"/>
+  <path d="M40,40 C37,32 37,18 40,11 C43,18 43,32 40,40" transform="rotate(300 40 40)"/>
+  <circle cx="40" cy="40" r="7"/>
+</svg>
+
+<!-- LIGHTBOX -->
+<div id="lb"><div class="lbi">
+  <button class="lbc" id="lbc">&#10005;</button>
+  <button class="lnv" id="lprev">&#8592;</button>
+  <img id="limg" src="" alt="">
+  <button class="lnv" id="lnext">&#8594;</button>
+</div></div>
+
+<header id="hdr">
+  <div class="hi">
+    <a href="index.html" class="hl"><img src="logos &amp; backgrounds/jack-logo-web.png" alt="Jackson Alexander Studio"></a>
+    <nav class="hn">
+      <div class="nw">
+        <a href="index.html" class="nb">Work &#9662;</a>
+        <div class="nd">
+          <a href="index.html#logos"><span class="dn">01</span>Logos &amp; Typography</a>
+          <a href="index.html#illustration"><span class="dn">02</span>Illustration &amp; Graphic</a>
+          <a href="index.html#craft"><span class="dn">03</span>Fabrication</a>
+          <a href="index.html#styling"><span class="dn">04</span>Creative Direction</a>
+          <a href="index.html#garden"><span class="dn">05</span>Jack&#39;s Garden</a>
+          <a href="index.html#production"><span class="dn">06</span>Production</a>
+        </div>
+      </div>
+      <a href="case-studies.html">Case Studies</a>
+      <a href="mailto:jacksonalexanderstudio@gmail.com">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<!-- PAGE HERO -->
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <h1>Case Studies</h1>
+    <p>A closer look at select projects &#8212; from initial brief to outcome. Each study outlines the strategic thinking, creative development, and craft behind the work.</p>
+  </div>
+</div>
+
+<!-- CASE STUDY LAYOUT -->
+<div class="cs-layout">
+  <aside class="cs-sidebar">
+    <div class="cs-index-label">Projects</div>
+    <a href="#cs-1" class="cs-index-row active" data-target="cs-1">
+      <span class="cs-index-num">01</span>
+      <span class="cs-index-title">studio | BOSE</span>
+    </a>
+    <a href="#cs-2" class="cs-index-row" data-target="cs-2">
+      <span class="cs-index-num">02</span>
+      <span class="cs-index-title">Rocket Ramps</span>
+    </a>
+    <a href="#cs-3" class="cs-index-row" data-target="cs-3">
+      <span class="cs-index-num">03</span>
+      <span class="cs-index-title">ISRU Ritual</span>
+    </a>
+    <a href="#cs-4" class="cs-index-row" data-target="cs-4">
+      <span class="cs-index-num">04</span>
+      <span class="cs-index-title">Bird &amp; Arrow</span>
+    </a>
+    <a href="#cs-5" class="cs-index-row" data-target="cs-5">
+      <span class="cs-index-num">05</span>
+      <span class="cs-index-title">Jericho Ridge</span>
+    </a>
+    <a href="#cs-6" class="cs-index-row" data-target="cs-6">
+      <span class="cs-index-num">06</span>
+      <span class="cs-index-title">Zozobra: 100 Years</span>
+    </a>
+    <a href="#cs-7" class="cs-index-row" data-target="cs-7">
+      <span class="cs-index-num">07</span>
+      <span class="cs-index-title">1974 BMW 2002tii</span>
+    </a>
+    <a href="#cs-8" class="cs-index-row" data-target="cs-8">
+      <span class="cs-index-num">08</span>
+      <span class="cs-index-title">Cheyenne Turquoise</span>
+    </a>
+    <a href="#cs-9" class="cs-index-row" data-target="cs-9">
+      <span class="cs-index-num">09</span>
+      <span class="cs-index-title">All Eyes On Us</span>
+    </a>
+    <a href="#cs-10" class="cs-index-row" data-target="cs-10">
+      <span class="cs-index-num">10</span>
+      <span class="cs-index-title">Flash Sheets</span>
+    </a>
+  </aside>
+  <div class="cs-main">
+
+<!-- CASE STUDY 1: studio | BOSE -->
+<div class="cs-card" id="cs-1">
+  <div class="cs-inner">
+    <div class="cs-header fi">
+      <div class="cs-title-row swp">
+        <div class="cs-num">01</div>
+        <h2 class="cs-title">studio | BOSE</h2>
+      </div>
+      <p class="cs-tagline swp-d">Brand collateral, typography, and visual system design for a contemporary architectural studio.</p>
+    </div>
+    <div class="cs-hero-wrap">
+      <img class="cs-hero-img fi" src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/494caafd-0fe3-456d-b755-16267515d702/studioBOSE+-+proposal+mockup.png" alt="studio|BOSE proposal mockup">
+    </div>
+    <div class="cs-meta fi">
+      <div class="cs-meta-item">
+        <div class="cs-meta-label">Client</div>
+        <div class="cs-meta-value">studio | BOSE</div>
+      </div>
+      <div class="cs-meta-item">
+        <div class="cs-meta-label">Discipline</div>
+        <div class="cs-meta-value">Brand Collateral, Typography, Layout</div>
+      </div>
+      <div class="cs-meta-item">
+        <div class="cs-meta-label">Year</div>
+        <div class="cs-meta-value">2025</div>
+      </div>
+    </div>
+
+    <div class="cs-brief fi">
+      <div class="cs-section-label swp">The Brief</div>
+      <p>With the primary logo established, studio | BOSE required a comprehensive collateral system built around it, including proposals, invoices, typography, color palette, and layout templates. The objective was to create a cohesive visual language that extended the existing mark into every client-facing touchpoint, grounded in forms that reflected the studio&#39;s creative ethos.</p>
+    </div>
+
+    <div class="cs-outcome fi">
+      <div class="cs-section-label swp">Outcome</div>
+      <div class="cs-outcome-gallery cs-grid-3">
+        <img class="cs-contain" src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/809ac2ef-c945-444d-928b-036801bc596f/studioBOSE+-+proposal+mockup+detail.png" alt="studio|BOSE signage detail">
+        <img class="cs-contain" src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/be4f7d85-aea6-4ed1-ae6d-70ddbd3fc21b/studioBOSE+-+proposal+mockup+detail+2.png" alt="studio|BOSE mockup detail">
+        <img class="cs-contain" src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/f89b1127-4564-4d77-8992-dfdacd344804/studioBOSE+-+proposal+mockup+-+conc+floor.png" alt="studio|BOSE concrete floor application">
+      </div>
+    </div>
+
+    <div class="cs-takeaway fi">
+      <p>The collateral system translated a single logo into a cohesive brand presence. Every proposal, invoice, and document now reflects the same intentional visual language, strengthening studio | BOSE&#39;s professional identity across all interactions.</p>
+    </div>
+  </div>
+</div>
+
+<!-- CASE STUDY 2: ROCKET RAMPS -->
+<div class="cs-card" id="cs-2">
+  <div class="cs-inner">
+    <div class="cs-header fi">
+      <div class="cs-title-row swp">
+        <div class="cs-num">02</div>
+        <h2 class="cs-title">Rocket Ramps</h2>
+      </div>
+      <p class="cs-tagline swp-d">Custom illustration, brand collateral, and event merch for the grand opening of the Picuris Pueblo All-Wheel Park &#8212; northern New Mexico&#39;s newest bike park.</p>
+    </div>
+    <div class="cs-hero-wrap">
+      <img class="cs-hero-img fi" src="rocket ramps/rr-photo-01.jpg" alt="Rocket Ramps brand identity &#8212; printed t-shirt with hand-drawn icon circle" style="object-position:center 40%">
+    </div>
+    <div class="cs-meta fi">
+      <div class="cs-meta-item">
+        <div class="cs-meta-label">Client</div>
+        <div class="cs-meta-value">Rocket Ramps</div>
+      </div>
+      <div class="cs-meta-item">
+        <div class="cs-meta-label">Discipline</div>
+        <div class="cs-meta-value">Illustration, Brand Collateral, Merch</div>
+      </div>
+      <div class="cs-meta-item">
+        <div class="cs-meta-label">Year</div>
+        <div class="cs-meta-value">2025</div>
+      </div>
+    </div>
+
+    <div class="cs-brief fi">
+      <div class="cs-section-label swp">The Brief</div>
+      <p>Rocket Ramps, a Santa Fe-based trail building company, commissioned designs for the launch of the Picuris Pueblo All-Wheel Park, a $500K bike park funded by the New Mexico Outdoor Recreation Division. Working within the existing brand mark, the studio&#39;s project goal was to design event apparel and branded materials featuring hand-drawn icons that captured both the energy of the competition and the community behind it.</p>
+    </div>
+
+    <div class="cs-process fi">
+      <div class="cs-section-label swp">Process</div>
+      <div class="cs-gallery">
+        <div>
+          <img src="rocket ramps/rr-event-01.jpg" alt="Close-up of icon studies and mark explorations">
+        </div>
+        <div>
+          <img src="rocket ramps/rr-tshirt-studies.jpg" alt="Close-up of t-shirt mockup studies on studio wall &#8212; icon-filled silhouettes in light and dark">
+        </div>
+        <div>
+          <img src="rocket ramps/rr-sketchbook-02.jpg" alt="Sketchbook page of hand-drawn icons &#8212; ink on paper, dark desk">
+        </div>
+      </div>
+    </div>
+
+    <div class="cs-outcome fi">
+      <div class="cs-section-label swp">Outcome</div>
+      <div class="cs-outcome-gallery">
+        <img class="cs-contain" src="rocket ramps/rr-monogram-icons.png" alt="RR monogram filled with hand-drawn icon library">
+        <img class="cs-contain" src="rocket ramps/rr-circle-icons.png" alt="Circular icon arrangement with RR mark at center">
+        <img class="cs-contain" src="rocket ramps/rr-action-jump.jpg" alt="Rider sending a whip over the jump at Picuris Pueblo All-Wheel Park &#8212; fire pits and crowd">
+        <img style="object-fit:cover" src="rocket ramps/rr-photo-02.jpg" alt="Rocket Ramps event booth at Picuris Pueblo All-Wheel Park">
+      </div>
+
+    </div>
+
+    <div class="cs-takeaway fi">
+      <p>The Picuris Pueblo All-Wheel Park opened July 19, 2025 to a packed crowd. What started as a collateral project became a full visual language &#8212; over a hundred hand-drawn icons that told the story of the land, the tools, and the people building on it.</p>
+    </div>
+  </div>
+</div>
+
+<!-- CASE STUDY 3: ISRU RITUAL -->
+<div class="cs-card" id="cs-3">
+  <div class="cs-inner">
+    <div class="cs-header fi">
+      <div class="cs-title-row swp">
+        <div class="cs-num">03</div>
+        <h2 class="cs-title">ISRU Ritual</h2>
+      </div>
+      <p class="cs-tagline swp-d">A short film documenting daily garden practice as ritual &#8212; produced as the final challenge for the Tom Sachs ISRU summer camp.</p>
+    </div>
+    <div class="cs-hero-wrap">
+      <img class="cs-hero-img fi" src="ISRU web/ISRU WEB1.png" alt="ISRU Ritual &#8212; garden practice, Tom Sachs summer camp" style="object-position:center center">
+    </div>
+    <div class="cs-meta fi">
+      <div class="cs-meta-item">
+        <div class="cs-meta-label">Project</div>
+        <div class="cs-meta-value">Tom Sachs ISRU Summer Camp</div>
+      </div>
+      <div class="cs-meta-item">
+        <div class="cs-meta-label">Discipline</div>
+        <div class="cs-meta-value">Film, Gardening, Production</div>
+      </div>
+      <div class="cs-meta-item">
+        <div class="cs-meta-label">Year</div>
+        <div class="cs-meta-value">2025</div>
+      </div>
+    </div>
+
+    <div class="cs-brief fi">
+      <div class="cs-section-label swp">The Brief</div>
+      <p>The Tom Sachs ISRU summer camp was a three-month daily practice &#8212; structured around discipline, craft, and showing up every day. The final challenge was a short form video submission around your daily ritual, whatever that may be. I called up my good friend and videographer, McCall Sides, and we built a piece focusing on the rituals surrounding maintaining a garden in late summer in Santa Fe.</p>
+    </div>
+
+    <div class="cs-film fi">
+      <div class="cs-section-label swp">The Film</div>
+      <div class="video-wrap">
+        <div class="video-play"><div class="video-play-btn"><div class="video-play-tri"></div></div></div>
+        <video preload="metadata" playsinline style="background:#0c0c0c">
+          <source src="isru-ritual.mp4" type="video/mp4">
+        </video>
+      </div>
+    </div>
+
+    <div class="cs-outcome fi">
+      <div class="cs-section-label swp">Stills</div>
+      <div class="cs-outcome-gallery cs-grid-3">
+        <img style="object-fit:cover" src="ISRU web/ISRU WEB3.jpg" alt="ISRU Ritual &#8212; garden still">
+        <img style="object-fit:cover" src="ISRU web/ISRU WEB4.png" alt="ISRU Ritual &#8212; garden still">
+        <img style="object-fit:cover" src="ISRU web/still ISRU.jpeg" alt="ISRU Ritual &#8212; garden still">
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- CASE STUDY 4: BIRD & ARROW -->
+<div class="cs-card" id="cs-4">
+  <div class="cs-inner">
+    <div class="cs-header fi">
+      <div class="cs-title-row swp">
+        <div class="cs-num">04</div>
+        <h2 class="cs-title">Bird &amp; Arrow</h2>
+      </div>
+      <p class="cs-tagline swp-d">Full brand identity, visual system, and brand book for Peyote Bird&#39;s contemporary jewelry line.</p>
+    </div>
+    <div class="cs-hero-wrap">
+      <video class="cs-hero-video fi" autoplay loop muted playsinline>
+        <source src="bird + arrow/bird-arrow-hero.mp4" type="video/mp4">
+      </video>
+    </div>
+    <div class="cs-meta fi">
+      <div class="cs-meta-item">
+        <div class="cs-meta-label">Client</div>
+        <div class="cs-meta-value">Peyote Bird</div>
+      </div>
+      <div class="cs-meta-item">
+        <div class="cs-meta-label">Discipline</div>
+        <div class="cs-meta-value">Brand Identity, Logo Design, Brand Book</div>
+      </div>
+      <div class="cs-meta-item">
+        <div class="cs-meta-label">Year</div>
+        <div class="cs-meta-value">2024</div>
+      </div>
+    </div>
+
+    <div class="cs-brief fi">
+      <div class="cs-section-label swp">The Brief</div>
+      <p>Peyote Bird needed a distinct identity for Bird &amp; Arrow &#8212; a sub-brand targeting a contemporary, design-forward audience. The goal was to create a complete visual system that could stand on its own while maintaining a connection to the parent brand. The deliverables spanned logo design, typography, color palette, and a comprehensive brand book.</p>
+    </div>
+
+    <div class="cs-process fi">
+      <div class="cs-section-label swp">Process</div>
+      <div class="cs-gallery">
+        <div>
+          <img class="cs-contain" src="bird + arrow/ba-process-01.png" alt="Brand direction">
+        </div>
+        <div>
+          <img class="cs-contain" src="bird + arrow/ba-process-02.png" alt="Typography system">
+        </div>
+        <div>
+          <img class="cs-contain" src="bird + arrow/ba-process-03.png" alt="Color and mark refinement">
+        </div>
+      </div>
+    </div>
+
+    <div class="cs-outcome fi">
+      <div class="cs-section-label swp">Outcome</div>
+      <div class="cs-outcome-gallery cs-grid-3">
+        <img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/6c559c47-17b7-4257-b294-4eec1cfd2cb3/Bird%26Arrow+Logo_FAIRE-07.png" alt="Bird and Arrow final logo">
+        <img class="cs-contain" src="bird + arrow/ba-outcome-01.png" alt="Brand keywords and identity">
+        <img class="cs-contain" src="bird + arrow/ba-outcome-02.png" alt="Brand applications">
+        <img class="cs-contain" src="bird + arrow/ba-outcome-03.png" alt="Merchandising and catalog">
+        <img class="cs-contain" src="bird + arrow/ba-outcome-04.png" alt="Product presentation">
+        <img class="cs-contain" src="bird + arrow/ba-outcome-05.png" alt="Application examples">
+      </div>
+    </div>
+
+    <div class="cs-takeaway fi">
+      <p>Bird &amp; Arrow became a fully realized brand &#8212; from mark to motion to a 34-page brand book. The identity gave Peyote Bird a contemporary counterpart that speaks to a new audience while honoring the craftsmanship the studio is built on.</p>
+    </div>
+  </div>
+</div>
+
+<!-- CASE STUDY 5: JERICHO RIDGE -->
+<div class="cs-card" id="cs-5">
+  <div class="cs-inner">
+    <div class="cs-header fi">
+      <div class="cs-title-row swp">
+        <div class="cs-num">05</div>
+        <h2 class="cs-title">Jericho Ridge</h2>
+      </div>
+      <p class="cs-tagline swp-d">A hand-built dry-stacked stone structure on a mountain ridge outside Santa Fe &#8212; raw materials, simple tools, and a long view.</p>
+    </div>
+    <div class="cs-hero-wrap">
+      <img class="cs-hero-img fi" src="Jericho Ridge/Jericho Ridge3.JPG" alt="Dry-stacked stone structure on ridgeline at sunset &#8212; pickaxe, clouds, piñon trees" style="object-position:center 40%">
+    </div>
+    <div class="cs-meta fi">
+      <div class="cs-meta-item">
+        <div class="cs-meta-label">Project</div>
+        <div class="cs-meta-value">Jericho Ridge</div>
+      </div>
+      <div class="cs-meta-item">
+        <div class="cs-meta-label">Discipline</div>
+        <div class="cs-meta-value">Stone Fabrication, Land Work</div>
+      </div>
+      <div class="cs-meta-item">
+        <div class="cs-meta-label">Year</div>
+        <div class="cs-meta-value">2025</div>
+      </div>
+    </div>
+
+    <div class="cs-brief fi">
+      <div class="cs-section-label swp">The Brief</div>
+      <p>A ridgeline at 8,000 feet with a 360-degree view of the Sangre de Cristos and the Rio Grande valley. The project was simple in concept &#8212; build a dry-stacked stone wind shelter using only the material already provided by the land itself. No mortar, no concrete, no power tools. Just a pickaxe, gloves, and the rocks underfoot. Inspired heavily by the land art of Andy Goldsworthy, this project was the first in what would become a series of rock walls across the property.</p>
+    </div>
+
+    <div class="cs-process fi">
+      <div class="cs-section-label swp">Process</div>
+      <div class="cs-gallery">
+        <div>
+          <img src="Jericho Ridge/Jericho Ridge8.JPG" alt="Stone wall detail &#8212; timber beam integrated into dry-stacked wall, piñon tree">
+        </div>
+        <div>
+          <img src="Jericho Ridge/Jericho Ridge11.JPG" alt="Stone terrace with pickaxe &#8212; mountain views, cloudy sky">
+        </div>
+        <div>
+          <img src="Jericho Ridge/Jericho Ridge9.JPG" alt="Stone wall at dusk &#8212; golden light on stacked stone, mountain ridge">
+        </div>
+        <div>
+          <img src="Jericho Ridge/Jericho Ridge7.JPG" alt="Stone wall along ridge &#8212; fall foliage, sunset clouds">
+        </div>
+        <div>
+          <img src="Jericho Ridge/jericho ridge new.JPG" alt="Stone wall detail &#8212; rake and tools against dry-stacked wall on ridge">
+        </div>
+      </div>
+    </div>
+
+    <div class="cs-outcome fi">
+      <div class="cs-section-label swp">Outcome</div>
+      <div class="cs-outcome-gallery cs-grid-3">
+        <img style="object-fit:cover" src="Jericho Ridge/Jericho Ridge1.JPG" alt="Stone wall and sunset &#8212; pink clouds over Sangre de Cristos">
+        <img style="object-fit:cover" src="Jericho Ridge/Jericho Ridge5.JPG" alt="Two silhouettes on ridge at sunset">
+        <img style="object-fit:cover" src="Jericho Ridge/Jericho Ridge6.jpeg" alt="Builder behind stone cairn &#8212; peace sign, pink clouds">
+      </div>
+    </div>
+
+    <div class="cs-takeaway fi">
+      <p>Jericho Ridge was my first attempt to break away from the type of work I had been confined to for a decade or more. Sitting at a desk inside and moving things across a screen day in day out. With this project, I was now just hauling rocks up and down a hill and stacking them up one at a time. It ended up being one of my favorite projects to this day: quiet work in nature, building something physical with my hands, and entering the flow state that is so hard to truly sink into these days.</p>
+    </div>
+  </div>
+</div>
+
+<!-- CASE STUDY 6: ZOZOBRA: 100 YEARS -->
+<div class="cs-card" id="cs-6">
+  <div class="cs-inner">
+    <div class="cs-header fi">
+      <div class="cs-title-row swp">
+        <div class="cs-num">06</div>
+        <h2 class="cs-title">Zozobra: 100 Years</h2>
+      </div>
+      <p class="cs-tagline swp-d">Poster design for <em>Zozobra: 100 Years of Fire and Redemption</em> &#8212; a documentary celebrating a century of Santa Fe&#39;s most iconic tradition.</p>
+    </div>
+    <div class="cs-hero-wrap">
+      <img class="cs-hero-img fi" src="ZOZOBRA 100/zozobra _hutton1.png" alt="Zozobra: 100 Years of Fire and Redemption &#8212; title typography" style="object-fit:contain;background:#fff">
+    </div>
+    <div class="cs-meta fi">
+      <div class="cs-meta-item">
+        <div class="cs-meta-label">Client</div>
+        <div class="cs-meta-value">Hutton Films</div>
+      </div>
+      <div class="cs-meta-item">
+        <div class="cs-meta-label">Discipline</div>
+        <div class="cs-meta-value">Poster Design, Film Branding</div>
+      </div>
+      <div class="cs-meta-item">
+        <div class="cs-meta-label">Year</div>
+        <div class="cs-meta-value">2024</div>
+      </div>
+    </div>
+
+    <div class="cs-brief fi">
+      <div class="cs-section-label swp">The Brief</div>
+      <p>Every September, Santa Fe burns a 50-foot marionette called Zozobra &#8212; a tradition started by artist Will Shuster in 1924. For the centennial, Hutton Films produced a short documentary and needed a poster that captured the weight and weirdness of a hundred years of burning gloom. The ask was a single image that could work on screen, in print, and on the marquee at Violet Crown Cinema for the premiere.</p>
+    </div>
+
+    <div class="cs-process fi">
+      <div class="cs-section-label swp">Process</div>
+      <div class="cs-gallery">
+        <div>
+          <img src="ZOZOBRA 100/zozobra _hutton3.png" alt="Vintage black and white photograph of original Zozobra marionette">
+        </div>
+        <div>
+          <img src="ZOZOBRA 100/zozobra _hutton4.png" alt="Modern Zozobra with fireworks at Fiestas de Santa Fe">
+        </div>
+      </div>
+    </div>
+
+    <div class="cs-outcome fi">
+      <div class="cs-section-label swp">Outcome</div>
+      <div class="cs-outcome-gallery cs-grid-3">
+        <img class="no-filter" style="object-fit:contain;background:#f0f0f0" src="ZOZOBRA 100/zozobra _hutton7.jpg" alt="Final poster &#8212; Zozobra: 100 Years of Fire and Redemption">
+        <img style="object-fit:cover" src="ZOZOBRA 100/zozobra _hutton5.png" alt="Violet Crown Cinema screening page for Zozobra documentary">
+        <img style="object-fit:cover" src="ZOZOBRA 100/zozobra _hutton2.jpeg" alt="Premiere at Violet Crown Cinema &#8212; team in front of Now Showing marquee">
+        <img style="object-fit:cover" src="ZOZOBRA 100/IMG_8619.JPG" alt="Zozobra poster on Violet Crown Cinema marquee &#8212; Now Showing">
+      </div>
+    </div>
+
+    <div class="cs-takeaway fi">
+      <p>The final black-and-white composition balanced archival tone with contemporary clarity. Displayed across Santa Fe for the premiere, the poster functioned as both promotional material and commemorative artifact.</p>
+    </div>
+  </div>
+</div>
+
+<!-- CASE STUDY 7: 1974 BMW 2002tii RESTORATION -->
+<div class="cs-card" id="cs-7">
+  <div class="cs-inner">
+    <div class="cs-header fi">
+      <div class="cs-title-row swp">
+        <div class="cs-num">07</div>
+        <h2 class="cs-title">1974 BMW 2002<span style="text-transform:lowercase">tii</span></h2>
+      </div>
+      <p class="cs-tagline swp-d">Full restoration &#8212; engine, suspension, bodywork, seats, stereo, wheels, wiring, interior.</p>
+    </div>
+    <div class="cs-hero-wrap">
+      <img class="cs-hero-img fi" src="bmw/2002tii-web6.jpeg" alt="1974 BMW 2002tii &#8212; Verona Red on street, Santa Fe" style="object-position:center center">
+    </div>
+    <div class="cs-meta fi">
+      <div class="cs-meta-item">
+        <div class="cs-meta-label">Client</div>
+        <div class="cs-meta-value">Personal</div>
+      </div>
+      <div class="cs-meta-item">
+        <div class="cs-meta-label">Discipline</div>
+        <div class="cs-meta-value">Restoration, Fabrication, Mechanical</div>
+      </div>
+      <div class="cs-meta-item">
+        <div class="cs-meta-label">Year</div>
+        <div class="cs-meta-value">2021 &#8211; Present</div>
+      </div>
+    </div>
+
+    <div class="cs-brief fi">
+      <div class="cs-section-label swp">The Project</div>
+      <p>A 1974 BMW 2002tii &#8212; mechanically tired, electrically unreliable, and sunfaded after fifty years of wear and tear. The end goal was to bring the car back to life as a daily driver: rebuild the engine, upgrade the suspension, and restore the finer details back to their former glory.</p>
+    </div>
+
+    <div class="cs-process fi">
+      <div class="cs-section-label swp">Process</div>
+      <div class="cs-gallery">
+        <div>
+          <img src="bmw/bmw-engine-rebuild.jpg" alt="BMW 2002 engine bay during rebuild &#8212; head removed, bare block exposed">
+        </div>
+        <div>
+          <img src="bmw/bmw-engine-bay.jpg" alt="BMW 2002 engine bay reassembled &#8212; valve cover on, Original BMW Teile sticker visible">
+        </div>
+        <div>
+          <img src="bmw/bmw-hood-before.jpg" alt="BMW 2002 hood showing faded and oxidized paint before restoration">
+        </div>
+        <div>
+          <img src="bmw/bmw-hood-polish.jpg" alt="BMW 2002 hood mid-polish with cleaning supplies">
+        </div>
+        <div>
+          <img src="bmw/bmw-interior-console.jpg" alt="BMW 2002 restored center console &#8212; VDO gauges, Blaupunkt, BMW shift knob">
+        </div>
+        <div>
+          <img src="bmw/bmw-interior-seats.jpg" alt="BMW 2002 interior &#8212; black sport seats, steering wheel, restored cabin">
+        </div>
+      </div>
+    </div>
+
+    <div class="cs-outcome fi">
+      <div class="cs-section-label swp">Outcome</div>
+      <div class="cs-outcome-gallery cs-grid-3">
+        <img style="object-fit:cover" src="bmw/bmw-profile-stucco.jpg" alt="1974 BMW 2002tii &#8212; side profile against stucco wall, Santa Fe">
+        <img style="object-fit:cover;object-position:center 80%" src="bmw/bmw-hero-rainbow.jpg" alt="BMW 2002tii under a double rainbow in the New Mexico mountains">
+        <img style="object-fit:cover" src="bmw/bmw-rear-quarter.jpg" alt="BMW 2002 rear quarter detail &#8212; BBS wheels, golden hour light">
+        <img style="object-fit:cover" src="bmw/bmw-side-detail.jpg" alt="BMW 2002 driver side detail &#8212; BBS wheels, chrome trim">
+        <img style="object-fit:cover" src="bmw/bmw-wheel-detail.jpg" alt="BMW 2002 wheel and fender detail &#8212; BBS mesh wheels on Verona Red">
+      </div>
+    </div>
+
+    <div class="cs-takeaway fi">
+      <p>This project was a collaboration between my father and me. Though painfully slow-moving, expensive, and frustrating at times, we both came out of the experience with a deeper appreciation for the car, inside and out. It is safe to say the car will be in the family for years to come.</p>
+    </div>
+  </div>
+</div>
+
+<!-- CASE STUDY 8: CHEYENNE TURQUOISE -->
+<div class="cs-card" id="cs-8">
+  <div class="cs-inner">
+    <div class="cs-header fi">
+      <div class="cs-title-row swp">
+        <div class="cs-num">08</div>
+        <h2 class="cs-title">Cheyenne Turquoise</h2>
+      </div>
+      <p class="cs-tagline swp-d">A short documentary following turquoise miner Jess Robbins into the Nevada desert &#8212; produced for Peyote Bird and the Sundance Catalog.</p>
+    </div>
+    <div class="cs-hero-wrap">
+      <img class="cs-hero-img fi" src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/c7fc34a2-4311-4225-8aa0-a5ecd64d935d/v6_funky.00_02_22_09.Still023.jpg" alt="Cheyenne Turquoise &#8212; Jess Robbins at his turquoise claim, Tonopah, Nevada" style="object-position:center center">
+    </div>
+    <div class="cs-meta fi">
+      <div class="cs-meta-item">
+        <div class="cs-meta-label">Client</div>
+        <div class="cs-meta-value">Peyote Bird / Sundance Catalog</div>
+      </div>
+      <div class="cs-meta-item">
+        <div class="cs-meta-label">Discipline</div>
+        <div class="cs-meta-value">Film Production, Documentary</div>
+      </div>
+      <div class="cs-meta-item">
+        <div class="cs-meta-label">Year</div>
+        <div class="cs-meta-value">2019</div>
+      </div>
+    </div>
+
+    <div class="cs-brief fi">
+      <div class="cs-section-label swp">The Brief</div>
+      <p>Jess Robbins mines turquoise by hand from his claim deep in the desert outside Tonopah, Nevada. The raw stone goes into ingot-based jewelry he sells all over the world. Peyote Bird and the Sundance Catalog wanted a short documentary that told his story &#8212; the land, the process, and the person behind the material. I produced the film over a three-day shoot at the claim. Photography by Leroy Graffe.</p>
+    </div>
+
+    <div class="cs-film fi">
+      <div class="cs-section-label swp">The Film</div>
+      <div class="video-wrap">
+        <div class="video-play"><div class="video-play-btn"><div class="video-play-tri"></div></div></div>
+        <video preload="metadata" playsinline style="background:#0c0c0c">
+          <source src="cheyenne-turquoise.mp4" type="video/mp4">
+        </video>
+      </div>
+    </div>
+
+    <div class="cs-outcome fi">
+      <div class="cs-section-label swp">Stills</div>
+      <div class="cs-outcome-gallery cs-grid-3">
+        <img style="object-fit:cover" src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/958f4e39-bccc-4efe-b568-18f29102ab64/v6_funky.00_01_48_13.Still019.jpg" alt="Cheyenne Turquoise &#8212; film still, desert landscape">
+        <img style="object-fit:cover" src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/65614f33-3521-44ac-977c-ba6f202c6298/v6_funky.00_02_30_05.Still024.jpg" alt="Cheyenne Turquoise &#8212; film still, Jess Robbins at the claim">
+        <img style="object-fit:cover" src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/b3cb9aaa-23e1-46c9-907b-bbfcd79e63c4/v6_funky.00_01_39_20.Still035.jpg" alt="Cheyenne Turquoise &#8212; film still, mining process">
+        <img style="object-fit:cover" src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/2007212b-68b0-474b-97b6-ecd97c0cbc70/v6_funky.00_01_46_08.Still018.jpg" alt="Cheyenne Turquoise &#8212; film still, tools and terrain">
+        <img style="object-fit:cover" src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/9cf4c34a-02ce-4619-904a-a8c837310cb3/v6_funky.00_00_42_20.Still014.jpg" alt="Cheyenne Turquoise &#8212; film still, turquoise detail">
+        <img style="object-fit:cover" src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/4eef7ce8-fb3c-4a75-8383-9f891b95a792/v6_funky.00_01_09_18.Still030.jpg" alt="Cheyenne Turquoise &#8212; film still, Nevada desert">
+        <img style="object-fit:cover" src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/9984f73b-f107-4213-9382-9f3b72d993d4/v6_funky.00_01_55_01.Still021.jpg" alt="Cheyenne Turquoise &#8212; film still, claim work">
+        <img style="object-fit:cover" src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/d9b5ba04-7b17-48e0-a729-6fce429ada23/v6_funky.00_01_26_01.Still017.jpg" alt="Cheyenne Turquoise &#8212; film still, landscape">
+        <img style="object-fit:cover" src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/ca3f5189-5ffa-4502-9bfd-6e5c22a11567/v6_funky.00_00_41_03.Still029.jpg" alt="Cheyenne Turquoise &#8212; film still, Tonopah">
+      </div>
+    </div>
+
+    <div class="cs-takeaway fi">
+      <p>Three days in the middle of nowhere with a small crew and a guy who&#39;s been pulling stone out of the ground for decades. No studio, no controlled environment &#8212; just desert, dust, and the real thing. The film captured something you can&#39;t fake: the quiet obsession of a person who knows exactly what they&#39;re looking for and where to find it. One of the most memorable shoots I&#39;ve been part of.</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- CASE STUDY 9: ALL EYES ON US -->
+<div class="cs-card" id="cs-9">
+  <div class="cs-inner">
+    <div class="cs-header fi">
+      <div class="cs-title-row swp">
+        <div class="cs-num">09</div>
+        <h2 class="cs-title">All Eyes On Us</h2>
+      </div>
+      <p class="cs-tagline swp-d">A hand-made, mixed-media zine exploring surveillance, privacy, and the architecture of observation &#8212; built from newspaper clippings, drawings, satellite imagery, redacted documents, vintage graph paper.</p>
+    </div>
+    <div class="cs-hero-wrap">
+      <img class="cs-hero-img fi" src="zine/zine-photo-cover-flatlay.jpg" alt="All Eyes On Us &#8212; printed zine flat lay, halftone cover with hot pink bars" style="object-position:center 45%">
+    </div>
+    <div class="cs-meta fi">
+      <div class="cs-meta-item">
+        <div class="cs-meta-label">Client</div>
+        <div class="cs-meta-value">Academic</div>
+      </div>
+      <div class="cs-meta-item">
+        <div class="cs-meta-label">Discipline</div>
+        <div class="cs-meta-value">Editorial, Collage, Typography</div>
+      </div>
+      <div class="cs-meta-item">
+        <div class="cs-meta-label">Year</div>
+        <div class="cs-meta-value">2017</div>
+      </div>
+    </div>
+
+    <div class="cs-brief fi">
+      <div class="cs-section-label swp">The Brief</div>
+      <p>Create a self-published zine as a final project for a college design course. The result was a 13-page hand-assembled exploration of mass surveillance, data collection, and the feeling of being watched. Every page was built physically: cut, torn, taped, redacted, and scanned by hand.</p>
+    </div>
+
+    <div class="cs-process fi">
+      <div class="cs-section-label swp">Process</div>
+      <div class="cs-gallery">
+        <img style="object-fit:contain" src="zine/zine-spread-watched.jpg" alt="Zine spread &#8212; does anyone else feel like they&#39;re being watched, CIA collage">
+        <img style="object-fit:contain" src="zine/zine-endpapers-pattern.jpg" alt="Zine endpapers &#8212; repeating drone and surveillance camera patterns">
+        <img style="object-fit:contain" src="zine/zine-spread-hubble.jpg" alt="Zine spread &#8212; Hubble telescope diagram, deep space imagery, pink graph paper collage">
+        <img style="object-fit:contain" src="zine/zine-spread-redacted.jpg" alt="Zine spread &#8212; redacted newspaper clippings with deep space photography">
+        <img style="object-fit:contain" src="zine/zine-diecut-circles.jpg" alt="Zine spread &#8212; die-cut circles in pink graph paper, peephole motif">
+        <img style="object-fit:contain" src="zine/zine-spray-typography.jpg" alt="Zine spread &#8212; spray paint over repeated I&#39;M typography">
+        <img style="object-fit:contain" src="zine/zine-spread-surveillance.jpg" alt="Zine spread &#8212; surveillance cameras, suited figure, satellite maps, redacted Snowden clippings">
+        <img style="object-fit:contain" src="zine/zine-spread-aerial.jpg" alt="Zine spread &#8212; satellite imagery with eye motifs, pink graph paper">
+        <img style="object-fit:contain" src="zine/zine-spread-satellite.jpg" alt="Zine spread &#8212; ISS photograph, redacted text, purple tape, LEAK stamp">
+        <img style="object-fit:contain" src="zine/zine-spread-security.jpg" alt="Zine spread &#8212; security room, dome camera, monitor wall, pink graph paper">
+        <img style="object-fit:contain" src="zine/zine-spread-wikileaks.jpg" alt="Zine spread &#8212; WikiLeaks headlines, die-cut holes, redacted newspaper">
+
+      </div>
+    </div>
+
+    <div class="cs-outcome fi">
+      <div class="cs-section-label swp">Outcome</div>
+      <div class="cs-gallery">
+        <img style="object-fit:cover" src="zine/zine-photo-spread-satellite.jpg" alt="All Eyes On Us &#8212; open spread showing ISS collage and die-cut circle pages">
+        <img style="object-fit:cover" src="zine/zine-photo-spread-getaway.jpg" alt="All Eyes On Us &#8212; open spread showing getaway collage and surveillance camera pages">
+        <img style="object-fit:cover" src="zine/zine-photo-spread-security.jpg" alt="All Eyes On Us &#8212; open spread showing security room and phones vulnerable pages">
+        <img style="object-fit:cover" src="zine/zine-photo-fanned.jpg" alt="All Eyes On Us &#8212; zine fanned open showing all pages standing">
+        <img style="object-fit:cover" src="zine/zine-photo-tented.jpg" alt="All Eyes On Us &#8212; zine tented open showing WikiLeaks die-cut page">
+        <img style="object-fit:cover" src="zine/zine-photo-cover-standing.jpg" alt="All Eyes On Us &#8212; front cover standing, halftone portrait with hot pink bars">
+      </div>
+    </div>
+
+    <div class="cs-takeaway fi">
+      <p>Building every page by hand &#8212; sourcing material from newspapers, redacting text, punching holes, layering tape &#8212; forced a slower, more deliberate process than the usual screen-based workflows. It re-instilled my love for collage and analog methods of creating that I still work with almost 10 years later.</p>
+      <p style="margin-top:24px;font-size:12px;font-family:var(--sf);font-weight:300;color:rgba(26,25,25,.4);letter-spacing:.04em">Made in collaboration with Ian McMullen</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- CASE STUDY 10: FLASH SHEETS -->
+<div class="cs-card" id="cs-10">
+  <div class="cs-inner">
+    <div class="cs-header fi">
+      <div class="cs-title-row swp">
+        <div class="cs-num">10</div>
+        <h2 class="cs-title">Flash Sheets</h2>
+      </div>
+      <p class="cs-tagline swp-d">The flash sheets serve as an ever-growing archive, the result of revisiting a lifetime of drawings and doodles and assembling them into a digital collection. The process helps me understand the scope of my work, allowing me to see recurring patterns and themes, build upon past projects and ideas, and weave a clearer thread through my creative process.</p>
+    </div>
+    <div class="cs-hero-wrap">
+      <!-- hero image placeholder -->
+    </div>
+    <div class="cs-meta fi">
+      <div class="cs-meta-item">
+        <div class="cs-meta-label">Project</div>
+        <div class="cs-meta-value">Flash Sheets</div>
+      </div>
+      <div class="cs-meta-item">
+        <div class="cs-meta-label">Discipline</div>
+        <div class="cs-meta-value">Illustration, Icon Design, Ink Drawing</div>
+      </div>
+      <div class="cs-meta-item">
+        <div class="cs-meta-label">Year</div>
+        <div class="cs-meta-value">2023 &#8211; Present</div>
+      </div>
+    </div>
+
+    <div class="cs-brief fi">
+      <div class="cs-section-label swp">The Brief</div>
+      <p>A growing collection of characters that started filling up sketchbooks and never stopped. Faces, figures, totems, creatures, glyphs, geometric forms &#8212; all drawn by hand in ink, then scanned and arranged into flash sheets.</p>
+    </div>
+
+    <div class="cs-outcome fi">
+      <div class="cs-section-label swp">Outcome</div>
+      <div class="cs-outcome-gallery">
+        <img style="object-fit:contain" src="Illustration/flash sheets web-08.png" alt="Flash sheet &#8212; ink characters on black">
+        <img style="object-fit:contain" src="Illustration/flash sheets web-09.png" alt="Flash sheet &#8212; ink characters on black">
+        <img style="object-fit:contain" src="Illustration/flash sheets web-10.png" alt="Flash sheet &#8212; ink characters on black">
+        <img style="object-fit:contain" src="Illustration/flash sheets web-12.png" alt="Flash sheet &#8212; ink characters on black">
+        <img style="object-fit:contain" src="Illustration/faces_web-13.png" alt="Flash sheet &#8212; hand-drawn faces and characters, ink on black">
+        <img style="object-fit:contain" src="Illustration/faces_web-14.png" alt="Flash sheet &#8212; tribal figures, totems, and masks, ink on black">
+        <img style="object-fit:contain" src="Illustration/faces_web-15.png" alt="Flash sheet &#8212; full-body characters and creatures, ink on black">
+        <img style="object-fit:contain" src="Illustration/geometric_web-17.png" alt="Flash sheet &#8212; geometric creatures and abstract glyphs, ink on black">
+        <img style="object-fit:contain" src="Illustration/geometric_web-18.png" alt="Flash sheet &#8212; symmetrical crosses, mandalas, and sacred geometry, ink on black">
+        <img style="object-fit:contain" src="Illustration/flash sheets web-20.png" alt="Flash sheet &#8212; ink characters on black">
+        <img style="object-fit:contain" src="Illustration/flash sheets web-21.png" alt="Flash sheet &#8212; ink characters on black">
+        <img style="object-fit:contain" src="Illustration/flash sheet v1.png" alt="Flash sheet &#8212; ink characters on black">
+        <img style="object-fit:contain" src="Illustration/flash sheets .png" alt="Flash sheet &#8212; ink characters on black">
+        <img style="object-fit:contain" src="Illustration/flash sheets.png" alt="Flash sheet &#8212; ink characters on black">
+      </div>
+    </div>
+
+    <div class="cs-takeaway fi">
+      <p>The flash sheets are the throughline across most of my work &#8212; the visual DNA that shows up in logo work, in the Rocket Ramps icons, in fabrication details, in the logos, etc. Drawing every day without a brief turned out to be the most useful practice of all. The archive, similarly to the garden, just keeps growing.</p>
+    </div>
+
+    <a href="index.html" class="cs-back">&larr; Back to Work</a>
+
+  </div>
+</div>
+
+  </div><!-- /cs-main -->
+</div><!-- /cs-layout -->
+
+<!-- CTA -->
+<section id="cta">
+  <div class="cta-i fi">
+    <h2>Get in Touch</h2>
+    <a href="mailto:jacksonalexanderstudio@gmail.com" class="cta-email">jacksonalexanderstudio@gmail.com</a>
+  </div>
+</section>
+
+<footer id="ftr">
+  <div class="fi2">
+    <span>&#169; 2026 Jackson Alexander Studio</span>
+    <span class="fc">Santa Fe, NM</span>
+    <div class="fr">
+      <a href="https://www.instagram.com/sandboxkid" target="_blank" rel="noopener">Instagram</a>
+      <a href="mailto:jacksonalexanderstudio@gmail.com">jacksonalexanderstudio@gmail.com</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function() {
+  'use strict';
+
+  // ── CURSOR ──
+  var cur = document.getElementById('cur');
+  if (cur && window.matchMedia('(pointer:fine)').matches) {
+    document.addEventListener('mousemove', function(e) {
+      cur.style.transform = 'translate(' + (e.clientX - 26) + 'px,' + (e.clientY - 26) + 'px)';
+    });
+    document.addEventListener('mouseleave', function() {
+      cur.style.transform = 'translate(-200px,-200px)';
+    });
+    // Invert cursor on dark sections
+    document.querySelectorAll('#hdr, .page-hero').forEach(function(el) {
+      el.addEventListener('mouseenter', function() { document.body.classList.add('img-hover'); });
+      el.addEventListener('mouseleave', function() { document.body.classList.remove('img-hover'); });
+    });
+  }
+
+  // ── HEADER SHRINK ──
+  var hdr = document.getElementById('hdr');
+  window.addEventListener('scroll', function() {
+    hdr.classList.toggle('sc', window.scrollY > 60);
+  }, { passive: true });
+
+  // ── SCROLL FADE OBSERVER ──
+  var obs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      if (e.isIntersecting) { e.target.classList.add('on'); obs.unobserve(e.target); }
+    });
+  }, { threshold: 0.05, rootMargin: '0px 0px -20px 0px' });
+  document.body.classList.add('js-on');
+  document.querySelectorAll('.fi,.swp,.swp-d,.swp-d2').forEach(function(el) { obs.observe(el); });
+
+  // ── NAV DROPDOWN TOGGLE (mobile click) ──
+  var nbBtn = document.querySelector('.nb');
+  var ndMenu = document.querySelector('.nd');
+  if (nbBtn && ndMenu) {
+    nbBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      ndMenu.classList.toggle('nd-open');
+    });
+    document.addEventListener('click', function() { ndMenu.classList.remove('nd-open'); });
+    ndMenu.querySelectorAll('a').forEach(function(a) {
+      a.addEventListener('click', function() { ndMenu.classList.remove('nd-open'); });
+    });
+  }
+
+  // ── SMOOTH SCROLL ──
+  document.querySelectorAll('a[href^="#"]').forEach(function(a) {
+    a.addEventListener('click', function(e) {
+      var t = document.querySelector(a.getAttribute('href'));
+      if (t) {
+        e.preventDefault();
+        window.scrollTo({ top: t.getBoundingClientRect().top + window.scrollY - hdr.offsetHeight, behavior: 'smooth' });
+      }
+    });
+  });
+
+  // ── MOBILE NAV TOGGLE ──
+  var csSidebar = document.querySelector('.cs-sidebar');
+  var csLabel = document.querySelector('.cs-sidebar .cs-index-label');
+  if(csLabel){
+    csLabel.addEventListener('click',function(){csSidebar.classList.toggle('nav-open')});
+    document.querySelectorAll('.cs-index-row').forEach(function(link){
+      link.addEventListener('click',function(){csSidebar.classList.remove('nav-open')});
+    });
+  }
+
+  // ── VIDEO PLAY BUTTONS ──
+  document.querySelectorAll('.video-wrap').forEach(function(wrap){
+    var overlay = wrap.querySelector('.video-play');
+    var vid = wrap.querySelector('video');
+    wrap.addEventListener('click',function(){
+      if(!overlay.classList.contains('hidden')){
+        overlay.classList.add('hidden');
+        vid.controls = true;
+        vid.play();
+      }
+    });
+    vid.addEventListener('ended',function(){
+      overlay.classList.remove('hidden');
+      vid.controls = false;
+    });
+    vid.addEventListener('pause',function(){
+      if(vid.ended) return;
+      overlay.classList.remove('hidden');
+      vid.controls = false;
+    });
+  });
+
+  // ── SIDEBAR ACTIVE TRACKING ──
+  var sidebarLinks = document.querySelectorAll('.cs-index-row[data-target]');
+  var csCards = document.querySelectorAll('.cs-card');
+  var csObs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        sidebarLinks.forEach(function(link) { link.classList.remove('active'); });
+        var match = document.querySelector('.cs-index-row[data-target="' + entry.target.id + '"]');
+        if (match) match.classList.add('active');
+      }
+    });
+  }, { threshold: 0, rootMargin: '-30% 0px -50% 0px' });
+  csCards.forEach(function(card) { csObs.observe(card); });
+
+
+  // ── LIGHTBOX ──
+  var lb   = document.getElementById('lb');
+  var limg = document.getElementById('limg');
+  var cImgs = [], cIdx = 0;
+
+  function openLB(imgs, idx) { cImgs = imgs; cIdx = idx; showLB(); lb.classList.add('on'); document.body.style.overflow = 'hidden'; }
+  function closeLB() { lb.classList.remove('on'); document.body.style.overflow = ''; }
+  function showLB() {
+    var img = cImgs[cIdx];
+    limg.src = img.src;
+    limg.alt = img.alt;
+    document.getElementById('lprev').style.display = cImgs.length > 1 ? 'flex' : 'none';
+    document.getElementById('lnext').style.display = cImgs.length > 1 ? 'flex' : 'none';
+  }
+  function prevImg() { cIdx = (cIdx - 1 + cImgs.length) % cImgs.length; showLB(); }
+  function nextImg() { cIdx = (cIdx + 1) % cImgs.length; showLB(); }
+
+  document.querySelectorAll('.cs-gallery img, .cs-outcome-gallery img').forEach(function(img) {
+    img.addEventListener('click', function() {
+      var card = img.closest('.cs-card');
+      var allImgs = Array.from(card.querySelectorAll('.cs-gallery img, .cs-outcome-gallery img'));
+      openLB(allImgs, allImgs.indexOf(img));
+    });
+  });
+
+  document.getElementById('lbc').addEventListener('click', closeLB);
+  document.getElementById('lprev').addEventListener('click', prevImg);
+  document.getElementById('lnext').addEventListener('click', nextImg);
+  lb.addEventListener('click', function(e) { if (e.target === lb || e.target.classList.contains('lbi')) closeLB(); });
+  document.addEventListener('keydown', function(e) {
+    if (!lb.classList.contains('on')) return;
+    if (e.key === 'Escape')      closeLB();
+    if (e.key === 'ArrowLeft')   prevImg();
+    if (e.key === 'ArrowRight')  nextImg();
+  });
+  var tsx = 0;
+  lb.addEventListener('touchstart', function(e) { tsx = e.changedTouches[0].screenX; }, { passive: true });
+  lb.addEventListener('touchend',   function(e) {
+    var dx = e.changedTouches[0].screenX - tsx;
+    if (Math.abs(dx) > 50) { dx < 0 ? nextImg() : prevImg(); }
+  }, { passive: true });
+
+})();
+</script>
+</body>
+</html>
