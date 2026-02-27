@@ -78,11 +78,12 @@ body.img-hover #cur{filter:invert(1)}
 
 /* ── WORK INDEX ── */
 .work-layout{display:flex;position:relative}
-#wi{position:sticky;top:100px;width:280px;flex-shrink:0;align-self:flex-start;height:fit-content;padding:52px 36px;background:rgba(249,246,240,.55);border-right:1px solid rgba(0,0,0,.05)}
+.work-layout::before{content:'';position:absolute;left:0;top:0;bottom:0;width:280px;background:rgba(249,246,240,.55);border-right:1px solid rgba(0,0,0,.05);pointer-events:none}
+#wi{position:sticky;top:100px;width:280px;flex-shrink:0;align-self:flex-start;height:fit-content;padding:52px 36px;z-index:1}
 .work-main{flex:1;min-width:0;border-left:1px solid var(--br)}
 .wil{font-size:9px;font-weight:400;letter-spacing:.28em;color:var(--tx);text-transform:uppercase;margin-bottom:28px}
-.wir{display:flex;align-items:baseline;gap:10px;padding:10px 0;transition:opacity .3s,color .3s;opacity:.25;text-decoration:none;color:var(--tx);border-bottom:1px solid transparent}
-.wir:hover{opacity:.6}
+.wir{display:flex;align-items:baseline;gap:10px;padding:10px 0;transition:opacity .3s,color .3s;opacity:1;text-decoration:none;color:var(--tx);border-bottom:1px solid transparent}
+.wir:hover{opacity:.7}
 .wir.active{opacity:1;border-bottom:1px solid var(--accent)}
 .wir.active .wt{color:var(--tx)}
 .wir.active .wn{color:var(--accent)}
