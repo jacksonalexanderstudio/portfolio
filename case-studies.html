@@ -112,6 +112,8 @@ body.img-hover #cur{filter:invert(1)}
 /* ── VIDEO PLAY BUTTON ── */
 .video-wrap{position:relative;cursor:pointer}
 .video-wrap video{display:block;width:100%}
+.cs-film .video-wrap{background:#0c0c0c;margin-left:-24px;margin-right:-24px;aspect-ratio:16/9;border-top:1px solid rgba(255,255,255,.08);border-bottom:1px solid rgba(255,255,255,.08)}
+.cs-film .video-wrap video{width:100%;height:100%;object-fit:contain}
 .video-play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:10;transition:opacity .4s ease}
 .video-play.hidden{opacity:0;pointer-events:none}
 .video-play-btn{width:72px;height:72px;border-radius:50%;border:1.5px solid rgba(255,255,255,.7);background:rgba(0,0,0,.25);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;transition:transform .3s ease,background .3s ease}
@@ -220,6 +222,7 @@ body.img-hover #cur{filter:invert(1)}
   .cs-outcome-gallery{grid-template-columns:1fr;gap:8px;margin-left:-24px;margin-right:-24px}
   .cs-outcome-gallery.cs-grid-3{grid-template-columns:repeat(2,1fr)}
   .cs-film .video-wrap{margin-left:-24px;margin-right:-24px}
+  .cs-film .video-wrap video{width:100%;height:100%;object-fit:contain}
   .video-play-btn{width:56px;height:56px}
   .video-play-tri{border-width:9px 0 9px 16px}
   .cs-back{font-size:10px;padding:12px 24px;margin-top:48px}
