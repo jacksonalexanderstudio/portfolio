@@ -49,35 +49,35 @@ body.img-hover #cur{filter:invert(1)}
 
 /* ── CASE STUDY LAYOUT ── */
 .cs-layout{display:flex;position:relative}
-.cs-sidebar{position:sticky;top:100px;width:280px;flex-shrink:0;align-self:flex-start;height:fit-content;padding:52px 36px;border-right:1px solid var(--br);position:sticky}
-.cs-main{flex:1;min-width:0}
+.cs-layout::before{content:'';position:absolute;left:0;top:0;bottom:0;width:280px;background:rgba(249,246,240,.55);border-right:1px solid rgba(0,0,0,.05);pointer-events:none}
+.cs-sidebar{position:sticky;top:100px;width:280px;flex-shrink:0;align-self:flex-start;height:fit-content;padding:52px 36px;z-index:1}
+.cs-main{flex:1;min-width:0;border-left:1px solid var(--br)}
 
 /* ── CASE STUDY INDEX (sidebar) ── */
-.cs-index-label{font-size:11px;font-weight:400;letter-spacing:.22em;color:#000;text-transform:uppercase;margin-bottom:32px}
-.cs-index-row{display:flex;align-items:baseline;gap:12px;padding:14px 0;transition:opacity .3s,color .3s;opacity:.3;text-decoration:none;border-bottom:1px solid transparent}
+.cs-index-label{font-size:9px;font-weight:400;letter-spacing:.28em;color:var(--tx);text-transform:uppercase;margin-bottom:28px}
+.cs-index-row{display:flex;align-items:baseline;gap:10px;padding:10px 0;transition:opacity .3s,color .3s;opacity:1;text-decoration:none;color:var(--tx);border-bottom:1px solid transparent}
 .cs-index-row:hover{opacity:.7}
 .cs-index-row.active{opacity:1;border-bottom:1px solid var(--accent)}
 .cs-index-row.active .cs-index-title{color:var(--tx)}
 .cs-index-row.active .cs-index-num{color:var(--accent)}
-.cs-index-num{font-size:11px;color:var(--accent);letter-spacing:.08em;font-family:var(--sf);flex-shrink:0}
-.cs-index-title{font-size:12px;font-weight:400;letter-spacing:.1em;text-transform:uppercase}
+.cs-index-num{font-size:9px;color:var(--accent);letter-spacing:.06em;font-family:var(--sf);flex-shrink:0}
+.cs-index-title{font-size:10px;font-weight:300;letter-spacing:.14em;text-transform:uppercase;font-family:var(--fn)}
 
 /* ── CASE STUDY CARDS ── */
-.cs-card{padding:100px 0;border-bottom:1px solid var(--br)}
+.cs-card{padding:100px 0}
 .cs-card:first-child{padding-top:0}
-.cs-card:last-child{border-bottom:none}
 .cs-inner{margin:0;padding:0 24px}
 
-/* Case study header — black band */
-.cs-header{background:#0c0c0c;margin:0;padding:32px 28px;margin-bottom:0;display:grid;grid-template-columns:1fr minmax(0,420px);gap:40px;align-items:center;border-top:1px solid rgba(255,255,255,.15)}
+/* Case study header — black band (full bleed) */
+.cs-header{background:#0c0c0c;margin:0 -24px;padding:32px 28px;margin-bottom:0;display:grid;grid-template-columns:1fr minmax(0,420px);gap:40px;align-items:center;border-top:1px solid rgba(255,255,255,.15)}
 .cs-header-left{}
 .cs-title-row{display:flex;align-items:center;gap:24px;margin-bottom:0}
 .cs-num{font-size:11px;color:#D95740;letter-spacing:.12em;font-family:var(--sf);flex-shrink:0}
 .cs-title{font-size:clamp(16px,2vw,26px);font-weight:400;letter-spacing:.18em;text-transform:uppercase;line-height:1.2;font-family:var(--fn);color:#fff}
-.cs-tagline{font-size:15px;font-family:var(--sf);font-weight:300;color:#fff;line-height:1.9;letter-spacing:.01em;max-width:none}
+.cs-tagline{font-size:13px;font-family:var(--sf);font-weight:300;color:rgba(255,255,255,.55);line-height:1.9;letter-spacing:.03em;max-width:none}
 
-/* Hero image / video */
-.cs-hero-wrap{margin-bottom:48px;overflow:hidden}
+/* Hero image / video (full bleed) */
+.cs-hero-wrap{margin:0 -24px 48px;overflow:hidden}
 .cs-hero-img{width:100%;aspect-ratio:3/1;object-fit:cover;object-position:center;display:block}
 .cs-hero-video{width:100%;aspect-ratio:3/1;object-fit:cover;object-position:center;display:block;background:#0c0c0c}
 
@@ -109,12 +109,31 @@ body.img-hover #cur{filter:invert(1)}
 .cs-takeaway{padding-top:80px}
 .cs-takeaway p{font-size:14px;font-family:var(--sf);font-weight:300;line-height:2.0;max-width:660px;color:var(--sec)}
 
+/* ── VIDEO PLAY BUTTON ── */
+.video-wrap{position:relative;cursor:pointer}
+.video-wrap video{display:block;width:100%}
+.cs-film .video-wrap{background:#0c0c0c;margin-left:-24px;margin-right:-24px;aspect-ratio:16/9;border-top:1px solid rgba(255,255,255,.08);border-bottom:1px solid rgba(255,255,255,.08)}
+.cs-film .video-wrap video{width:100%;height:100%;object-fit:contain}
+.video-play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:10;transition:opacity .4s ease}
+.video-play.hidden{opacity:0;pointer-events:none}
+.video-play-btn{width:72px;height:72px;border-radius:50%;border:1.5px solid rgba(255,255,255,.7);background:rgba(0,0,0,.25);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;transition:transform .3s ease,background .3s ease}
+.video-wrap:hover .video-play-btn{transform:scale(1.08);background:rgba(0,0,0,.4)}
+.video-play-tri{width:0;height:0;border-style:solid;border-width:11px 0 11px 20px;border-color:transparent transparent transparent rgba(255,255,255,.9);margin-left:4px}
+
 /* ── PHOTO FILTERS FOR CONTINUITY ── */
 #cs-2 img:not(.cs-contain),
-#cs-4 img,
-#cs-5 .cs-gallery img,#cs-5 .cs-outcome-gallery img,
-#cs-6 img,
-#cs-7 .cs-outcome img{filter:sepia(.15) saturate(.85) contrast(1.08) brightness(.97)}
+#cs-6 .cs-gallery img,#cs-6 .cs-outcome-gallery img:not(.no-filter),
+#cs-7 img,
+#cs-9 .cs-outcome img{filter:sepia(.15) saturate(.85) contrast(1.08) brightness(.97)}
+
+/* Compensate background for sepia-filtered images so grey stays neutral */
+#cs-2 img:not(.cs-contain),
+#cs-6 .cs-gallery img,#cs-6 .cs-outcome-gallery img:not(.no-filter),
+#cs-7 img,
+#cs-9 .cs-outcome img{background:#ebebf1}
+
+/* Jericho Ridge — no internal dividers */
+#cs-5 .cs-process,#cs-5 .cs-outcome,#cs-5 .cs-meta{border:none}
 
 /* ── BACK LINK ── */
 .cs-back{display:inline-block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--tx);border:1px solid var(--br);padding:14px 28px;transition:background .2s,color .2s,border-color .2s;margin-top:80px}
@@ -150,9 +169,9 @@ body.img-hover #cur{filter:invert(1)}
 .fi{opacity:0;transform:translateY(20px);transition:opacity .7s ease,transform .7s ease}
 .fi.on{opacity:1;transform:none}
 .cs-gallery img,.cs-outcome-gallery img,.cs-hero-img{background:#f0f0f0}
-#cs-8 .cs-outcome-gallery img,#cs-8 .cs-hero-img{background:none}
-#cs-8 .cs-outcome-gallery{grid-template-columns:repeat(2,1fr);gap:1px;margin-top:0;background:#d0d0d0}
-#cs-8 .cs-outcome-gallery img{aspect-ratio:auto;width:100%;display:block;background:#fff}
+#cs-10 .cs-outcome-gallery img,#cs-10 .cs-hero-img{background:none}
+#cs-10 .cs-outcome-gallery{grid-template-columns:repeat(2,1fr);gap:1px;margin-top:0;background:#d0d0d0}
+#cs-10 .cs-outcome-gallery img{aspect-ratio:auto;width:100%;display:block;background:#fff}
 .js-on .swp{opacity:0;transform:translateX(-28px);transition:opacity .8s ease,transform .8s ease}
 .js-on .swp.on{opacity:1;transform:none}
 .js-on .swp-d{opacity:0;transform:translateX(-28px);transition:opacity .8s ease .2s,transform .8s ease .2s}
@@ -168,18 +187,48 @@ body.img-hover #cur{filter:invert(1)}
   .page-hero{padding-top:72px}
   #hdr{height:72px}
   .hl img{height:48px}
+  .hn{gap:16px}
+  .hn a,.nb{font-size:9px;letter-spacing:.08em}
   .page-hero-inner{padding:60px 20px 0}
   .cs-layout{flex-direction:column}
-  .cs-sidebar{position:static;width:100%;border-right:none;border-bottom:1px solid var(--br);padding:20px 20px;display:flex;flex-wrap:wrap;align-items:center;gap:4px 20px}
-  .cs-sidebar .cs-index-label{margin-bottom:0;margin-right:8px}
-  .cs-index-row{padding:8px 0}
-  .hi,.cta-i,.fi2{padding-left:20px;padding-right:20px}
-  .cs-header{margin:0;padding:24px 20px;grid-template-columns:1fr;gap:10px}
-  .cs-title{font-size:clamp(14px,3.5vw,22px)}
-  .cs-meta{flex-direction:column;align-items:flex-start;text-align:left;gap:20px}
-  .cs-gallery{grid-template-columns:repeat(2,1fr);gap:12px}
-  .cs-outcome-gallery{grid-template-columns:1fr;gap:12px}
+  .cs-layout::before{display:none}
+  .cs-sidebar{position:static;width:100%;border-bottom:1px solid var(--br);padding:20px 20px;display:flex;flex-direction:column;gap:0}
+  .cs-main{border-left:none}
+  .cs-sidebar .cs-index-label{margin-bottom:0;cursor:pointer;display:flex;align-items:center;gap:8px}
+  .cs-sidebar .cs-index-label::after{content:'▾';font-size:10px;opacity:.4;transition:transform .3s}
+  .cs-sidebar.nav-open .cs-index-label::after{transform:rotate(180deg)}
+  .cs-index-row{padding:8px 0;display:none}
+  .cs-sidebar.nav-open .cs-index-row{display:flex}
+  .hi,.cta-i,.fi2{padding-left:16px;padding-right:16px}
+  .page-hero h1{font-size:clamp(14px,3.5vw,22px);letter-spacing:.14em;margin-bottom:16px}
+  .page-hero p{font-size:12px;line-height:1.7}
+  .cs-header{margin:0;padding:24px 16px;grid-template-columns:1fr;gap:8px;margin-left:-24px;margin-right:-24px}
+  .cs-title{font-size:14px;letter-spacing:.14em}
+  .cs-tagline{font-size:12px;line-height:1.7}
+  .cs-card{padding:48px 0}
+  .cs-meta{flex-direction:column;align-items:flex-start;text-align:left;gap:10px;margin-bottom:24px;padding-top:14px}
+  .cs-meta-label{font-size:9px;letter-spacing:.18em;margin-bottom:4px}
+  .cs-meta-value{font-size:11px;line-height:1.5}
+  .cs-brief{margin-bottom:36px}
+  .cs-brief p{font-size:12px;line-height:1.8}
+  .cs-process{padding-bottom:36px}
+  .cs-outcome{padding-top:36px;padding-bottom:36px}
+  .cs-takeaway{padding-top:36px}
+  .cs-takeaway p{font-size:12px;line-height:1.8}
+  .cs-section-label{font-size:11px;letter-spacing:.2em;margin-bottom:14px}
+  .cs-caption{font-size:10px;margin-top:6px}
+  .cs-hero-wrap{margin-left:-24px;margin-right:-24px;margin-bottom:24px}
+  .cs-gallery{grid-template-columns:repeat(2,1fr);gap:8px;margin-left:-24px;margin-right:-24px}
+  .cs-outcome-gallery{grid-template-columns:1fr;gap:8px;margin-left:-24px;margin-right:-24px}
   .cs-outcome-gallery.cs-grid-3{grid-template-columns:repeat(2,1fr)}
+  .cs-film .video-wrap{margin-left:-24px;margin-right:-24px}
+  .cs-film .video-wrap video{width:100%;height:100%;object-fit:contain}
+  .video-play-btn{width:56px;height:56px}
+  .video-play-tri{border-width:9px 0 9px 16px}
+  .cs-back{font-size:10px;padding:12px 24px;margin-top:48px}
+  .cta-i{padding:48px 16px}
+  .cta-i h2{font-size:14px;letter-spacing:.1em;margin-bottom:16px}
+  .cta-email{font-size:11px;padding:14px 28px;margin-top:20px}
   .fi2{grid-template-columns:1fr;gap:12px;text-align:center}
   .fr{justify-content:center}
 }
@@ -211,17 +260,17 @@ body.img-hover #cur{filter:invert(1)}
 
 <header id="hdr">
   <div class="hi">
-    <a href="portfolio.html" class="hl"><img src="logos &amp; backgrounds/jack-logo-web.png" alt="Jackson Alexander Studio"></a>
+    <a href="index.html" class="hl"><img src="logos &amp; backgrounds/jack-logo-web.png" alt="Jackson Alexander Studio"></a>
     <nav class="hn">
       <div class="nw">
-        <a href="portfolio.html" class="nb">Work &#9662;</a>
+        <a href="index.html" class="nb">Work &#9662;</a>
         <div class="nd">
-          <a href="portfolio.html#logos"><span class="dn">01</span>Logos &amp; Typography</a>
-          <a href="portfolio.html#illustration"><span class="dn">02</span>Illustration &amp; Graphic</a>
-          <a href="portfolio.html#craft"><span class="dn">03</span>Fabrication</a>
-          <a href="portfolio.html#styling"><span class="dn">04</span>Creative Direction</a>
-          <a href="portfolio.html#garden"><span class="dn">05</span>Jack&#39;s Garden</a>
-          <a href="portfolio.html#production"><span class="dn">06</span>Production</a>
+          <a href="index.html#logos"><span class="dn">01</span>Logos &amp; Typography</a>
+          <a href="index.html#illustration"><span class="dn">02</span>Illustration &amp; Graphic</a>
+          <a href="index.html#craft"><span class="dn">03</span>Fabrication</a>
+          <a href="index.html#styling"><span class="dn">04</span>Creative Direction</a>
+          <a href="index.html#garden"><span class="dn">05</span>Jack&#39;s Garden</a>
+          <a href="index.html#production"><span class="dn">06</span>Production</a>
         </div>
       </div>
       <a href="case-studies.html">Case Studies</a>
@@ -234,7 +283,7 @@ body.img-hover #cur{filter:invert(1)}
 <div class="page-hero">
   <div class="page-hero-inner">
     <h1>Case Studies</h1>
-    <p>A closer look at select projects &#8212; the brief, the process, and the outcome. Each study walks through the thinking and craft behind the work.</p>
+    <p>A closer look at select projects &#8212; from initial brief to outcome. Each study outlines the strategic thinking, creative development, and craft behind the work.</p>
   </div>
 </div>
 
@@ -252,26 +301,34 @@ body.img-hover #cur{filter:invert(1)}
     </a>
     <a href="#cs-3" class="cs-index-row" data-target="cs-3">
       <span class="cs-index-num">03</span>
-      <span class="cs-index-title">Bird &amp; Arrow</span>
+      <span class="cs-index-title">ISRU Ritual</span>
     </a>
     <a href="#cs-4" class="cs-index-row" data-target="cs-4">
       <span class="cs-index-num">04</span>
-      <span class="cs-index-title">Jericho Ridge</span>
+      <span class="cs-index-title">Bird &amp; Arrow</span>
     </a>
     <a href="#cs-5" class="cs-index-row" data-target="cs-5">
       <span class="cs-index-num">05</span>
-      <span class="cs-index-title">Zozobra: 100 Years</span>
+      <span class="cs-index-title">Jericho Ridge</span>
     </a>
     <a href="#cs-6" class="cs-index-row" data-target="cs-6">
       <span class="cs-index-num">06</span>
-      <span class="cs-index-title">1974 BMW 2002tii</span>
+      <span class="cs-index-title">Zozobra: 100 Years</span>
     </a>
     <a href="#cs-7" class="cs-index-row" data-target="cs-7">
       <span class="cs-index-num">07</span>
-      <span class="cs-index-title">All Eyes On Us</span>
+      <span class="cs-index-title">1974 BMW 2002tii</span>
     </a>
     <a href="#cs-8" class="cs-index-row" data-target="cs-8">
       <span class="cs-index-num">08</span>
+      <span class="cs-index-title">Cheyenne Turquoise</span>
+    </a>
+    <a href="#cs-9" class="cs-index-row" data-target="cs-9">
+      <span class="cs-index-num">09</span>
+      <span class="cs-index-title">All Eyes On Us</span>
+    </a>
+    <a href="#cs-10" class="cs-index-row" data-target="cs-10">
+      <span class="cs-index-num">10</span>
       <span class="cs-index-title">Flash Sheets</span>
     </a>
   </aside>
@@ -307,7 +364,7 @@ body.img-hover #cur{filter:invert(1)}
 
     <div class="cs-brief fi">
       <div class="cs-section-label swp">The Brief</div>
-      <p>With the logo already established, studio | BOSE needed the full collateral system built around it &#8212; proposals, invoices, typography, color palette, and layout templates. The goal was to create a cohesive visual language that extended the existing mark into every client-facing touchpoint, grounded in clean, architectural forms that reflected the studio&#39;s creative ethos.</p>
+      <p>With the primary logo established, studio | BOSE required a comprehensive collateral system built around it, including proposals, invoices, typography, color palette, and layout templates. The objective was to create a cohesive visual language that extended the existing mark into every client-facing touchpoint, grounded in forms that reflected the studio&#39;s creative ethos.</p>
     </div>
 
     <div class="cs-outcome fi">
@@ -320,7 +377,7 @@ body.img-hover #cur{filter:invert(1)}
     </div>
 
     <div class="cs-takeaway fi">
-      <p>The collateral system gave studio | BOSE a polished, consistent presence beyond the logo &#8212; every proposal, invoice, and document now carries the same intentional visual language. The work turned a single mark into a complete brand experience across every client touchpoint.</p>
+      <p>The collateral system translated a single logo into a cohesive brand presence. Every proposal, invoice, and document now reflects the same intentional visual language, strengthening studio | BOSE&#39;s professional identity across all interactions.</p>
     </div>
   </div>
 </div>
@@ -355,7 +412,7 @@ body.img-hover #cur{filter:invert(1)}
 
     <div class="cs-brief fi">
       <div class="cs-section-label swp">The Brief</div>
-      <p>Rocket Ramps &#8212; a Santa Fe-based trail building company &#8212; needed collateral and merch for the grand opening of the Picuris Pueblo All-Wheel Park, a $500K bike park funded by the New Mexico Outdoor Recreation Division. Working within the existing RR brand mark, the goal was to build out a hand-drawn icon library, event apparel, and branded materials that captured the energy of the launch &#8212; a Best Whip and Trick competition with $8,000 in prizes and the community behind it.</p>
+      <p>Rocket Ramps, a Santa Fe-based trail building company, commissioned designs for the launch of the Picuris Pueblo All-Wheel Park, a $500K bike park funded by the New Mexico Outdoor Recreation Division. Working within the existing brand mark, the studio&#39;s project goal was to design event apparel and branded materials featuring hand-drawn icons that captured both the energy of the competition and the community behind it.</p>
     </div>
 
     <div class="cs-process fi">
@@ -363,15 +420,12 @@ body.img-hover #cur{filter:invert(1)}
       <div class="cs-gallery">
         <div>
           <img src="rocket ramps/rr-event-01.jpg" alt="Close-up of icon studies and mark explorations">
-          <div class="cs-caption">Icon studies, sprocket variations, and circular compositions</div>
         </div>
         <div>
           <img src="rocket ramps/rr-tshirt-studies.jpg" alt="Close-up of t-shirt mockup studies on studio wall &#8212; icon-filled silhouettes in light and dark">
-          <div class="cs-caption">Merch studies &#8212; icon-filled t-shirt silhouettes, light and dark</div>
         </div>
         <div>
           <img src="rocket ramps/rr-sketchbook-02.jpg" alt="Sketchbook page of hand-drawn icons &#8212; ink on paper, dark desk">
-          <div class="cs-caption">More icon explorations &#8212; characters, objects, and creatures</div>
         </div>
       </div>
     </div>
@@ -381,24 +435,79 @@ body.img-hover #cur{filter:invert(1)}
       <div class="cs-outcome-gallery">
         <img class="cs-contain" src="rocket ramps/rr-monogram-icons.png" alt="RR monogram filled with hand-drawn icon library">
         <img class="cs-contain" src="rocket ramps/rr-circle-icons.png" alt="Circular icon arrangement with RR mark at center">
-        <img style="object-fit:contain" src="rocket ramps/rr-action-jump.jpg" alt="Rider sending a whip over the jump at Picuris Pueblo All-Wheel Park &#8212; fire pits and crowd">
+        <img class="cs-contain" src="rocket ramps/rr-action-jump.jpg" alt="Rider sending a whip over the jump at Picuris Pueblo All-Wheel Park &#8212; fire pits and crowd">
         <img style="object-fit:cover" src="rocket ramps/rr-photo-02.jpg" alt="Rocket Ramps event booth at Picuris Pueblo All-Wheel Park">
       </div>
 
     </div>
 
     <div class="cs-takeaway fi">
-      <p>The Picuris Pueblo All-Wheel Park opened July 19, 2025 to a packed crowd. What started as a collateral project became a full visual language &#8212; over a hundred hand-drawn icons that told the story of the land, the tools, and the people building on it. The kind of work where illustration and brand become the same thing. Huge thanks to Henry and Ted for bringing me on board for this project.</p>
+      <p>The Picuris Pueblo All-Wheel Park opened July 19, 2025 to a packed crowd. What started as a collateral project became a full visual language &#8212; over a hundred hand-drawn icons that told the story of the land, the tools, and the people building on it.</p>
     </div>
   </div>
 </div>
 
-<!-- CASE STUDY 3: BIRD & ARROW -->
+<!-- CASE STUDY 3: ISRU RITUAL -->
 <div class="cs-card" id="cs-3">
   <div class="cs-inner">
     <div class="cs-header fi">
       <div class="cs-title-row swp">
         <div class="cs-num">03</div>
+        <h2 class="cs-title">ISRU Ritual</h2>
+      </div>
+      <p class="cs-tagline swp-d">A short film documenting daily garden practice as ritual &#8212; produced as the final challenge for the Tom Sachs ISRU summer camp.</p>
+    </div>
+    <div class="cs-hero-wrap">
+      <img class="cs-hero-img fi" src="ISRU web/ISRU WEB1.png" alt="ISRU Ritual &#8212; garden practice, Tom Sachs summer camp" style="object-position:center center">
+    </div>
+    <div class="cs-meta fi">
+      <div class="cs-meta-item">
+        <div class="cs-meta-label">Project</div>
+        <div class="cs-meta-value">Tom Sachs ISRU Summer Camp</div>
+      </div>
+      <div class="cs-meta-item">
+        <div class="cs-meta-label">Discipline</div>
+        <div class="cs-meta-value">Film, Gardening, Production</div>
+      </div>
+      <div class="cs-meta-item">
+        <div class="cs-meta-label">Year</div>
+        <div class="cs-meta-value">2025</div>
+      </div>
+    </div>
+
+    <div class="cs-brief fi">
+      <div class="cs-section-label swp">The Brief</div>
+      <p>The Tom Sachs ISRU summer camp was a three-month daily practice &#8212; structured around discipline, craft, and showing up every day. The final challenge was a short form video submission around your daily ritual, whatever that may be. I called up my good friend and videographer, McCall Sides, and we built a piece focusing on the rituals surrounding maintaining a garden in late summer in Santa Fe.</p>
+    </div>
+
+    <div class="cs-film fi">
+      <div class="cs-section-label swp">The Film</div>
+      <div class="video-wrap">
+        <div class="video-play"><div class="video-play-btn"><div class="video-play-tri"></div></div></div>
+        <video preload="metadata" playsinline style="background:#0c0c0c">
+          <source src="isru-ritual.mp4" type="video/mp4">
+        </video>
+      </div>
+    </div>
+
+    <div class="cs-outcome fi">
+      <div class="cs-section-label swp">Stills</div>
+      <div class="cs-outcome-gallery cs-grid-3">
+        <img style="object-fit:cover" src="ISRU web/ISRU WEB3.jpg" alt="ISRU Ritual &#8212; garden still">
+        <img style="object-fit:cover" src="ISRU web/ISRU WEB4.jpg" alt="ISRU Ritual &#8212; garden still">
+        <img style="object-fit:cover" src="ISRU web/still ISRU.jpeg" alt="ISRU Ritual &#8212; garden still">
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- CASE STUDY 4: BIRD & ARROW -->
+<div class="cs-card" id="cs-4">
+  <div class="cs-inner">
+    <div class="cs-header fi">
+      <div class="cs-title-row swp">
+        <div class="cs-num">04</div>
         <h2 class="cs-title">Bird &amp; Arrow</h2>
       </div>
       <p class="cs-tagline swp-d">Full brand identity, visual system, and brand book for Peyote Bird&#39;s contemporary jewelry line.</p>
@@ -433,15 +542,12 @@ body.img-hover #cur{filter:invert(1)}
       <div class="cs-gallery">
         <div>
           <img class="cs-contain" src="bird + arrow/ba-process-01.png" alt="Brand direction">
-          <div class="cs-caption">Brand positioning and visual direction</div>
         </div>
         <div>
           <img class="cs-contain" src="bird + arrow/ba-process-02.png" alt="Typography system">
-          <div class="cs-caption">Typography and visual language development</div>
         </div>
         <div>
           <img class="cs-contain" src="bird + arrow/ba-process-03.png" alt="Color and mark refinement">
-          <div class="cs-caption">Mark refinement and color system</div>
         </div>
       </div>
     </div>
@@ -450,10 +556,10 @@ body.img-hover #cur{filter:invert(1)}
       <div class="cs-section-label swp">Outcome</div>
       <div class="cs-outcome-gallery cs-grid-3">
         <img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/6c559c47-17b7-4257-b294-4eec1cfd2cb3/Bird%26Arrow+Logo_FAIRE-07.png" alt="Bird and Arrow final logo">
-        <img class="cs-contain" src="bird + arrow/ba-outcome-01.png" alt="Brand keywords and identity">
-        <img class="cs-contain" src="bird + arrow/ba-outcome-02.png" alt="Brand applications">
-        <img class="cs-contain" src="bird + arrow/ba-outcome-03.png" alt="Merchandising and catalog">
-        <img class="cs-contain" src="bird + arrow/ba-outcome-04.png" alt="Product presentation">
+        <img class="cs-contain" src="bird + arrow/ba-outcome-01.jpg" alt="Brand keywords and identity">
+        <img class="cs-contain" src="bird + arrow/ba-outcome-02.jpg" alt="Brand applications">
+        <img class="cs-contain" src="bird + arrow/ba-outcome-03.jpg" alt="Merchandising and catalog">
+        <img class="cs-contain" src="bird + arrow/ba-outcome-04.jpg" alt="Product presentation">
         <img class="cs-contain" src="bird + arrow/ba-outcome-05.png" alt="Application examples">
       </div>
     </div>
@@ -464,12 +570,12 @@ body.img-hover #cur{filter:invert(1)}
   </div>
 </div>
 
-<!-- CASE STUDY 4: JERICHO RIDGE -->
-<div class="cs-card" id="cs-4">
+<!-- CASE STUDY 5: JERICHO RIDGE -->
+<div class="cs-card" id="cs-5">
   <div class="cs-inner">
     <div class="cs-header fi">
       <div class="cs-title-row swp">
-        <div class="cs-num">04</div>
+        <div class="cs-num">05</div>
         <h2 class="cs-title">Jericho Ridge</h2>
       </div>
       <p class="cs-tagline swp-d">A hand-built dry-stacked stone structure on a mountain ridge outside Santa Fe &#8212; raw materials, simple tools, and a long view.</p>
@@ -494,7 +600,7 @@ body.img-hover #cur{filter:invert(1)}
 
     <div class="cs-brief fi">
       <div class="cs-section-label swp">The Brief</div>
-      <p>A ridgeline at 8,000 feet with a 360-degree view of the Sangre de Cristos and the Rio Grande valley. The project was simple in concept &#8212; build a dry-stacked stone wind shelter using only the material already on the mountain. No mortar, no concrete, no power tools. Just a pickaxe, hands, and the rocks underfoot. The kind of work where you learn the land by moving it.</p>
+      <p>A ridgeline at 8,000 feet with a 360-degree view of the Sangre de Cristos and the Rio Grande valley. The project was simple in concept &#8212; build a dry-stacked stone wind shelter using only the material already provided by the land itself. No mortar, no concrete, no power tools. Just a pickaxe, gloves, and the rocks underfoot. Inspired heavily by the land art of Andy Goldsworthy, this project was the first in what would become a series of rock walls across the property.</p>
     </div>
 
     <div class="cs-process fi">
@@ -502,23 +608,18 @@ body.img-hover #cur{filter:invert(1)}
       <div class="cs-gallery">
         <div>
           <img src="Jericho Ridge/Jericho Ridge8.JPG" alt="Stone wall detail &#8212; timber beam integrated into dry-stacked wall, piñon tree">
-          <div class="cs-caption">Wall detail &#8212; dry-stacked stone with salvaged timber</div>
         </div>
         <div>
           <img src="Jericho Ridge/Jericho Ridge11.JPG" alt="Stone terrace with pickaxe &#8212; mountain views, cloudy sky">
-          <div class="cs-caption">Terrace taking shape &#8212; pickaxe and hand-placed stone</div>
         </div>
         <div>
           <img src="Jericho Ridge/Jericho Ridge9.JPG" alt="Stone wall at dusk &#8212; golden light on stacked stone, mountain ridge">
-          <div class="cs-caption">Walls rising &#8212; last light on the ridge</div>
         </div>
         <div>
           <img src="Jericho Ridge/Jericho Ridge7.JPG" alt="Stone wall along ridge &#8212; fall foliage, sunset clouds">
-          <div class="cs-caption">Fall on the ridge &#8212; wall and autumn color</div>
         </div>
         <div>
           <img src="Jericho Ridge/jericho ridge new.JPG" alt="Stone wall detail &#8212; rake and tools against dry-stacked wall on ridge">
-          <div class="cs-caption">Tools of the trade &#8212; rake and pickaxe on the wall face</div>
         </div>
       </div>
     </div>
@@ -533,17 +634,17 @@ body.img-hover #cur{filter:invert(1)}
     </div>
 
     <div class="cs-takeaway fi">
-      <p>Jericho Ridge started as an excuse to get off the computer. No client, no deadline &#8212; just hauling rocks up a hill and stacking them until they held. It turned into the thing I looked forward to most. Quiet work, outside, building something heavy and permanent with my hands. A good break from screens and a good way to stay connected to the land up here.</p>
+      <p>Jericho Ridge was my first attempt to break away from the type of work I had been confined to for a decade or more. Sitting at a desk inside and moving things across a screen day in day out. With this project, I was now just hauling rocks up and down a hill and stacking them up one at a time. It ended up being one of my favorite projects to this day: quiet work in nature, building something physical with my hands, and entering the flow state that is so hard to truly sink into these days.</p>
     </div>
   </div>
 </div>
 
-<!-- CASE STUDY 5: ZOZOBRA: 100 YEARS -->
-<div class="cs-card" id="cs-5">
+<!-- CASE STUDY 6: ZOZOBRA: 100 YEARS -->
+<div class="cs-card" id="cs-6">
   <div class="cs-inner">
     <div class="cs-header fi">
       <div class="cs-title-row swp">
-        <div class="cs-num">05</div>
+        <div class="cs-num">06</div>
         <h2 class="cs-title">Zozobra: 100 Years</h2>
       </div>
       <p class="cs-tagline swp-d">Poster design for <em>Zozobra: 100 Years of Fire and Redemption</em> &#8212; a documentary celebrating a century of Santa Fe&#39;s most iconic tradition.</p>
@@ -575,12 +676,10 @@ body.img-hover #cur{filter:invert(1)}
       <div class="cs-section-label swp">Process</div>
       <div class="cs-gallery">
         <div>
-          <img src="ZOZOBRA 100/zozobra _hutton3.png" alt="Vintage black and white photograph of original Zozobra marionette">
-          <div class="cs-caption">Archival reference &#8212; early Zozobra, Will Shuster era</div>
+          <img src="ZOZOBRA 100/zozobra _hutton3.jpg" alt="Vintage black and white photograph of original Zozobra marionette">
         </div>
         <div>
-          <img src="ZOZOBRA 100/zozobra _hutton4.png" alt="Modern Zozobra with fireworks at Fiestas de Santa Fe">
-          <div class="cs-caption">Modern Zozobra &#8212; fireworks and fire at Fiestas de Santa Fe</div>
+          <img src="ZOZOBRA 100/zozobra _hutton4.jpg" alt="Modern Zozobra with fireworks at Fiestas de Santa Fe">
         </div>
       </div>
     </div>
@@ -588,28 +687,28 @@ body.img-hover #cur{filter:invert(1)}
     <div class="cs-outcome fi">
       <div class="cs-section-label swp">Outcome</div>
       <div class="cs-outcome-gallery cs-grid-3">
-        <img style="object-fit:contain;background:#e8e5e0" src="ZOZOBRA 100/zozobra _hutton7.jpg" alt="Final poster &#8212; Zozobra: 100 Years of Fire and Redemption">
-        <img style="object-fit:cover" src="ZOZOBRA 100/zozobra _hutton5.png" alt="Violet Crown Cinema screening page for Zozobra documentary">
+        <img class="no-filter" style="object-fit:contain;background:#f0f0f0" src="ZOZOBRA 100/zozobra _hutton7.jpg" alt="Final poster &#8212; Zozobra: 100 Years of Fire and Redemption">
+        <img style="object-fit:cover" src="ZOZOBRA 100/zozobra _hutton5.jpg" alt="Violet Crown Cinema screening page for Zozobra documentary">
         <img style="object-fit:cover" src="ZOZOBRA 100/zozobra _hutton2.jpeg" alt="Premiere at Violet Crown Cinema &#8212; team in front of Now Showing marquee">
         <img style="object-fit:cover" src="ZOZOBRA 100/IMG_8619.JPG" alt="Zozobra poster on Violet Crown Cinema marquee &#8212; Now Showing">
       </div>
     </div>
 
     <div class="cs-takeaway fi">
-      <p>The poster ran on screen and in print across Santa Fe for the centennial premiere at Violet Crown Cinema. The black-and-white treatment grounded a hundred years of spectacle into something that felt archival and permanent &#8212; a document as much as a design. Sometimes the best work is one image, one line, and knowing when to stop.</p>
+      <p>The final black-and-white composition balanced archival tone with contemporary clarity. Displayed across Santa Fe for the premiere, the poster functioned as both promotional material and commemorative artifact.</p>
     </div>
   </div>
 </div>
 
-<!-- CASE STUDY 6: 1974 BMW 2002tii RESTORATION -->
-<div class="cs-card" id="cs-6">
+<!-- CASE STUDY 7: 1974 BMW 2002tii RESTORATION -->
+<div class="cs-card" id="cs-7">
   <div class="cs-inner">
     <div class="cs-header fi">
       <div class="cs-title-row swp">
-        <div class="cs-num">06</div>
+        <div class="cs-num">07</div>
         <h2 class="cs-title">1974 BMW 2002<span style="text-transform:lowercase">tii</span></h2>
       </div>
-      <p class="cs-tagline swp-d">Bought a rough 1974 BMW 2002tii and brought it back to life &#8212; engine, wiring, suspension, bodywork, all of it. Learned most of it along the way.</p>
+      <p class="cs-tagline swp-d">Full restoration &#8212; engine, suspension, bodywork, seats, stereo, wheels, wiring, interior.</p>
     </div>
     <div class="cs-hero-wrap">
       <img class="cs-hero-img fi" src="bmw/2002tii-web6.jpeg" alt="1974 BMW 2002tii &#8212; Verona Red on street, Santa Fe" style="object-position:center center">
@@ -630,8 +729,8 @@ body.img-hover #cur{filter:invert(1)}
     </div>
 
     <div class="cs-brief fi">
-      <div class="cs-section-label swp">The Brief</div>
-      <p>A 1974 BMW 2002tii &#8212; mechanically tired, electrically unreliable, and cosmetically faded after fifty years. The goal was never a concours trailer queen. It was to bring the car back to life as a real driver: rebuild the engine, rewire the dash, sort the suspension, and restore the details that make the 2002 one of the most important driver&#39;s cars ever made. All work done by hand, on nights and weekends, out of a Santa Fe garage.</p>
+      <div class="cs-section-label swp">The Project</div>
+      <p>A 1974 BMW 2002tii &#8212; mechanically tired, electrically unreliable, and sunfaded after fifty years of wear and tear. The end goal was to bring the car back to life as a daily driver: rebuild the engine, upgrade the suspension, and restore the finer details back to their former glory.</p>
     </div>
 
     <div class="cs-process fi">
@@ -639,27 +738,21 @@ body.img-hover #cur{filter:invert(1)}
       <div class="cs-gallery">
         <div>
           <img src="bmw/bmw-engine-rebuild.jpg" alt="BMW 2002 engine bay during rebuild &#8212; head removed, bare block exposed">
-          <div class="cs-caption">Engine tear-down &#8212; head pulled, block exposed, full top-end rebuild</div>
         </div>
         <div>
           <img src="bmw/bmw-engine-bay.jpg" alt="BMW 2002 engine bay reassembled &#8212; valve cover on, Original BMW Teile sticker visible">
-          <div class="cs-caption">Reassembled &#8212; M10 back together, Original BMW Teile</div>
         </div>
         <div>
           <img src="bmw/bmw-hood-before.jpg" alt="BMW 2002 hood showing faded and oxidized paint before restoration">
-          <div class="cs-caption">Before &#8212; fifty years of UV on original Verona Red</div>
         </div>
         <div>
           <img src="bmw/bmw-hood-polish.jpg" alt="BMW 2002 hood mid-polish with cleaning supplies">
-          <div class="cs-caption">After &#8212; cut, polish, and seal on the original paint</div>
         </div>
         <div>
           <img src="bmw/bmw-interior-console.jpg" alt="BMW 2002 restored center console &#8212; VDO gauges, Blaupunkt, BMW shift knob">
-          <div class="cs-caption">Finished console &#8212; VDO gauges, Blaupunkt Frankfurt, BMW shift knob</div>
         </div>
         <div>
           <img src="bmw/bmw-interior-seats.jpg" alt="BMW 2002 interior &#8212; black sport seats, steering wheel, restored cabin">
-          <div class="cs-caption">Restored interior &#8212; black sport seats, new floor mats, full cabin detail</div>
         </div>
       </div>
     </div>
@@ -676,20 +769,85 @@ body.img-hover #cur{filter:invert(1)}
     </div>
 
     <div class="cs-takeaway fi">
-      <p>My dad passed this car down to me. He kept it alive for years and I wanted to keep that going. It&#39;s been frustrating, expensive, and slow &#8212; most of the work I learned as I went, breaking things and fixing them again. But every problem taught me something, and now I know this car inside and out. It runs, it drives, and it&#39;s still in the family.</p>
+      <p>This project was a collaboration between my father and me. Though painfully slow-moving, expensive, and frustrating at times, we both came out of the experience with a deeper appreciation for the car, inside and out. It is safe to say the car will be in the family for years to come.</p>
     </div>
   </div>
 </div>
 
-<!-- CASE STUDY 7: ALL EYEZ ON US -->
-<div class="cs-card" id="cs-7">
+<!-- CASE STUDY 8: CHEYENNE TURQUOISE -->
+<div class="cs-card" id="cs-8">
   <div class="cs-inner">
     <div class="cs-header fi">
       <div class="cs-title-row swp">
-        <div class="cs-num">07</div>
+        <div class="cs-num">08</div>
+        <h2 class="cs-title">Cheyenne Turquoise</h2>
+      </div>
+      <p class="cs-tagline swp-d">A short documentary following turquoise miner Jess Robbins into the Nevada desert &#8212; produced for Peyote Bird and the Sundance Catalog.</p>
+    </div>
+    <div class="cs-hero-wrap">
+      <img class="cs-hero-img fi" src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/c7fc34a2-4311-4225-8aa0-a5ecd64d935d/v6_funky.00_02_22_09.Still023.jpg" alt="Cheyenne Turquoise &#8212; Jess Robbins at his turquoise claim, Tonopah, Nevada" style="object-position:center center">
+    </div>
+    <div class="cs-meta fi">
+      <div class="cs-meta-item">
+        <div class="cs-meta-label">Client</div>
+        <div class="cs-meta-value">Peyote Bird / Sundance Catalog</div>
+      </div>
+      <div class="cs-meta-item">
+        <div class="cs-meta-label">Discipline</div>
+        <div class="cs-meta-value">Film Production, Documentary</div>
+      </div>
+      <div class="cs-meta-item">
+        <div class="cs-meta-label">Year</div>
+        <div class="cs-meta-value">2019</div>
+      </div>
+    </div>
+
+    <div class="cs-brief fi">
+      <div class="cs-section-label swp">The Brief</div>
+      <p>Jess Robbins mines turquoise by hand from his claim deep in the desert outside Tonopah, Nevada. The raw stone goes into ingot-based jewelry he sells all over the world. Peyote Bird and the Sundance Catalog wanted a short documentary that told his story &#8212; the land, the process, and the person behind the material. I produced the film over a three-day shoot at the claim. Photography by Leroy Graffe.</p>
+    </div>
+
+    <div class="cs-film fi">
+      <div class="cs-section-label swp">The Film</div>
+      <div class="video-wrap">
+        <div class="video-play"><div class="video-play-btn"><div class="video-play-tri"></div></div></div>
+        <video preload="metadata" playsinline style="background:#0c0c0c">
+          <source src="cheyenne-turquoise.mp4" type="video/mp4">
+        </video>
+      </div>
+    </div>
+
+    <div class="cs-outcome fi">
+      <div class="cs-section-label swp">Stills</div>
+      <div class="cs-outcome-gallery cs-grid-3">
+        <img style="object-fit:cover" src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/958f4e39-bccc-4efe-b568-18f29102ab64/v6_funky.00_01_48_13.Still019.jpg" alt="Cheyenne Turquoise &#8212; film still, desert landscape">
+        <img style="object-fit:cover" src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/65614f33-3521-44ac-977c-ba6f202c6298/v6_funky.00_02_30_05.Still024.jpg" alt="Cheyenne Turquoise &#8212; film still, Jess Robbins at the claim">
+        <img style="object-fit:cover" src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/b3cb9aaa-23e1-46c9-907b-bbfcd79e63c4/v6_funky.00_01_39_20.Still035.jpg" alt="Cheyenne Turquoise &#8212; film still, mining process">
+        <img style="object-fit:cover" src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/2007212b-68b0-474b-97b6-ecd97c0cbc70/v6_funky.00_01_46_08.Still018.jpg" alt="Cheyenne Turquoise &#8212; film still, tools and terrain">
+        <img style="object-fit:cover" src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/9cf4c34a-02ce-4619-904a-a8c837310cb3/v6_funky.00_00_42_20.Still014.jpg" alt="Cheyenne Turquoise &#8212; film still, turquoise detail">
+        <img style="object-fit:cover" src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/4eef7ce8-fb3c-4a75-8383-9f891b95a792/v6_funky.00_01_09_18.Still030.jpg" alt="Cheyenne Turquoise &#8212; film still, Nevada desert">
+        <img style="object-fit:cover" src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/9984f73b-f107-4213-9382-9f3b72d993d4/v6_funky.00_01_55_01.Still021.jpg" alt="Cheyenne Turquoise &#8212; film still, claim work">
+        <img style="object-fit:cover" src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/d9b5ba04-7b17-48e0-a729-6fce429ada23/v6_funky.00_01_26_01.Still017.jpg" alt="Cheyenne Turquoise &#8212; film still, landscape">
+        <img style="object-fit:cover" src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/ca3f5189-5ffa-4502-9bfd-6e5c22a11567/v6_funky.00_00_41_03.Still029.jpg" alt="Cheyenne Turquoise &#8212; film still, Tonopah">
+      </div>
+    </div>
+
+    <div class="cs-takeaway fi">
+      <p>Three days in the middle of nowhere with a small crew and a guy who&#39;s been pulling stone out of the ground for decades. No studio, no controlled environment &#8212; just desert, dust, and the real thing. The film captured something you can&#39;t fake: the quiet obsession of a person who knows exactly what they&#39;re looking for and where to find it. One of the most memorable shoots I&#39;ve been part of.</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- CASE STUDY 9: ALL EYES ON US -->
+<div class="cs-card" id="cs-9">
+  <div class="cs-inner">
+    <div class="cs-header fi">
+      <div class="cs-title-row swp">
+        <div class="cs-num">09</div>
         <h2 class="cs-title">All Eyes On Us</h2>
       </div>
-      <p class="cs-tagline swp-d">A hand-made mixed-media zine exploring surveillance, privacy, and the architecture of observation &#8212; built from newspaper clippings, satellite imagery, redacted documents, and collage.</p>
+      <p class="cs-tagline swp-d">A hand-made, mixed-media zine exploring surveillance, privacy, and the architecture of observation &#8212; built from newspaper clippings, drawings, satellite imagery, redacted documents, vintage graph paper.</p>
     </div>
     <div class="cs-hero-wrap">
       <img class="cs-hero-img fi" src="zine/zine-photo-cover-flatlay.jpg" alt="All Eyes On Us &#8212; printed zine flat lay, halftone cover with hot pink bars" style="object-position:center 45%">
@@ -711,7 +869,7 @@ body.img-hover #cur{filter:invert(1)}
 
     <div class="cs-brief fi">
       <div class="cs-section-label swp">The Brief</div>
-      <p>Create a self-published zine as a final project for a college typography and graphic design course. The only constraint was format &#8212; everything else was open. The result was a 13-page hand-assembled exploration of mass surveillance, data collection, and the feeling of being watched. Every page was built physically: cut, torn, taped, redacted, and scanned. No templates, no digital illustration &#8212; just source material, an X-Acto knife, and a flatbed scanner.</p>
+      <p>Create a self-published zine as a final project for a college design course. The result was a 13-page hand-assembled exploration of mass surveillance, data collection, and the feeling of being watched. Every page was built physically: cut, torn, taped, redacted, and scanned by hand.</p>
     </div>
 
     <div class="cs-process fi">
@@ -745,22 +903,22 @@ body.img-hover #cur{filter:invert(1)}
     </div>
 
     <div class="cs-takeaway fi">
-      <p>The zine became the project where design thinking and personal point-of-view first merged. Building every page by hand &#8212; sourcing material from newspapers, redacting text, punching holes, layering tape &#8212; forced a slower, more deliberate process than any screen-based workflow. It was the first time the work felt like it had something to say beyond the assignment.</p>
-      <p style="margin-top:24px;font-size:12px;font-family:var(--sf);font-weight:300;color:rgba(26,25,25,.4);letter-spacing:.04em">Collaboration with Ian McMullen</p>
+      <p>Building every page by hand &#8212; sourcing material from newspapers, redacting text, punching holes, layering tape &#8212; forced a slower, more deliberate process than the usual screen-based workflows. It re-instilled my love for collage and analog methods of creating that I still work with almost 10 years later.</p>
+      <p style="margin-top:24px;font-size:12px;font-family:var(--sf);font-weight:300;color:rgba(26,25,25,.4);letter-spacing:.04em">Made in collaboration with Ian McMullen</p>
     </div>
 
   </div>
 </div>
 
-<!-- CASE STUDY 8: FLASH SHEETS -->
-<div class="cs-card" id="cs-8">
+<!-- CASE STUDY 10: FLASH SHEETS -->
+<div class="cs-card" id="cs-10">
   <div class="cs-inner">
     <div class="cs-header fi">
       <div class="cs-title-row swp">
-        <div class="cs-num">08</div>
+        <div class="cs-num">10</div>
         <h2 class="cs-title">Flash Sheets</h2>
       </div>
-      <p class="cs-tagline swp-d">An ongoing library of original characters, glyphs, and symbols &#8212; hand-drawn in ink and organized into flash sheets for tattoo, print, and personal archive.</p>
+      <p class="cs-tagline swp-d">The flash sheets serve as an ever-growing archive, the result of revisiting a lifetime of drawings and doodles and assembling them into a digital collection. The process helps me understand the scope of my work, allowing me to see recurring patterns and themes, build upon past projects and ideas, and weave a clearer thread through my creative process.</p>
     </div>
     <div class="cs-hero-wrap">
       <!-- hero image placeholder -->
@@ -782,7 +940,7 @@ body.img-hover #cur{filter:invert(1)}
 
     <div class="cs-brief fi">
       <div class="cs-section-label swp">The Brief</div>
-      <p>No client, no deadline &#8212; just a growing collection of characters that started filling up sketchbooks and never stopped. Faces, figures, totems, creatures, glyphs, geometric forms &#8212; all drawn by hand in ink, then scanned and arranged into flash sheets. Some pull from tribal and indigenous visual language, some from tattoo tradition, some from somewhere harder to name. The goal was never a single finished piece &#8212; it was to build a library. A personal iconography that could live on skin, on paper, on screen, or on a wall.</p>
+      <p>A growing collection of characters that started filling up sketchbooks and never stopped. Faces, figures, totems, creatures, glyphs, geometric forms &#8212; all drawn by hand in ink, then scanned and arranged into flash sheets.</p>
     </div>
 
     <div class="cs-outcome fi">
@@ -806,10 +964,10 @@ body.img-hover #cur{filter:invert(1)}
     </div>
 
     <div class="cs-takeaway fi">
-      <p>The flash sheets became the throughline across everything else &#8212; the visual DNA that shows up in logo work, in the Rocket Ramps icons, in fabrication details, in things that haven&#39;t been made yet. Drawing every day without a brief turned out to be the most useful practice of all. The library keeps growing.</p>
+      <p>The flash sheets are the throughline across most of my work &#8212; the visual DNA that shows up in logo work, in the Rocket Ramps icons, in fabrication details, in the logos, etc. Drawing every day without a brief turned out to be the most useful practice of all. The archive, similarly to the garden, just keeps growing.</p>
     </div>
 
-    <a href="portfolio.html" class="cs-back">&larr; Back to Work</a>
+    <a href="index.html" class="cs-back">&larr; Back to Work</a>
 
   </div>
 </div>
@@ -893,6 +1051,38 @@ body.img-hover #cur{filter:invert(1)}
         e.preventDefault();
         window.scrollTo({ top: t.getBoundingClientRect().top + window.scrollY - hdr.offsetHeight, behavior: 'smooth' });
       }
+    });
+  });
+
+  // ── MOBILE NAV TOGGLE ──
+  var csSidebar = document.querySelector('.cs-sidebar');
+  var csLabel = document.querySelector('.cs-sidebar .cs-index-label');
+  if(csLabel){
+    csLabel.addEventListener('click',function(){csSidebar.classList.toggle('nav-open')});
+    document.querySelectorAll('.cs-index-row').forEach(function(link){
+      link.addEventListener('click',function(){csSidebar.classList.remove('nav-open')});
+    });
+  }
+
+  // ── VIDEO PLAY BUTTONS ──
+  document.querySelectorAll('.video-wrap').forEach(function(wrap){
+    var overlay = wrap.querySelector('.video-play');
+    var vid = wrap.querySelector('video');
+    wrap.addEventListener('click',function(){
+      if(!overlay.classList.contains('hidden')){
+        overlay.classList.add('hidden');
+        vid.controls = true;
+        vid.play();
+      }
+    });
+    vid.addEventListener('ended',function(){
+      overlay.classList.remove('hidden');
+      vid.controls = false;
+    });
+    vid.addEventListener('pause',function(){
+      if(vid.ended) return;
+      overlay.classList.remove('hidden');
+      vid.controls = false;
     });
   });
 
