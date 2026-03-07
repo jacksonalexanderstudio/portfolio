@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Jackson Alexander Studio</title>
 <meta name="description" content="A creative studio based in Santa Fe, NM.">
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fragment+Mono&family=DM+Sans:wght@200;300;400&display=swap" rel="stylesheet">
@@ -139,14 +141,15 @@ body.img-hover #cur{filter:invert(1)}
 /* Fabrication — subtle warm, earthy treatment */
 #craft .wi img{filter:sepia(0.10) saturate(0.83) contrast(1.06) brightness(0.96)}
 #craft .wi:hover img{filter:sepia(0.04) saturate(0.92) contrast(1.03) brightness(0.99)}
-.ov{position:absolute;inset:0;background:rgba(0,0,0,.32);display:flex;flex-direction:column;justify-content:flex-end;padding:14px;opacity:0;transition:opacity .35s}
+.ov{position:absolute;inset:0;background:linear-gradient(0deg,rgba(0,0,0,.52) 0%,rgba(0,0,0,.08) 40%,transparent 100%);display:flex;flex-direction:column;justify-content:flex-end;padding:14px;opacity:0;transition:opacity .35s}
 .wi:hover .ov{opacity:1}
 .ov-num{font-size:18px;color:#fff;letter-spacing:.06em;line-height:1;margin-bottom:6px;font-family:var(--sf)}
 .ov-sec{font-size:9px;color:rgba(255,255,255,.7);letter-spacing:.16em;text-transform:uppercase}
 
 /* ── MASONRY — all sections ── */
 .gl,.gm,.gp{columns:4;column-gap:48px;padding:0 52px}
-.gl .wi,.gm .wi,.gp .wi{break-inside:avoid;margin-bottom:48px;aspect-ratio:unset;background:transparent}
+.gl .wi,.gm .wi,.gp .wi{break-inside:avoid;margin-bottom:48px;aspect-ratio:unset;background:transparent;transition:transform .4s ease,box-shadow .4s ease}
+.gm .wi:hover,.gp .wi:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,0,0,.1)}
 .gl .wi img,.gm .wi img,.gp .wi img{width:100%;height:auto;object-fit:cover;display:block}
 /* Logos: contain with padding, uniform squares */
 .gl .wi{background:var(--alt)}
@@ -182,6 +185,10 @@ body.img-hover #cur{filter:invert(1)}
 #lprev{left:28px}#lnext{right:28px}
 
 /* ── SCROLL FADE ── */
+/* ── LAZY LOAD FADE-IN ── */
+.wi img,.wi video{opacity:0;transition:opacity .5s ease}
+.wi img.loaded,.wi video.loaded{opacity:1}
+
 .fi{opacity:0;transform:translateY(20px);transition:opacity .7s ease,transform .7s ease}
 .fi.on{opacity:1;transform:none}
 .fi-l{opacity:0;transform:translateX(-16px);transition:opacity .7s ease,transform .7s ease}
@@ -807,6 +814,16 @@ body.img-hover #cur{filter:invert(1)}
     });
   }, { threshold: 0, rootMargin: '-30% 0px -50% 0px' });
   workSections.forEach(function(sec) { sideObs.observe(sec); });
+
+  // ── LAZY LOAD FADE-IN ──
+  document.querySelectorAll('.wi img[loading="lazy"]').forEach(function(img) {
+    if (img.complete) { img.classList.add('loaded'); }
+    else { img.addEventListener('load', function() { img.classList.add('loaded'); }); }
+  });
+  document.querySelectorAll('.wi video').forEach(function(vid) {
+    if (vid.readyState >= 2) { vid.classList.add('loaded'); }
+    else { vid.addEventListener('loadeddata', function() { vid.classList.add('loaded'); }); }
+  });
 
   // ── SMOOTH SCROLL ──
   document.querySelectorAll('a[href^="#"]').forEach(function(a) {
