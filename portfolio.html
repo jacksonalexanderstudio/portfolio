@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Jackson Alexander Studio</title>
 <meta name="description" content="A creative studio based in Santa Fe, NM.">
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fragment+Mono&family=DM+Sans:wght@200;300;400&display=swap" rel="stylesheet">
@@ -42,6 +44,11 @@ body.img-hover #cur{filter:invert(1)}
 .nd a::after{display:none}
 .dn{color:#D95740;margin-right:10px;font-size:10px;font-family:var(--sf)}
 
+#warp-canvas{position:absolute;top:0;left:0;width:100%;height:100%;z-index:1;pointer-events:none}
+#top-about.warp-active::before{display:none}
+#top-about.warp-active::after{display:none}
+#top-about.warp-active .abt-icons{z-index:4}
+#top-about.warp-active .ta{z-index:5}
 /* ── ABOUT (top — full-bleed bg + Ken Burns) ── */
 #top-about{position:relative;padding-top:140px;min-height:100vh;display:flex;flex-direction:column;justify-content:center;background:#0c0c0c;border-bottom:1px solid rgba(255,255,255,.1);overflow:hidden}
 #top-about::before{content:'';position:absolute;inset:0;background-image:url('logos & backgrounds/about-bg.jpg');background-size:100% auto;background-position:center top;animation:kbAbout 18s ease-in-out infinite alternate;will-change:transform;z-index:0}
@@ -73,23 +80,24 @@ body.img-hover #cur{filter:invert(1)}
 
 /* ── WORK INDEX ── */
 .work-layout{display:flex;position:relative}
-#wi{position:sticky;top:100px;width:280px;flex-shrink:0;align-self:flex-start;height:fit-content;padding:52px 36px}
+.work-layout::before{content:'';position:absolute;left:0;top:0;bottom:0;width:280px;background:rgba(249,246,240,.55);border-right:1px solid rgba(0,0,0,.05);pointer-events:none}
+#wi{position:sticky;top:100px;width:280px;flex-shrink:0;align-self:flex-start;height:fit-content;padding:52px 36px;z-index:1}
 .work-main{flex:1;min-width:0;border-left:1px solid var(--br)}
-.wil{font-size:10px;font-weight:400;letter-spacing:.22em;color:var(--tx);text-transform:uppercase;margin-bottom:32px}
-.wir{display:flex;align-items:baseline;gap:12px;padding:14px 0;transition:opacity .3s,color .3s;opacity:.3;text-decoration:none;color:var(--tx);border-bottom:1px solid transparent}
+.wil{font-size:9px;font-weight:400;letter-spacing:.28em;color:var(--tx);text-transform:uppercase;margin-bottom:28px;padding-left:24px}
+.wir{display:flex;align-items:baseline;gap:10px;padding:10px 0;transition:opacity .3s,color .3s;opacity:1;text-decoration:none;color:var(--tx);border-bottom:1px solid transparent}
 .wir:hover{opacity:.7}
 .wir.active{opacity:1;border-bottom:1px solid var(--accent)}
 .wir.active .wt{color:var(--tx)}
 .wir.active .wn{color:var(--accent)}
-.wn{font-size:11px;color:var(--accent);letter-spacing:.08em;font-family:var(--sf);flex-shrink:0}
-.wt{font-size:12px;font-weight:400;letter-spacing:.1em;text-transform:uppercase}
+.wn{font-size:9px;color:var(--accent);letter-spacing:.06em;font-family:var(--sf);flex-shrink:0}
+.wt{font-size:10px;font-weight:300;letter-spacing:.14em;text-transform:uppercase;font-family:var(--fn)}
 
 /* ── SECTIONS ── */
 .sw{background:var(--bg)}
 .sw.alt{background:var(--alt)}
 .sc2{padding:0 0 100px}
 .sr{display:none}
-.shrow{display:grid;grid-template-columns:1fr minmax(0,420px);gap:40px;align-items:center;background:#0c0c0c;padding:32px 28px;margin-bottom:52px;border-top:1px solid rgba(255,255,255,.15)}
+.shrow{display:grid;grid-template-columns:1fr minmax(0,420px);gap:48px;align-items:center;background:#0c0c0c;padding:56px 52px;margin-bottom:52px;border-top:1px solid rgba(255,255,255,.15)}
 .sh{display:flex;align-items:center;gap:24px;margin-bottom:0}
 /* Float keyframes for about section icons */
 /* About floating icons — footprints walking off page */
@@ -111,7 +119,8 @@ body.img-hover #cur{filter:invert(1)}
 .abt-icon.visible .ap:nth-child(12){transition-delay:1.1s}
 .sn{font-size:11px;color:#D95740;letter-spacing:.12em;flex-shrink:0;font-family:var(--sf)}
 .st{font-size:clamp(16px,2vw,26px);font-weight:400;letter-spacing:.18em;text-transform:uppercase;color:#fff;line-height:1.2}
-.sdesc{font-size:15px;font-family:var(--sf);font-weight:300;color:#fff;line-height:1.9;letter-spacing:.01em;margin-bottom:0;max-width:none;padding-top:0}
+.sdesc{font-size:13px;font-family:var(--sf);font-weight:300;color:rgba(255,255,255,.55);line-height:1.9;letter-spacing:.03em;margin-bottom:0;max-width:none;padding-top:0}
+.s-credit{font-size:11px;font-family:var(--sf);font-weight:300;color:#fff;letter-spacing:.04em;margin-top:14px;line-height:1.7;grid-column:2}
 .sdv{display:none}
 .sint{font-size:12px;color:var(--sec);line-height:2;letter-spacing:.04em;margin-bottom:40px;max-width:600px;font-style:italic}
 .vid-wrap{position:relative;width:100%;aspect-ratio:16/9;background:#0a0a0a;margin-bottom:48px;overflow:hidden}
@@ -122,24 +131,30 @@ body.img-hover #cur{filter:invert(1)}
 .wi{position:relative;overflow:hidden;aspect-ratio:1/1;background:var(--alt)}
 .wi img{width:100%;height:100%;object-fit:contain;transition:transform .6s cubic-bezier(.25,.46,.45,.94),filter .4s ease;filter:saturate(0.88) contrast(1.04) brightness(0.98)}
 .wi:hover img{transform:scale(1.06);filter:saturate(0.95) contrast(1.02) brightness(1.0)}
+/* Moody garden treatment — match professional shoot look */
+.wi.moody img{filter:saturate(0.72) contrast(1.18) brightness(0.82) sepia(0.08)}
+.wi.moody:hover img{filter:saturate(0.80) contrast(1.12) brightness(0.88) sepia(0.05)}
+
 /* Logos — white backgrounds, no filter */
 .gl .wi img{filter:none}
 .gl .wi:hover img{filter:none}
 /* Fabrication — subtle warm, earthy treatment */
 #craft .wi img{filter:sepia(0.10) saturate(0.83) contrast(1.06) brightness(0.96)}
 #craft .wi:hover img{filter:sepia(0.04) saturate(0.92) contrast(1.03) brightness(0.99)}
-.ov{position:absolute;inset:0;background:rgba(0,0,0,.32);display:flex;flex-direction:column;justify-content:flex-end;padding:14px;opacity:0;transition:opacity .35s}
+.ov{position:absolute;inset:0;background:linear-gradient(0deg,rgba(0,0,0,.52) 0%,rgba(0,0,0,.08) 40%,transparent 100%);display:flex;flex-direction:column;justify-content:flex-end;padding:14px;opacity:0;transition:opacity .35s}
 .wi:hover .ov{opacity:1}
 .ov-num{font-size:18px;color:#fff;letter-spacing:.06em;line-height:1;margin-bottom:6px;font-family:var(--sf)}
 .ov-sec{font-size:9px;color:rgba(255,255,255,.7);letter-spacing:.16em;text-transform:uppercase}
 
 /* ── MASONRY — all sections ── */
 .gl,.gm,.gp{columns:4;column-gap:48px;padding:0 52px}
-.gl .wi,.gm .wi,.gp .wi{break-inside:avoid;margin-bottom:48px;aspect-ratio:unset;background:transparent}
+.gl .wi,.gm .wi,.gp .wi{break-inside:avoid;margin-bottom:48px;aspect-ratio:unset;background:transparent;transition:transform .4s ease,box-shadow .4s ease}
+.gm .wi:hover,.gp .wi:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,0,0,.1)}
 .gl .wi img,.gm .wi img,.gp .wi img{width:100%;height:auto;object-fit:cover;display:block}
 /* Logos: contain with padding, uniform squares */
-.gl .wi{background:var(--alt)}
+.gl .wi{background:transparent}
 .gl .wi img{object-fit:contain;padding:20px;aspect-ratio:1/1}
+.gl .wi video,.gm .wi video,.gp .wi video{width:100%;height:auto;object-fit:cover;display:block}
 
 /* ── CTA ── */
 #cta{background:var(--alt);border-top:1px solid var(--br)}
@@ -170,6 +185,10 @@ body.img-hover #cur{filter:invert(1)}
 #lprev{left:28px}#lnext{right:28px}
 
 /* ── SCROLL FADE ── */
+/* ── LAZY LOAD FADE-IN ── */
+.wi img,.wi video{opacity:0;transition:opacity .5s ease}
+.wi img.loaded,.wi video.loaded{opacity:1}
+
 .fi{opacity:0;transform:translateY(20px);transition:opacity .7s ease,transform .7s ease}
 .fi.on{opacity:1;transform:none}
 .fi-l{opacity:0;transform:translateX(-16px);transition:opacity .7s ease,transform .7s ease}
@@ -193,20 +212,26 @@ body.img-hover #cur{filter:invert(1)}
   #top-about::before{background-size:cover;background-position:center center}
   #hdr{height:72px}
   .hl img{height:48px}
+  .hn{gap:16px}
+  .hn a,.nb{font-size:9px;letter-spacing:.08em}
   .ta{padding:60px 20px 80px 20px}
   .work-layout{flex-direction:column}
-  #wi{position:static;width:100%;border-bottom:1px solid var(--br);padding:20px 20px;display:flex;flex-wrap:wrap;align-items:center;gap:4px 20px}
+  .work-layout::before{display:none}
+  #wi{position:static;width:100%;border-bottom:1px solid var(--br);padding:20px 20px;display:flex;flex-direction:column;gap:0}
   .work-main{border-left:none}
-  #wi .wil{margin-bottom:0;margin-right:8px}
-  .wir{padding:8px 0}
-  .hi,.sc2,.cta-i,.fi2{padding-left:20px;padding-right:20px}
+  #wi .wil{margin-bottom:0;cursor:pointer;display:flex;align-items:center;gap:8px}
+  #wi .wil::after{content:'▾';font-size:10px;opacity:.4;transition:transform .3s}
+  #wi.nav-open .wil::after{transform:rotate(180deg)}
+  .wir{padding:8px 0;display:none}
+  #wi.nav-open .wir{display:flex}
+  .hi,.sc2,.cta-i,.fi2{padding-left:16px;padding-right:16px}
   .gl,.gm,.gp{columns:2;column-gap:12px;padding:0 8px}
   .gl .wi,.gm .wi,.gp .wi{margin-bottom:12px}
   .fi2{grid-template-columns:1fr;gap:12px;text-align:center}
   .fr{justify-content:center}
   .wd{display:none}
   .shrow{grid-template-columns:1fr;gap:12px;padding:24px 20px;margin-left:-20px;margin-right:-20px}
-  .sdesc{font-size:14px}
+  .sdesc{font-size:12px}
   .abt-icons{display:none}
 }
 @media(max-width:600px){
@@ -260,6 +285,7 @@ body.img-hover #cur{filter:invert(1)}
 
 <!-- ABOUT (top section, replaces old hero) -->
 <section id="top-about">
+  <canvas id="warp-canvas"></canvas>
   <div class="abt-icons">
     <!-- icons removed — waiting for proper artwork -->
   </div>
@@ -304,7 +330,7 @@ body.img-hover #cur{filter:invert(1)}
 <div class="sw alt"><section class="sc2" id="logos">
   <div class="shrow">
     <div class="sh swp"><span class="sn">01</span><span class="sdv">&#8212;</span><h2 class="st">Logos &amp; Typography</h2></div>
-    <p class="sdesc swp-d">Brand identity, logotype, and visual systems<br>for independent businesses, creative studios,<br>and regional brands. Work spans mark-making,<br>typography, print, and digital &#8212;<br>each piece built to last.</p>
+    <p class="sdesc swp-d">Brand identity, logo design, typography,<br>and visual systems for small businesses,<br>creative studios, and independent clients.</p>
   </div>
   <div class="gl fi"><div class="wi" data-section="logos" data-title="Meticulous Motors" data-category="Brand Identity" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/f3c061f7-90e1-4a33-87ff-e68dc6ed48d6/Screenshot+2026-02-12+at+4.46.35%E2%80%AFPM.png" alt="Meticulous Motors" loading="lazy"><div class="ov"><div class="ov-num">001</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
 <div class="wi" data-section="logos" data-title="Meticulous Motors" data-category="Brand Identity" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/672e8317-82cf-43c1-8fbd-6835e752c275/Screenshot+2026-02-12+at+4.46.53%E2%80%AFPM.png" alt="Meticulous Motors" loading="lazy"><div class="ov"><div class="ov-num">002</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
@@ -312,99 +338,108 @@ body.img-hover #cur{filter:invert(1)}
 <div class="wi" data-section="logos" data-title="studio|BOSE" data-category="Brand Identity" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/494caafd-0fe3-456d-b755-16267515d702/studioBOSE+-+proposal+mockup.png" alt="studio|BOSE" loading="lazy"><div class="ov"><div class="ov-num">004</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
 <div class="wi" data-section="logos" data-title="studio|BOSE" data-category="Brand Identity" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/809ac2ef-c945-444d-928b-036801bc596f/studioBOSE+-+proposal+mockup+detail.png" alt="studio|BOSE" loading="lazy"><div class="ov"><div class="ov-num">005</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
 <div class="wi" data-section="logos" data-title="studio|BOSE" data-category="Brand Identity" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/be4f7d85-aea6-4ed1-ae6d-70ddbd3fc21b/studioBOSE+-+proposal+mockup+detail+2.png" alt="studio|BOSE" loading="lazy"><div class="ov"><div class="ov-num">006</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
-<div class="wi" data-section="logos" data-title="Peyote Bird" data-category="Logo" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/ee65f371-5639-4401-8257-ae32dcb69377/pb+logo+new.png" alt="Peyote Bird" loading="lazy"><div class="ov"><div class="ov-num">007</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
+<div class="wi" data-section="logos" data-title="Studio Shadow" data-category="Motion" data-seclabel="Logos & Typography"><video autoplay loop muted playsinline src="web Gifs/jackson-alexander-studio-shadow.mp4" loading="lazy"></video><div class="ov"><div class="ov-num">007</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
+<div class="wi" data-section="logos" data-title="Peyote Bird" data-category="Logo" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/ee65f371-5639-4401-8257-ae32dcb69377/pb+logo+new.png" alt="Peyote Bird" loading="lazy"><div class="ov"><div class="ov-num">008</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
 <div class="wi" data-section="logos" data-title="Peyote Bird" data-category="Logo" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/6b9619ab-7bb8-4e16-9243-0309431176fe/pbd+logo.png" alt="Peyote Bird" loading="lazy"><div class="ov"><div class="ov-num">009</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
-<div class="wi" data-section="logos" data-title="Peyote Bird" data-category="Logo" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/be7721c6-f99e-4bfb-ab5b-1a15799c75e5/Screenshot+2026-02-19+at+3.58.24%E2%80%AFPM.png" alt="Peyote Bird" loading="lazy"><div class="ov"><div class="ov-num">010</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
-<div class="wi" data-section="logos" data-title="Peyote Bird" data-category="Collage" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/f16f7c9d-73a8-4316-a175-13be7cee8a0a/pbd-thumbnail.jpg" alt="Peyote Bird" loading="lazy"><div class="ov"><div class="ov-num">011</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
-<div class="wi" data-section="logos" data-title="Peyote Bird" data-category="Editorial" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/9d577a73-6255-4d01-b5db-f2fc11786932/savs-sitting.jpg" alt="Peyote Bird" loading="lazy"><div class="ov"><div class="ov-num">012</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
-<div class="wi" data-section="logos" data-title="Fred Harvey" data-category="Email Campaign" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/518e9619-3879-41a9-a647-1dd25f324a79/fred-harvey-email-final.jpg" alt="Fred Harvey" loading="lazy"><div class="ov"><div class="ov-num">013</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
-<div class="wi" data-section="logos" data-title="Father&#39;s Day" data-category="Email Campaign" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/ee251b4b-4dbe-460a-aa13-30888eedb544/fathers-day-campaign.jpg" alt="Father&#39;s Day" loading="lazy"><div class="ov"><div class="ov-num">014</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
-<div class="wi" data-section="logos" data-title="Brand Work" data-category="Identity" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/b3814bdf-2aff-46bb-8813-64368cccbf2a/final+final+-04.jpg" alt="Brand Work" loading="lazy"><div class="ov"><div class="ov-num">015</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
-<div class="wi" data-section="logos" data-title="Brand Work" data-category="Identity" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/4e18ec66-c929-4ba3-81d8-7302999e9621/Screenshot+2026-02-19+at+3.55.31%E2%80%AFPM.png" alt="Brand Work" loading="lazy"><div class="ov"><div class="ov-num">016</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
-<div class="wi" data-section="logos" data-title="Brand Work" data-category="Identity" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/592bbc8a-d807-487a-88b9-1589a7a0f1ff/Screenshot+2026-02-19+at+3.51.37%E2%80%AFPM.png" alt="Brand Work" loading="lazy"><div class="ov"><div class="ov-num">017</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
-<div class="wi" data-section="logos" data-title="Brand Work" data-category="Identity" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/83c51f49-cebe-4362-8840-9c71dc42980f/Screenshot+2026-02-19+at+3.54.15%E2%80%AFPM.png" alt="Brand Work" loading="lazy"><div class="ov"><div class="ov-num">018</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
-<div class="wi" data-section="logos" data-title="Brand Work" data-category="Identity" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/95c35eaa-ff88-4f85-8e40-01075a119a4a/IMG_8743.JPG" alt="Brand Work" loading="lazy"><div class="ov"><div class="ov-num">019</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
-<div class="wi" data-section="logos" data-title="Brand Work" data-category="Identity" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/7bee682d-4d34-436a-9581-67aa5e7e24aa/Screenshot+2026-02-19+at+10.35.01%E2%80%AFAM.png" alt="Brand Work" loading="lazy"><div class="ov"><div class="ov-num">020</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
-<div class="wi" data-section="logos" data-title="Brand Work" data-category="Identity" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/529e9582-e2cc-4a50-abc5-765a51b6dec1/Screenshot+2026-02-19+at+10.49.02%E2%80%AFAM.png" alt="Brand Work" loading="lazy"><div class="ov"><div class="ov-num">021</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
-<div class="wi" data-section="logos" data-title="JA Studio" data-category="Brand Identity" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/02fc977c-a8bf-4b9b-8a63-cd3986e43c9f/Screenshot+2023-05-18+at+7.31.39+AM.jpeg" alt="JA Studio" loading="lazy"><div class="ov"><div class="ov-num">022</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
-<div class="wi" data-section="logos" data-title="David Brown" data-category="Identity" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/72b6c283-7329-4bc7-8cf8-dc8b4f9536ae/david-brown.jpg" alt="David Brown" loading="lazy"><div class="ov"><div class="ov-num">023</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
-<div class="wi" data-section="logos" data-title="Dr. David R. Brown" data-category="Identity" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/aa5d2e2f-9205-49d3-bd29-72faa63d78fd/David.+R+Brown+-07.png" alt="Dr. David R. Brown" loading="lazy"><div class="ov"><div class="ov-num">024</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
-<div class="wi" data-section="logos" data-title="Bird & Arrow" data-category="Logo" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/6c559c47-17b7-4257-b294-4eec1cfd2cb3/Bird%26Arrow+Logo_FAIRE-07.png" alt="Bird & Arrow" loading="lazy"><div class="ov"><div class="ov-num">025</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
-<div class="wi" data-section="logos" data-title="Bird Mark" data-category="Logo" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/f2bd1213-a5ea-4716-b86e-9da1ba192045/biz+card+mark-09.png" alt="Bird Mark" loading="lazy"><div class="ov"><div class="ov-num">026</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
-<div class="wi" data-section="logos" data-title="Summit Peak" data-category="Logo" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/fda0e926-ade6-4e43-9eca-469c67aabf03/summit+peak-02.jpg" alt="Summit Peak" loading="lazy"><div class="ov"><div class="ov-num">027</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
-<div class="wi" data-section="logos" data-title="Summit Peak" data-category="Logo" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/ffb4e7a4-9c2b-41cb-bdd0-a8219351923a/summit-peak-logo.jpg" alt="Summit Peak" loading="lazy"><div class="ov"><div class="ov-num">028</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
-<div class="wi" data-section="logos" data-title="Rendezvous" data-category="Logo" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/1771212273821-Z8S2EDB590JSG6PNS4SN/rendezvous-logo.jpg" alt="Rendezvous" loading="lazy"><div class="ov"><div class="ov-num">029</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
-<div class="wi" data-section="logos" data-title="Mind-Shift" data-category="Logo" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/992746b6-34c5-42ff-9ecd-f6d2be213a5a/mind-shift-logo.jpg" alt="Mind-Shift" loading="lazy"><div class="ov"><div class="ov-num">030</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
-<div class="wi" data-section="logos" data-title="Waves at Dogs" data-category="Logo" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/679a1be1-accf-444e-8e46-ef1efde30f64/Screen+Shot+2021-06-03+at+5.16.57+PM.png" alt="Waves at Dogs" loading="lazy"><div class="ov"><div class="ov-num">031</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
-<div class="wi" data-section="logos" data-title="Zozobra 100 Years" data-category="Poster" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/ed4da46f-454f-4ab7-a1fe-5e7fea73fb49/Zozobra+100+years+final+poster.png" alt="Zozobra 100 Years" loading="lazy"><div class="ov"><div class="ov-num">032</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
-<div class="wi" data-section="logos" data-title="Bar Alto" data-category="Poster" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/a28a33ad-f125-448e-9464-3dd041bcf4ab/Screen+Shot+2018-07-29+at+7.13.31+PM.png" alt="Bar Alto" loading="lazy"><div class="ov"><div class="ov-num">033</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
-<div class="wi" data-section="logos" data-title="Zine" data-category="Publication" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/3cbf1a1a-1fca-42c3-8f69-e58075c42f84/zine.jpg" alt="Zine" loading="lazy"><div class="ov"><div class="ov-num">034</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
-<div class="wi" data-section="logos" data-title="ISRU Challenge" data-category="Identity" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/3124260f-c687-44a7-b0dd-16c50967abec/ISRU.jpg" alt="ISRU Challenge" loading="lazy"><div class="ov"><div class="ov-num">035</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
-<div class="wi" data-section="logos" data-title="Graphic Work" data-category="2026" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/8d052215-79db-4cbb-a791-135be93ba4b0/Screenshot+2026-02-08+at+9.48.12%E2%80%AFAM.png" alt="Graphic Work" loading="lazy"><div class="ov"><div class="ov-num">036</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
-<div class="wi" data-section="logos" data-title="Illustration" data-category="2026" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/e9934c5c-9369-45a8-b933-35185da359e9/Screenshot+2026-02-17+at+10.51.04%E2%80%AFPM.png" alt="Illustration" loading="lazy"><div class="ov"><div class="ov-num">037</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
-<div class="wi" data-section="logos" data-title="Design Work" data-category="2021" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/2f5b126c-30f3-4a88-8fa6-0427fb84c44c/Screen+Shot+2021-08-21+at+12.14.13+PM.png" alt="Design Work" loading="lazy"><div class="ov"><div class="ov-num">038</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
-<div class="wi" data-section="logos" data-title="Archive Work" data-category="2018" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/cb7cb7b2-5771-4e4a-b983-f84778c49f63/Screen+Shot+2018-08-06+at+12.06.48+PM.png" alt="Archive Work" loading="lazy"><div class="ov"><div class="ov-num">039</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
-<div class="wi" data-section="logos" data-title="Design Work" data-category="2018" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/175fd18d-5fda-4f33-83b3-967762750f30/Screen+Shot+2018-05-08+at+3.35.00+PM.png" alt="Design Work" loading="lazy"><div class="ov"><div class="ov-num">040</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
-<div class="wi" data-section="logos" data-title="Fall Favorites" data-category="Campaign" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/1cb45698-5b8a-45d1-9061-5946dc929218/fall-fave.jpg" alt="Fall Favorites" loading="lazy"><div class="ov"><div class="ov-num">041</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
-<div class="wi" data-section="logos" data-title="Jack&#39;s Garden" data-category="Brand" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/4a447e97-2f66-4325-8ab0-4cbabc5d47a6/jack+garden-02.jpg" alt="Jack&#39;s Garden" loading="lazy"><div class="ov"><div class="ov-num">042</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
-<div class="wi" data-section="logos" data-title="Labor Day Sale" data-category="Campaign" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/cf4a4c85-a815-4406-b661-9d1b064f6f44/labor+day+sale-01.jpg" alt="Labor Day Sale" loading="lazy"><div class="ov"><div class="ov-num">043</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
-<div class="wi" data-section="logos" data-title="Vintage Collage" data-category="Collage" data-seclabel="Logos & Typography"><img src="vintage collage.JPG" alt="Vintage Collage" loading="lazy"><div class="ov"><div class="ov-num">044</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
-<div class="wi" data-section="logos" data-title="Jack&#39;s Garden" data-category="Brand" data-seclabel="Logos & Typography"><img src="Garden/jacks garden5.jpg" alt="Jack&#39;s Garden" loading="lazy"><div class="ov"><div class="ov-num">045</div><div class="ov-sec">Logos &amp; Typography</div></div></div></div>
+<div class="wi" data-section="logos" data-title="Dr. David R. Brown" data-category="Identity" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/aa5d2e2f-9205-49d3-bd29-72faa63d78fd/David.+R+Brown+-07.png" alt="Dr. David R. Brown" loading="lazy"><div class="ov"><div class="ov-num">010</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
+<div class="wi" data-section="logos" data-title="Bird & Arrow" data-category="Logo" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/6c559c47-17b7-4257-b294-4eec1cfd2cb3/Bird%26Arrow+Logo_FAIRE-07.png" alt="Bird & Arrow" loading="lazy"><div class="ov"><div class="ov-num">011</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
+<div class="wi" data-section="logos" data-title="Bird Mark" data-category="Logo" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/f2bd1213-a5ea-4716-b86e-9da1ba192045/biz+card+mark-09.png" alt="Bird Mark" loading="lazy"><div class="ov"><div class="ov-num">012</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
+<div class="wi" data-section="logos" data-title="Peyote Bird" data-category="Logo" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/be7721c6-f99e-4bfb-ab5b-1a15799c75e5/Screenshot+2026-02-19+at+3.58.24%E2%80%AFPM.png" alt="Peyote Bird" loading="lazy"><div class="ov"><div class="ov-num">013</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
+<div class="wi" data-section="logos" data-title="Brand Work" data-category="Identity" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/592bbc8a-d807-487a-88b9-1589a7a0f1ff/Screenshot+2026-02-19+at+3.51.37%E2%80%AFPM.png" alt="Brand Work" loading="lazy"><div class="ov"><div class="ov-num">014</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
+<div class="wi" data-section="logos" data-title="Brand Work" data-category="Identity" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/7bee682d-4d34-436a-9581-67aa5e7e24aa/Screenshot+2026-02-19+at+10.35.01%E2%80%AFAM.png" alt="Brand Work" loading="lazy"><div class="ov"><div class="ov-num">015</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
+<div class="wi" data-section="logos" data-title="Brand Work" data-category="Identity" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/529e9582-e2cc-4a50-abc5-765a51b6dec1/Screenshot+2026-02-19+at+10.49.02%E2%80%AFAM.png" alt="Brand Work" loading="lazy"><div class="ov"><div class="ov-num">016</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
+<div class="wi" data-section="logos" data-title="Brand Work" data-category="Identity" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/83c51f49-cebe-4362-8840-9c71dc42980f/Screenshot+2026-02-19+at+3.54.15%E2%80%AFPM.png" alt="Brand Work" loading="lazy"><div class="ov"><div class="ov-num">017</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
+<div class="wi" data-section="logos" data-title="Mind-Shift" data-category="Logo" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/992746b6-34c5-42ff-9ecd-f6d2be213a5a/mind-shift-logo.jpg" alt="Mind-Shift" loading="lazy"><div class="ov"><div class="ov-num">018</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
+<div class="wi" data-section="logos" data-title="Studio Shadow 2" data-category="Motion" data-seclabel="Logos & Typography"><video autoplay loop muted playsinline src="web Gifs/jackson-alexander-studio-shadow-2.mp4" loading="lazy"></video><div class="ov"><div class="ov-num">019</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
+<div class="wi" data-section="logos" data-title="Archive Work" data-category="2018" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/cb7cb7b2-5771-4e4a-b983-f84778c49f63/Screen+Shot+2018-08-06+at+12.06.48+PM.png" alt="Archive Work" loading="lazy"><div class="ov"><div class="ov-num">020</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
+<div class="wi" data-section="logos" data-title="Design Work" data-category="2018" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/175fd18d-5fda-4f33-83b3-967762750f30/Screen+Shot+2018-05-08+at+3.35.00+PM.png" alt="Design Work" loading="lazy"><div class="ov"><div class="ov-num">021</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
+<div class="wi" data-section="logos" data-title="Bar Alto" data-category="Poster" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/a28a33ad-f125-448e-9464-3dd041bcf4ab/Screen+Shot+2018-07-29+at+7.13.31+PM.png" alt="Bar Alto" loading="lazy"><div class="ov"><div class="ov-num">022</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
+<div class="wi" data-section="logos" data-title="JA Studio" data-category="Brand Identity" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/02fc977c-a8bf-4b9b-8a63-cd3986e43c9f/Screenshot+2023-05-18+at+7.31.39+AM.jpeg" alt="JA Studio" loading="lazy"><div class="ov"><div class="ov-num">023</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
+<div class="wi" data-section="logos" data-title="Graphic Work" data-category="2026" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/8d052215-79db-4cbb-a791-135be93ba4b0/Screenshot+2026-02-08+at+9.48.12%E2%80%AFAM.png" alt="Graphic Work" loading="lazy"><div class="ov"><div class="ov-num">024</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
+<div class="wi" data-section="logos" data-title="Illustration" data-category="2026" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/e9934c5c-9369-45a8-b933-35185da359e9/Screenshot+2026-02-17+at+10.51.04%E2%80%AFPM.png" alt="Illustration" loading="lazy"><div class="ov"><div class="ov-num">025</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
+<div class="wi" data-section="logos" data-title="Zozobra 100 Years" data-category="Poster" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/ed4da46f-454f-4ab7-a1fe-5e7fea73fb49/Zozobra+100+years+final+poster.png" alt="Zozobra 100 Years" loading="lazy"><div class="ov"><div class="ov-num">026</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
+<div class="wi" data-section="logos" data-title="Rendezvous" data-category="Logo" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/1771212273821-Z8S2EDB590JSG6PNS4SN/rendezvous-logo.jpg" alt="Rendezvous" loading="lazy"><div class="ov"><div class="ov-num">027</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
+<div class="wi" data-section="logos" data-title="Summit Peak" data-category="Logo" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/fda0e926-ade6-4e43-9eca-469c67aabf03/summit+peak-02.jpg" alt="Summit Peak" loading="lazy"><div class="ov"><div class="ov-num">028</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
+<div class="wi" data-section="logos" data-title="Summit Peak" data-category="Logo" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/ffb4e7a4-9c2b-41cb-bdd0-a8219351923a/summit-peak-logo.jpg" alt="Summit Peak" loading="lazy"><div class="ov"><div class="ov-num">029</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
+<div class="wi" data-section="logos" data-title="David Brown" data-category="Identity" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/72b6c283-7329-4bc7-8cf8-dc8b4f9536ae/david-brown.jpg" alt="David Brown" loading="lazy"><div class="ov"><div class="ov-num">030</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
+<div class="wi" data-section="logos" data-title="Illustration" data-category="Archive" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/aaa712e6-24c1-4650-bde1-a09718898539/IMG_0338.JPG" alt="Illustration" loading="lazy"><div class="ov"><div class="ov-num">031</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
+<div class="wi" data-section="logos" data-title="Studio Announcement" data-category="Motion" data-seclabel="Logos & Typography"><video autoplay loop muted playsinline src="web Gifs/jackson-alexander-studio-announcement.mp4" loading="lazy"></video><div class="ov"><div class="ov-num">032</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
+<div class="wi" data-section="logos" data-title="Brand Work" data-category="Identity" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/b3814bdf-2aff-46bb-8813-64368cccbf2a/final+final+-04.jpg" alt="Brand Work" loading="lazy"><div class="ov"><div class="ov-num">033</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
+<div class="wi" data-section="logos" data-title="Brand Work" data-category="Identity" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/95c35eaa-ff88-4f85-8e40-01075a119a4a/IMG_8743.JPG" alt="Brand Work" loading="lazy"><div class="ov"><div class="ov-num">034</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
+<div class="wi" data-section="logos" data-title="Peyote Bird" data-category="Collage" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/f16f7c9d-73a8-4316-a175-13be7cee8a0a/pbd-thumbnail.jpg" alt="Peyote Bird" loading="lazy"><div class="ov"><div class="ov-num">035</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
+<div class="wi" data-section="logos" data-title="Zine" data-category="Publication" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/3cbf1a1a-1fca-42c3-8f69-e58075c42f84/zine.jpg" alt="Zine" loading="lazy"><div class="ov"><div class="ov-num">036</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
+<div class="wi" data-section="logos" data-title="ISRU Challenge" data-category="Identity" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/3124260f-c687-44a7-b0dd-16c50967abec/ISRU.jpg" alt="ISRU Challenge" loading="lazy"><div class="ov"><div class="ov-num">037</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
+<div class="wi" data-section="logos" data-title="Fred Harvey" data-category="Email Campaign" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/518e9619-3879-41a9-a647-1dd25f324a79/fred-harvey-email-final.jpg" alt="Fred Harvey" loading="lazy"><div class="ov"><div class="ov-num">038</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
+<div class="wi" data-section="logos" data-title="Father&#39;s Day" data-category="Email Campaign" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/ee251b4b-4dbe-460a-aa13-30888eedb544/fathers-day-campaign.jpg" alt="Father&#39;s Day" loading="lazy"><div class="ov"><div class="ov-num">039</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
+<div class="wi" data-section="logos" data-title="Fall Favorites" data-category="Campaign" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/1cb45698-5b8a-45d1-9061-5946dc929218/fall-fave.jpg" alt="Fall Favorites" loading="lazy"><div class="ov"><div class="ov-num">040</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
+<div class="wi" data-section="logos" data-title="Studio Announcement 2" data-category="Motion" data-seclabel="Logos & Typography"><video autoplay loop muted playsinline src="web Gifs/jackson-alexander-studio-announcement-2.mp4" loading="lazy"></video><div class="ov"><div class="ov-num">041</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
+<div class="wi" data-section="logos" data-title="Labor Day Sale" data-category="Campaign" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/cf4a4c85-a815-4406-b661-9d1b064f6f44/labor+day+sale-01.jpg" alt="Labor Day Sale" loading="lazy"><div class="ov"><div class="ov-num">042</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
+<div class="wi" data-section="logos" data-title="Vintage Collage" data-category="Collage" data-seclabel="Logos & Typography"><img src="vintage%20collage.JPG" alt="Vintage Collage" loading="lazy"><div class="ov"><div class="ov-num">043</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
+<div class="wi" data-section="logos" data-title="Jack&#39;s Garden" data-category="Brand" data-seclabel="Logos & Typography"><img src="Garden/jacks%20garden5.jpg" alt="Jack&#39;s Garden" loading="lazy"><div class="ov"><div class="ov-num">044</div><div class="ov-sec">Logos &amp; Typography</div></div></div>
+<div class="wi" data-section="logos" data-title="Jack&#39;s Garden" data-category="Brand" data-seclabel="Logos & Typography"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/4a447e97-2f66-4325-8ab0-4cbabc5d47a6/jack+garden-02.jpg" alt="Jack&#39;s Garden" loading="lazy"><div class="ov"><div class="ov-num">045</div><div class="ov-sec">Logos &amp; Typography</div></div></div></div>
 </section></div>
 
 <div class="sw"><section class="sc2" id="illustration">
   <div class="sr"></div>
   <div class="shrow">
     <div class="sh swp"><span class="sn">02</span><span class="sdv">&#8212;</span><h2 class="st">Illustration &amp; Graphic</h2></div>
-    <p class="sdesc swp-d">Original illustration, poster design,<br>print work, and graphic storytelling<br>across a broad range of styles and mediums.<br>Drawing equally from fine art<br>and commercial tradition &#8212;<br>from flash sheets to editorial campaigns.</p>
+    <p class="sdesc swp-d">Original illustration and graphics<br>across print and digital media &#8212;<br>work ranges from hand-drawn flash sheets<br>to editorial campaigns<br>to brand iconography.</p>
   </div>
-  <div class="gm fi"><div class="wi" data-section="illustration" data-title="Rocket Ramps" data-category="Brand Identity, 2025" data-seclabel="Illustration & Graphic"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/bcdbd341-bcc8-4940-a7ae-216579f9297d/Screenshot+2026-02-17+at+8.27.41%E2%80%AFPM.png" alt="Rocket Ramps" loading="lazy"><div class="ov"><div class="ov-num">001</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
-<div class="wi" data-section="illustration" data-title="Rocket Ramps" data-category="Print" data-seclabel="Illustration & Graphic"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/5201893b-7b49-499d-b593-bf0dcbf4afe3/Screenshot+2026-02-17+at+8.28.24%E2%80%AFPM.png" alt="Rocket Ramps" loading="lazy"><div class="ov"><div class="ov-num">002</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
-<div class="wi" data-section="illustration" data-title="Rocket Ramps" data-category="Print" data-seclabel="Illustration & Graphic"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/150d4e52-f7c8-4595-a827-aa0e5d24136c/Screenshot+2026-02-17+at+8.27.14%E2%80%AFPM.png" alt="Rocket Ramps" loading="lazy"><div class="ov"><div class="ov-num">003</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
-<div class="wi" data-section="illustration" data-title="Rocket Ramps" data-category="Print" data-seclabel="Illustration & Graphic"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/a8625351-5868-434d-8373-f6b9247ffe09/Screenshot+2026-02-17+at+8.27.28%E2%80%AFPM.png" alt="Rocket Ramps" loading="lazy"><div class="ov"><div class="ov-num">004</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
-<div class="wi" data-section="illustration" data-title="Rocket Ramps" data-category="Brand Identity" data-seclabel="Illustration & Graphic"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/ba22d912-851b-4c52-a24a-0d923373c052/Screenshot+2026-02-17+at+8.27.49%E2%80%AFPM.png" alt="Rocket Ramps" loading="lazy"><div class="ov"><div class="ov-num">005</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
-<div class="wi" data-section="illustration" data-title="Petroglyphs" data-category="Illustration" data-seclabel="Illustration & Graphic"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/c8f50ab1-7128-4cef-98ce-4803efb9a775/Screenshot+2026-02-17+at+2.27.41%E2%80%AFPM.png" alt="Petroglyphs" loading="lazy"><div class="ov"><div class="ov-num">006</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
-<div class="wi" data-section="illustration" data-title="Petroglyphs" data-category="Illustration" data-seclabel="Illustration & Graphic"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/0b092961-f8d3-48fe-b56b-6667c9a02f9d/Screenshot+2026-02-17+at+2.27.50%E2%80%AFPM.png" alt="Petroglyphs" loading="lazy"><div class="ov"><div class="ov-num">007</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
-<div class="wi" data-section="illustration" data-title="Petroglyphs" data-category="Illustration" data-seclabel="Illustration & Graphic"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/204ea48e-37c1-4235-afa3-d9919bb59d47/Screenshot+2026-02-17+at+2.38.29%E2%80%AFPM.png" alt="Petroglyphs" loading="lazy"><div class="ov"><div class="ov-num">008</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
-<div class="wi" data-section="illustration" data-title="Faces" data-category="Illustration" data-seclabel="Illustration & Graphic"><img src="Illustration/faces_web-13.png" alt="Faces" loading="lazy"><div class="ov"><div class="ov-num">009</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
-<div class="wi" data-section="illustration" data-title="Illustration" data-category="2026" data-seclabel="Illustration & Graphic"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/a02295c2-21fa-4dd2-abaf-f92721378ec7/Screenshot+2026-02-17+at+9.36.16%E2%80%AFAM.png" alt="Illustration" loading="lazy"><div class="ov"><div class="ov-num">010</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
-<div class="wi" data-section="illustration" data-title="Illustration" data-category="2026" data-seclabel="Illustration & Graphic"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/445164af-1e42-4849-b605-9d3bd725dc30/Screenshot+2026-02-17+at+9.58.00%E2%80%AFAM.png" alt="Illustration" loading="lazy"><div class="ov"><div class="ov-num">011</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
-<div class="wi" data-section="illustration" data-title="Illustration" data-category="2026" data-seclabel="Illustration & Graphic"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/7ecf778f-d300-47de-929e-a518987e86f7/Screenshot+2026-02-17+at+5.02.25%E2%80%AFPM.png" alt="Illustration" loading="lazy"><div class="ov"><div class="ov-num">012</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
-<div class="wi" data-section="illustration" data-title="Illustration" data-category="2026" data-seclabel="Illustration & Graphic"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/cb123e3b-7142-4904-aad9-fe5a469cf062/Screenshot+2026-02-17+at+9.46.48%E2%80%AFAM.png" alt="Illustration" loading="lazy"><div class="ov"><div class="ov-num">013</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
-<div class="wi" data-section="illustration" data-title="Illustration" data-category="2026" data-seclabel="Illustration & Graphic"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/e2fd9ce9-0ee8-46ec-bcd7-96b6301cdfb3/Screenshot+2026-02-17+at+10.06.23%E2%80%AFPM.png" alt="Illustration" loading="lazy"><div class="ov"><div class="ov-num">014</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
-<div class="wi" data-section="illustration" data-title="Faces" data-category="Illustration" data-seclabel="Illustration & Graphic"><img src="Illustration/faces_web-14.png" alt="Faces" loading="lazy"><div class="ov"><div class="ov-num">015</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
-<div class="wi" data-section="illustration" data-title="Graphic Work" data-category="2026" data-seclabel="Illustration & Graphic"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/7f48ecf9-8b00-4c18-9739-69960ac1cdbb/Screenshot+2026-02-15+at+8.30.02%E2%80%AFPM.png" alt="Graphic Work" loading="lazy"><div class="ov"><div class="ov-num">016</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
-<div class="wi" data-section="illustration" data-title="Graphic Work" data-category="2026" data-seclabel="Illustration & Graphic"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/2ccd1328-b5ec-45de-9613-57b1f9f10574/Screenshot+2026-02-16+at+12.03.02%E2%80%AFPM.png" alt="Graphic Work" loading="lazy"><div class="ov"><div class="ov-num">017</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
-<div class="wi" data-section="illustration" data-title="Graphic Work" data-category="2026" data-seclabel="Illustration & Graphic"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/bac3edb3-3e3b-4b5e-b078-ad0b0ccc0230/Screenshot+2026-02-16+at+12.04.19%E2%80%AFPM.png" alt="Graphic Work" loading="lazy"><div class="ov"><div class="ov-num">018</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
-<div class="wi" data-section="illustration" data-title="Graphic Work" data-category="2026" data-seclabel="Illustration & Graphic"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/e5758cd3-1fa7-4a0a-9be3-292207aa827e/Screenshot+2026-02-16+at+9.05.34%E2%80%AFPM.png" alt="Graphic Work" loading="lazy"><div class="ov"><div class="ov-num">019</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
-<div class="wi" data-section="illustration" data-title="Graphic Work" data-category="2026" data-seclabel="Illustration & Graphic"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/ec58bf00-bc27-4c82-ab82-f206def985e4/Screenshot+2026-02-17+at+3.12.04%E2%80%AFPM.png" alt="Graphic Work" loading="lazy"><div class="ov"><div class="ov-num">020</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
-<div class="wi" data-section="illustration" data-title="Graphic Work" data-category="2026" data-seclabel="Illustration & Graphic"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/1ba22c86-9731-4df6-8324-c367d2f3d99f/Screenshot+2026-02-16+at+11.56.18%E2%80%AFAM.png" alt="Graphic Work" loading="lazy"><div class="ov"><div class="ov-num">021</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
-<div class="wi" data-section="illustration" data-title="Print Work" data-category="2026" data-seclabel="Illustration & Graphic"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/bb21643b-1f66-4207-ab35-73108d80ace7/Screenshot+2026-02-16+at+4.17.06%E2%80%AFPM.png" alt="Print Work" loading="lazy"><div class="ov"><div class="ov-num">022</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
-<div class="wi" data-section="illustration" data-title="Artwork" data-category="2026" data-seclabel="Illustration & Graphic"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/1771268334953-W7EKAFOMLHQQDACSPE4C/Jack%2527s%2BArtwork_20260216_0002.jpg" alt="Artwork" loading="lazy"><div class="ov"><div class="ov-num">023</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
-<div class="wi" data-section="illustration" data-title="Faces" data-category="Illustration" data-seclabel="Illustration & Graphic"><img src="Illustration/faces_web-15.png" alt="Faces" loading="lazy"><div class="ov"><div class="ov-num">024</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
-<div class="wi" data-section="illustration" data-title="Illustration" data-category="2025" data-seclabel="Illustration & Graphic"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/e277e76a-2601-4027-a0c0-e822f260eac9/Screenshot+2025-05-18+at+9.37.44%E2%80%AFPM.png" alt="Illustration" loading="lazy"><div class="ov"><div class="ov-num">025</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
-<div class="wi" data-section="illustration" data-title="Illustration" data-category="2025" data-seclabel="Illustration & Graphic"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/04e627c9-3013-47bb-a7ea-4379c365052c/Screenshot+2025-05-19+at+5.32.25%E2%80%AFPM.png" alt="Illustration" loading="lazy"><div class="ov"><div class="ov-num">026</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
-<div class="wi" data-section="illustration" data-title="Illustration" data-category="2025" data-seclabel="Illustration & Graphic"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/2e40e196-d41a-4751-92ed-35aeb88accb4/Screenshot+2025-05-26+at+12.23.20%E2%80%AFPM.png" alt="Illustration" loading="lazy"><div class="ov"><div class="ov-num">027</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
-<div class="wi" data-section="illustration" data-title="Flash Sheets" data-category="Illustration" data-seclabel="Illustration & Graphic"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/34b4f241-96e4-40c3-8718-32fdf8eb63fa/Flash+sheet+001.jpg" alt="Flash Sheets" loading="lazy"><div class="ov"><div class="ov-num">028</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
-<div class="wi" data-section="illustration" data-title="Geometric" data-category="Illustration" data-seclabel="Illustration & Graphic"><img src="Illustration/geometric_web-17.png" alt="Geometric" loading="lazy"><div class="ov"><div class="ov-num">029</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
-<div class="wi" data-section="illustration" data-title="Print Work" data-category="2023" data-seclabel="Illustration & Graphic"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/124ac35a-9921-4e26-945b-396f90e9e7c0/Screen+Shot+2023-10-06+at+2.23.17+PM.png" alt="Print Work" loading="lazy"><div class="ov"><div class="ov-num">030</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
-<div class="wi" data-section="illustration" data-title="Print Work" data-category="2023" data-seclabel="Illustration & Graphic"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/a5381599-633a-4876-987a-a3a1c1ec9e94/Screen+Shot+2023-10-09+at+2.06.17+PM.png" alt="Print Work" loading="lazy"><div class="ov"><div class="ov-num">031</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
-<div class="wi" data-section="illustration" data-title="BIS Zine" data-category="Publication" data-seclabel="Illustration & Graphic"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/d1f66c70-3517-4fcb-a530-6c1be8adb061/BIS-zine.jpg" alt="BIS Zine" loading="lazy"><div class="ov"><div class="ov-num">032</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
-<div class="wi" data-section="illustration" data-title="Neon Demon" data-category="Illustration" data-seclabel="Illustration & Graphic"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/1771370209325-JQE35ZUQTKOXOD843NGF/neon%2Bdemon.jpg" alt="Neon Demon" loading="lazy"><div class="ov"><div class="ov-num">033</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
-<div class="wi" data-section="illustration" data-title="Illustration" data-category="Archive" data-seclabel="Illustration & Graphic"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/1771212091889-LH7G4WHOF2HIDG7KH6UI/IMG_3259.jpg" alt="Illustration" loading="lazy"><div class="ov"><div class="ov-num">034</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
-<div class="wi" data-section="illustration" data-title="Archive" data-category="Illustration" data-seclabel="Illustration & Graphic"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/1771213803249-OTUVRN6W60J9UHHX0DZX/IMG_5919.jpg" alt="Archive" loading="lazy"><div class="ov"><div class="ov-num">035</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
-<div class="wi" data-section="illustration" data-title="Illustration" data-category="Archive" data-seclabel="Illustration & Graphic"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/aaa712e6-24c1-4650-bde1-a09718898539/IMG_0338.JPG" alt="Illustration" loading="lazy"><div class="ov"><div class="ov-num">036</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
-<div class="wi" data-section="illustration" data-title="Print" data-category="Archive" data-seclabel="Illustration & Graphic"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/145e541f-276f-4ad8-af92-a3ba0d182007/02+copy.jpg" alt="Print" loading="lazy"><div class="ov"><div class="ov-num">037</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
-<div class="wi" data-section="illustration" data-title="Geometric" data-category="Illustration" data-seclabel="Illustration & Graphic"><img src="Illustration/geometric_web-18.png" alt="Geometric" loading="lazy"><div class="ov"><div class="ov-num">038</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
-<div class="wi" data-section="illustration" data-title="Garden" data-category="Archive" data-seclabel="Illustration & Graphic"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/e24e30ca-c68d-4a9c-87e5-3fed93910729/_DSC0026.jpg" alt="Garden" loading="lazy"><div class="ov"><div class="ov-num">039</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
-<div class="wi" data-section="illustration" data-title="Garden" data-category="Archive" data-seclabel="Illustration & Graphic"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/da7b7b29-c5d3-4d2d-a6a0-46e442eaf299/_DSC0079.jpg" alt="Garden" loading="lazy"><div class="ov"><div class="ov-num">040</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div></div>
+  <div class="gm fi"><div class="wi" data-section="illustration" data-title="Design Work" data-category="2021" data-seclabel="Illustration & Graphic"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/2f5b126c-30f3-4a88-8fa6-0427fb84c44c/Screen+Shot+2021-08-21+at+12.14.13+PM.png" alt="Design Work" loading="lazy"><div class="ov"><div class="ov-num">001</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
+<div class="wi" data-section="illustration" data-title="Rocket Ramps" data-category="Brand Identity, 2025" data-seclabel="Illustration & Graphic"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/bcdbd341-bcc8-4940-a7ae-216579f9297d/Screenshot+2026-02-17+at+8.27.41%E2%80%AFPM.png" alt="Rocket Ramps" loading="lazy"><div class="ov"><div class="ov-num">002</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
+<div class="wi" data-section="illustration" data-title="Rocket Ramps" data-category="Print" data-seclabel="Illustration & Graphic"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/5201893b-7b49-499d-b593-bf0dcbf4afe3/Screenshot+2026-02-17+at+8.28.24%E2%80%AFPM.png" alt="Rocket Ramps" loading="lazy"><div class="ov"><div class="ov-num">003</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
+<div class="wi" data-section="illustration" data-title="Rocket Ramps" data-category="Print" data-seclabel="Illustration & Graphic"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/150d4e52-f7c8-4595-a827-aa0e5d24136c/Screenshot+2026-02-17+at+8.27.14%E2%80%AFPM.png" alt="Rocket Ramps" loading="lazy"><div class="ov"><div class="ov-num">004</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
+<div class="wi" data-section="illustration" data-title="Rocket Ramps" data-category="Print" data-seclabel="Illustration & Graphic"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/a8625351-5868-434d-8373-f6b9247ffe09/Screenshot+2026-02-17+at+8.27.28%E2%80%AFPM.png" alt="Rocket Ramps" loading="lazy"><div class="ov"><div class="ov-num">005</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
+<div class="wi" data-section="illustration" data-title="Rocket Ramps" data-category="Brand Identity" data-seclabel="Illustration & Graphic"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/ba22d912-851b-4c52-a24a-0d923373c052/Screenshot+2026-02-17+at+8.27.49%E2%80%AFPM.png" alt="Rocket Ramps" loading="lazy"><div class="ov"><div class="ov-num">006</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
+<div class="wi" data-section="illustration" data-title="Petroglyphs" data-category="Illustration" data-seclabel="Illustration & Graphic"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/c8f50ab1-7128-4cef-98ce-4803efb9a775/Screenshot+2026-02-17+at+2.27.41%E2%80%AFPM.png" alt="Petroglyphs" loading="lazy"><div class="ov"><div class="ov-num">007</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
+<div class="wi" data-section="illustration" data-title="Petroglyphs" data-category="Illustration" data-seclabel="Illustration & Graphic"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/0b092961-f8d3-48fe-b56b-6667c9a02f9d/Screenshot+2026-02-17+at+2.27.50%E2%80%AFPM.png" alt="Petroglyphs" loading="lazy"><div class="ov"><div class="ov-num">008</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
+<div class="wi" data-section="illustration" data-title="Petroglyphs" data-category="Illustration" data-seclabel="Illustration & Graphic"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/204ea48e-37c1-4235-afa3-d9919bb59d47/Screenshot+2026-02-17+at+2.38.29%E2%80%AFPM.png" alt="Petroglyphs" loading="lazy"><div class="ov"><div class="ov-num">009</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
+<div class="wi" data-section="illustration" data-title="Faces" data-category="Illustration" data-seclabel="Illustration & Graphic"><img src="Illustration/faces_web-13.png" alt="Faces" loading="lazy"><div class="ov"><div class="ov-num">010</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
+<div class="wi" data-section="illustration" data-title="Illustration" data-category="2026" data-seclabel="Illustration & Graphic"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/a02295c2-21fa-4dd2-abaf-f92721378ec7/Screenshot+2026-02-17+at+9.36.16%E2%80%AFAM.png" alt="Illustration" loading="lazy"><div class="ov"><div class="ov-num">011</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
+<div class="wi" data-section="illustration" data-title="Illustration" data-category="2026" data-seclabel="Illustration & Graphic"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/445164af-1e42-4849-b605-9d3bd725dc30/Screenshot+2026-02-17+at+9.58.00%E2%80%AFAM.png" alt="Illustration" loading="lazy"><div class="ov"><div class="ov-num">012</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
+<div class="wi" data-section="illustration" data-title="Artwork" data-category="Illustration, 2026" data-seclabel="Illustration & Graphic"><img src="Illustration/artwork_web-04.jpg" alt="Artwork" loading="lazy"><div class="ov"><div class="ov-num">013</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
+<div class="wi" data-section="illustration" data-title="Illustration" data-category="2026" data-seclabel="Illustration & Graphic"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/7ecf778f-d300-47de-929e-a518987e86f7/Screenshot+2026-02-17+at+5.02.25%E2%80%AFPM.png" alt="Illustration" loading="lazy"><div class="ov"><div class="ov-num">014</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
+<div class="wi" data-section="illustration" data-title="Illustration" data-category="2026" data-seclabel="Illustration & Graphic"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/cb123e3b-7142-4904-aad9-fe5a469cf062/Screenshot+2026-02-17+at+9.46.48%E2%80%AFAM.png" alt="Illustration" loading="lazy"><div class="ov"><div class="ov-num">015</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
+<div class="wi" data-section="illustration" data-title="Illustration" data-category="2026" data-seclabel="Illustration & Graphic"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/e2fd9ce9-0ee8-46ec-bcd7-96b6301cdfb3/Screenshot+2026-02-17+at+10.06.23%E2%80%AFPM.png" alt="Illustration" loading="lazy"><div class="ov"><div class="ov-num">016</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
+<div class="wi" data-section="illustration" data-title="Faces" data-category="Illustration" data-seclabel="Illustration & Graphic"><img src="Illustration/faces_web-14.png" alt="Faces" loading="lazy"><div class="ov"><div class="ov-num">017</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
+<div class="wi" data-section="illustration" data-title="Graphic Work" data-category="2026" data-seclabel="Illustration & Graphic"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/7f48ecf9-8b00-4c18-9739-69960ac1cdbb/Screenshot+2026-02-15+at+8.30.02%E2%80%AFPM.png" alt="Graphic Work" loading="lazy"><div class="ov"><div class="ov-num">018</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
+<div class="wi" data-section="illustration" data-title="Graphic Work" data-category="2026" data-seclabel="Illustration & Graphic"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/2ccd1328-b5ec-45de-9613-57b1f9f10574/Screenshot+2026-02-16+at+12.03.02%E2%80%AFPM.png" alt="Graphic Work" loading="lazy"><div class="ov"><div class="ov-num">019</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
+<div class="wi" data-section="illustration" data-title="Graphic Work" data-category="2026" data-seclabel="Illustration & Graphic"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/bac3edb3-3e3b-4b5e-b078-ad0b0ccc0230/Screenshot+2026-02-16+at+12.04.19%E2%80%AFPM.png" alt="Graphic Work" loading="lazy"><div class="ov"><div class="ov-num">020</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
+<div class="wi" data-section="illustration" data-title="Faces" data-category="Illustration, 2026" data-seclabel="Illustration & Graphic"><img src="Illustration/faces_web-16b.jpg" alt="Faces" loading="lazy"><div class="ov"><div class="ov-num">021</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
+<div class="wi" data-section="illustration" data-title="Graphic Work" data-category="2026" data-seclabel="Illustration & Graphic"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/e5758cd3-1fa7-4a0a-9be3-292207aa827e/Screenshot+2026-02-16+at+9.05.34%E2%80%AFPM.png" alt="Graphic Work" loading="lazy"><div class="ov"><div class="ov-num">022</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
+<div class="wi" data-section="illustration" data-title="Graphic Work" data-category="2026" data-seclabel="Illustration & Graphic"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/ec58bf00-bc27-4c82-ab82-f206def985e4/Screenshot+2026-02-17+at+3.12.04%E2%80%AFPM.png" alt="Graphic Work" loading="lazy"><div class="ov"><div class="ov-num">023</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
+<div class="wi" data-section="illustration" data-title="Graphic Work" data-category="2026" data-seclabel="Illustration & Graphic"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/1ba22c86-9731-4df6-8324-c367d2f3d99f/Screenshot+2026-02-16+at+11.56.18%E2%80%AFAM.png" alt="Graphic Work" loading="lazy"><div class="ov"><div class="ov-num">024</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
+<div class="wi" data-section="illustration" data-title="Print Work" data-category="2026" data-seclabel="Illustration & Graphic"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/bb21643b-1f66-4207-ab35-73108d80ace7/Screenshot+2026-02-16+at+4.17.06%E2%80%AFPM.png" alt="Print Work" loading="lazy"><div class="ov"><div class="ov-num">025</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
+<div class="wi" data-section="illustration" data-title="Artwork" data-category="2026" data-seclabel="Illustration & Graphic"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/1771268334953-W7EKAFOMLHQQDACSPE4C/Jack%2527s%2BArtwork_20260216_0002.jpg" alt="Artwork" loading="lazy"><div class="ov"><div class="ov-num">026</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
+<div class="wi" data-section="illustration" data-title="Faces" data-category="Illustration" data-seclabel="Illustration & Graphic"><img src="Illustration/faces_web-15.png" alt="Faces" loading="lazy"><div class="ov"><div class="ov-num">027</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
+<div class="wi" data-section="illustration" data-title="Illustration" data-category="2025" data-seclabel="Illustration & Graphic"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/e277e76a-2601-4027-a0c0-e822f260eac9/Screenshot+2025-05-18+at+9.37.44%E2%80%AFPM.png" alt="Illustration" loading="lazy"><div class="ov"><div class="ov-num">028</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
+<div class="wi" data-section="illustration" data-title="Illustration" data-category="2025" data-seclabel="Illustration & Graphic"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/04e627c9-3013-47bb-a7ea-4379c365052c/Screenshot+2025-05-19+at+5.32.25%E2%80%AFPM.png" alt="Illustration" loading="lazy"><div class="ov"><div class="ov-num">029</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
+<div class="wi" data-section="illustration" data-title="Illustration" data-category="2025" data-seclabel="Illustration & Graphic"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/2e40e196-d41a-4751-92ed-35aeb88accb4/Screenshot+2025-05-26+at+12.23.20%E2%80%AFPM.png" alt="Illustration" loading="lazy"><div class="ov"><div class="ov-num">030</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
+<div class="wi" data-section="illustration" data-title="Artwork" data-category="Illustration, 2026" data-seclabel="Illustration & Graphic"><img src="Illustration/artwork_web-05.jpg" alt="Artwork" loading="lazy"><div class="ov"><div class="ov-num">031</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
+<div class="wi" data-section="illustration" data-title="Flash Sheets" data-category="Illustration" data-seclabel="Illustration & Graphic"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/34b4f241-96e4-40c3-8718-32fdf8eb63fa/Flash+sheet+001.jpg" alt="Flash Sheets" loading="lazy"><div class="ov"><div class="ov-num">032</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
+<div class="wi" data-section="illustration" data-title="Geometric" data-category="Illustration" data-seclabel="Illustration & Graphic"><img src="Illustration/geometric_web-17.png" alt="Geometric" loading="lazy"><div class="ov"><div class="ov-num">033</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
+<div class="wi" data-section="illustration" data-title="Print Work" data-category="2023" data-seclabel="Illustration & Graphic"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/124ac35a-9921-4e26-945b-396f90e9e7c0/Screen+Shot+2023-10-06+at+2.23.17+PM.png" alt="Print Work" loading="lazy"><div class="ov"><div class="ov-num">034</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
+<div class="wi" data-section="illustration" data-title="Print Work" data-category="2023" data-seclabel="Illustration & Graphic"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/a5381599-633a-4876-987a-a3a1c1ec9e94/Screen+Shot+2023-10-09+at+2.06.17+PM.png" alt="Print Work" loading="lazy"><div class="ov"><div class="ov-num">035</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
+<div class="wi" data-section="illustration" data-title="BIS Zine" data-category="Publication" data-seclabel="Illustration & Graphic"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/d1f66c70-3517-4fcb-a530-6c1be8adb061/BIS-zine.jpg" alt="BIS Zine" loading="lazy"><div class="ov"><div class="ov-num">036</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
+<div class="wi" data-section="illustration" data-title="Neon Demon" data-category="Illustration" data-seclabel="Illustration & Graphic"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/1771370209325-JQE35ZUQTKOXOD843NGF/neon%2Bdemon.jpg" alt="Neon Demon" loading="lazy"><div class="ov"><div class="ov-num">037</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
+<div class="wi" data-section="illustration" data-title="Illustration" data-category="Archive" data-seclabel="Illustration & Graphic"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/1771212091889-LH7G4WHOF2HIDG7KH6UI/IMG_3259.jpg" alt="Illustration" loading="lazy"><div class="ov"><div class="ov-num">038</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
+<div class="wi" data-section="illustration" data-title="Archive" data-category="Illustration" data-seclabel="Illustration & Graphic"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/1771213803249-OTUVRN6W60J9UHHX0DZX/IMG_5919.jpg" alt="Archive" loading="lazy"><div class="ov"><div class="ov-num">039</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
+<div class="wi" data-section="illustration" data-title="Print" data-category="Archive" data-seclabel="Illustration & Graphic"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/145e541f-276f-4ad8-af92-a3ba0d182007/02+copy.jpg" alt="Print" loading="lazy"><div class="ov"><div class="ov-num">040</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
+<div class="wi" data-section="illustration" data-title="Artwork" data-category="Illustration, 2026" data-seclabel="Illustration & Graphic"><img src="Illustration/artwork_web-06.jpg" alt="Artwork" loading="lazy"><div class="ov"><div class="ov-num">041</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
+<div class="wi" data-section="illustration" data-title="Geometric" data-category="Illustration" data-seclabel="Illustration & Graphic"><img src="Illustration/geometric_web-18.png" alt="Geometric" loading="lazy"><div class="ov"><div class="ov-num">042</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
+<div class="wi" data-section="illustration" data-title="Garden" data-category="Archive" data-seclabel="Illustration & Graphic"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/e24e30ca-c68d-4a9c-87e5-3fed93910729/_DSC0026.jpg" alt="Garden" loading="lazy"><div class="ov"><div class="ov-num">043</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
+<div class="wi" data-section="illustration" data-title="Garden" data-category="Archive" data-seclabel="Illustration & Graphic"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/da7b7b29-c5d3-4d2d-a6a0-46e442eaf299/_DSC0079.jpg" alt="Garden" loading="lazy"><div class="ov"><div class="ov-num">044</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
+<div class="wi" data-section="illustration" data-title="Artwork" data-category="Illustration, 2026" data-seclabel="Illustration & Graphic"><img src="Illustration/artwork_web-03.jpg" alt="Artwork" loading="lazy"><div class="ov"><div class="ov-num">045</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
+<div class="wi" data-section="illustration" data-title="Artwork" data-category="Illustration, 2026" data-seclabel="Illustration & Graphic"><img src="Illustration/artwork_web-02.jpg" alt="Artwork" loading="lazy"><div class="ov"><div class="ov-num">046</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
+<div class="wi" data-section="illustration" data-title="Artwork" data-category="Illustration, 2026" data-seclabel="Illustration & Graphic"><img src="Illustration/artwork_web-01.jpg" alt="Artwork" loading="lazy"><div class="ov"><div class="ov-num">047</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
+<div class="wi" data-section="illustration" data-title="Brand Work" data-category="Identity" data-seclabel="Illustration & Graphic"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/4e18ec66-c929-4ba3-81d8-7302999e9621/Screenshot+2026-02-19+at+3.55.31%E2%80%AFPM.png" alt="Brand Work" loading="lazy"><div class="ov"><div class="ov-num">048</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div></div>
 </section></div>
 
 <div class="sw alt"><section class="sc2" id="craft">
   <div class="sr"></div>
   <div class="shrow">
     <div class="sh swp"><span class="sn">03</span><span class="sdv">&#8212;</span><h2 class="st">Fabrication</h2></div>
-    <p class="sdesc swp-d">Handcrafted objects, furniture, signage,<br>and sculptural work made by hand in Santa Fe.<br>Working primarily in hardwood and local stone &#8212;<br>each piece designed and built<br>start to finish in the studio.</p>
+    <p class="sdesc swp-d">Objects, signage, and various sculptural works<br>made by hand in Santa Fe.<br>Working primarily with found wood and stones,<br>each piece is crafted start to finish<br>in the studio.</p>
   </div>
   <div class="gm fi"><div class="wi" data-section="craft" data-title="Woodwork" data-category="Handcraft" data-seclabel="Fabrication"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/f02bf3ab-7d68-43bb-828c-7b6d3013d8ff/75840073777__62D7BF84-1C94-4FE9-9ACB-B2D040AF928E.jpeg" alt="Woodwork" loading="lazy"><div class="ov"><div class="ov-num">001</div><div class="ov-sec">Fabrication</div></div></div>
 <div class="wi" data-section="craft" data-title="Woodwork" data-category="Handcraft" data-seclabel="Fabrication"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/8087a247-b04a-46cf-a604-b276534f8a96/IMG_4984.jpg" alt="Woodwork" loading="lazy"><div class="ov"><div class="ov-num">002</div><div class="ov-sec">Fabrication</div></div></div>
@@ -428,15 +463,15 @@ body.img-hover #cur{filter:invert(1)}
 <div class="wi" data-section="craft" data-title="Craft" data-category="Object" data-seclabel="Fabrication"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/f4821924-329e-49ff-8234-db6472572cb3/IMG_9663.JPG" alt="Craft" loading="lazy"><div class="ov"><div class="ov-num">020</div><div class="ov-sec">Fabrication</div></div></div>
 <div class="wi" data-section="craft" data-title="Craft" data-category="Object" data-seclabel="Fabrication"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/bafb2de9-fd6c-44c3-b6a2-a3adcaa00b8d/IMG_9958.JPG" alt="Craft" loading="lazy"><div class="ov"><div class="ov-num">021</div><div class="ov-sec">Fabrication</div></div></div>
 <div class="wi" data-section="craft" data-title="Craft" data-category="Object" data-seclabel="Fabrication"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/dda041d5-cc5c-4ec8-ad6c-9289a4198968/IMG_4652.JPG" alt="Craft" loading="lazy"><div class="ov"><div class="ov-num">022</div><div class="ov-sec">Fabrication</div></div></div>
-<div class="wi" data-section="craft" data-title="Fabrication" data-category="Handcraft" data-seclabel="Fabrication"><img src="fabrication/fabrication 10.JPG" alt="Fabrication" loading="lazy"><div class="ov"><div class="ov-num">023</div><div class="ov-sec">Fabrication</div></div></div>
-<div class="wi" data-section="craft" data-title="Fabrication" data-category="Handcraft" data-seclabel="Fabrication"><img src="fabrication/fabrication 14.JPG" alt="Fabrication" loading="lazy"><div class="ov"><div class="ov-num">024</div><div class="ov-sec">Fabrication</div></div></div></div>
+<div class="wi" data-section="craft" data-title="Fabrication" data-category="Handcraft" data-seclabel="Fabrication"><img src="fabrication/fabrication%2010.JPG" alt="Fabrication" loading="lazy"><div class="ov"><div class="ov-num">023</div><div class="ov-sec">Fabrication</div></div></div>
+<div class="wi" data-section="craft" data-title="Fabrication" data-category="Handcraft" data-seclabel="Fabrication"><img src="fabrication/fabrication%2014.JPG" alt="Fabrication" loading="lazy"><div class="ov"><div class="ov-num">024</div><div class="ov-sec">Fabrication</div></div></div></div>
 </section></div>
 
 <div class="sw"><section class="sc2" id="styling">
   <div class="sr"></div>
   <div class="shrow">
     <div class="sh swp"><span class="sn">04</span><span class="sdv">&#8212;</span><h2 class="st">Creative Direction</h2></div>
-    <p class="sdesc swp-d">Styling and full creative direction<br>for fashion, editorial, and brand campaigns.<br>In collaboration with Peyote Bird,<br>a Santa Fe-based clothing label &#8212;<br>spanning lookbooks, campaigns,<br>and product work.<br><br>Photography &#8212;<br>Dillon Sachs, Leroy Graffe, Annabel Louise, Jackson Alexander</p>
+    <p class="sdesc swp-d">Styling, producing, sourcing<br>for fashion, editorial, and brand campaigns.</p>
   </div>
   <div class="gm fi"><div class="wi" data-section="styling" data-title="Summer &#39;22" data-category="Editorial" data-seclabel="Creative Direction"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/c0ef25b9-232a-4883-a155-ab7c9e6a3641/2022_07_25_peyote_bird_2111-16.jpeg" alt="Summer &#39;22" loading="lazy"><div class="ov"><div class="ov-num">001</div><div class="ov-sec">Creative Direction</div></div></div>
 <div class="wi" data-section="styling" data-title="Summer &#39;22" data-category="Editorial" data-seclabel="Creative Direction"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/d3a79b65-83d6-4f2e-b97d-9c54ed8cea0b/2022_07_25_peyote_bird_2141-28.jpeg" alt="Summer &#39;22" loading="lazy"><div class="ov"><div class="ov-num">002</div><div class="ov-sec">Creative Direction</div></div></div>
@@ -477,33 +512,34 @@ body.img-hover #cur{filter:invert(1)}
 <div class="wi" data-section="styling" data-title="Film" data-category="Archive" data-seclabel="Creative Direction"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/5c7b669b-b938-4019-a7b8-99cc4927ac36/IMG_20260119_0002.jpeg" alt="Film" loading="lazy"><div class="ov"><div class="ov-num">037</div><div class="ov-sec">Creative Direction</div></div></div>
 <div class="wi" data-section="styling" data-title="Film" data-category="Archive" data-seclabel="Creative Direction"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/8c9f0d38-73ae-4456-9c34-43d2873c6353/IMG_20260119_0004.jpeg" alt="Film" loading="lazy"><div class="ov"><div class="ov-num">038</div><div class="ov-sec">Creative Direction</div></div></div>
 <div class="wi" data-section="styling" data-title="Creative Direction" data-category="2026" data-seclabel="Creative Direction"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/756ebc4b-fd70-4cf9-a483-c2a83b33c8ca/Screenshot+2026-02-06+at+11.48.15%E2%80%AFAM.png" alt="Creative Direction" loading="lazy"><div class="ov"><div class="ov-num">039</div><div class="ov-sec">Creative Direction</div></div></div>
-<div class="wi" data-section="styling" data-title="Creative Direction" data-category="2026" data-seclabel="Creative Direction"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/9bb0ce09-f7b1-452e-81f0-ac269a737d74/Screenshot+2026-02-06+at+11.48.33%E2%80%AFAM.png" alt="Creative Direction" loading="lazy"><div class="ov"><div class="ov-num">040</div><div class="ov-sec">Creative Direction</div></div></div></div>
+<div class="wi" data-section="styling" data-title="Creative Direction" data-category="2026" data-seclabel="Creative Direction"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/9bb0ce09-f7b1-452e-81f0-ac269a737d74/Screenshot+2026-02-06+at+11.48.33%E2%80%AFAM.png" alt="Creative Direction" loading="lazy"><div class="ov"><div class="ov-num">040</div><div class="ov-sec">Creative Direction</div></div></div>
+<div class="wi" data-section="styling" data-title="Peyote Bird" data-category="Editorial" data-seclabel="Creative Direction"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/9d577a73-6255-4d01-b5db-f2fc11786932/savs-sitting.jpg" alt="Peyote Bird" loading="lazy"><div class="ov"><div class="ov-num">041</div><div class="ov-sec">Creative Direction</div></div></div></div>
 </section></div>
 
 <div class="sw alt"><section class="sc2" id="garden">
   <div class="sr"></div>
   <div class="shrow">
     <div class="sh swp"><span class="sn">05</span><span class="sdv">&#8212;</span><h2 class="st">Jack&#39;s Garden</h2></div>
-    <p class="sdesc swp-d">An ongoing personal documentation<br>of the garden in Santa Fe &#8212;<br>land, light, and the slow change of seasons<br>across several years.<br>Shot on film and digital,<br>this archive continues to grow.<br><br>Photography &#8212;<br>Leroy Graffe, McCall Sides, Jackson Alexander</p>
+    <p class="sdesc swp-d">An ever evolving meditation on life and growth<br>through the lens of a simple backyard garden<br>in Santa Fe &#8212; flowers, vegetables, native species,<br>insects, dirt, water and patience all working together<br>in perfect harmony. This one remains a lifelong<br>case study and the archive serves as a helpful<br>reminder of seasons past.</p>
   </div>
   <div class="gm fi"><div class="wi" data-section="garden" data-title="Garden" data-category="2022" data-seclabel="Jack's Garden"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/fbb0fee7-9488-4d9f-8f31-94965d2d5e97/2022_06_30_jacks_garden_santa_fe_9099-4.jpg" alt="Garden" loading="lazy"><div class="ov"><div class="ov-num">001</div><div class="ov-sec">Jack&#39;s Garden</div></div></div>
 <div class="wi" data-section="garden" data-title="Garden" data-category="2022" data-seclabel="Jack's Garden"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/f5a95c95-6380-44b5-8752-0820dedc09f7/2022_06_30_jacks_garden_santa_fe_9084-2.jpg" alt="Garden" loading="lazy"><div class="ov"><div class="ov-num">002</div><div class="ov-sec">Jack&#39;s Garden</div></div></div>
 <div class="wi" data-section="garden" data-title="Garden" data-category="2022" data-seclabel="Jack's Garden"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/038abfb8-97ca-400a-aa11-db765fe693e4/2022_06_30_jacks_garden_santa_fe_9119-7.jpg" alt="Garden" loading="lazy"><div class="ov"><div class="ov-num">003</div><div class="ov-sec">Jack&#39;s Garden</div></div></div>
-<div class="wi" data-section="garden" data-title="Garden" data-category="2022" data-seclabel="Jack's Garden"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/1e1da0e9-fae1-47ba-a73c-fcd0674e5c39/2022_06_30_jacks_garden_santa_fe_9095-3.jpg" alt="Garden" loading="lazy"><div class="ov"><div class="ov-num">004</div><div class="ov-sec">Jack&#39;s Garden</div></div></div>
+<div class="wi moody" data-section="garden" data-title="Garden" data-category="2022" data-seclabel="Jack's Garden"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/1e1da0e9-fae1-47ba-a73c-fcd0674e5c39/2022_06_30_jacks_garden_santa_fe_9095-3.jpg" alt="Garden" loading="lazy"><div class="ov"><div class="ov-num">004</div><div class="ov-sec">Jack&#39;s Garden</div></div></div>
 <div class="wi" data-section="garden" data-title="Garden" data-category="2022" data-seclabel="Jack's Garden"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/f047549d-eaf0-4e1f-b24a-6b671c6bb7d9/2022_06_30_jacks_garden_santa_fe_9160-13.jpg" alt="Garden" loading="lazy"><div class="ov"><div class="ov-num">005</div><div class="ov-sec">Jack&#39;s Garden</div></div></div>
 <div class="wi" data-section="garden" data-title="Garden" data-category="2022" data-seclabel="Jack's Garden"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/ac0ca42a-0c85-41b9-8ee0-10526328488a/2022_05_24_jackson_alexander_velvet_08421-35.jpg" alt="Garden" loading="lazy"><div class="ov"><div class="ov-num">006</div><div class="ov-sec">Jack&#39;s Garden</div></div></div>
-<div class="wi" data-section="garden" data-title="Garden" data-category="2022" data-seclabel="Jack's Garden"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/a7f60454-4178-465e-9d81-93ea73dcd76b/2022_05_24_jackson_alexander_velvet_08353-2.jpg" alt="Garden" loading="lazy"><div class="ov"><div class="ov-num">007</div><div class="ov-sec">Jack&#39;s Garden</div></div></div>
+<div class="wi moody" data-section="garden" data-title="Garden" data-category="2022" data-seclabel="Jack's Garden"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/a7f60454-4178-465e-9d81-93ea73dcd76b/2022_05_24_jackson_alexander_velvet_08353-2.jpg" alt="Garden" loading="lazy"><div class="ov"><div class="ov-num">007</div><div class="ov-sec">Jack&#39;s Garden</div></div></div>
 <div class="wi" data-section="garden" data-title="Garden" data-category="Documentary" data-seclabel="Jack's Garden"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/77e086de-9b04-4dc3-98e1-8b905bbdda33/DSC06872-4.jpg" alt="Garden" loading="lazy"><div class="ov"><div class="ov-num">008</div><div class="ov-sec">Jack&#39;s Garden</div></div></div>
 <div class="wi" data-section="garden" data-title="Garden" data-category="Documentary" data-seclabel="Jack's Garden"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/004742c1-3323-4788-a266-fb6d073b3aa4/DSC06914-9.jpg" alt="Garden" loading="lazy"><div class="ov"><div class="ov-num">009</div><div class="ov-sec">Jack&#39;s Garden</div></div></div>
 <div class="wi" data-section="garden" data-title="Garden" data-category="Documentary" data-seclabel="Jack's Garden"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/aece29d6-8898-425a-a4a3-b4a8b3481b00/DSC06987-18.jpg" alt="Garden" loading="lazy"><div class="ov"><div class="ov-num">010</div><div class="ov-sec">Jack&#39;s Garden</div></div></div>
 <div class="wi" data-section="garden" data-title="Garden" data-category="Documentary" data-seclabel="Jack's Garden"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/ec7db20f-9c73-4f11-95d8-5250dc97c758/DSC07045-24.jpg" alt="Garden" loading="lazy"><div class="ov"><div class="ov-num">011</div><div class="ov-sec">Jack&#39;s Garden</div></div></div>
 <div class="wi" data-section="garden" data-title="Garden" data-category="Documentary" data-seclabel="Jack's Garden"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/7e88434f-60ba-444f-9b49-72393ae4a353/DSC03643-22.jpg" alt="Garden" loading="lazy"><div class="ov"><div class="ov-num">012</div><div class="ov-sec">Jack&#39;s Garden</div></div></div>
-<div class="wi" data-section="garden" data-title="Jack&#39;s Garden" data-category="Santa Fe" data-seclabel="Jack's Garden"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/3cabd2a1-b6ad-4caa-a9cc-e4eeaa927272/jacks+garden+story-09.jpg" alt="Jack&#39;s Garden" loading="lazy"><div class="ov"><div class="ov-num">013</div><div class="ov-sec">Jack&#39;s Garden</div></div></div>
+<div class="wi moody" data-section="garden" data-title="Jack&#39;s Garden" data-category="Santa Fe" data-seclabel="Jack's Garden"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/3cabd2a1-b6ad-4caa-a9cc-e4eeaa927272/jacks+garden+story-09.jpg" alt="Jack&#39;s Garden" loading="lazy"><div class="ov"><div class="ov-num">013</div><div class="ov-sec">Jack&#39;s Garden</div></div></div>
 <div class="wi" data-section="garden" data-title="Garden" data-category="Santa Fe" data-seclabel="Jack's Garden"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/d45e6954-a702-4159-b294-63ded04c1499/jack+garden-02.jpg" alt="Garden" loading="lazy"><div class="ov"><div class="ov-num">014</div><div class="ov-sec">Jack&#39;s Garden</div></div></div>
 <div class="wi" data-section="garden" data-title="Garden" data-category="Santa Fe" data-seclabel="Jack's Garden"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/9b9ed97c-a66a-4710-ba11-6ec343b99643/jack+garden-09.jpg" alt="Garden" loading="lazy"><div class="ov"><div class="ov-num">015</div><div class="ov-sec">Jack&#39;s Garden</div></div></div>
 <div class="wi" data-section="garden" data-title="Garden" data-category="Santa Fe" data-seclabel="Jack's Garden"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/626f03a0-debd-4edb-8bce-58552490f3da/jack+garden-04.jpg" alt="Garden" loading="lazy"><div class="ov"><div class="ov-num">016</div><div class="ov-sec">Jack&#39;s Garden</div></div></div>
 <div class="wi" data-section="garden" data-title="Garden" data-category="2025" data-seclabel="Jack's Garden"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/5dd46664-5a2b-4a6f-8e4c-62731d58f791/Screenshot+2025-09-19+at+12.30.37%E2%80%AFPM.jpeg" alt="Garden" loading="lazy"><div class="ov"><div class="ov-num">017</div><div class="ov-sec">Jack&#39;s Garden</div></div></div>
-<div class="wi" data-section="garden" data-title="Garden" data-category="Film" data-seclabel="Jack's Garden"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/b0fdf073-cf88-4567-86e4-3e6bfddfa9ee/164500-R1-9A.jpeg" alt="Garden" loading="lazy"><div class="ov"><div class="ov-num">018</div><div class="ov-sec">Jack&#39;s Garden</div></div></div>
+<div class="wi moody" data-section="garden" data-title="Garden" data-category="Film" data-seclabel="Jack's Garden"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/b0fdf073-cf88-4567-86e4-3e6bfddfa9ee/164500-R1-9A.jpeg" alt="Garden" loading="lazy"><div class="ov"><div class="ov-num">018</div><div class="ov-sec">Jack&#39;s Garden</div></div></div>
 <div class="wi" data-section="garden" data-title="Garden" data-category="Santa Fe" data-seclabel="Jack's Garden"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/8c3ee8e5-5c0b-4236-88f3-249104367c67/IMG_9058.jpeg" alt="Garden" loading="lazy"><div class="ov"><div class="ov-num">019</div><div class="ov-sec">Jack&#39;s Garden</div></div></div>
 <div class="wi" data-section="garden" data-title="Garden" data-category="Santa Fe" data-seclabel="Jack's Garden"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/a0338438-969e-4bad-9fa8-c051b8b744e7/IMG_3356.JPG" alt="Garden" loading="lazy"><div class="ov"><div class="ov-num">020</div><div class="ov-sec">Jack&#39;s Garden</div></div></div>
 <div class="wi" data-section="garden" data-title="Garden" data-category="Santa Fe" data-seclabel="Jack's Garden"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/d2995eb6-7939-4676-8660-2521524407ac/IMG_0852.JPG" alt="Garden" loading="lazy"><div class="ov"><div class="ov-num">021</div><div class="ov-sec">Jack&#39;s Garden</div></div></div>
@@ -511,7 +547,7 @@ body.img-hover #cur{filter:invert(1)}
 <div class="wi" data-section="garden" data-title="Garden" data-category="Santa Fe" data-seclabel="Jack's Garden"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/64535c66-ee96-46a6-ada7-34a9f0350eeb/IMG_8599.JPG" alt="Garden" loading="lazy"><div class="ov"><div class="ov-num">023</div><div class="ov-sec">Jack&#39;s Garden</div></div></div>
 <div class="wi" data-section="garden" data-title="Garden" data-category="Santa Fe" data-seclabel="Jack's Garden"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/c496b2a6-85c2-4d9d-a4ea-1a660fdc5799/IMG_3217.JPG" alt="Garden" loading="lazy"><div class="ov"><div class="ov-num">024</div><div class="ov-sec">Jack&#39;s Garden</div></div></div>
 <div class="wi" data-section="garden" data-title="Garden" data-category="Santa Fe" data-seclabel="Jack's Garden"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/8c1cf490-17b3-44cf-8309-6b5a1b6cbf9e/IMG_3262.JPG" alt="Garden" loading="lazy"><div class="ov"><div class="ov-num">025</div><div class="ov-sec">Jack&#39;s Garden</div></div></div>
-<div class="wi" data-section="garden" data-title="Garden" data-category="Santa Fe" data-seclabel="Jack's Garden"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/3eacaecb-a75a-4243-9e5a-aec0e7956840/IMG_2686.JPG" alt="Garden" loading="lazy"><div class="ov"><div class="ov-num">026</div><div class="ov-sec">Jack&#39;s Garden</div></div></div>
+<div class="wi moody" data-section="garden" data-title="Garden" data-category="Santa Fe" data-seclabel="Jack's Garden"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/3eacaecb-a75a-4243-9e5a-aec0e7956840/IMG_2686.JPG" alt="Garden" loading="lazy"><div class="ov"><div class="ov-num">026</div><div class="ov-sec">Jack&#39;s Garden</div></div></div>
 <div class="wi" data-section="garden" data-title="Garden" data-category="Santa Fe" data-seclabel="Jack's Garden"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/5c82ef79-614d-4c39-a64f-c5cba4d77723/8C1E88AD-6DC0-4A59-9386-760C0821A26B.jpg" alt="Garden" loading="lazy"><div class="ov"><div class="ov-num">027</div><div class="ov-sec">Jack&#39;s Garden</div></div></div>
 <div class="wi" data-section="garden" data-title="Garden" data-category="Santa Fe" data-seclabel="Jack's Garden"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/83103ade-2d65-4299-9ec4-3cfae6e22a5f/IMG_2414.JPG" alt="Garden" loading="lazy"><div class="ov"><div class="ov-num">028</div><div class="ov-sec">Jack&#39;s Garden</div></div></div>
 <div class="wi" data-section="garden" data-title="Garden" data-category="Santa Fe" data-seclabel="Jack's Garden"><img src="https://images.squarespace-cdn.com/content/v1/690904ff877ec25acadd6b58/76d0cb1b-6931-433c-aa46-561111340481/IMG_2424.JPG" alt="Garden" loading="lazy"><div class="ov"><div class="ov-num">029</div><div class="ov-sec">Jack&#39;s Garden</div></div></div>
@@ -524,7 +560,7 @@ body.img-hover #cur{filter:invert(1)}
   <div class="sr"></div>
   <div class="shrow">
     <div class="sh swp"><span class="sn">06</span><span class="sdv">&#8212;</span><h2 class="st">Production</h2></div>
-    <p class="sdesc swp-d">Film and video production<br>for brand and editorial clients.<br>The Cheyenne Turquoise documentary short<br>was produced for Peyote Bird<br>and the Sundance Catalog &#8212;<br>shot in Tonopah, Nevada, 2019.<br>Photography by Leroy Graffe.</p>
+    <p class="sdesc swp-d">Film production for brand and editorial clients.<br>Highlighted below is Cheyenne Turquoise,<br>a documentary short produced for Peyote Bird<br>and Sundance &#8212; shot in Nevada, 2019.</p>
   </div>
   <div class="gp fi">
 <!-- col1: #1,#5,#9 | col2: #2,#6,#10 | col3: #3,#7,#11 | col4: #4,#8,#12 -->
@@ -570,6 +606,16 @@ body.img-hover #cur{filter:invert(1)}
 
   // ── FLAG JS READY — enables clip-path animations safely ──
   document.documentElement.classList.add('js-on');
+
+  // ── MOBILE NAV TOGGLE ──
+  var wiNav = document.getElementById('wi');
+  var wiLabel = document.querySelector('#wi .wil');
+  if(wiLabel){
+    wiLabel.addEventListener('click',function(){wiNav.classList.toggle('nav-open')});
+    document.querySelectorAll('.wir').forEach(function(link){
+      link.addEventListener('click',function(){wiNav.classList.remove('nav-open')});
+    });
+  }
 
   // ── CURSOR ──
   var cur = document.getElementById('cur');
@@ -772,6 +818,16 @@ body.img-hover #cur{filter:invert(1)}
   }, { threshold: 0, rootMargin: '-30% 0px -50% 0px' });
   workSections.forEach(function(sec) { sideObs.observe(sec); });
 
+  // ── LAZY LOAD FADE-IN ──
+  document.querySelectorAll('.wi img[loading="lazy"]').forEach(function(img) {
+    if (img.complete) { img.classList.add('loaded'); }
+    else { img.addEventListener('load', function() { img.classList.add('loaded'); }); }
+  });
+  document.querySelectorAll('.wi video').forEach(function(vid) {
+    if (vid.readyState >= 2) { vid.classList.add('loaded'); }
+    else { vid.addEventListener('loadeddata', function() { vid.classList.add('loaded'); }); }
+  });
+
   // ── SMOOTH SCROLL ──
   document.querySelectorAll('a[href^="#"]').forEach(function(a) {
     a.addEventListener('click', function(e) {
@@ -827,6 +883,170 @@ body.img-hover #cur{filter:invert(1)}
     resizeTimer = setTimeout(renumberGalleries, 200);
   });
 
+})();
+
+// ── ABOUT BACKGROUND WARP EFFECT (WebGL) ──────────────────────────────────────
+(function() {
+  var canvas = document.getElementById('warp-canvas');
+  var section = document.getElementById('top-about');
+  if (!canvas || !section) return;
+
+  var gl = canvas.getContext('webgl', { alpha: false, antialias: false, preserveDrawingBuffer: true });
+  if (!gl) return; // silently fall back to static bg
+
+  // Vertex shader
+  var vsSrc = 'attribute vec2 a;varying vec2 v;void main(){v=a*0.5+0.5;gl_Position=vec4(a,0.0,1.0);}';
+
+  // Fragment shader — FULL psychedelic warp intensity, NO color changes
+  var fsSrc = `
+precision highp float;
+uniform sampler2D img;
+uniform float t;
+uniform vec2 cover;
+uniform vec2 coverOff;
+varying vec2 v;
+
+void main(){
+  vec2 uv = v * cover + coverOff;
+
+  // === FULL multi-layer wavy displacement (original visualizer intensity) ===
+  float dx =
+    sin(uv.y * 5.2  + t * 0.65) * 0.018 +
+    sin(uv.y * 13.0 + t * 1.2)  * 0.007 +
+    cos(uv.x * 7.3  + uv.y * 2.8 + t * 0.42) * 0.012 +
+    sin(uv.x * 3.0  + uv.y * 6.0 + t * 0.28) * 0.009;
+
+  float dy =
+    cos(uv.x * 4.4  + t * 0.52) * 0.015 +
+    cos(uv.x * 10.0 + t * 0.85) * 0.006 +
+    sin(uv.y * 5.0  + uv.x * 4.0 + t * 0.38) * 0.010 +
+    cos(uv.y * 8.0  + uv.x * 2.5 + t * 0.19) * 0.007;
+
+  vec2 wuv = clamp(uv + vec2(dx, dy), 0.0, 1.0);
+
+  // === Clean sample — no chromatic aberration, no shimmer ===
+  vec3 col = texture2D(img, wuv).rgb;
+
+  // === Breathing luminance pulse ===
+  float breath = 0.92 + 0.08 * sin(t * 0.7 + uv.y * 3.5 + uv.x * 2.0);
+  col *= breath;
+
+  // === Luminance ripple across surface ===
+  float ripple = sin(uv.x * 9.0 + uv.y * 7.0 + t * 1.1) * 0.06;
+  col *= (1.0 + ripple);
+
+  // === Gradient overlay (matching original CSS) ===
+  float diag = (v.x + (1.0 - v.y)) * 0.5;
+  float dark = mix(0.75, 0.44, smoothstep(0.0, 0.5, diag));
+  dark = mix(dark, 0.68, smoothstep(0.5, 1.0, diag));
+  col *= (1.0 - dark);
+
+  gl_FragColor = vec4(col, 1.0);
+}`;
+
+  function mkShader(type, src) {
+    var s = gl.createShader(type);
+    gl.shaderSource(s, src);
+    gl.compileShader(s);
+    if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) {
+      console.error('Warp shader error:', gl.getShaderInfoLog(s));
+    }
+    return s;
+  }
+
+  var prog = gl.createProgram();
+  gl.attachShader(prog, mkShader(gl.VERTEX_SHADER, vsSrc));
+  gl.attachShader(prog, mkShader(gl.FRAGMENT_SHADER, fsSrc));
+  gl.linkProgram(prog);
+  gl.useProgram(prog);
+
+  // Full-screen quad
+  var buf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, -1,1, 1,-1, 1,1]), gl.STATIC_DRAW);
+  var al = gl.getAttribLocation(prog, 'a');
+  gl.enableVertexAttribArray(al);
+  gl.vertexAttribPointer(al, 2, gl.FLOAT, false, 0, 0);
+
+  var uT = gl.getUniformLocation(prog, 't');
+  var uCover = gl.getUniformLocation(prog, 'cover');
+  var uCoverOff = gl.getUniformLocation(prog, 'coverOff');
+  var uImg = gl.getUniformLocation(prog, 'img');
+
+  // Load the background image
+  var bgImg = new Image();
+  bgImg.onload = function() {
+    // Upload texture
+    var tex = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, tex);
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, bgImg);
+    gl.uniform1i(uImg, 0);
+
+    var imgW = bgImg.naturalWidth;
+    var imgH = bgImg.naturalHeight;
+    var imgAspect = imgW / imgH;
+
+    function resize() {
+      var rect = section.getBoundingClientRect();
+      var cw = rect.width;
+      var ch = rect.height;
+      canvas.width = cw;
+      canvas.height = ch;
+      gl.viewport(0, 0, cw, ch);
+
+      // Compute "cover" scaling (fill canvas, crop overflow)
+      var canvasAspect = cw / ch;
+      var scaleX, scaleY, offX, offY;
+      if (canvasAspect > imgAspect) {
+        // canvas wider than image — fit width, crop height
+        scaleX = 1.0;
+        scaleY = imgAspect / canvasAspect;
+        offX = 0.0;
+        offY = 0.0; // top-aligned like CSS background-position: center top
+      } else {
+        // canvas taller — fit height, crop width
+        scaleX = canvasAspect / imgAspect;
+        scaleY = 1.0;
+        offX = (1.0 - scaleX) * 0.5; // center horizontally
+        offY = 0.0;
+      }
+      gl.uniform2f(uCover, scaleX, scaleY);
+      gl.uniform2f(uCoverOff, offX, offY);
+    }
+
+    resize();
+    window.addEventListener('resize', resize);
+
+    // Activate — hide the CSS ::before background
+    section.classList.add('warp-active');
+
+    var t0 = performance.now();
+    var raf;
+
+    function frame(now) {
+      raf = requestAnimationFrame(frame);
+      var t = (now - t0) / 1000;
+      gl.uniform1f(uT, t);
+      gl.drawArrays(gl.TRIANGLES, 0, 6);
+    }
+
+    // Only animate when section is visible (performance)
+    var observer = new IntersectionObserver(function(entries) {
+      if (entries[0].isIntersecting) {
+        t0 = performance.now();
+        raf = requestAnimationFrame(frame);
+      } else {
+        cancelAnimationFrame(raf);
+      }
+    }, { threshold: 0.0 });
+    observer.observe(section);
+  };
+  bgImg.src = 'logos & backgrounds/about-bg.jpg';
 })();
 </script>
 </body>
