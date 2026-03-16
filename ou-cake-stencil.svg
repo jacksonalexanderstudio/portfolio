@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+     width="229mm" height="229mm"
+     viewBox="0 0 229 229">
+  <!--
+    University of Oklahoma (OU) Powdered Sugar Cake Stencil
+    ============================================================
+    Diameter: 229mm (9 inches — standard pie pan)
+
+    3D PRINTING INSTRUCTIONS:
+    1. Import this SVG into CAD software (Tinkercad, Fusion 360, etc.)
+    2. Extrude dark shapes to 1.5mm height
+    3. White shapes are cutouts (holes) — sugar passes through these
+    4. Export as STL and print
+    5. Use food-safe filament (PETG recommended)
+
+    Dark (#1a1a1a) = solid printed material
+    White (#ffffff) = cutout openings for powdered sugar
+  -->
+
+  <!-- ===== STENCIL BODY (solid circular disc) ===== -->
+  <circle cx="114.5" cy="114.5" r="112" fill="#1a1a1a"/>
+
+  <!-- ===== O LETTER CUTOUT ===== -->
+  <ellipse cx="88.5" cy="114.5" rx="38" ry="46" fill="#ffffff"/>
+
+  <!-- O center island (solid — stays connected via bridges) -->
+  <ellipse cx="88.5" cy="114.5" rx="19" ry="24" fill="#1a1a1a"/>
+
+  <!-- ===== U LETTER CUTOUT ===== -->
+  <path fill="#ffffff" d="
+    M 118.5,68.5
+    L 118.5,130.5
+    A 30,30 0 0,1 178.5,130.5
+    L 178.5,68.5
+    L 161.5,68.5
+    L 161.5,122.5
+    A 13,13 0 0,0 135.5,122.5
+    L 135.5,68.5
+    Z"/>
+
+  <!-- ===== STENCIL BRIDGES (keep O island connected) ===== -->
+  <!-- Top bridge -->
+  <rect x="86.5" y="68.5" width="4" height="22" fill="#1a1a1a"/>
+  <!-- Bottom bridge -->
+  <rect x="86.5" y="138.5" width="4" height="22" fill="#1a1a1a"/>
+
+  <!-- ===== OUTER RIM (visual guide) ===== -->
+  <circle cx="114.5" cy="114.5" r="112" fill="none" stroke="#333333" stroke-width="0.5"/>
+</svg>
