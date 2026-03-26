@@ -69,13 +69,15 @@ body.img-hover #cur{filter:invert(1)}
 
 /* ── CASE STUDY INDEX (sidebar) ── */
 .cs-index-label{font-size:9px;font-weight:400;letter-spacing:.28em;color:var(--tx);text-transform:uppercase;margin-bottom:28px}
-.cs-index-row{display:flex;align-items:baseline;gap:10px;padding:10px 0;transition:opacity .3s,color .3s;opacity:1;text-decoration:none;color:var(--tx);border-bottom:1px solid transparent}
+.cs-index-row{display:flex;align-items:center;gap:10px;padding:10px 0;transition:opacity .3s,color .3s;opacity:1;text-decoration:none;color:var(--tx);border-bottom:1px solid transparent}
 .cs-index-row:hover{opacity:.7}
 .cs-index-row.active{opacity:1;border-bottom:1px solid var(--accent)}
-.cs-index-row.active .cs-index-title{color:var(--tx)}
-.cs-index-row.active .cs-index-num{color:var(--accent)}
-.cs-index-num{font-size:9px;color:var(--accent);letter-spacing:.06em;font-family:var(--sf);flex-shrink:0}
-.cs-index-title{font-size:10px;font-weight:300;letter-spacing:.14em;text-transform:uppercase;font-family:var(--fn)}
+.cs-index-row.active .cs-index-title{color:var(--tx);transform:scale(1.2);transform-origin:left center}
+.cs-index-row.active .cs-index-num{color:#fff}
+.cs-index-row.active .cs-index-num::before{clip-path:inset(0 0 0 0)}
+.cs-index-num{font-size:9px;color:var(--accent);letter-spacing:.06em;font-family:var(--sf);flex-shrink:0;position:relative;width:22px;height:22px;display:flex;align-items:center;justify-content:center;z-index:1;transition:color .35s ease}
+.cs-index-num::before{content:'';position:absolute;inset:0;background:#1A1919;border-radius:50%;z-index:-1;clip-path:inset(0 0 0 100%);transition:clip-path .4s cubic-bezier(.4,0,.2,1)}
+.cs-index-title{font-size:10px;font-weight:300;letter-spacing:.14em;text-transform:uppercase;font-family:var(--fn);transition:transform .35s cubic-bezier(.4,0,.2,1);transform-origin:left center}
 
 /* ── CASE STUDY CARDS ── */
 .cs-card{padding:100px 0}
