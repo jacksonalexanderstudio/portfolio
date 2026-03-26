@@ -99,13 +99,15 @@ body.img-hover #cur{filter:invert(1)}
 #wi{position:sticky;top:100px;width:280px;flex-shrink:0;align-self:flex-start;height:fit-content;padding:52px 36px;z-index:1}
 .work-main{flex:1;min-width:0;border-left:1px solid var(--br)}
 .wil{font-size:9px;font-weight:400;letter-spacing:.28em;color:var(--tx);text-transform:uppercase;margin-bottom:28px;padding-left:24px}
-.wir{display:flex;align-items:baseline;gap:10px;padding:10px 0;transition:opacity .3s,color .3s;opacity:1;text-decoration:none;color:var(--tx);border-bottom:1px solid transparent}
+.wir{display:flex;align-items:center;gap:10px;padding:10px 0;transition:opacity .3s,color .3s;opacity:1;text-decoration:none;color:var(--tx);border-bottom:1px solid transparent}
 .wir:hover{opacity:.7}
 .wir.active{opacity:1;border-bottom:1px solid var(--accent)}
-.wir.active .wt{color:var(--tx)}
-.wir.active .wn{color:var(--accent)}
-.wn{font-size:9px;color:var(--accent);letter-spacing:.06em;font-family:var(--sf);flex-shrink:0}
-.wt{font-size:10px;font-weight:300;letter-spacing:.14em;text-transform:uppercase;font-family:var(--fn)}
+.wir.active .wt{color:var(--tx);transform:scale(1.2);transform-origin:left center}
+.wir.active .wn{color:#fff}
+.wir.active .wn::before{clip-path:inset(0 0 0 0)}
+.wn{font-size:9px;color:var(--accent);letter-spacing:.06em;font-family:var(--sf);flex-shrink:0;position:relative;width:22px;height:22px;display:flex;align-items:center;justify-content:center;z-index:1;transition:color .35s ease}
+.wn::before{content:'';position:absolute;inset:0;background:#1A1919;border-radius:50%;z-index:-1;clip-path:inset(0 0 0 100%);transition:clip-path .4s cubic-bezier(.4,0,.2,1)}
+.wt{font-size:10px;font-weight:300;letter-spacing:.14em;text-transform:uppercase;font-family:var(--fn);transition:transform .35s cubic-bezier(.4,0,.2,1);transform-origin:left center}
 
 /* ── SECTIONS ── */
 .sw{background:var(--bg)}
