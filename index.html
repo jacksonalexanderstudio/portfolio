@@ -824,7 +824,7 @@ body.img-hover #cur{filter:invert(1)}
       var t = document.querySelector(a.getAttribute('href'));
       if (t) {
         e.preventDefault();
-        window.scrollTo({ top: t.getBoundingClientRect().top + window.scrollY - hdr.offsetHeight, behavior: 'smooth' });
+        window.scrollTo({ top: t.getBoundingClientRect().top + window.scrollY - 100, behavior: 'smooth' });
       }
     });
   });
