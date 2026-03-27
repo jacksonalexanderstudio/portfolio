@@ -99,7 +99,14 @@ body.img-hover #cur{filter:invert(1)}
 .work-layout::before{content:'';position:absolute;left:0;top:0;bottom:0;width:322px;background:rgba(0,0,0,.03);border-right:1px solid rgba(0,0,0,.08);pointer-events:none}
 #wi{position:sticky;top:100px;width:322px;flex-shrink:0;align-self:flex-start;height:fit-content;padding:52px 36px;z-index:1}
 .work-main{flex:1;min-width:0;border-left:1px solid var(--br)}
-.wil{font-size:16px;font-family:'Cormorant Garamond',serif;font-weight:300;font-style:italic;letter-spacing:.06em;color:var(--tx);text-transform:none;margin-bottom:28px;padding-left:24px}
+.wil{font-size:16px;font-family:'Cormorant Garamond',serif;font-weight:300;font-style:italic;letter-spacing:.06em;color:var(--tx);text-transform:none;margin-bottom:0;padding-left:24px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;padding-right:8px;transition:color .15s}
+.wil:hover{color:var(--accent)}
+.wil .wil-toggle{font-family:var(--sf);font-size:14px;font-weight:300;color:var(--tx);transition:transform .25s,color .15s}
+.wil:hover .wil-toggle{color:var(--accent)}
+#wi.nav-collapsed .wil-toggle{transform:rotate(0deg)}
+#wi:not(.nav-collapsed) .wil-toggle{transform:rotate(45deg)}
+.wi-nav-list{overflow:hidden;transition:max-height .4s ease,opacity .3s ease,margin .3s ease;max-height:600px;opacity:1;margin-top:20px}
+#wi.nav-collapsed .wi-nav-list{max-height:0;opacity:0;margin-top:0}
 .wir{display:flex;align-items:center;gap:10px;padding:10px 0;transition:opacity .3s,color .3s;opacity:1;text-decoration:none;color:var(--tx);border-bottom:1px solid transparent}
 .wir:hover{opacity:.7}
 .wir.active{opacity:1;border-bottom:1px solid var(--accent)}
@@ -335,14 +342,16 @@ body.img-hover #cur{filter:invert(1)}
 <!-- WORK LAYOUT -->
 <div class="work-layout">
 <aside id="wi">
-  <div class="wil">Selected Work <span style="color:var(--accent)">&mdash;</span></div>
-  <a href="#logos" class="wir active" data-target="logos"><span class="wn">01</span><span class="wt">Logos</span></a>
-  <a href="#illustration" class="wir" data-target="illustration"><span class="wn">02</span><span class="wt">Illustration &amp; Graphic</span></a>
-  <a href="#typelayout" class="wir" data-target="typelayout"><span class="wn">03</span><span class="wt">Type / Layout</span></a>
-  <a href="#craft" class="wir" data-target="craft"><span class="wn">04</span><span class="wt">Fabrication</span></a>
-  <a href="#styling" class="wir" data-target="styling"><span class="wn">05</span><span class="wt">Creative Direction</span></a>
-  <a href="#garden" class="wir" data-target="garden"><span class="wn">06</span><span class="wt">Jack&#39;s Garden</span></a>
-  <a href="#production" class="wir" data-target="production"><span class="wn">07</span><span class="wt">Production</span></a>
+  <div class="wil" onclick="document.getElementById('wi').classList.toggle('nav-collapsed')">Selected Work <span class="wil-toggle">+</span></div>
+  <div class="wi-nav-list">
+    <a href="#logos" class="wir active" data-target="logos"><span class="wn">01</span><span class="wt">Logos</span></a>
+    <a href="#illustration" class="wir" data-target="illustration"><span class="wn">02</span><span class="wt">Illustration &amp; Graphic</span></a>
+    <a href="#typelayout" class="wir" data-target="typelayout"><span class="wn">03</span><span class="wt">Type / Layout</span></a>
+    <a href="#craft" class="wir" data-target="craft"><span class="wn">04</span><span class="wt">Fabrication</span></a>
+    <a href="#styling" class="wir" data-target="styling"><span class="wn">05</span><span class="wt">Creative Direction</span></a>
+    <a href="#garden" class="wir" data-target="garden"><span class="wn">06</span><span class="wt">Jack&#39;s Garden</span></a>
+    <a href="#production" class="wir" data-target="production"><span class="wn">07</span><span class="wt">Production</span></a>
+  </div>
 </aside>
 <div class="work-main">
 
