@@ -63,8 +63,8 @@ body.img-hover #cur{filter:invert(1)}
 
 /* ── CASE STUDY LAYOUT ── */
 .cs-layout{display:flex;position:relative}
-.cs-layout::before{content:'';position:absolute;left:0;top:0;bottom:0;width:280px;background:rgba(249,246,240,.55);border-right:1px solid rgba(0,0,0,.05);pointer-events:none}
-.cs-sidebar{position:sticky;top:100px;width:280px;flex-shrink:0;align-self:flex-start;height:fit-content;padding:52px 36px;z-index:1}
+.cs-layout::before{content:'';position:absolute;left:0;top:0;bottom:0;width:322px;background:rgba(0,0,0,.03);border-right:1px solid rgba(0,0,0,.08);pointer-events:none}
+.cs-sidebar{position:sticky;top:100px;width:322px;flex-shrink:0;align-self:flex-start;height:fit-content;padding:52px 36px;z-index:1}
 .cs-main{flex:1;min-width:0;border-left:1px solid var(--br)}
 
 /* ── CASE STUDY INDEX (sidebar) ── */
@@ -72,12 +72,10 @@ body.img-hover #cur{filter:invert(1)}
 .cs-index-row{display:flex;align-items:center;gap:10px;padding:10px 0;transition:opacity .3s,color .3s;opacity:1;text-decoration:none;color:var(--tx);border-bottom:1px solid transparent}
 .cs-index-row:hover{opacity:.7}
 .cs-index-row.active{opacity:1;border-bottom:1px solid var(--accent)}
-.cs-index-row.active .cs-index-title{color:var(--tx);transform:scale(1.2);transform-origin:left center}
-.cs-index-row.active .cs-index-num{color:#fff}
-.cs-index-row.active .cs-index-num::before{clip-path:inset(0 0 0 0)}
-.cs-index-num{font-size:9px;color:var(--accent);letter-spacing:.06em;font-family:var(--sf);flex-shrink:0;position:relative;width:22px;height:22px;display:flex;align-items:center;justify-content:center;z-index:1;transition:color .35s ease}
-.cs-index-num::before{content:'';position:absolute;inset:0;background:#1A1919;border-radius:50%;z-index:-1;clip-path:inset(0 0 0 100%);transition:clip-path .4s cubic-bezier(.4,0,.2,1)}
-.cs-index-title{font-size:10px;font-weight:300;letter-spacing:.14em;text-transform:uppercase;font-family:var(--fn);transition:transform .35s cubic-bezier(.4,0,.2,1);transform-origin:left center}
+.cs-index-row.active .cs-index-title{color:var(--tx);font-weight:700;transform:scale(1.2);transform-origin:left center}
+.cs-index-row.active .cs-index-num{color:var(--accent)}
+.cs-index-num{font-size:9px;color:var(--accent);letter-spacing:.06em;font-family:var(--sf);flex-shrink:0;width:22px;display:flex;align-items:center;justify-content:center;transition:color .35s ease}
+.cs-index-title{font-size:10px;font-weight:300;letter-spacing:.14em;text-transform:uppercase;font-family:var(--sf);transition:transform .35s cubic-bezier(.4,0,.2,1);transform-origin:left center}
 
 /* ── CASE STUDY CARDS ── */
 .cs-card{padding:100px 0}
@@ -120,6 +118,8 @@ body.img-hover #cur{filter:invert(1)}
 .cs-outcome-gallery{display:grid;grid-template-columns:repeat(2,1fr);gap:48px;margin-top:24px}
 .cs-outcome-gallery.cs-grid-3{grid-template-columns:repeat(3,1fr)}
 .cs-outcome-gallery img{width:100%;aspect-ratio:16/9;object-fit:contain}
+#cs-1 .cs-outcome-gallery{grid-template-columns:repeat(2,1fr);gap:2px;margin-top:0}
+#cs-1 .cs-outcome-gallery img{aspect-ratio:4/5;object-fit:cover;display:block;background:#fff}
 
 /* Takeaway */
 .cs-takeaway{padding-top:80px}
@@ -185,8 +185,6 @@ body.img-hover #cur{filter:invert(1)}
 .fi{opacity:0;transform:translateY(20px);transition:opacity .7s ease,transform .7s ease}
 .fi.on{opacity:1;transform:none}
 .cs-gallery img,.cs-outcome-gallery img,.cs-hero-img{background:#fff}
-#cs-1 .cs-outcome-gallery{grid-template-columns:repeat(2,1fr);gap:2px;margin-top:0}
-#cs-1 .cs-outcome-gallery img{aspect-ratio:4/5;object-fit:cover;width:100%;display:block;background:#fff}
 #cs-11 .cs-outcome-gallery img,#cs-11 .cs-hero-img{background:none}
 #cs-11 .cs-outcome-gallery{grid-template-columns:repeat(2,1fr);gap:1px;margin-top:0;background:#fff}
 #cs-11 .cs-outcome-gallery img{aspect-ratio:auto;width:100%;display:block;background:#fff}
@@ -391,7 +389,7 @@ body.img-hover #cur{filter:invert(1)}
 
     <div class="cs-outcome fi">
       <div class="cs-section-label swp">Outcome</div>
-      <div class="cs-outcome-gallery cs-grid-3">
+      <div class="cs-outcome-gallery">
         <img src="mr-porter-cs/mrp-cs-08.jpg" alt="Peyote Bird SS26 campaign" loading="lazy">
         <img src="mr-porter-cs/mrp-cs-19.jpg" alt="Peyote Bird SS26 campaign" loading="lazy">
         <img src="mr-porter-cs/mrp-cs-27.jpg" alt="Peyote Bird SS26 campaign" loading="lazy">
@@ -507,7 +505,7 @@ body.img-hover #cur{filter:invert(1)}
 
     <div class="cs-outcome fi">
       <div class="cs-section-label swp">Outcome</div>
-      <div class="cs-outcome-gallery">
+      <div class="cs-outcome-gallery cs-grid-3">
         <img class="cs-contain" src="rocket ramps/rr-monogram-icons.png" alt="RR monogram filled with hand-drawn icon library">
         <img class="cs-contain" src="rocket ramps/rr-circle-icons.png" alt="Circular icon arrangement with RR mark at center">
         <img class="cs-contain" src="rocket ramps/rr-action-jump.jpg" alt="Rider sending a whip over the jump at Picuris Pueblo All-Wheel Park &#8212; fire pits and crowd">
@@ -1020,7 +1018,7 @@ body.img-hover #cur{filter:invert(1)}
 
     <div class="cs-outcome fi">
       <div class="cs-section-label swp">Outcome</div>
-      <div class="cs-outcome-gallery">
+      <div class="cs-outcome-gallery cs-grid-3">
         <img style="object-fit:contain" src="Illustration/flash sheets web-08.png" alt="Flash sheet &#8212; ink characters on black">
         <img style="object-fit:contain" src="Illustration/flash sheets web-09.png" alt="Flash sheet &#8212; ink characters on black">
         <img style="object-fit:contain" src="Illustration/flash sheets web-10.png" alt="Flash sheet &#8212; ink characters on black">

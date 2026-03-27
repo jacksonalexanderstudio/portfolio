@@ -95,19 +95,17 @@ body.img-hover #cur{filter:invert(1)}
 
 /* ── WORK INDEX ── */
 .work-layout{display:flex;position:relative}
-.work-layout::before{content:'';position:absolute;left:0;top:0;bottom:0;width:280px;background:rgba(249,246,240,.55);border-right:1px solid rgba(0,0,0,.05);pointer-events:none}
-#wi{position:sticky;top:100px;width:280px;flex-shrink:0;align-self:flex-start;height:fit-content;padding:52px 36px;z-index:1}
+.work-layout::before{content:'';position:absolute;left:0;top:0;bottom:0;width:322px;background:rgba(0,0,0,.03);border-right:1px solid rgba(0,0,0,.08);pointer-events:none}
+#wi{position:sticky;top:100px;width:322px;flex-shrink:0;align-self:flex-start;height:fit-content;padding:52px 36px;z-index:1}
 .work-main{flex:1;min-width:0;border-left:1px solid var(--br)}
 .wil{font-size:9px;font-weight:400;letter-spacing:.28em;color:var(--tx);text-transform:uppercase;margin-bottom:28px;padding-left:24px}
 .wir{display:flex;align-items:center;gap:10px;padding:10px 0;transition:opacity .3s,color .3s;opacity:1;text-decoration:none;color:var(--tx);border-bottom:1px solid transparent}
 .wir:hover{opacity:.7}
 .wir.active{opacity:1;border-bottom:1px solid var(--accent)}
-.wir.active .wt{color:var(--tx);transform:scale(1.2);transform-origin:left center}
-.wir.active .wn{color:#fff}
-.wir.active .wn::before{clip-path:inset(0 0 0 0)}
-.wn{font-size:9px;color:var(--accent);letter-spacing:.06em;font-family:var(--sf);flex-shrink:0;position:relative;width:22px;height:22px;display:flex;align-items:center;justify-content:center;z-index:1;transition:color .35s ease}
-.wn::before{content:'';position:absolute;inset:0;background:#1A1919;border-radius:50%;z-index:-1;clip-path:inset(0 0 0 100%);transition:clip-path .4s cubic-bezier(.4,0,.2,1)}
-.wt{font-size:10px;font-weight:300;letter-spacing:.14em;text-transform:uppercase;font-family:var(--fn);transition:transform .35s cubic-bezier(.4,0,.2,1);transform-origin:left center}
+.wir.active .wt{color:var(--tx);font-weight:700;transform:scale(1.2);transform-origin:left center}
+.wir.active .wn{color:var(--accent)}
+.wn{font-size:9px;color:var(--accent);letter-spacing:.06em;font-family:var(--sf);flex-shrink:0;width:22px;display:flex;align-items:center;justify-content:center;transition:color .35s ease}
+.wt{font-size:10px;font-weight:300;letter-spacing:.14em;text-transform:uppercase;font-family:var(--sf);transition:transform .35s cubic-bezier(.4,0,.2,1);transform-origin:left center}
 
 /* ── SECTIONS ── */
 .sw{background:var(--bg)}
@@ -155,10 +153,12 @@ body.img-hover #cur{filter:invert(1)}
 /* Logos — white backgrounds, no filter */
 .gl .wi img{filter:none}
 .gl .wi:hover img{filter:none}
+.gm .wi img{filter:none}
+.gm .wi:hover img{filter:none}
 /* Fabrication — subtle warm, earthy treatment */
 #craft .wi img{filter:sepia(0.10) saturate(0.83) contrast(1.06) brightness(0.96)}
 #craft .wi:hover img{filter:sepia(0.04) saturate(0.92) contrast(1.03) brightness(0.99)}
-.ov{position:absolute;inset:0;background:linear-gradient(0deg,rgba(0,0,0,.52) 0%,rgba(0,0,0,.08) 40%,transparent 100%);display:flex;flex-direction:column;justify-content:flex-end;padding:14px;opacity:0;transition:opacity .35s}
+.ov{position:absolute;inset:0;background:none;display:flex;flex-direction:column;justify-content:flex-end;padding:14px;opacity:0;transition:opacity .35s}
 .wi:hover .ov{opacity:1}
 .ov-num{font-size:18px;color:#fff;letter-spacing:.06em;line-height:1;margin-bottom:6px;font-family:var(--sf)}
 .ov-sec{font-size:9px;color:rgba(255,255,255,.7);letter-spacing:.16em;text-transform:uppercase}
@@ -166,7 +166,7 @@ body.img-hover #cur{filter:invert(1)}
 /* ── MASONRY — all sections ── */
 .gl,.gm,.gp{columns:4;column-gap:48px;padding:0 52px}
 .gl .wi,.gm .wi,.gp .wi{break-inside:avoid;margin-bottom:48px;aspect-ratio:unset;background:transparent;transition:transform .4s ease,box-shadow .4s ease}
-.gm .wi:hover,.gp .wi:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,0,0,.1)}
+.gm .wi:hover,.gp .wi:hover{transform:translateY(-4px)}
 .gl .wi img,.gm .wi img,.gp .wi img{width:100%;height:auto;object-fit:cover;display:block}
 /* Logos: contain with padding, uniform squares */
 .gl .wi{background:transparent}
@@ -337,10 +337,11 @@ body.img-hover #cur{filter:invert(1)}
   <div class="wil">Selected Work</div>
   <a href="#logos" class="wir active" data-target="logos"><span class="wn">01</span><span class="wt">Logos</span></a>
   <a href="#illustration" class="wir" data-target="illustration"><span class="wn">02</span><span class="wt">Illustration &amp; Graphic</span></a>
-  <a href="#craft" class="wir" data-target="craft"><span class="wn">03</span><span class="wt">Fabrication</span></a>
-  <a href="#styling" class="wir" data-target="styling"><span class="wn">04</span><span class="wt">Creative Direction</span></a>
-  <a href="#garden" class="wir" data-target="garden"><span class="wn">05</span><span class="wt">Jack&#39;s Garden</span></a>
-  <a href="#production" class="wir" data-target="production"><span class="wn">06</span><span class="wt">Production</span></a>
+  <a href="#typelayout" class="wir" data-target="typelayout"><span class="wn">03</span><span class="wt">Type / Layout</span></a>
+  <a href="#craft" class="wir" data-target="craft"><span class="wn">04</span><span class="wt">Fabrication</span></a>
+  <a href="#styling" class="wir" data-target="styling"><span class="wn">05</span><span class="wt">Creative Direction</span></a>
+  <a href="#garden" class="wir" data-target="garden"><span class="wn">06</span><span class="wt">Jack&#39;s Garden</span></a>
+  <a href="#production" class="wir" data-target="production"><span class="wn">07</span><span class="wt">Production</span></a>
 </aside>
 <div class="work-main">
 
@@ -407,7 +408,7 @@ body.img-hover #cur{filter:invert(1)}
 <div class="wi" data-section="illustration" data-title="Illustration" data-category="2025" data-seclabel="Illustration & Graphic"><img src="sq-images/Screenshot-2025-05-18-at-9.37.44-PM.jpg" alt="Illustration" loading="lazy"><div class="ov"><div class="ov-num">028</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
 <div class="wi" data-section="illustration" data-title="Illustration" data-category="2025" data-seclabel="Illustration & Graphic"><img src="sq-images/Screenshot-2025-05-19-at-5.32.25-PM.png" alt="Illustration" loading="lazy"><div class="ov"><div class="ov-num">029</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
 <div class="wi" data-section="illustration" data-title="Illustration" data-category="2025" data-seclabel="Illustration & Graphic"><img src="sq-images/Screenshot-2025-05-26-at-12.23.20-PM.jpg" alt="Illustration" loading="lazy"><div class="ov"><div class="ov-num">030</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
-<div class="wi" data-section="illustration" data-title="Artwork" data-category="Illustration, 2026" data-seclabel="Illustration & Graphic"><img src="Illustration/artwork_web-05.jpg" alt="Artwork" loading="lazy"><div class="ov"><div class="ov-num">031</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
+
 <div class="wi" data-section="illustration" data-title="Flash Sheets" data-category="Illustration" data-seclabel="Illustration & Graphic"><img src="sq-images/Flash-sheet-001.jpg" alt="Flash Sheets" loading="lazy"><div class="ov"><div class="ov-num">032</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
 <div class="wi" data-section="illustration" data-title="Geometric" data-category="Illustration" data-seclabel="Illustration & Graphic"><img src="Illustration/geometric_web-17.png" alt="Geometric" loading="lazy"><div class="ov"><div class="ov-num">033</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
 <div class="wi" data-section="illustration" data-title="Print Work" data-category="2023" data-seclabel="Illustration & Graphic"><img src="sq-images/Screen-Shot-2023-10-06-at-2.23.17-PM.png" alt="Print Work" loading="lazy"><div class="ov"><div class="ov-num">034</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
@@ -417,20 +418,37 @@ body.img-hover #cur{filter:invert(1)}
 <div class="wi" data-section="illustration" data-title="Illustration" data-category="Archive" data-seclabel="Illustration & Graphic"><img src="sq-images/IMG_3259.jpg" alt="Illustration" loading="lazy"><div class="ov"><div class="ov-num">038</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
 <div class="wi" data-section="illustration" data-title="Archive" data-category="Illustration" data-seclabel="Illustration & Graphic"><img src="sq-images/IMG_5919.jpg" alt="Archive" loading="lazy"><div class="ov"><div class="ov-num">039</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
 <div class="wi" data-section="illustration" data-title="Print" data-category="Archive" data-seclabel="Illustration & Graphic"><img src="sq-images/02-copy.jpg" alt="Print" loading="lazy"><div class="ov"><div class="ov-num">040</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
-<div class="wi" data-section="illustration" data-title="Artwork" data-category="Illustration, 2026" data-seclabel="Illustration & Graphic"><img src="Illustration/artwork_web-06.jpg" alt="Artwork" loading="lazy"><div class="ov"><div class="ov-num">041</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
+
 <div class="wi" data-section="illustration" data-title="Geometric" data-category="Illustration" data-seclabel="Illustration & Graphic"><img src="Illustration/geometric_web-18.png" alt="Geometric" loading="lazy"><div class="ov"><div class="ov-num">042</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
 <div class="wi" data-section="illustration" data-title="Garden" data-category="Archive" data-seclabel="Illustration & Graphic"><img src="sq-images/_DSC0026.jpg" alt="Garden" loading="lazy"><div class="ov"><div class="ov-num">043</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
 <div class="wi" data-section="illustration" data-title="Garden" data-category="Archive" data-seclabel="Illustration & Graphic"><img src="sq-images/_DSC0079.jpg" alt="Garden" loading="lazy"><div class="ov"><div class="ov-num">044</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
 <div class="wi" data-section="illustration" data-title="Artwork" data-category="Illustration, 2026" data-seclabel="Illustration & Graphic"><img src="Illustration/artwork_web-03.jpg" alt="Artwork" loading="lazy"><div class="ov"><div class="ov-num">045</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
 <div class="wi" data-section="illustration" data-title="Artwork" data-category="Illustration, 2026" data-seclabel="Illustration & Graphic"><img src="Illustration/artwork_web-02.jpg" alt="Artwork" loading="lazy"><div class="ov"><div class="ov-num">046</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
 <div class="wi" data-section="illustration" data-title="Artwork" data-category="Illustration, 2026" data-seclabel="Illustration & Graphic"><img src="Illustration/artwork_web-01.jpg" alt="Artwork" loading="lazy"><div class="ov"><div class="ov-num">047</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
-<div class="wi" data-section="illustration" data-title="Brand Work" data-category="Identity" data-seclabel="Illustration & Graphic"><img src="sq-images/Screenshot-2026-02-19-at-3.55.31-PM.png" alt="Brand Work" loading="lazy"><div class="ov"><div class="ov-num">048</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div></div>
+<div class="wi" data-section="illustration" data-title="Sketchbook Wall" data-category="Illustration, 2026" data-seclabel="Illustration & Graphic"><img src="sq-images/new-illustration-IMG_9349.jpg" alt="Sketchbook Wall" loading="lazy"><div class="ov"><div class="ov-num">048</div><div class="ov-sec">Illustration &amp; Graphic</div></div></div>
+</div>
+</section></div>
+
+<div class="sw"><section class="sc2" id="typelayout">
+  <div class="sr"></div>
+  <div class="shrow">
+    <div class="sh swp"><span class="sn">03</span><span class="sdv">&#8212;</span><h2 class="st">Type / Layout</h2></div>
+    <p class="sdesc swp-d">Typography, editorial layout, email campaigns, and print design for brands across the Southwest and beyond.</p>
+  </div>
+  <div class="gm fi"><div class="wi" data-section="typelayout" data-title="Peyote Bird Trade Shows" data-category="Print Design" data-seclabel="Type / Layout"><img src="sq-images/typo-TS-web-08.jpg" alt="Peyote Bird Trade Shows" loading="lazy"><div class="ov"><div class="ov-num">001</div><div class="ov-sec">Type / Layout</div></div></div>
+<div class="wi" data-section="typelayout" data-title="Fred Harvey Email Campaign" data-category="Email Design" data-seclabel="Type / Layout"><img src="sq-images/typo-fred-harvey-email-final.jpg" alt="Fred Harvey Email Campaign" loading="lazy"><div class="ov"><div class="ov-num">002</div><div class="ov-sec">Type / Layout</div></div></div>
+<div class="wi" data-section="typelayout" data-title="The Ballad of Pecos Hank" data-category="Film Poster" data-seclabel="Type / Layout"><img src="sq-images/typo-pecos-hank-01.jpg" alt="The Ballad of Pecos Hank" loading="lazy"><div class="ov"><div class="ov-num">003</div><div class="ov-sec">Type / Layout</div></div></div>
+<div class="wi" data-section="typelayout" data-title="Father&#39;s Day Campaign" data-category="Email Design" data-seclabel="Type / Layout"><img src="sq-images/typo-fathers-day-campaign.jpg" alt="Father's Day Campaign" loading="lazy"><div class="ov"><div class="ov-num">004</div><div class="ov-sec">Type / Layout</div></div></div>
+<div class="wi" data-section="typelayout" data-title="studio|BOSE Proposal" data-category="Document Design" data-seclabel="Type / Layout"><img src="sq-images/typo-studioBOSE---proposal-mockup.jpg" alt="studio|BOSE Proposal" loading="lazy"><div class="ov"><div class="ov-num">005</div><div class="ov-sec">Type / Layout</div></div></div>
+<div class="wi" data-section="typelayout" data-title="studio|BOSE Proposal Floor" data-category="Document Design" data-seclabel="Type / Layout"><img src="sq-images/typo-studioBOSE---proposal-mockup---conc-floor.jpg" alt="studio|BOSE Proposal Floor" loading="lazy"><div class="ov"><div class="ov-num">006</div><div class="ov-sec">Type / Layout</div></div></div>
+<div class="wi" data-section="typelayout" data-title="Jack&#39;s Garden Brand Collage" data-category="Brand Identity" data-seclabel="Type / Layout"><img src="sq-images/typo-IMG_8851.jpeg" alt="Jack's Garden Brand Collage" loading="lazy"><div class="ov"><div class="ov-num">007</div><div class="ov-sec">Type / Layout</div></div></div>
+<div class="wi" data-section="typelayout" data-title="Pins Collection Page" data-category="Web Design" data-seclabel="Type / Layout"><img src="sq-images/typo-IMG_8848.JPG" alt="Pins Collection Page" loading="lazy"><div class="ov"><div class="ov-num">008</div><div class="ov-sec">Type / Layout</div></div></div></div>
 </section></div>
 
 <div class="sw alt"><section class="sc2" id="craft">
   <div class="sr"></div>
   <div class="shrow">
-    <div class="sh swp"><span class="sn">03</span><span class="sdv">&#8212;</span><h2 class="st">Fabrication</h2></div>
+    <div class="sh swp"><span class="sn">04</span><span class="sdv">&#8212;</span><h2 class="st">Fabrication</h2></div>
     <p class="sdesc swp-d">Objects, signage, and various sculptural works<br>made by hand in Santa Fe.<br>Working primarily with found wood and stones,<br>each piece is crafted start to finish<br>in the studio.</p>
   </div>
   <div class="gm fi"><div class="wi" data-section="craft" data-title="Woodwork" data-category="Handcraft" data-seclabel="Fabrication"><img src="sq-images/75840073777__62D7BF84-1C94-4FE9-9ACB-B2D040AF928E.jpeg" alt="Woodwork" loading="lazy"><div class="ov"><div class="ov-num">001</div><div class="ov-sec">Fabrication</div></div></div>
@@ -463,7 +481,7 @@ body.img-hover #cur{filter:invert(1)}
 <div class="sw"><section class="sc2" id="styling">
   <div class="sr"></div>
   <div class="shrow">
-    <div class="sh swp"><span class="sn">04</span><span class="sdv">&#8212;</span><h2 class="st">Creative Direction</h2></div>
+    <div class="sh swp"><span class="sn">05</span><span class="sdv">&#8212;</span><h2 class="st">Creative Direction</h2></div>
     <p class="sdesc swp-d">Styling, producing, sourcing<br>for fashion, editorial, and brand campaigns.</p>
   </div>
   <div class="gm fi"><div class="wi" data-section="styling" data-title="Summer &#39;22" data-category="Editorial" data-seclabel="Creative Direction"><img src="sq-images/2022_07_25_peyote_bird_2111-16.jpeg" alt="Summer &#39;22" loading="lazy"><div class="ov"><div class="ov-num">001</div><div class="ov-sec">Creative Direction</div></div></div>
@@ -526,7 +544,7 @@ body.img-hover #cur{filter:invert(1)}
 <div class="sw alt"><section class="sc2" id="garden">
   <div class="sr"></div>
   <div class="shrow">
-    <div class="sh swp"><span class="sn">05</span><span class="sdv">&#8212;</span><h2 class="st">Jack&#39;s Garden</h2></div>
+    <div class="sh swp"><span class="sn">06</span><span class="sdv">&#8212;</span><h2 class="st">Jack&#39;s Garden</h2></div>
     <p class="sdesc swp-d">An ever evolving meditation on life and growth<br>through the lens of a simple backyard garden<br>in Santa Fe &#8212; flowers, vegetables, native species,<br>insects, dirt, water and patience all working together<br>in perfect harmony. This one remains a lifelong<br>case study and the archive serves as a helpful<br>reminder of seasons past.</p>
   </div>
   <div class="gm fi"><div class="wi" data-section="garden" data-title="Garden" data-category="2022" data-seclabel="Jack's Garden"><img src="sq-images/2022_06_30_jacks_garden_santa_fe_9099-4.jpg" alt="Garden" loading="lazy"><div class="ov"><div class="ov-num">001</div><div class="ov-sec">Jack&#39;s Garden</div></div></div>
@@ -566,7 +584,7 @@ body.img-hover #cur{filter:invert(1)}
 <div class="sw"><section class="sc2" id="production">
   <div class="sr"></div>
   <div class="shrow">
-    <div class="sh swp"><span class="sn">06</span><span class="sdv">&#8212;</span><h2 class="st">Production</h2></div>
+    <div class="sh swp"><span class="sn">07</span><span class="sdv">&#8212;</span><h2 class="st">Production</h2></div>
     <p class="sdesc swp-d">Film production for brand and editorial clients.<br>Highlighted below is Cheyenne Turquoise,<br>a documentary short produced for Peyote Bird<br>and Sundance &#8212; shot in Nevada, 2019.</p>
   </div>
   <div class="gp fi">
