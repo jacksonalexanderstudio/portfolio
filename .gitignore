@@ -24,3 +24,6 @@ UPLOAD TRACKER.xlsx
 UtilityBillTracker.gs
 Maschine Missing Sample Finder.html
 typography/
+
+# Local Netlify folder
+.netlify
