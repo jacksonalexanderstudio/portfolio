@@ -59,7 +59,7 @@ body.img-hover #cur{filter:invert(1)}
 /* ── PAGE HERO ── */
 .page-hero{padding-top:140px;background:#0c0c0c;border-bottom:none;padding-bottom:80px;position:relative;overflow:hidden}
 .page-hero-inner{padding:80px 28px 0;max-width:900px;position:relative;z-index:2}
-.page-hero h1{font-size:clamp(18px,2.2vw,32px);font-weight:400;letter-spacing:.18em;text-transform:uppercase;color:#fff;margin-bottom:24px}
+.page-hero h1{font-size:clamp(24px,3vw,39px);font-family:'Cormorant Garamond',serif;font-weight:300;font-style:italic;letter-spacing:.04em;text-transform:none;color:#fff;margin-bottom:24px}
 .page-hero p{font-size:15px;font-family:var(--sf);font-weight:300;color:rgba(255,255,255,.7);line-height:1.9;max-width:600px}
 
 /* ── CASE STUDY LAYOUT ── */
@@ -69,7 +69,11 @@ body.img-hover #cur{filter:invert(1)}
 .cs-main{flex:1;min-width:0;border-left:1px solid var(--br)}
 
 /* ── CASE STUDY INDEX (sidebar) ── */
-.cs-index-label{font-size:11px;font-family:'Cormorant Garamond',serif;font-weight:300;font-style:italic;letter-spacing:.08em;color:var(--tx);text-transform:none;margin-bottom:28px}
+.cs-index-label{font-size:16px;font-family:'Cormorant Garamond',serif;font-weight:300;font-style:italic;letter-spacing:.06em;color:var(--tx);text-transform:none;margin-bottom:0;cursor:pointer;display:flex;align-items:center;justify-content:space-between;padding-bottom:10px;border-bottom:1px solid var(--br);transition:color .15s}
+.cs-index-label:hover{color:var(--accent)}
+.cs-index-label .cs-toggle{font-family:var(--sf);font-size:16px;font-weight:300;font-style:normal;color:var(--accent)}
+.cs-nav-list{overflow:hidden;transition:max-height .4s ease,opacity .3s ease,margin .3s ease;max-height:600px;opacity:1;margin-top:20px}
+.cs-sidebar.nav-collapsed .cs-nav-list{max-height:0;opacity:0;margin-top:0}
 .cs-index-row{display:flex;align-items:center;gap:10px;padding:10px 0;transition:opacity .3s,color .3s;opacity:1;text-decoration:none;color:var(--tx);border-bottom:1px solid transparent}
 .cs-index-row:hover{opacity:.7}
 .cs-index-row.active{opacity:1;border-bottom:1px solid var(--accent)}
@@ -307,7 +311,8 @@ body.img-hover #cur{filter:invert(1)}
 <!-- CASE STUDY LAYOUT -->
 <div class="cs-layout">
   <aside class="cs-sidebar">
-    <div class="cs-index-label">Projects</div>
+    <div class="cs-index-label" onclick="var s=this.parentElement;s.classList.toggle('nav-collapsed');this.querySelector('.cs-toggle').textContent=s.classList.contains('nav-collapsed')?'+':'−'">Projects <span class="cs-toggle">&minus;</span></div>
+    <div class="cs-nav-list">
     <a href="#cs-1" class="cs-index-row active" data-target="cs-1">
       <span class="cs-index-num">01</span>
       <span class="cs-index-title">Mr. Porter x Peyote Bird</span>
@@ -352,6 +357,7 @@ body.img-hover #cur{filter:invert(1)}
       <span class="cs-index-num">11</span>
       <span class="cs-index-title">Flash Sheets</span>
     </a>
+    </div>
   </aside>
   <div class="cs-main">
 
