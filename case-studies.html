@@ -216,8 +216,7 @@ body.img-hover #cur{filter:invert(1)}
   .cs-sidebar{position:static;width:100%;border-bottom:1px solid var(--br);padding:20px 20px;display:flex;flex-direction:column;gap:0}
   .cs-main{border-left:none}
   .cs-sidebar .cs-index-label{margin-bottom:0;cursor:pointer;display:flex;align-items:center;gap:8px}
-  .cs-sidebar .cs-index-label::after{content:'▾';font-size:10px;opacity:.4;transition:transform .3s}
-  .cs-sidebar.nav-open .cs-index-label::after{transform:rotate(180deg)}
+  .cs-sidebar .cs-index-label::after{content:none}
   .cs-index-row{padding:8px 0;display:none}
   .cs-sidebar.nav-open .cs-index-row{display:flex}
   .hi,.cta-i,.fi2{padding-left:16px;padding-right:16px}
@@ -310,8 +309,8 @@ body.img-hover #cur{filter:invert(1)}
 
 <!-- CASE STUDY LAYOUT -->
 <div class="cs-layout">
-  <aside class="cs-sidebar">
-    <div class="cs-index-label" onclick="var s=this.parentElement;s.classList.toggle('nav-collapsed');this.querySelector('.cs-toggle').textContent=s.classList.contains('nav-collapsed')?'+':'−'">Projects <span class="cs-toggle">&minus;</span></div>
+  <aside class="cs-sidebar nav-open">
+    <div class="cs-index-label" onclick="var s=this.parentElement,o=s.classList.contains('nav-open');s.classList.toggle('nav-open');s.classList.toggle('nav-collapsed');this.querySelector('.cs-toggle').textContent=o?'+':'−'">Projects <span class="cs-toggle">&minus;</span></div>
     <div class="cs-nav-list">
     <a href="#cs-1" class="cs-index-row active" data-target="cs-1">
       <span class="cs-index-num">01</span>
@@ -1134,15 +1133,13 @@ body.img-hover #cur{filter:invert(1)}
     });
   });
 
-  // ── MOBILE NAV TOGGLE ──
-  var csSidebar = document.querySelector('.cs-sidebar');
-  var csLabel = document.querySelector('.cs-sidebar .cs-index-label');
-  if(csLabel){
-    csLabel.addEventListener('click',function(){csSidebar.classList.toggle('nav-open')});
-    document.querySelectorAll('.cs-index-row').forEach(function(link){
-      link.addEventListener('click',function(){csSidebar.classList.remove('nav-open')});
+  // ── MOBILE NAV: close sidebar when a link is tapped ──
+  document.querySelectorAll('.cs-index-row').forEach(function(link){
+    link.addEventListener('click',function(){
+      var sb = document.querySelector('.cs-sidebar');
+      if(sb){sb.classList.remove('nav-open');sb.classList.add('nav-collapsed');var t=sb.querySelector('.cs-toggle');if(t)t.textContent='+';}
     });
-  }
+  });
 
   // ── VIDEO PLAY BUTTONS ──
   document.querySelectorAll('.video-wrap').forEach(function(wrap){
