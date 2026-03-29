@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Contact — Jackson Alexander Studio</title>
+<meta name="description" content="Get in touch with Jackson Alexander Studio in Santa Fe, NM.">
+<link rel="canonical" href="https://jacksonalexanderstudio.com/contact.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Contact — Jackson Alexander Studio">
+<meta property="og:description" content="Get in touch about a project.">
+<meta property="og:url" content="https://jacksonalexanderstudio.com/contact.html">
+<meta property="og:site_name" content="Jackson Alexander Studio">
+<meta name="author" content="Jackson Alexander">
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,300&family=Fragment+Mono&family=DM+Sans:wght@200;300;400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#FFFFFF;--alt:#FFFFFF;--tx:#1A1919;--sec:#000;--br:#EBEBEB;--fn:'Fragment Mono','Courier New',monospace;--sf:'DM Sans',sans-serif;--accent:#D95740}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--tx);font-family:var(--fn);line-height:1.6;overflow-x:hidden}
+img{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+
+/* ── HEADER ── */
+#hdr{position:fixed;top:0;left:0;right:0;z-index:1000;height:140px;background:#0c0c0c;border-bottom:1px solid rgba(255,255,255,.1);display:flex;align-items:center;transition:height .4s,box-shadow .4s}
+#hdr.sc{box-shadow:0 1px 32px rgba(0,0,0,.06);height:88px}
+.hi{width:100%;padding:0 28px;display:flex;align-items:center;justify-content:space-between}
+.hl img{height:102px;width:auto;transition:height .4s;filter:invert(1)}
+#hdr.sc .hl img{height:61px}
+.hn{display:flex;align-items:center;gap:36px}
+.hn a,.nb{font:400 11px/1 var(--fn);letter-spacing:.13em;text-transform:uppercase;color:#fff;background:none;border:none;padding:0;position:relative}
+.hn a::after,.nb::after{content:'';position:absolute;bottom:-3px;left:0;width:0;height:1px;background:#fff;transition:width .3s ease}
+.hn a:hover::after,.nb:hover::after{width:100%}
+.nw{position:relative}
+.nb{display:flex;align-items:center;gap:5px}
+.nw::before{content:'';position:absolute;top:100%;left:-20px;right:-20px;height:28px;z-index:99}
+.nd{position:absolute;top:calc(100% + 28px);right:0;background:#0c0c0c;border:1px solid rgba(255,255,255,.1);min-width:260px;opacity:0;pointer-events:none;transform:translateY(-8px);transition:opacity .2s,transform .2s;z-index:100}
+.nw:hover .nd,.nw:focus-within .nd,.nd.nd-open{opacity:1;pointer-events:all;transform:translateY(0)}
+.nd a{display:flex;align-items:center;padding:12px 18px;font-size:11px;letter-spacing:.08em;border-bottom:1px solid rgba(255,255,255,.08);color:#fff}
+.nd a:last-child{border-bottom:none}
+.nd a:hover{background:rgba(255,255,255,.06)}
+.nd a::after{display:none}
+.dn{color:#D95740;margin-right:10px;font-size:10px;font-family:var(--sf)}
+
+/* ── PAGE HERO ── */
+.page-hero{background:#0c0c0c;padding:200px 52px 80px;border-bottom:1px solid rgba(255,255,255,.1)}
+.page-hero-inner{max-width:900px}
+.page-hero h1{font-size:clamp(24px,3vw,39px);font-family:'Cormorant Garamond',serif;font-weight:300;font-style:italic;letter-spacing:.04em;text-transform:none;color:#fff;margin-bottom:24px}
+.page-hero p{font:300 13px/1.8 var(--sf);color:rgba(255,255,255,.55);max-width:520px;letter-spacing:.02em}
+
+/* ── CONTACT FORM ── */
+.contact-section{max-width:620px;margin:0 auto;padding:80px 28px 120px}
+.contact-form{display:flex;flex-direction:column;gap:32px}
+.form-group{display:flex;flex-direction:column;gap:8px}
+.form-group label{font:400 10px/1 var(--fn);letter-spacing:.14em;text-transform:uppercase;color:var(--tx);opacity:.55}
+.form-group input,.form-group textarea{background:transparent;border:none;border-bottom:1px solid var(--br);padding:12px 0;font:300 14px/1.6 var(--sf);color:var(--tx);letter-spacing:.02em;outline:none;transition:border-color .3s;resize:none}
+.form-group input::placeholder,.form-group textarea::placeholder{color:rgba(26,25,25,.3)}
+.form-group input:focus,.form-group textarea:focus{border-bottom-color:var(--tx)}
+.form-group textarea{min-height:160px}
+.form-submit{display:inline-block;margin-top:8px;font:400 11px/1 var(--fn);letter-spacing:.13em;text-transform:uppercase;color:var(--tx);background:transparent;border:1px solid var(--tx);padding:18px 40px;cursor:pointer;transition:background .2s,color .2s;align-self:flex-start}
+.form-submit:hover{background:var(--tx);color:var(--bg)}
+.form-status{font:300 13px/1.6 var(--sf);letter-spacing:.02em;padding:16px 0;display:none}
+.form-status.success{display:block;color:var(--accent)}
+.form-status.error{display:block;color:var(--accent)}
+
+/* ── FOOTER ── */
+#ftr{border-top:none;background:#0c0c0c}
+.fi2{padding:24px 28px;display:grid;grid-template-columns:1fr 1fr 1fr;align-items:center;font-size:10px;letter-spacing:.1em;color:rgba(255,255,255,.7);text-transform:uppercase}
+.fc{text-align:center}
+.fr{display:flex;justify-content:flex-end;gap:24px}
+.fr a{transition:color .2s;color:rgba(255,255,255,.7)}
+.fr a:hover{color:#fff}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  .page-hero{padding:160px 20px 60px}
+  .page-hero h1{font-size:clamp(14px,3.5vw,22px);letter-spacing:.14em;margin-bottom:16px}
+  .page-hero p{font-size:12px;line-height:1.7}
+  .hi,.fi2{padding-left:16px;padding-right:16px}
+  #hdr{height:88px}
+  .hl img{height:52px}
+  #hdr.sc .hl img{height:42px}
+  .hn{gap:18px}
+  .hn a,.nb{font-size:9px;letter-spacing:.1em}
+  .contact-section{padding:60px 20px 80px}
+}
+@media(max-width:600px){
+  .fi2{grid-template-columns:1fr;gap:12px;text-align:center}
+  .fr{justify-content:center}
+  .form-submit{width:100%;text-align:center}
+}
+</style>
+</head>
+<body>
+
+<header id="hdr">
+  <div class="hi">
+    <a href="portfolio.html" class="hl"><img src="logos &amp; backgrounds/jack-logo-web.png" alt="Jackson Alexander Studio"></a>
+    <nav class="hn">
+      <div class="nw">
+        <a href="portfolio.html" class="nb">Portfolio &#9662;</a>
+        <div class="nd">
+          <a href="portfolio.html#logos"><span class="dn">01</span>Logos</a>
+          <a href="portfolio.html#illustration"><span class="dn">02</span>Illustration / Graphic</a>
+          <a href="portfolio.html#craft"><span class="dn">03</span>Fabrication</a>
+          <a href="portfolio.html#styling"><span class="dn">04</span>Creative Direction</a>
+          <a href="portfolio.html#garden"><span class="dn">05</span>Jack&#39;s Garden</a>
+          <a href="portfolio.html#production"><span class="dn">06</span>Production</a>
+        </div>
+      </div>
+      <a href="case-studies.html">Case Studies</a>
+      <a href="archive.html">Archive</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<!-- PAGE HERO -->
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <h1>Contact</h1>
+    <p>Have a project in mind? Drop a note and let's talk.</p>
+  </div>
+</div>
+
+<!-- CONTACT FORM -->
+<div class="contact-section">
+  <form class="contact-form" id="contact-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+    <div class="form-group">
+      <label for="name">Name</label>
+      <input type="text" id="name" name="name" placeholder="Your name" required>
+    </div>
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" placeholder="Your email" required>
+    </div>
+    <div class="form-group">
+      <label for="subject">Subject</label>
+      <input type="text" id="subject" name="subject" placeholder="What is this regarding?">
+    </div>
+    <div class="form-group">
+      <label for="message">Message</label>
+      <textarea id="message" name="message" placeholder="Tell me about your project..." required></textarea>
+    </div>
+    <button type="submit" class="form-submit">Send Message</button>
+    <div class="form-status" id="form-status"></div>
+  </form>
+</div>
+
+<footer id="ftr">
+  <div class="fi2">
+    <span>&#169; 2026 Jackson Alexander Studio</span>
+    <span class="fc">Santa Fe, NM</span>
+    <div class="fr">
+      <a href="https://www.instagram.com/sandboxkid" target="_blank" rel="noopener">Instagram</a>
+      <a href="mailto:jacksonalexanderstudio@gmail.com">jacksonalexanderstudio@gmail.com</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function() {
+  'use strict';
+
+  // ── HEADER SHRINK ──
+  var hdr = document.getElementById('hdr');
+  window.addEventListener('scroll', function() {
+    hdr.classList.toggle('sc', window.scrollY > 60);
+  });
+
+  // ── NAV DROPDOWN (mobile) ──
+  var nbBtn = document.querySelector('.nb');
+  var ndMenu = document.querySelector('.nd');
+  if (nbBtn && ndMenu) {
+    nbBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      ndMenu.classList.toggle('nd-open');
+    });
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.nw')) ndMenu.classList.remove('nd-open');
+    });
+  }
+
+  // ── FORM SUBMISSION ──
+  var form = document.getElementById('contact-form');
+  var status = document.getElementById('form-status');
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    var data = new FormData(form);
+    fetch(form.action, {
+      method: 'POST',
+      body: data,
+      headers: { 'Accept': 'application/json' }
+    }).then(function(res) {
+      if (res.ok) {
+        status.className = 'form-status success';
+        status.textContent = 'Message sent — I\'ll be in touch soon.';
+        form.reset();
+      } else {
+        status.className = 'form-status error';
+        status.textContent = 'Something went wrong. Try emailing me directly.';
+      }
+    }).catch(function() {
+      status.className = 'form-status error';
+      status.textContent = 'Something went wrong. Try emailing me directly.';
+    });
+  });
+})();
+</script>
+</body>
+</html>
