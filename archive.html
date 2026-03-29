@@ -133,32 +133,6 @@ a{color:inherit;text-decoration:none}
 </head>
 <body>
 
-<!-- PASSWORD GATE -->
-<div id="pw-gate" style="position:fixed;inset:0;z-index:99999;background:#0c0c0c;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:24px">
-  <div style="font:300 italic clamp(18px,2.5vw,28px)/1.2 'Cormorant Garamond',serif;color:#fff;letter-spacing:.04em">Archive</div>
-  <input id="pw-input" type="password" placeholder="Enter password" style="background:none;border:none;border-bottom:1px solid rgba(255,255,255,.3);color:#fff;font:400 13px/1 var(--fn);letter-spacing:.12em;text-transform:uppercase;padding:10px 0;width:280px;text-align:center;outline:none">
-  <div id="pw-error" style="font:400 10px/1 var(--sf);color:var(--accent);letter-spacing:.1em;text-transform:uppercase;opacity:0;transition:opacity .3s"></div>
-  <a href="portfolio.html" style="font:400 10px/1 var(--fn);letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-top:16px;transition:color .2s;text-decoration:none">&larr; Back</a>
-</div>
-<script>
-(function(){
-  var gate=document.getElementById('pw-gate'),inp=document.getElementById('pw-input'),err=document.getElementById('pw-error');
-  if(sessionStorage.getItem('arc-auth')==='1'){gate.style.display='none';}
-  inp.addEventListener('keydown',function(e){
-    if(e.key==='Enter'){
-      if(inp.value==='TRAINDREAM'){
-        sessionStorage.setItem('arc-auth','1');
-        gate.style.display='none';
-      } else {
-        err.textContent='Incorrect password';err.style.opacity='1';
-        inp.value='';
-        setTimeout(function(){err.style.opacity='0'},2000);
-      }
-    }
-  });
-  inp.focus();
-})();
-</script>
 
 <!-- LIGHTBOX -->
 <div id="lb"><div class="lbi">
@@ -195,6 +169,7 @@ a{color:inherit;text-decoration:none}
 <div class="page-hero">
   <div class="page-hero-inner">
     <h1>Archive</h1>
+    <p>An ever growing collection of objects that inspire me.</p>
   </div>
 </div>
 
@@ -238,7 +213,7 @@ a{color:inherit;text-decoration:none}
 
   // ── LOAD POSTCARDS ──
   var grid = document.getElementById('archive-grid');
-  var totalImages = 209;
+  var totalImages = 320;
   var allItems = [];
 
   for (var i = 1; i <= totalImages; i++) {
