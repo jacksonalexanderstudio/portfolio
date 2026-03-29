@@ -32,7 +32,7 @@ img{display:block;max-width:100%}
 a{color:inherit;text-decoration:none}
 
 /* ── CURSOR ── */
-#cur{position:fixed;top:0;left:0;width:52px;height:52px;pointer-events:none;z-index:10000;will-change:transform;transform:translate(-200px,-200px);transition:filter .15s ease}
+#cur{position:fixed;top:0;left:0;width:42px;height:42px;pointer-events:none;z-index:10000;will-change:transform;transform:translate(-200px,-200px);transition:filter .15s ease}
 body.img-hover #cur{filter:invert(1)}
 
 /* ── HEADER ── */
@@ -1082,7 +1082,7 @@ body.img-hover #cur{filter:invert(1)}
   var cur = document.getElementById('cur');
   if (cur && window.matchMedia('(pointer:fine)').matches) {
     document.addEventListener('mousemove', function(e) {
-      cur.style.transform = 'translate(' + (e.clientX - 26) + 'px,' + (e.clientY - 26) + 'px)';
+      cur.style.transform = 'translate(' + (e.clientX - 21) + 'px,' + (e.clientY - 21) + 'px)';
     });
     document.addEventListener('mouseleave', function() {
       cur.style.transform = 'translate(-200px,-200px)';
