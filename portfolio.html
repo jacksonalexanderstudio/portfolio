@@ -177,14 +177,14 @@ body.img-hover #cur{filter:invert(1)}
 .ov-sec{font-size:9px;color:rgba(255,255,255,.7);letter-spacing:.16em;text-transform:uppercase}
 
 /* ── MASONRY — all sections ── */
-.gl,.gm,.gp{display:grid;grid-template-columns:repeat(4,1fr);gap:48px;padding:0 52px;align-items:start}
-.gl .wi,.gm .wi,.gp .wi{aspect-ratio:unset;background:transparent;transition:transform .4s ease,box-shadow .4s ease}
+.gl,.gm,.gp{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;padding:0 52px;align-items:start}
+.gl .wi,.gm .wi,.gp .wi{aspect-ratio:1/1;background:transparent;overflow:hidden;transition:transform .4s ease,box-shadow .4s ease}
 .gm .wi:hover,.gp .wi:hover{transform:translateY(-4px)}
-.gl .wi img,.gm .wi img,.gp .wi img{width:100%;height:auto;object-fit:cover;display:block}
+.gl .wi img,.gm .wi img,.gp .wi img{width:100%;height:100%;object-fit:cover;display:block}
 /* Logos: contain with padding, uniform squares */
 .gl .wi{background:transparent}
-.gl .wi img{object-fit:contain;padding:20px;aspect-ratio:1/1}
-.gl .wi video,.gm .wi video,.gp .wi video{width:100%;height:auto;object-fit:cover;display:block}
+.gl .wi img{object-fit:contain;padding:20px}
+.gl .wi video,.gm .wi video,.gp .wi video{width:100%;height:100%;object-fit:cover;display:block}
 
 /* ── CTA ── */
 #cta{background:var(--alt);border-top:1px solid var(--br)}
@@ -241,6 +241,7 @@ body.img-hover #cur{filter:invert(1)}
   #top-about{padding-top:72px}
   #top-about::before{background-size:cover;background-position:center center}
   #hdr{height:72px}
+  .nd{position:fixed;top:72px;left:0;right:0;min-width:0}
   .hl img{height:48px}
   .hn{gap:16px}
   .hn a,.nb{font-size:9px;letter-spacing:.08em}
