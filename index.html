@@ -985,57 +985,66 @@ body.img-hover #cur{filter:invert(1)}
 
 })();
 
-// ── ABOUT BACKGROUND WARP EFFECT (WebGL) ──────────────────────────────────────
+// ── ABOUT BACKGROUND WARP EFFECT (WebGL) — multi-image slideshow ─────────────
 (function() {
   var canvas = document.getElementById('warp-canvas');
   var section = document.getElementById('top-about');
   if (!canvas || !section) return;
 
   var gl = canvas.getContext('webgl', { alpha: false, antialias: false, preserveDrawingBuffer: true });
-  if (!gl) return; // silently fall back to static bg
+  if (!gl) return;
 
-  // Vertex shader
+  var heroImages = [
+    'hero-images/hero-01.jpg','hero-images/hero-03.jpg','hero-images/hero-04.jpg',
+    'hero-images/hero-05.jpg','hero-images/hero-06.jpg','hero-images/hero-07.jpg',
+    'hero-images/hero-08.jpg','hero-images/hero-09.jpg','hero-images/hero-10.jpg',
+    'hero-images/hero-11.jpg','hero-images/hero-12.jpg','hero-images/hero-13.jpg',
+    'hero-images/hero-14.jpg','hero-images/hero-15.jpg','hero-images/hero-16.jpg',
+    'hero-images/hero-17.jpg','hero-images/hero-18.jpg','hero-images/hero-19.jpg',
+    'hero-images/hero-20.jpg','hero-images/hero-21.jpg'
+  ];
+
   var vsSrc = 'attribute vec2 a;varying vec2 v;void main(){v=a*0.5+0.5;gl_Position=vec4(a,0.0,1.0);}';
 
-  // Fragment shader — FULL psychedelic warp intensity, NO color changes
   var fsSrc = `
 precision highp float;
-uniform sampler2D img;
+uniform sampler2D imgA;
+uniform sampler2D imgB;
+uniform float mix_f;
 uniform float t;
-uniform vec2 cover;
-uniform vec2 coverOff;
+uniform vec2 coverA;
+uniform vec2 coverOffA;
+uniform vec2 coverB;
+uniform vec2 coverOffB;
 varying vec2 v;
 
 void main(){
-  vec2 uv = v * cover + coverOff;
+  vec2 uvA = v * coverA + coverOffA;
+  vec2 uvB = v * coverB + coverOffB;
 
-  // === FULL multi-layer wavy displacement (original visualizer intensity) ===
   float dx =
-    sin(uv.y * 5.2  + t * 0.65) * 0.018 +
-    sin(uv.y * 13.0 + t * 1.2)  * 0.007 +
-    cos(uv.x * 7.3  + uv.y * 2.8 + t * 0.42) * 0.012 +
-    sin(uv.x * 3.0  + uv.y * 6.0 + t * 0.28) * 0.009;
-
+    sin(uvA.y * 5.2  + t * 0.65) * 0.018 +
+    sin(uvA.y * 13.0 + t * 1.2)  * 0.007 +
+    cos(uvA.x * 7.3  + uvA.y * 2.8 + t * 0.42) * 0.012 +
+    sin(uvA.x * 3.0  + uvA.y * 6.0 + t * 0.28) * 0.009;
   float dy =
-    cos(uv.x * 4.4  + t * 0.52) * 0.015 +
-    cos(uv.x * 10.0 + t * 0.85) * 0.006 +
-    sin(uv.y * 5.0  + uv.x * 4.0 + t * 0.38) * 0.010 +
-    cos(uv.y * 8.0  + uv.x * 2.5 + t * 0.19) * 0.007;
+    cos(uvA.x * 4.4  + t * 0.52) * 0.015 +
+    cos(uvA.x * 10.0 + t * 0.85) * 0.006 +
+    sin(uvA.y * 5.0  + uvA.x * 4.0 + t * 0.38) * 0.010 +
+    cos(uvA.y * 8.0  + uvA.x * 2.5 + t * 0.19) * 0.007;
 
-  vec2 wuv = clamp(uv + vec2(dx, dy), 0.0, 1.0);
+  vec2 wuvA = clamp(uvA + vec2(dx, dy), 0.0, 1.0);
+  vec2 wuvB = clamp(uvB + vec2(dx, dy), 0.0, 1.0);
 
-  // === Clean sample — no chromatic aberration, no shimmer ===
-  vec3 col = texture2D(img, wuv).rgb;
+  vec3 colA = texture2D(imgA, wuvA).rgb;
+  vec3 colB = texture2D(imgB, wuvB).rgb;
+  vec3 col = mix(colA, colB, mix_f);
 
-  // === Breathing luminance pulse ===
-  float breath = 0.92 + 0.08 * sin(t * 0.7 + uv.y * 3.5 + uv.x * 2.0);
+  float breath = 0.92 + 0.08 * sin(t * 0.7 + uvA.y * 3.5 + uvA.x * 2.0);
   col *= breath;
-
-  // === Luminance ripple across surface ===
-  float ripple = sin(uv.x * 9.0 + uv.y * 7.0 + t * 1.1) * 0.06;
+  float ripple = sin(uvA.x * 9.0 + uvA.y * 7.0 + t * 1.1) * 0.06;
   col *= (1.0 + ripple);
 
-  // === Gradient overlay (matching original CSS) ===
   float diag = (v.x + (1.0 - v.y)) * 0.5;
   float dark = mix(0.75, 0.44, smoothstep(0.0, 0.5, diag));
   dark = mix(dark, 0.68, smoothstep(0.5, 1.0, diag));
@@ -1048,9 +1057,7 @@ void main(){
     var s = gl.createShader(type);
     gl.shaderSource(s, src);
     gl.compileShader(s);
-    if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) {
-      console.error('Warp shader error:', gl.getShaderInfoLog(s));
-    }
+    if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) console.error('Warp shader error:', gl.getShaderInfoLog(s));
     return s;
   }
 
@@ -1060,7 +1067,6 @@ void main(){
   gl.linkProgram(prog);
   gl.useProgram(prog);
 
-  // Full-screen quad
   var buf = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, buf);
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, -1,1, 1,-1, 1,1]), gl.STATIC_DRAW);
@@ -1069,14 +1075,26 @@ void main(){
   gl.vertexAttribPointer(al, 2, gl.FLOAT, false, 0, 0);
 
   var uT = gl.getUniformLocation(prog, 't');
-  var uCover = gl.getUniformLocation(prog, 'cover');
-  var uCoverOff = gl.getUniformLocation(prog, 'coverOff');
-  var uImg = gl.getUniformLocation(prog, 'img');
+  var uMix = gl.getUniformLocation(prog, 'mix_f');
+  var uImgA = gl.getUniformLocation(prog, 'imgA');
+  var uImgB = gl.getUniformLocation(prog, 'imgB');
+  var uCoverA = gl.getUniformLocation(prog, 'coverA');
+  var uCoverOffA = gl.getUniformLocation(prog, 'coverOffA');
+  var uCoverB = gl.getUniformLocation(prog, 'coverB');
+  var uCoverOffB = gl.getUniformLocation(prog, 'coverOffB');
 
-  // Load the background image
-  var bgImg = new Image();
-  bgImg.onload = function() {
-    // Upload texture
+  var textures = [];
+  var imgData = [];
+  var currentIdx = Math.floor(Math.random() * heroImages.length);
+  var nextIdx = currentIdx;
+  var mixFactor = 0;
+  var fading = false;
+  var fadeStart = 0;
+  var FADE_DUR = 3;
+  var AUTO_INTERVAL = 7000;
+  var autoTimer = null;
+
+  function createTexture(image) {
     var tex = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, tex);
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
@@ -1084,46 +1102,93 @@ void main(){
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, bgImg);
-    gl.uniform1i(uImg, 0);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+    return tex;
+  }
 
-    var imgW = bgImg.naturalWidth;
-    var imgH = bgImg.naturalHeight;
-    var imgAspect = imgW / imgH;
+  function computeCover(imgAspect) {
+    var rect = section.getBoundingClientRect();
+    var canvasAspect = rect.width / rect.height;
+    var zoom = 0.90; // zoom-in to prevent edge artifacts from warp
+    var sx, sy, ox, oy;
+    if (canvasAspect > imgAspect) {
+      sx = zoom;
+      sy = (imgAspect / canvasAspect) * zoom;
+      ox = (1.0 - sx) * 0.5;
+      oy = (1.0 - sy) * 0.5;
+    } else {
+      sx = (canvasAspect / imgAspect) * zoom;
+      sy = zoom;
+      ox = (1.0 - sx) * 0.5;
+      oy = (1.0 - sy) * 0.5;
+    }
+    return { sx: sx, sy: sy, ox: ox, oy: oy };
+  }
 
+  function bindTextures() {
+    var cA = computeCover(imgData[currentIdx].aspect);
+    gl.uniform2f(uCoverA, cA.sx, cA.sy);
+    gl.uniform2f(uCoverOffA, cA.ox, cA.oy);
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, textures[currentIdx]);
+    gl.uniform1i(uImgA, 0);
+
+    var cB = computeCover(imgData[nextIdx].aspect);
+    gl.uniform2f(uCoverB, cB.sx, cB.sy);
+    gl.uniform2f(uCoverOffB, cB.ox, cB.oy);
+    gl.activeTexture(gl.TEXTURE1);
+    gl.bindTexture(gl.TEXTURE_2D, textures[nextIdx]);
+    gl.uniform1i(uImgB, 1);
+  }
+
+  function goTo(idx) {
+    if (fading) {
+      currentIdx = nextIdx;
+      mixFactor = 0;
+      fading = false;
+    }
+    nextIdx = ((idx % heroImages.length) + heroImages.length) % heroImages.length;
+    if (nextIdx === currentIdx) return;
+    fading = true;
+    fadeStart = performance.now();
+    bindTextures();
+    resetAutoTimer();
+  }
+
+  function resetAutoTimer() {
+    clearInterval(autoTimer);
+    autoTimer = setInterval(function() {
+      goTo(currentIdx + 1);
+    }, AUTO_INTERVAL);
+  }
+
+  var loadedCount = 0;
+  heroImages.forEach(function(src, i) {
+    var img = new Image();
+    img.onload = function() {
+      textures[i] = createTexture(img);
+      imgData[i] = { w: img.naturalWidth, h: img.naturalHeight, aspect: img.naturalWidth / img.naturalHeight };
+      loadedCount++;
+      if (loadedCount === heroImages.length) startWarp();
+    };
+    img.src = src;
+  });
+
+  function startWarp() {
     function resize() {
       var rect = section.getBoundingClientRect();
-      var cw = rect.width;
-      var ch = rect.height;
-      canvas.width = cw;
-      canvas.height = ch;
-      gl.viewport(0, 0, cw, ch);
-
-      // Compute "cover" scaling (fill canvas, crop overflow)
-      var canvasAspect = cw / ch;
-      var scaleX, scaleY, offX, offY;
-      if (canvasAspect > imgAspect) {
-        // canvas wider than image — fit width, crop height
-        scaleX = 1.0;
-        scaleY = imgAspect / canvasAspect;
-        offX = 0.0;
-        offY = 0.0; // top-aligned like CSS background-position: center top
-      } else {
-        // canvas taller — fit height, crop width
-        scaleX = canvasAspect / imgAspect;
-        scaleY = 1.0;
-        offX = (1.0 - scaleX) * 0.5; // center horizontally
-        offY = 0.0;
-      }
-      gl.uniform2f(uCover, scaleX, scaleY);
-      gl.uniform2f(uCoverOff, offX, offY);
+      canvas.width = rect.width;
+      canvas.height = rect.height;
+      gl.viewport(0, 0, rect.width, rect.height);
+      bindTextures();
     }
-
     resize();
     window.addEventListener('resize', resize);
 
-    // Activate — hide the CSS ::before background
     section.classList.add('warp-active');
+    nextIdx = currentIdx;
+    bindTextures();
+    gl.uniform1f(uMix, 0.0);
 
     var t0 = performance.now();
     var raf;
@@ -1132,10 +1197,24 @@ void main(){
       raf = requestAnimationFrame(frame);
       var t = (now - t0) / 1000;
       gl.uniform1f(uT, t);
+
+      if (fading) {
+        var elapsed = (now - fadeStart) / 1000;
+        var raw = Math.min(elapsed / FADE_DUR, 1.0);
+        mixFactor = raw < 0.5 ? 2 * raw * raw : 1 - Math.pow(-2 * raw + 2, 2) / 2;
+        gl.uniform1f(uMix, mixFactor);
+        if (raw >= 1.0) {
+          currentIdx = nextIdx;
+          mixFactor = 0;
+          fading = false;
+          gl.uniform1f(uMix, 0.0);
+          bindTextures();
+        }
+      }
+
       gl.drawArrays(gl.TRIANGLES, 0, 6);
     }
 
-    // Only animate when section is visible (performance)
     var observer = new IntersectionObserver(function(entries) {
       if (entries[0].isIntersecting) {
         t0 = performance.now();
@@ -1145,8 +1224,9 @@ void main(){
       }
     }, { threshold: 0.0 });
     observer.observe(section);
-  };
-  bgImg.src = 'logos & backgrounds/about-bg.jpg';
+
+    resetAutoTimer();
+  }
 })();
 </script>
 </body>
