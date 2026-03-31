@@ -220,59 +220,38 @@ a{color:inherit;text-decoration:none}
   var gridV = document.getElementById('archive-grid-v');
   var totalImages = 486;
   var allItems = [];
-  var horizontals = [];
-  var verticals = [];
-  var loaded = 0;
 
   for (var i = 1; i <= totalImages; i++) {
     allItems.push({ id: String(i).padStart(3, '0'), image: 'postcards/' + String(i).padStart(3, '0') + '.jpg' });
   }
 
-  // Preload images to detect orientation
-  allItems.forEach(function(item) {
-    var img = new Image();
-    img.onload = function() {
-      if (img.naturalWidth >= img.naturalHeight) {
-        horizontals.push(item);
-      } else {
-        verticals.push(item);
-      }
-      loaded++;
-      if (loaded === totalImages) {
-        horizontals.sort(function(a, b) { return a.id.localeCompare(b.id); });
-        verticals.sort(function(a, b) { return a.id.localeCompare(b.id); });
-        renderGrid(horizontals, gridH);
-        renderGrid(verticals, gridV);
-      }
-    };
-    img.onerror = function() {
-      loaded++;
-      if (loaded === totalImages) {
-        horizontals.sort(function(a, b) { return a.id.localeCompare(b.id); });
-        verticals.sort(function(a, b) { return a.id.localeCompare(b.id); });
-        renderGrid(horizontals, gridH);
-        renderGrid(verticals, gridV);
-      }
-    };
-    img.src = item.image;
-  });
+  // Render all items immediately into horizontal grid, then move verticals once detected
+  var itemElements = {};
+  allItems.forEach(function(item, idx) {
+    var div = document.createElement('div');
+    div.className = 'arc-item';
+    div.innerHTML =
+      '<img src="' + item.image + '" alt="Postcard ' + item.id + '" loading="lazy">' +
+      '<div class="arc-ov">' +
+        '<div class="arc-ov-num">' + item.id + '</div>' +
+      '</div>';
+    div.addEventListener('click', function() { openLightbox(allItems, idx); });
+    gridH.appendChild(div);
+    itemElements[item.id] = div;
 
-  function renderGrid(data, container) {
-    container.innerHTML = '';
-    var allData = horizontals.concat(verticals);
-    data.forEach(function(item) {
-      var idx = allData.indexOf(item);
-      var div = document.createElement('div');
-      div.className = 'arc-item';
-      div.innerHTML =
-        '<img src="' + item.image + '" alt="Postcard ' + item.id + '" loading="lazy">' +
-        '<div class="arc-ov">' +
-          '<div class="arc-ov-num">' + item.id + '</div>' +
-        '</div>';
-      div.addEventListener('click', function() { openLightbox(allData, idx); });
-      container.appendChild(div);
-    });
-  }
+    // Detect orientation once loaded, move verticals
+    var img = div.querySelector('img');
+    var checkOrientation = function() {
+      if (img.naturalWidth > 0 && img.naturalHeight > 0 && img.naturalWidth < img.naturalHeight) {
+        gridV.appendChild(div);
+      }
+    };
+    if (img.complete && img.naturalWidth > 0) {
+      checkOrientation();
+    } else {
+      img.addEventListener('load', checkOrientation);
+    }
+  });
 
   // ── LIGHTBOX ──
   var lb = document.getElementById('lb');
