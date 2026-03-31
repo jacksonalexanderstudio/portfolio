@@ -984,14 +984,18 @@ body.img-hover #cur{filter:invert(1)}
 
 })();
 
-// ── ABOUT BACKGROUND WARP EFFECT (WebGL) — multi-image slideshow ─────────────
+// ── ABOUT BACKGROUND WARP EFFECT (WebGL) — 4-quadrant postcard grid ──────────
 (function() {
   var canvas = document.getElementById('warp-canvas');
   var section = document.getElementById('top-about');
   if (!canvas || !section) return;
 
-  var gl = canvas.getContext('webgl', { alpha: false, antialias: false, preserveDrawingBuffer: true });
+  var gl = canvas.getContext('webgl', { alpha: false, antialias: false });
   if (!gl) return;
+
+  gl.enable(gl.SCISSOR_TEST);
+
+  var GAP = 3; // px — black separator lines between quadrants
 
   var heroImages = [
     'hero-images/hero-01.jpg','hero-images/hero-03.jpg','hero-images/hero-04.jpg',
@@ -1044,10 +1048,7 @@ void main(){
   float ripple = sin(uvA.x * 9.0 + uvA.y * 7.0 + t * 1.1) * 0.06;
   col *= (1.0 + ripple);
 
-  float diag = (v.x + (1.0 - v.y)) * 0.5;
-  float dark = mix(0.75, 0.44, smoothstep(0.0, 0.5, diag));
-  dark = mix(dark, 0.68, smoothstep(0.5, 1.0, diag));
-  col *= (1.0 - dark);
+  col *= 0.62;
 
   gl_FragColor = vec4(col, 1.0);
 }`;
@@ -1073,25 +1074,18 @@ void main(){
   gl.enableVertexAttribArray(al);
   gl.vertexAttribPointer(al, 2, gl.FLOAT, false, 0, 0);
 
-  var uT = gl.getUniformLocation(prog, 't');
-  var uMix = gl.getUniformLocation(prog, 'mix_f');
-  var uImgA = gl.getUniformLocation(prog, 'imgA');
-  var uImgB = gl.getUniformLocation(prog, 'imgB');
-  var uCoverA = gl.getUniformLocation(prog, 'coverA');
+  var uT         = gl.getUniformLocation(prog, 't');
+  var uMix       = gl.getUniformLocation(prog, 'mix_f');
+  var uImgA      = gl.getUniformLocation(prog, 'imgA');
+  var uImgB      = gl.getUniformLocation(prog, 'imgB');
+  var uCoverA    = gl.getUniformLocation(prog, 'coverA');
   var uCoverOffA = gl.getUniformLocation(prog, 'coverOffA');
-  var uCoverB = gl.getUniformLocation(prog, 'coverB');
+  var uCoverB    = gl.getUniformLocation(prog, 'coverB');
   var uCoverOffB = gl.getUniformLocation(prog, 'coverOffB');
 
   var textures = [];
-  var imgData = [];
-  var currentIdx = Math.floor(Math.random() * heroImages.length);
-  var nextIdx = currentIdx;
-  var mixFactor = 0;
-  var fading = false;
-  var fadeStart = 0;
-  var FADE_DUR = 3;
-  var AUTO_INTERVAL = 7000;
-  var autoTimer = null;
+  var imgData  = [];
+  var loadedCount = 0;
 
   function createTexture(image) {
     var tex = gl.createTexture();
@@ -1105,68 +1099,72 @@ void main(){
     return tex;
   }
 
-  function computeCover(imgAspect) {
-    var rect = section.getBoundingClientRect();
-    var canvasAspect = rect.width / rect.height;
-    var zoom = 0.90; // zoom-in to prevent edge artifacts from warp
-    var sx, sy, ox, oy;
-    if (canvasAspect > imgAspect) {
+  function computeCoverFor(imgAspect, quadAspect) {
+    var zoom = 0.90;
+    var sx, sy;
+    if (quadAspect > imgAspect) {
       sx = zoom;
-      sy = (imgAspect / canvasAspect) * zoom;
-      ox = (1.0 - sx) * 0.5;
-      oy = (1.0 - sy) * 0.5;
+      sy = (imgAspect / quadAspect) * zoom;
     } else {
-      sx = (canvasAspect / imgAspect) * zoom;
+      sx = (quadAspect / imgAspect) * zoom;
       sy = zoom;
-      ox = (1.0 - sx) * 0.5;
-      oy = (1.0 - sy) * 0.5;
     }
-    return { sx: sx, sy: sy, ox: ox, oy: oy };
+    return { sx: sx, sy: sy, ox: (1.0 - sx) * 0.5, oy: (1.0 - sy) * 0.5 };
   }
 
-  function bindTextures() {
-    var cA = computeCover(imgData[currentIdx].aspect);
-    gl.uniform2f(uCoverA, cA.sx, cA.sy);
-    gl.uniform2f(uCoverOffA, cA.ox, cA.oy);
-    gl.activeTexture(gl.TEXTURE0);
-    gl.bindTexture(gl.TEXTURE_2D, textures[currentIdx]);
-    gl.uniform1i(uImgA, 0);
+  // 4 panel states — clockwise: top-left(0), top-right(1), bottom-right(2), bottom-left(3)
+  var panels = [];
+  var FADE_DUR = 2.5;
+  var PANEL_INTERVAL = 2500;
 
-    var cB = computeCover(imgData[nextIdx].aspect);
-    gl.uniform2f(uCoverB, cB.sx, cB.sy);
-    gl.uniform2f(uCoverOffB, cB.ox, cB.oy);
-    gl.activeTexture(gl.TEXTURE1);
-    gl.bindTexture(gl.TEXTURE_2D, textures[nextIdx]);
-    gl.uniform1i(uImgB, 1);
+  function getQuadRects(w, h) {
+    var hw = Math.floor((w - GAP) / 2);
+    var hh = Math.floor((h - GAP) / 2);
+    return [
+      { x: 0,        y: hh + GAP, w: hw, h: hh },
+      { x: hw + GAP, y: hh + GAP, w: hw, h: hh },
+      { x: hw + GAP, y: 0,        w: hw, h: hh },
+      { x: 0,        y: 0,        w: hw, h: hh }
+    ];
   }
 
-  function goTo(idx) {
-    if (fading) {
-      currentIdx = nextIdx;
-      mixFactor = 0;
-      fading = false;
+  function pickNewImage(excludeList) {
+    var available = [];
+    for (var i = 0; i < heroImages.length; i++) {
+      if (excludeList.indexOf(i) === -1) available.push(i);
     }
-    nextIdx = ((idx % heroImages.length) + heroImages.length) % heroImages.length;
-    if (nextIdx === currentIdx) return;
-    fading = true;
-    fadeStart = performance.now();
-    bindTextures();
-    resetAutoTimer();
+    return available.length
+      ? available[Math.floor(Math.random() * available.length)]
+      : Math.floor(Math.random() * heroImages.length);
   }
 
-  function resetAutoTimer() {
-    clearInterval(autoTimer);
-    autoTimer = setInterval(function() {
-      goTo(currentIdx + 1);
-    }, AUTO_INTERVAL);
+  function initPanels() {
+    var used = [];
+    for (var p = 0; p < 4; p++) {
+      var idx = pickNewImage(used);
+      used.push(idx);
+      panels.push({ currentIdx: idx, nextIdx: idx, mixFactor: 0, fading: false, fadeStart: 0 });
+    }
   }
 
-  var loadedCount = 0;
+  function switchPanel(p) {
+    var panel = panels[p];
+    var used = panels.map(function(pan) { return pan.currentIdx; });
+    var newIdx = pickNewImage(used);
+    if (panel.fading) {
+      panel.currentIdx = panel.nextIdx;
+      panel.fading = false;
+    }
+    panel.nextIdx = newIdx;
+    panel.fading = true;
+    panel.fadeStart = performance.now();
+  }
+
   heroImages.forEach(function(src, i) {
     var img = new Image();
     img.onload = function() {
       textures[i] = createTexture(img);
-      imgData[i] = { w: img.naturalWidth, h: img.naturalHeight, aspect: img.naturalWidth / img.naturalHeight };
+      imgData[i] = { aspect: img.naturalWidth / img.naturalHeight };
       loadedCount++;
       if (loadedCount === heroImages.length) startWarp();
     };
@@ -1174,44 +1172,76 @@ void main(){
   });
 
   function startWarp() {
+    initPanels();
+
     function resize() {
       var rect = section.getBoundingClientRect();
-      canvas.width = rect.width;
+      canvas.width  = rect.width;
       canvas.height = rect.height;
-      gl.viewport(0, 0, rect.width, rect.height);
-      bindTextures();
     }
     resize();
     window.addEventListener('resize', resize);
 
     section.classList.add('warp-active');
-    nextIdx = currentIdx;
-    bindTextures();
-    gl.uniform1f(uMix, 0.0);
+    gl.clearColor(0, 0, 0, 1);
 
     var t0 = performance.now();
     var raf;
+    var activePanel = 0;
+
+    setInterval(function() {
+      switchPanel(activePanel);
+      activePanel = (activePanel + 1) % 4;
+    }, PANEL_INTERVAL);
 
     function frame(now) {
       raf = requestAnimationFrame(frame);
       var t = (now - t0) / 1000;
-      gl.uniform1f(uT, t);
+      var w = canvas.width, h = canvas.height;
 
-      if (fading) {
-        var elapsed = (now - fadeStart) / 1000;
-        var raw = Math.min(elapsed / FADE_DUR, 1.0);
-        mixFactor = raw < 0.5 ? 2 * raw * raw : 1 - Math.pow(-2 * raw + 2, 2) / 2;
-        gl.uniform1f(uMix, mixFactor);
-        if (raw >= 1.0) {
-          currentIdx = nextIdx;
-          mixFactor = 0;
-          fading = false;
-          gl.uniform1f(uMix, 0.0);
-          bindTextures();
+      gl.clear(gl.COLOR_BUFFER_BIT);
+
+      var quads = getQuadRects(w, h);
+
+      for (var p = 0; p < 4; p++) {
+        var panel = panels[p];
+        var q = quads[p];
+
+        if (panel.fading) {
+          var elapsed = (now - panel.fadeStart) / 1000;
+          var raw = Math.min(elapsed / FADE_DUR, 1.0);
+          panel.mixFactor = raw < 0.5 ? 2*raw*raw : 1 - Math.pow(-2*raw+2, 2)/2;
+          if (raw >= 1.0) {
+            panel.currentIdx = panel.nextIdx;
+            panel.mixFactor  = 0;
+            panel.fading     = false;
+          }
         }
-      }
 
-      gl.drawArrays(gl.TRIANGLES, 0, 6);
+        gl.viewport(q.x, q.y, q.w, q.h);
+        gl.scissor(q.x, q.y, q.w, q.h);
+
+        var quadAspect = q.w / q.h;
+        var cA = computeCoverFor(imgData[panel.currentIdx].aspect, quadAspect);
+        var cB = computeCoverFor(imgData[panel.nextIdx].aspect, quadAspect);
+
+        gl.uniform1f(uT,   t);
+        gl.uniform1f(uMix, panel.mixFactor);
+        gl.uniform2f(uCoverA,    cA.sx, cA.sy);
+        gl.uniform2f(uCoverOffA, cA.ox, cA.oy);
+        gl.uniform2f(uCoverB,    cB.sx, cB.sy);
+        gl.uniform2f(uCoverOffB, cB.ox, cB.oy);
+
+        gl.activeTexture(gl.TEXTURE0);
+        gl.bindTexture(gl.TEXTURE_2D, textures[panel.currentIdx]);
+        gl.uniform1i(uImgA, 0);
+
+        gl.activeTexture(gl.TEXTURE1);
+        gl.bindTexture(gl.TEXTURE_2D, textures[panel.nextIdx]);
+        gl.uniform1i(uImgB, 1);
+
+        gl.drawArrays(gl.TRIANGLES, 0, 6);
+      }
     }
 
     var observer = new IntersectionObserver(function(entries) {
@@ -1223,8 +1253,6 @@ void main(){
       }
     }, { threshold: 0.0 });
     observer.observe(section);
-
-    resetAutoTimer();
   }
 })();
 </script>
