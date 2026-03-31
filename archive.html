@@ -85,17 +85,17 @@ a{color:inherit;text-decoration:none}
 .arc-empty{grid-column:1/-1;text-align:center;padding:120px 20px;font:300 14px/1.8 var(--sf);color:rgba(0,0,0,.35);letter-spacing:.04em}
 
 /* ── LIGHTBOX ── */
-#lb{position:fixed;inset:0;background:rgba(255,255,255,.97);z-index:9999;display:none;align-items:center;justify-content:center;flex-direction:column}
+#lb{position:fixed;inset:0;background:rgba(255,255,255,.97);z-index:9999;display:none;align-items:center;justify-content:center;flex-direction:column;padding:40px 20px}
 #lb.open{display:flex}
-.lbi{position:relative;max-width:90vw;max-height:80vh;display:flex;align-items:center;justify-content:center}
+.lbi{position:relative;max-width:90vw;display:flex;flex-direction:column;align-items:center}
 .lbc{position:fixed;top:24px;right:28px;background:none;border:none;font-size:28px;color:var(--tx);cursor:pointer;z-index:10001;font-family:var(--sf)}
 .lnv{position:fixed;top:50%;transform:translateY(-50%);background:var(--tx);color:#fff;border:none;width:40px;height:40px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center}
 #lprev{left:16px}
 #lnext{right:16px}
-#limg{max-width:90vw;max-height:80vh;object-fit:contain}
-.lm{text-align:center;margin-top:16px;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--tx)}
-.lt{margin-bottom:4px;font-family:var(--fn)}
-.lct{font-family:var(--sf);font-size:9px;color:rgba(0,0,0,.45)}
+#limg{max-width:80vw;max-height:70vh;object-fit:contain}
+.lm{text-align:center;margin-top:28px;padding:0 20px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--tx)}
+.lt{margin-bottom:6px;font-family:var(--fn);font-size:14px;letter-spacing:.06em}
+.lct{font-family:var(--sf);font-size:10px;color:rgba(0,0,0,.4);letter-spacing:.04em}
 
 /* ── FOOTER ── */
 #ftr{background:#0c0c0c;padding:48px 28px;border-top:1px solid rgba(255,255,255,.1)}
@@ -293,9 +293,9 @@ a{color:inherit;text-decoration:none}
   function showLightboxItem() {
     var item = lbItems[lbIdx];
     limg.src = item.image;
-    limg.alt = item.title;
-    lt.textContent = String(lbIdx + 1).padStart(3, '0');
-    lct.textContent = item.title + (item.date ? ' — ' + item.date : '');
+    limg.alt = 'Postcard ' + item.id;
+    lt.textContent = item.id;
+    lct.textContent = 'Postcard Archive';
     document.getElementById('lprev').style.display = lbItems.length > 1 ? '' : 'none';
     document.getElementById('lnext').style.display = lbItems.length > 1 ? '' : 'none';
   }
