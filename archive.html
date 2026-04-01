@@ -222,7 +222,22 @@ a{color:inherit;text-decoration:none}
         <a class="arc-sub-link" data-filter="vertical-provenance">Provenance</a>
         <a class="arc-sub-link" data-filter="vertical-bw">Black &amp; White</a>
       </div>
-      <a class="arc-nav-item" data-filter="souvenir"><span class="arc-nav-num">04</span><span class="arc-nav-label">Souvenir Folders</span></a>
+      <a class="arc-nav-item" data-filter="souvenir"><span class="arc-nav-num">04</span><span class="arc-nav-label">Souvenir Folders</span><span class="arc-nav-toggle" onclick="event.preventDefault();event.stopPropagation();var sub=this.closest('.arc-nav-item').nextElementSibling;sub.classList.toggle('sub-collapsed');this.textContent=sub.classList.contains('sub-collapsed')?'+':'−'">+</span></a>
+      <div class="arc-sub sub-collapsed" data-orient="souvenir">
+        <a class="arc-sub-link" data-filter="sf-arizona">Arizona</a>
+        <a class="arc-sub-link" data-filter="sf-california">California</a>
+        <a class="arc-sub-link" data-filter="sf-colorado">Colorado</a>
+        <a class="arc-sub-link" data-filter="sf-hawaii">Hawaii</a>
+        <a class="arc-sub-link" data-filter="sf-massachusetts">Massachusetts</a>
+        <a class="arc-sub-link" data-filter="sf-new-hampshire">New Hampshire</a>
+        <a class="arc-sub-link" data-filter="sf-new-mexico">New Mexico</a>
+        <a class="arc-sub-link" data-filter="sf-new-york">New York</a>
+        <a class="arc-sub-link" data-filter="sf-south-dakota">South Dakota</a>
+        <a class="arc-sub-link" data-filter="sf-texas">Texas</a>
+        <a class="arc-sub-link" data-filter="sf-utah">Utah</a>
+        <a class="arc-sub-link" data-filter="sf-virginia">Virginia</a>
+        <a class="arc-sub-link" data-filter="sf-wyoming">Wyoming</a>
+      </div>
     </div>
   </aside>
   <div class="archive-main">
@@ -355,19 +370,48 @@ a{color:inherit;text-decoration:none}
   var gridSF = document.getElementById('archive-grid-sf');
   var totalSF = 73;
   var sfItems = [];
+  var sfStateTags = {
+    arizona:[1,2,3,20,21,36,37,71,72],
+    california:[6,38,39,44,45,50,51,54,55,63,64,65,66],
+    colorado:[67,68,69,70],
+    hawaii:[22,23],
+    massachusetts:[16,17],
+    'new-hampshire':[34,35],
+    'new-mexico':[24,25,26,27,31,32,33],
+    'new-york':[42,43,48],
+    'south-dakota':[12,13,56,57],
+    texas:[4,5],
+    utah:[28,29],
+    virginia:[58,59,60,61,62],
+    wyoming:[7,8,9,10,11,46,47,49]
+  };
+  var sfItemTags = {};
+  Object.keys(sfStateTags).forEach(function(state) {
+    sfStateTags[state].forEach(function(num) {
+      var id = String(num).padStart(3, '0');
+      if (!sfItemTags[id]) sfItemTags[id] = [];
+      sfItemTags[id].push(state);
+    });
+  });
+
+  var allSFEls = [];
   for (var s = 1; s <= totalSF; s++) {
     sfItems.push({ id: 'SF-' + String(s).padStart(3, '0'), image: 'souvenir-folders/' + String(s).padStart(3, '0') + '.jpg' });
   }
   sfItems.forEach(function(item, idx) {
+    var num = item.id.replace('SF-','');
+    var tags = sfItemTags[num] || [];
     var div = document.createElement('div');
     div.className = 'arc-item';
+    div.setAttribute('data-sf-tags', tags.join(','));
     div.innerHTML =
       '<img src="' + item.image + '" alt="Souvenir Folder ' + item.id + '" loading="lazy">' +
       '<div class="arc-ov">' +
-        '<div class="arc-ov-num">' + item.id.replace('SF-','') + '</div>' +
+        '<div class="arc-ov-num">' + num + '</div>' +
       '</div>';
     div.addEventListener('click', function() { openLightbox(sfItems, idx); });
     gridSF.appendChild(div);
+    allSFEls.push(div);
   });
 
   // ── SIDEBAR FILTERING ──
@@ -392,9 +436,9 @@ a{color:inherit;text-decoration:none}
     gridSF.style.display = 'none';
     sectionSF.style.display = 'none';
     allItemEls.forEach(function(el) { el.style.display = ''; });
+    allSFEls.forEach(function(el) { el.style.display = ''; });
 
     if (filter === 'all') {
-      // Show all three sections
       gridSF.style.display = '';
       sectionSF.style.display = '';
     } else if (filter === 'souvenir') {
@@ -410,6 +454,19 @@ a{color:inherit;text-decoration:none}
     } else if (filter === 'vertical') {
       gridH.style.display = 'none';
       sectionH.style.display = 'none';
+    } else if (filter.indexOf('sf-') === 0) {
+      // Souvenir folder state filter
+      var state = filter.substring(3);
+      gridH.style.display = 'none';
+      gridV.style.display = 'none';
+      sectionH.style.display = 'none';
+      sectionV.style.display = 'none';
+      gridSF.style.display = '';
+      sectionSF.style.display = '';
+      allSFEls.forEach(function(el) {
+        var tags = el.getAttribute('data-sf-tags');
+        el.style.display = tags && tags.indexOf(state) !== -1 ? '' : 'none';
+      });
     } else if (filter.indexOf('-') !== -1) {
       var parts = filter.split('-');
       var orient = parts[0];
