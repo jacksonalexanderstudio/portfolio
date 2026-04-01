@@ -217,11 +217,13 @@ a{color:inherit;text-decoration:none}
         <a class="arc-sub-link" data-filter="vertical-provenance">Provenance</a>
         <a class="arc-sub-link" data-filter="vertical-bw">Black &amp; White</a>
       </div>
+      <a class="arc-nav-item" data-filter="souvenir"><span class="arc-nav-num">03</span><span class="arc-nav-label">Souvenir Folders</span></a>
     </div>
   </aside>
   <div class="archive-main">
     <div class="archive-grid" id="archive-grid-h"></div>
     <div class="archive-grid archive-grid-v" id="archive-grid-v"></div>
+    <div class="archive-grid" id="archive-grid-sf" style="display:none"></div>
   </div>
 </div>
 
@@ -341,6 +343,25 @@ a{color:inherit;text-decoration:none}
     }
   });
 
+  // ── LOAD SOUVENIR FOLDERS ──
+  var gridSF = document.getElementById('archive-grid-sf');
+  var totalSF = 73;
+  var sfItems = [];
+  for (var s = 1; s <= totalSF; s++) {
+    sfItems.push({ id: 'SF-' + String(s).padStart(3, '0'), image: 'souvenir-folders/' + String(s).padStart(3, '0') + '.jpg' });
+  }
+  sfItems.forEach(function(item, idx) {
+    var div = document.createElement('div');
+    div.className = 'arc-item';
+    div.innerHTML =
+      '<img src="' + item.image + '" alt="Souvenir Folder ' + item.id + '" loading="lazy">' +
+      '<div class="arc-ov">' +
+        '<div class="arc-ov-num">' + item.id.replace('SF-','') + '</div>' +
+      '</div>';
+    div.addEventListener('click', function() { openLightbox(sfItems, idx); });
+    gridSF.appendChild(div);
+  });
+
   // ── SIDEBAR FILTERING ──
   var navItems = document.querySelectorAll('.arc-nav-item[data-filter]');
   var subLinks = document.querySelectorAll('.arc-sub-link[data-filter]');
@@ -351,29 +372,28 @@ a{color:inherit;text-decoration:none}
   }
 
   function applyFilter(filter) {
-    if (filter === 'all') {
-      gridH.style.display = '';
-      gridV.style.display = '';
-      allItemEls.forEach(function(el) { el.style.display = ''; });
-    } else if (filter === 'horizontal') {
-      gridH.style.display = '';
+    // Hide souvenir grid by default, show postcard grids
+    gridSF.style.display = 'none';
+    gridH.style.display = '';
+    gridV.style.display = '';
+    allItemEls.forEach(function(el) { el.style.display = ''; });
+
+    if (filter === 'souvenir') {
+      gridH.style.display = 'none';
       gridV.style.display = 'none';
-      allItemEls.forEach(function(el) { el.style.display = ''; });
+      gridSF.style.display = '';
+    } else if (filter === 'horizontal') {
+      gridV.style.display = 'none';
     } else if (filter === 'vertical') {
       gridH.style.display = 'none';
-      gridV.style.display = '';
-      allItemEls.forEach(function(el) { el.style.display = ''; });
     } else if (filter.indexOf('-') !== -1) {
-      // Sub-category: orientation-tag (e.g. "horizontal-water")
       var parts = filter.split('-');
       var orient = parts[0];
       var tag = parts[1];
       if (orient === 'horizontal') {
-        gridH.style.display = '';
         gridV.style.display = 'none';
       } else {
         gridH.style.display = 'none';
-        gridV.style.display = '';
       }
       allItemEls.forEach(function(el) {
         var tags = el.getAttribute('data-tags');
