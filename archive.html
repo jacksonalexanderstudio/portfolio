@@ -74,9 +74,9 @@ a{color:inherit;text-decoration:none}
 .arc-nav-toggle{font-family:var(--sf);font-size:16px;font-weight:300;font-style:normal;color:var(--accent);margin-left:auto;cursor:pointer;line-height:1}
 .arc-sub{display:flex;flex-direction:column;padding-left:32px;margin-top:8px;margin-bottom:16px}
 .arc-sub.sub-collapsed{display:none}
-.arc-sub-link{font:400 8px/1 var(--sf);letter-spacing:.1em;text-transform:uppercase;color:#000;padding:5px 0;text-decoration:none;transition:color .2s;cursor:pointer}
+.arc-sub-link{display:flex;align-items:center;gap:8px;font:400 8px/1 var(--sf);letter-spacing:.1em;text-transform:uppercase;color:#000;padding:5px 0;text-decoration:none;transition:color .2s;cursor:pointer}
 .arc-sub-link:hover,.arc-sub-link.sub-active{color:var(--accent)}
-.arc-sub-count{font:300 9px/1 var(--sf);color:rgba(0,0,0,.35);margin-left:6px}
+.arc-sub-count{font:300 8px/1 var(--sf);color:rgba(0,0,0,.25);min-width:18px;letter-spacing:.02em}
 
 /* ── SECTION HEADERS ── */
 .arc-section-title{font:300 11px/1 var(--sf);letter-spacing:.14em;text-transform:uppercase;color:var(--tx);padding:0 0 16px;margin:0 0 24px;border-bottom:1px solid var(--br)}
@@ -579,6 +579,38 @@ a{color:inherit;text-decoration:none}
       applyFilter(this.getAttribute('data-filter'));
     });
   });
+
+  // ── SUB-NAV COUNTS ──
+  function updateSubCounts() {
+    subLinks.forEach(function(link) {
+      var filter = link.getAttribute('data-filter');
+      var count = 0;
+      if (filter.indexOf('sf-') === 0) {
+        var state = filter.substring(3);
+        count = (sfStateTags[state] || []).length;
+      } else if (filter.indexOf('horizontal-') === 0 || filter.indexOf('vertical-') === 0) {
+        var parts = filter.split('-');
+        var orient = parts[0];
+        var tag = parts[1];
+        allItemEls.forEach(function(el) {
+          var elOrient = el.getAttribute('data-orientation');
+          var tags = el.getAttribute('data-tags');
+          if (elOrient === orient && tags && tags.indexOf(tag) !== -1) count++;
+        });
+      }
+      // Find or create count span
+      var span = link.querySelector('.arc-sub-count');
+      if (!span) {
+        span = document.createElement('span');
+        span.className = 'arc-sub-count';
+        link.insertBefore(span, link.firstChild);
+      }
+      span.textContent = count;
+    });
+  }
+  // Run after orientation detection settles
+  setTimeout(updateSubCounts, 2000);
+  setTimeout(updateSubCounts, 5000);
 
   // ── LIGHTBOX ──
   var lb = document.getElementById('lb');
