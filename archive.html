@@ -238,6 +238,7 @@ a{color:inherit;text-decoration:none}
         <a class="arc-sub-link" data-filter="sf-virginia">Virginia</a>
         <a class="arc-sub-link" data-filter="sf-wyoming">Wyoming</a>
       </div>
+      <a class="arc-nav-item" data-filter="ephemera"><span class="arc-nav-num">05</span><span class="arc-nav-label">Paper Ephemera</span></a>
     </div>
   </aside>
   <div class="archive-main">
@@ -247,6 +248,8 @@ a{color:inherit;text-decoration:none}
     <div class="archive-grid archive-grid-v" id="archive-grid-v"></div>
     <div class="arc-section-title" id="section-sf">Souvenir Folders</div>
     <div class="archive-grid" id="archive-grid-sf"></div>
+    <div class="arc-section-title" id="section-pe">Paper Ephemera</div>
+    <div class="archive-grid" id="archive-grid-pe"></div>
   </div>
 </div>
 
@@ -414,6 +417,25 @@ a{color:inherit;text-decoration:none}
     allSFEls.push(div);
   });
 
+  // ── LOAD PAPER EPHEMERA ──
+  var gridPE = document.getElementById('archive-grid-pe');
+  var totalPE = 7;
+  var peItems = [];
+  for (var p = 1; p <= totalPE; p++) {
+    peItems.push({ id: 'PE-' + String(p).padStart(3, '0'), image: 'paper-ephemera/' + String(p).padStart(3, '0') + '.jpg' });
+  }
+  peItems.forEach(function(item, idx) {
+    var div = document.createElement('div');
+    div.className = 'arc-item';
+    div.innerHTML =
+      '<img src="' + item.image + '" alt="Paper Ephemera ' + item.id + '" loading="lazy">' +
+      '<div class="arc-ov">' +
+        '<div class="arc-ov-num">' + item.id.replace('PE-','') + '</div>' +
+      '</div>';
+    div.addEventListener('click', function() { openLightbox(peItems, idx); });
+    gridPE.appendChild(div);
+  });
+
   // ── SIDEBAR FILTERING ──
   var navItems = document.querySelectorAll('.arc-nav-item[data-filter]');
   var subLinks = document.querySelectorAll('.arc-sub-link[data-filter]');
@@ -426,43 +448,45 @@ a{color:inherit;text-decoration:none}
   var sectionH = document.getElementById('section-h');
   var sectionV = document.getElementById('section-v');
   var sectionSF = document.getElementById('section-sf');
+  var sectionPE = document.getElementById('section-pe');
 
-  function applyFilter(filter) {
-    // Reset: show postcard sections, hide souvenir
-    gridH.style.display = '';
-    gridV.style.display = '';
-    sectionH.style.display = '';
-    sectionV.style.display = '';
-    gridSF.style.display = 'none';
-    sectionSF.style.display = 'none';
+  function hideAll() {
+    gridH.style.display = 'none'; sectionH.style.display = 'none';
+    gridV.style.display = 'none'; sectionV.style.display = 'none';
+    gridSF.style.display = 'none'; sectionSF.style.display = 'none';
+    gridPE.style.display = 'none'; sectionPE.style.display = 'none';
+  }
+
+  function showAll() {
+    gridH.style.display = ''; sectionH.style.display = '';
+    gridV.style.display = ''; sectionV.style.display = '';
+    gridSF.style.display = ''; sectionSF.style.display = '';
+    gridPE.style.display = ''; sectionPE.style.display = '';
     allItemEls.forEach(function(el) { el.style.display = ''; });
     allSFEls.forEach(function(el) { el.style.display = ''; });
+  }
+
+  function applyFilter(filter) {
+    showAll();
 
     if (filter === 'all') {
-      gridSF.style.display = '';
-      sectionSF.style.display = '';
+      // everything visible
     } else if (filter === 'souvenir') {
-      gridH.style.display = 'none';
-      gridV.style.display = 'none';
-      sectionH.style.display = 'none';
-      sectionV.style.display = 'none';
-      gridSF.style.display = '';
-      sectionSF.style.display = '';
+      hideAll();
+      gridSF.style.display = ''; sectionSF.style.display = '';
+    } else if (filter === 'ephemera') {
+      hideAll();
+      gridPE.style.display = ''; sectionPE.style.display = '';
     } else if (filter === 'horizontal') {
-      gridV.style.display = 'none';
-      sectionV.style.display = 'none';
+      hideAll();
+      gridH.style.display = ''; sectionH.style.display = '';
     } else if (filter === 'vertical') {
-      gridH.style.display = 'none';
-      sectionH.style.display = 'none';
+      hideAll();
+      gridV.style.display = ''; sectionV.style.display = '';
     } else if (filter.indexOf('sf-') === 0) {
-      // Souvenir folder state filter
       var state = filter.substring(3);
-      gridH.style.display = 'none';
-      gridV.style.display = 'none';
-      sectionH.style.display = 'none';
-      sectionV.style.display = 'none';
-      gridSF.style.display = '';
-      sectionSF.style.display = '';
+      hideAll();
+      gridSF.style.display = ''; sectionSF.style.display = '';
       allSFEls.forEach(function(el) {
         var tags = el.getAttribute('data-sf-tags');
         el.style.display = tags && tags.indexOf(state) !== -1 ? '' : 'none';
@@ -471,12 +495,11 @@ a{color:inherit;text-decoration:none}
       var parts = filter.split('-');
       var orient = parts[0];
       var tag = parts[1];
+      hideAll();
       if (orient === 'horizontal') {
-        gridV.style.display = 'none';
-        sectionV.style.display = 'none';
+        gridH.style.display = ''; sectionH.style.display = '';
       } else {
-        gridH.style.display = 'none';
-        sectionH.style.display = 'none';
+        gridV.style.display = ''; sectionV.style.display = '';
       }
       allItemEls.forEach(function(el) {
         var tags = el.getAttribute('data-tags');
