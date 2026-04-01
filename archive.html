@@ -110,6 +110,8 @@ a{color:inherit;text-decoration:none}
 .lm{text-align:center;margin-top:28px;padding:0 20px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--tx)}
 .lt{margin-bottom:6px;font-family:var(--fn);font-size:14px;letter-spacing:.06em}
 .lct{font-family:var(--sf);font-size:10px;color:rgba(0,0,0,.4);letter-spacing:.04em}
+.linq{display:inline-block;margin-top:16px;font:400 9px/1 var(--sf);letter-spacing:.18em;text-transform:uppercase;color:var(--tx);text-decoration:none;padding:8px 20px;border:1px solid var(--br);transition:color .3s,border-color .3s,background .3s}
+.linq:hover{color:#fff;background:var(--tx);border-color:var(--tx)}
 
 /* ── FOOTER ── */
 #ftr{background:#0c0c0c;padding:48px 28px;border-top:1px solid rgba(255,255,255,.1)}
@@ -159,7 +161,7 @@ a{color:inherit;text-decoration:none}
   <button class="lnv" id="lprev">&#8592;</button>
   <img id="limg" src="" alt="">
   <button class="lnv" id="lnext">&#8594;</button>
-  <div class="lm"><div class="lt" id="lt"></div><div class="lct" id="lct"></div></div>
+  <div class="lm"><div class="lt" id="lt"></div><div class="lct" id="lct"></div><a class="linq" id="linq" href="" target="_blank">Inquire</a></div>
 </div></div>
 
 <header id="hdr">
@@ -600,6 +602,11 @@ a{color:inherit;text-decoration:none}
     limg.alt = 'Postcard ' + item.id;
     lt.textContent = item.id;
     lct.textContent = 'Postcard Archive';
+    var linq = document.getElementById('linq');
+    var cleanId = item.id.replace(/^(SF-|PE-|PH-)/,'');
+    var subject = encodeURIComponent('Inquiry — Archive Item #' + item.id);
+    var body = encodeURIComponent('Hi Jackson,\n\nI\'m interested in purchasing item #' + item.id + ' from your archive.\n\nPlease let me know about availability and pricing.\n\nThank you');
+    linq.href = 'mailto:jacksonalexanderstudio@gmail.com?subject=' + subject + '&body=' + body;
     document.getElementById('lprev').style.display = lbItems.length > 1 ? '' : 'none';
     document.getElementById('lnext').style.display = lbItems.length > 1 ? '' : 'none';
   }
