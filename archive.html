@@ -58,15 +58,19 @@ a{color:inherit;text-decoration:none}
 #arc-sidebar::-webkit-scrollbar{width:4px}
 #arc-sidebar::-webkit-scrollbar-track{background:transparent}
 #arc-sidebar::-webkit-scrollbar-thumb{background:var(--br);border-radius:2px}
-.arc-label{font:700 13px/1.2 var(--sf);letter-spacing:.14em;text-transform:uppercase;color:var(--tx);padding-bottom:16px;border-bottom:1px solid var(--accent);margin-bottom:20px;display:flex;align-items:center;justify-content:space-between}
-.arc-section{margin-bottom:24px}
-.arc-section-header{font:400 11px/1 var(--fn);letter-spacing:.13em;text-transform:uppercase;color:var(--tx);display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--br);cursor:pointer}
-.arc-section-toggle{font-family:var(--sf);font-size:16px;font-weight:300;color:var(--accent)}
-.arc-filter-list{display:flex;flex-direction:column;padding-left:0;margin-top:8px;margin-bottom:8px}
-.arc-filter-list.collapsed{display:none}
-.arc-filter-link{font:400 8px/1 var(--sf);letter-spacing:.1em;text-transform:uppercase;color:#000;padding:5px 0;text-decoration:none;transition:color .2s;cursor:pointer}
-.arc-filter-link:hover,.arc-filter-link.active{color:var(--accent)}
-.arc-count{font:300 9px/1 var(--sf);color:rgba(0,0,0,.35);margin-left:6px}
+.arc-label{font-size:16px;font-family:'Cormorant Garamond',serif;font-weight:300;font-style:italic;letter-spacing:.06em;color:var(--tx);text-transform:none;padding-bottom:10px;border-bottom:1px solid var(--br);margin-bottom:0;display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:color .15s}
+.arc-label:hover{color:var(--accent)}
+.arc-label-toggle{font-family:var(--sf);font-size:16px;font-weight:300;font-style:normal;color:var(--accent)}
+.arc-nav-list{overflow:hidden;transition:max-height .4s ease,opacity .3s ease,margin .3s ease;max-height:600px;opacity:1;margin-top:20px}
+#arc-sidebar.nav-collapsed .arc-nav-list{max-height:0;opacity:0;margin-top:0}
+.arc-nav-item{display:flex;align-items:center;gap:10px;padding:10px 0;transition:opacity .3s,color .3s;opacity:1;text-decoration:none;color:var(--tx);border-bottom:1px solid transparent;cursor:pointer}
+.arc-nav-item:hover{opacity:.7}
+.arc-nav-item.active{opacity:1;border-bottom:1px solid var(--accent)}
+.arc-nav-item.active .arc-nav-label{color:var(--tx);font-weight:700;transform:scale(1.2);transform-origin:left center}
+.arc-nav-item.active .arc-nav-num{color:var(--accent)}
+.arc-nav-num{font-size:9px;color:var(--accent);letter-spacing:.06em;font-family:var(--sf);flex-shrink:0;width:22px;display:flex;align-items:center;justify-content:center;transition:color .35s ease}
+.arc-nav-label{font-size:10px;font-weight:300;letter-spacing:.14em;text-transform:uppercase;font-family:var(--sf);transition:transform .35s cubic-bezier(.4,0,.2,1);transform-origin:left center}
+.arc-nav-count{font:300 9px/1 var(--sf);color:rgba(0,0,0,.35);margin-left:auto;letter-spacing:.02em}
 
 /* ── GRID ── */
 .archive-main{padding:52px 52px 100px}
@@ -117,6 +121,8 @@ a{color:inherit;text-decoration:none}
   .page-hero p{font-size:12px;line-height:1.7}
   .archive-layout{flex-direction:column}
   #arc-sidebar{position:static;width:100%;max-height:none;border-bottom:1px solid var(--br);padding:20px;display:flex;flex-direction:column;gap:0}
+  .arc-nav-list{margin-top:12px}
+  .arc-nav-item{padding:8px 0}
   .archive-main{padding:24px 16px 80px}
   .archive-grid{grid-template-columns:repeat(2,1fr);gap:12px}
   .archive-grid-v{grid-template-columns:repeat(3,1fr)}
@@ -176,10 +182,20 @@ a{color:inherit;text-decoration:none}
   </div>
 </div>
 
-<!-- ARCHIVE GRID -->
-<div class="archive-main">
-  <div class="archive-grid" id="archive-grid-h"></div>
-  <div class="archive-grid archive-grid-v" id="archive-grid-v"></div>
+<!-- ARCHIVE CONTENT -->
+<div class="archive-layout">
+  <aside id="arc-sidebar">
+    <div class="arc-label" onclick="var s=document.getElementById('arc-sidebar');s.classList.toggle('nav-collapsed');this.querySelector('.arc-label-toggle').textContent=s.classList.contains('nav-collapsed')?'+':'−'">Archive <span class="arc-label-toggle">&minus;</span></div>
+    <div class="arc-nav-list">
+      <a class="arc-nav-item active" data-filter="all"><span class="arc-nav-num">01</span><span class="arc-nav-label">All Postcards</span><span class="arc-nav-count" id="count-all"></span></a>
+      <a class="arc-nav-item" data-filter="horizontal"><span class="arc-nav-num">02</span><span class="arc-nav-label">Postcards Horizontal</span><span class="arc-nav-count" id="count-h"></span></a>
+      <a class="arc-nav-item" data-filter="vertical"><span class="arc-nav-num">03</span><span class="arc-nav-label">Postcards Vertical</span><span class="arc-nav-count" id="count-v"></span></a>
+    </div>
+  </aside>
+  <div class="archive-main">
+    <div class="archive-grid" id="archive-grid-h"></div>
+    <div class="archive-grid archive-grid-v" id="archive-grid-v"></div>
+  </div>
 </div>
 
 <footer id="ftr">
@@ -225,11 +241,22 @@ a{color:inherit;text-decoration:none}
     allItems.push({ id: String(i).padStart(3, '0'), image: 'postcards/' + String(i).padStart(3, '0') + '.jpg' });
   }
 
-  // Render all items immediately into horizontal grid, then move verticals once detected
-  var itemElements = {};
+  // Render all items, detect orientation, tag them
+  var hCount = 0, vCount = 0;
+  var countAll = document.getElementById('count-all');
+  var countH = document.getElementById('count-h');
+  var countV = document.getElementById('count-v');
+
+  function updateCounts() {
+    countAll.textContent = hCount + vCount;
+    countH.textContent = hCount;
+    countV.textContent = vCount;
+  }
+
   allItems.forEach(function(item, idx) {
     var div = document.createElement('div');
     div.className = 'arc-item';
+    div.setAttribute('data-orientation', 'horizontal'); // default, updated on load
     div.innerHTML =
       '<img src="' + item.image + '" alt="Postcard ' + item.id + '" loading="lazy">' +
       '<div class="arc-ov">' +
@@ -237,20 +264,43 @@ a{color:inherit;text-decoration:none}
       '</div>';
     div.addEventListener('click', function() { openLightbox(allItems, idx); });
     gridH.appendChild(div);
-    itemElements[item.id] = div;
 
-    // Detect orientation once loaded, move verticals
     var img = div.querySelector('img');
     var checkOrientation = function() {
       if (img.naturalWidth > 0 && img.naturalHeight > 0 && img.naturalWidth < img.naturalHeight) {
+        div.setAttribute('data-orientation', 'vertical');
         gridV.appendChild(div);
+        vCount++;
+      } else {
+        hCount++;
       }
+      updateCounts();
     };
     if (img.complete && img.naturalWidth > 0) {
       checkOrientation();
     } else {
       img.addEventListener('load', checkOrientation);
     }
+  });
+
+  // ── SIDEBAR FILTERING ──
+  var navItems = document.querySelectorAll('.arc-nav-item[data-filter]');
+  navItems.forEach(function(navItem) {
+    navItem.addEventListener('click', function() {
+      navItems.forEach(function(n) { n.classList.remove('active'); });
+      this.classList.add('active');
+      var filter = this.getAttribute('data-filter');
+      if (filter === 'all') {
+        gridH.style.display = '';
+        gridV.style.display = '';
+      } else if (filter === 'horizontal') {
+        gridH.style.display = '';
+        gridV.style.display = 'none';
+      } else if (filter === 'vertical') {
+        gridH.style.display = 'none';
+        gridV.style.display = '';
+      }
+    });
   });
 
   // ── LIGHTBOX ──
