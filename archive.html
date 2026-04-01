@@ -78,6 +78,10 @@ a{color:inherit;text-decoration:none}
 .arc-sub-link:hover,.arc-sub-link.sub-active{color:var(--accent)}
 .arc-sub-count{font:300 9px/1 var(--sf);color:rgba(0,0,0,.35);margin-left:6px}
 
+/* ── SECTION HEADERS ── */
+.arc-section-title{font:300 11px/1 var(--sf);letter-spacing:.14em;text-transform:uppercase;color:var(--tx);padding:0 0 16px;margin:0 0 24px;border-bottom:1px solid var(--br)}
+.arc-section-title:not(:first-child){margin-top:64px}
+
 /* ── GRID ── */
 .archive-main{padding:52px 52px 100px}
 .archive-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;align-items:start}
@@ -193,7 +197,8 @@ a{color:inherit;text-decoration:none}
   <aside id="arc-sidebar">
     <div class="arc-label" onclick="var s=document.getElementById('arc-sidebar');s.classList.toggle('nav-collapsed');this.querySelector('.arc-label-toggle').textContent=s.classList.contains('nav-collapsed')?'+':'−'">Archive <span class="arc-label-toggle">&minus;</span></div>
     <div class="arc-nav-list">
-      <a class="arc-nav-item active" data-filter="horizontal"><span class="arc-nav-num">01</span><span class="arc-nav-label">Postcards Horizontal</span><span class="arc-nav-toggle" onclick="event.preventDefault();event.stopPropagation();var sub=this.closest('.arc-nav-item').nextElementSibling;sub.classList.toggle('sub-collapsed');this.textContent=sub.classList.contains('sub-collapsed')?'+':'−'">+</span></a>
+      <a class="arc-nav-item active" data-filter="all"><span class="arc-nav-num">01</span><span class="arc-nav-label">All</span></a>
+      <a class="arc-nav-item" data-filter="horizontal"><span class="arc-nav-num">02</span><span class="arc-nav-label">Postcards Horizontal</span><span class="arc-nav-toggle" onclick="event.preventDefault();event.stopPropagation();var sub=this.closest('.arc-nav-item').nextElementSibling;sub.classList.toggle('sub-collapsed');this.textContent=sub.classList.contains('sub-collapsed')?'+':'−'">+</span></a>
       <div class="arc-sub sub-collapsed" data-orient="horizontal">
         <a class="arc-sub-link" data-filter="horizontal-water">Water</a>
         <a class="arc-sub-link" data-filter="horizontal-desert">Desert</a>
@@ -205,7 +210,7 @@ a{color:inherit;text-decoration:none}
         <a class="arc-sub-link" data-filter="horizontal-provenance">Provenance</a>
         <a class="arc-sub-link" data-filter="horizontal-bw">Black &amp; White</a>
       </div>
-      <a class="arc-nav-item" data-filter="vertical"><span class="arc-nav-num">02</span><span class="arc-nav-label">Postcards Vertical</span><span class="arc-nav-toggle" onclick="event.preventDefault();event.stopPropagation();var sub=this.closest('.arc-nav-item').nextElementSibling;sub.classList.toggle('sub-collapsed');this.textContent=sub.classList.contains('sub-collapsed')?'+':'−'">+</span></a>
+      <a class="arc-nav-item" data-filter="vertical"><span class="arc-nav-num">03</span><span class="arc-nav-label">Postcards Vertical</span><span class="arc-nav-toggle" onclick="event.preventDefault();event.stopPropagation();var sub=this.closest('.arc-nav-item').nextElementSibling;sub.classList.toggle('sub-collapsed');this.textContent=sub.classList.contains('sub-collapsed')?'+':'−'">+</span></a>
       <div class="arc-sub sub-collapsed" data-orient="vertical">
         <a class="arc-sub-link" data-filter="vertical-water">Water</a>
         <a class="arc-sub-link" data-filter="vertical-desert">Desert</a>
@@ -217,12 +222,15 @@ a{color:inherit;text-decoration:none}
         <a class="arc-sub-link" data-filter="vertical-provenance">Provenance</a>
         <a class="arc-sub-link" data-filter="vertical-bw">Black &amp; White</a>
       </div>
-      <a class="arc-nav-item" data-filter="souvenir"><span class="arc-nav-num">03</span><span class="arc-nav-label">Souvenir Folders</span></a>
+      <a class="arc-nav-item" data-filter="souvenir"><span class="arc-nav-num">04</span><span class="arc-nav-label">Souvenir Folders</span></a>
     </div>
   </aside>
   <div class="archive-main">
+    <div class="arc-section-title" id="section-h">Postcards — Horizontal</div>
     <div class="archive-grid" id="archive-grid-h"></div>
+    <div class="arc-section-title" id="section-v">Postcards — Vertical</div>
     <div class="archive-grid archive-grid-v" id="archive-grid-v"></div>
+    <div class="arc-section-title" id="section-sf" style="display:none">Souvenir Folders</div>
     <div class="archive-grid" id="archive-grid-sf" style="display:none"></div>
   </div>
 </div>
@@ -371,29 +379,47 @@ a{color:inherit;text-decoration:none}
     subLinks.forEach(function(s) { s.classList.remove('sub-active'); });
   }
 
+  var sectionH = document.getElementById('section-h');
+  var sectionV = document.getElementById('section-v');
+  var sectionSF = document.getElementById('section-sf');
+
   function applyFilter(filter) {
-    // Hide souvenir grid by default, show postcard grids
-    gridSF.style.display = 'none';
+    // Reset: show postcard sections, hide souvenir
     gridH.style.display = '';
     gridV.style.display = '';
+    sectionH.style.display = '';
+    sectionV.style.display = '';
+    gridSF.style.display = 'none';
+    sectionSF.style.display = 'none';
     allItemEls.forEach(function(el) { el.style.display = ''; });
 
-    if (filter === 'souvenir') {
+    if (filter === 'all') {
+      // Show all three sections
+      gridSF.style.display = '';
+      sectionSF.style.display = '';
+    } else if (filter === 'souvenir') {
       gridH.style.display = 'none';
       gridV.style.display = 'none';
+      sectionH.style.display = 'none';
+      sectionV.style.display = 'none';
       gridSF.style.display = '';
+      sectionSF.style.display = '';
     } else if (filter === 'horizontal') {
       gridV.style.display = 'none';
+      sectionV.style.display = 'none';
     } else if (filter === 'vertical') {
       gridH.style.display = 'none';
+      sectionH.style.display = 'none';
     } else if (filter.indexOf('-') !== -1) {
       var parts = filter.split('-');
       var orient = parts[0];
       var tag = parts[1];
       if (orient === 'horizontal') {
         gridV.style.display = 'none';
+        sectionV.style.display = 'none';
       } else {
         gridH.style.display = 'none';
+        sectionH.style.display = 'none';
       }
       allItemEls.forEach(function(el) {
         var tags = el.getAttribute('data-tags');
