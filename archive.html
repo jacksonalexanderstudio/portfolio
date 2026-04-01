@@ -71,6 +71,12 @@ a{color:inherit;text-decoration:none}
 .arc-nav-num{font-size:9px;color:var(--accent);letter-spacing:.06em;font-family:var(--sf);flex-shrink:0;width:22px;display:flex;align-items:center;justify-content:center;transition:color .35s ease}
 .arc-nav-label{font-size:10px;font-weight:300;letter-spacing:.14em;text-transform:uppercase;font-family:var(--sf);transition:transform .35s cubic-bezier(.4,0,.2,1);transform-origin:left center}
 .arc-nav-count{font:300 9px/1 var(--sf);color:rgba(0,0,0,.35);margin-left:auto;letter-spacing:.02em}
+.arc-nav-toggle{font-family:var(--sf);font-size:16px;font-weight:300;font-style:normal;color:var(--accent);margin-left:auto;cursor:pointer;line-height:1}
+.arc-sub{display:flex;flex-direction:column;padding-left:32px;margin-top:8px;margin-bottom:16px}
+.arc-sub.sub-collapsed{display:none}
+.arc-sub-link{font:400 8px/1 var(--sf);letter-spacing:.1em;text-transform:uppercase;color:#000;padding:5px 0;text-decoration:none;transition:color .2s;cursor:pointer}
+.arc-sub-link:hover,.arc-sub-link.sub-active{color:var(--accent)}
+.arc-sub-count{font:300 9px/1 var(--sf);color:rgba(0,0,0,.35);margin-left:6px}
 
 /* ── GRID ── */
 .archive-main{padding:52px 52px 100px}
@@ -188,16 +194,28 @@ a{color:inherit;text-decoration:none}
     <div class="arc-label" onclick="var s=document.getElementById('arc-sidebar');s.classList.toggle('nav-collapsed');this.querySelector('.arc-label-toggle').textContent=s.classList.contains('nav-collapsed')?'+':'−'">Archive <span class="arc-label-toggle">&minus;</span></div>
     <div class="arc-nav-list">
       <a class="arc-nav-item active" data-filter="all"><span class="arc-nav-num">01</span><span class="arc-nav-label">All Postcards</span><span class="arc-nav-count" id="count-all"></span></a>
-      <a class="arc-nav-item" data-filter="horizontal"><span class="arc-nav-num">02</span><span class="arc-nav-label">Postcards Horizontal</span><span class="arc-nav-count" id="count-h"></span></a>
-      <a class="arc-nav-item" data-filter="vertical"><span class="arc-nav-num">03</span><span class="arc-nav-label">Postcards Vertical</span><span class="arc-nav-count" id="count-v"></span></a>
-      <a class="arc-nav-item" data-filter="water"><span class="arc-nav-num">04</span><span class="arc-nav-label">Water</span><span class="arc-nav-count" id="count-water"></span></a>
-      <a class="arc-nav-item" data-filter="desert"><span class="arc-nav-num">05</span><span class="arc-nav-label">Desert</span><span class="arc-nav-count" id="count-desert"></span></a>
-      <a class="arc-nav-item" data-filter="city"><span class="arc-nav-num">06</span><span class="arc-nav-label">City</span><span class="arc-nav-count" id="count-city"></span></a>
-      <a class="arc-nav-item" data-filter="architecture"><span class="arc-nav-num">07</span><span class="arc-nav-label">Architecture</span><span class="arc-nav-count" id="count-architecture"></span></a>
-      <a class="arc-nav-item" data-filter="animals"><span class="arc-nav-num">08</span><span class="arc-nav-label">Animals</span><span class="arc-nav-count" id="count-animals"></span></a>
-      <a class="arc-nav-item" data-filter="plants"><span class="arc-nav-num">09</span><span class="arc-nav-label">Plants</span><span class="arc-nav-count" id="count-plants"></span></a>
-      <a class="arc-nav-item" data-filter="trains"><span class="arc-nav-num">10</span><span class="arc-nav-label">Trains</span><span class="arc-nav-count" id="count-trains"></span></a>
-      <a class="arc-nav-item" data-filter="provenance"><span class="arc-nav-num">11</span><span class="arc-nav-label">Provenance</span><span class="arc-nav-count" id="count-provenance"></span></a>
+      <a class="arc-nav-item" data-filter="horizontal"><span class="arc-nav-num">02</span><span class="arc-nav-label">Postcards Horizontal</span><span class="arc-nav-toggle" onclick="event.preventDefault();event.stopPropagation();var sub=this.closest('.arc-nav-item').nextElementSibling;sub.classList.toggle('sub-collapsed');this.textContent=sub.classList.contains('sub-collapsed')?'+':'−'">+</span></a>
+      <div class="arc-sub sub-collapsed" data-orient="horizontal">
+        <a class="arc-sub-link" data-filter="horizontal-water">Water</a>
+        <a class="arc-sub-link" data-filter="horizontal-desert">Desert</a>
+        <a class="arc-sub-link" data-filter="horizontal-city">City</a>
+        <a class="arc-sub-link" data-filter="horizontal-architecture">Architecture</a>
+        <a class="arc-sub-link" data-filter="horizontal-animals">Animals</a>
+        <a class="arc-sub-link" data-filter="horizontal-plants">Plants</a>
+        <a class="arc-sub-link" data-filter="horizontal-trains">Trains</a>
+        <a class="arc-sub-link" data-filter="horizontal-provenance">Provenance</a>
+      </div>
+      <a class="arc-nav-item" data-filter="vertical"><span class="arc-nav-num">03</span><span class="arc-nav-label">Postcards Vertical</span><span class="arc-nav-toggle" onclick="event.preventDefault();event.stopPropagation();var sub=this.closest('.arc-nav-item').nextElementSibling;sub.classList.toggle('sub-collapsed');this.textContent=sub.classList.contains('sub-collapsed')?'+':'−'">+</span></a>
+      <div class="arc-sub sub-collapsed" data-orient="vertical">
+        <a class="arc-sub-link" data-filter="vertical-water">Water</a>
+        <a class="arc-sub-link" data-filter="vertical-desert">Desert</a>
+        <a class="arc-sub-link" data-filter="vertical-city">City</a>
+        <a class="arc-sub-link" data-filter="vertical-architecture">Architecture</a>
+        <a class="arc-sub-link" data-filter="vertical-animals">Animals</a>
+        <a class="arc-sub-link" data-filter="vertical-plants">Plants</a>
+        <a class="arc-sub-link" data-filter="vertical-trains">Trains</a>
+        <a class="arc-sub-link" data-filter="vertical-provenance">Provenance</a>
+      </div>
     </div>
   </aside>
   <div class="archive-main">
@@ -323,10 +341,14 @@ a{color:inherit;text-decoration:none}
 
   // ── SIDEBAR FILTERING ──
   var navItems = document.querySelectorAll('.arc-nav-item[data-filter]');
-  var activeFilter = 'all';
+  var subLinks = document.querySelectorAll('.arc-sub-link[data-filter]');
+
+  function clearActive() {
+    navItems.forEach(function(n) { n.classList.remove('active'); });
+    subLinks.forEach(function(s) { s.classList.remove('sub-active'); });
+  }
 
   function applyFilter(filter) {
-    activeFilter = filter;
     if (filter === 'all') {
       gridH.style.display = '';
       gridV.style.display = '';
@@ -339,21 +361,41 @@ a{color:inherit;text-decoration:none}
       gridH.style.display = 'none';
       gridV.style.display = '';
       allItemEls.forEach(function(el) { el.style.display = ''; });
-    } else {
-      // Tag-based filter: show both grids, hide non-matching items
-      gridH.style.display = '';
-      gridV.style.display = '';
+    } else if (filter.indexOf('-') !== -1) {
+      // Sub-category: orientation-tag (e.g. "horizontal-water")
+      var parts = filter.split('-');
+      var orient = parts[0];
+      var tag = parts[1];
+      if (orient === 'horizontal') {
+        gridH.style.display = '';
+        gridV.style.display = 'none';
+      } else {
+        gridH.style.display = 'none';
+        gridV.style.display = '';
+      }
       allItemEls.forEach(function(el) {
         var tags = el.getAttribute('data-tags');
-        el.style.display = tags && tags.indexOf(filter) !== -1 ? '' : 'none';
+        el.style.display = tags && tags.indexOf(tag) !== -1 ? '' : 'none';
       });
     }
   }
 
   navItems.forEach(function(navItem) {
     navItem.addEventListener('click', function() {
-      navItems.forEach(function(n) { n.classList.remove('active'); });
+      clearActive();
       this.classList.add('active');
+      applyFilter(this.getAttribute('data-filter'));
+    });
+  });
+
+  subLinks.forEach(function(subLink) {
+    subLink.addEventListener('click', function() {
+      clearActive();
+      // Keep parent nav item highlighted
+      var orient = this.closest('.arc-sub').getAttribute('data-orient');
+      var parentNav = document.querySelector('.arc-nav-item[data-filter="' + orient + '"]');
+      if (parentNav) parentNav.classList.add('active');
+      this.classList.add('sub-active');
       applyFilter(this.getAttribute('data-filter'));
     });
   });
