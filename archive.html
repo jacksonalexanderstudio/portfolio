@@ -193,8 +193,7 @@ a{color:inherit;text-decoration:none}
   <aside id="arc-sidebar">
     <div class="arc-label" onclick="var s=document.getElementById('arc-sidebar');s.classList.toggle('nav-collapsed');this.querySelector('.arc-label-toggle').textContent=s.classList.contains('nav-collapsed')?'+':'−'">Archive <span class="arc-label-toggle">&minus;</span></div>
     <div class="arc-nav-list">
-      <a class="arc-nav-item active" data-filter="all"><span class="arc-nav-num">01</span><span class="arc-nav-label">All Postcards</span><span class="arc-nav-count" id="count-all"></span></a>
-      <a class="arc-nav-item" data-filter="horizontal"><span class="arc-nav-num">02</span><span class="arc-nav-label">Postcards Horizontal</span><span class="arc-nav-toggle" onclick="event.preventDefault();event.stopPropagation();var sub=this.closest('.arc-nav-item').nextElementSibling;sub.classList.toggle('sub-collapsed');this.textContent=sub.classList.contains('sub-collapsed')?'+':'−'">+</span></a>
+      <a class="arc-nav-item active" data-filter="horizontal"><span class="arc-nav-num">01</span><span class="arc-nav-label">Postcards Horizontal</span><span class="arc-nav-toggle" onclick="event.preventDefault();event.stopPropagation();var sub=this.closest('.arc-nav-item').nextElementSibling;sub.classList.toggle('sub-collapsed');this.textContent=sub.classList.contains('sub-collapsed')?'+':'−'">+</span></a>
       <div class="arc-sub sub-collapsed" data-orient="horizontal">
         <a class="arc-sub-link" data-filter="horizontal-water">Water</a>
         <a class="arc-sub-link" data-filter="horizontal-desert">Desert</a>
@@ -205,7 +204,7 @@ a{color:inherit;text-decoration:none}
         <a class="arc-sub-link" data-filter="horizontal-trains">Trains</a>
         <a class="arc-sub-link" data-filter="horizontal-provenance">Provenance</a>
       </div>
-      <a class="arc-nav-item" data-filter="vertical"><span class="arc-nav-num">03</span><span class="arc-nav-label">Postcards Vertical</span><span class="arc-nav-toggle" onclick="event.preventDefault();event.stopPropagation();var sub=this.closest('.arc-nav-item').nextElementSibling;sub.classList.toggle('sub-collapsed');this.textContent=sub.classList.contains('sub-collapsed')?'+':'−'">+</span></a>
+      <a class="arc-nav-item" data-filter="vertical"><span class="arc-nav-num">02</span><span class="arc-nav-label">Postcards Vertical</span><span class="arc-nav-toggle" onclick="event.preventDefault();event.stopPropagation();var sub=this.closest('.arc-nav-item').nextElementSibling;sub.classList.toggle('sub-collapsed');this.textContent=sub.classList.contains('sub-collapsed')?'+':'−'">+</span></a>
       <div class="arc-sub sub-collapsed" data-orient="vertical">
         <a class="arc-sub-link" data-filter="vertical-water">Water</a>
         <a class="arc-sub-link" data-filter="vertical-desert">Desert</a>
