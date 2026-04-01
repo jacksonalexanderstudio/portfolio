@@ -239,6 +239,7 @@ a{color:inherit;text-decoration:none}
         <a class="arc-sub-link" data-filter="sf-wyoming">Wyoming</a>
       </div>
       <a class="arc-nav-item" data-filter="ephemera"><span class="arc-nav-num">05</span><span class="arc-nav-label">Paper Ephemera</span></a>
+      <a class="arc-nav-item" data-filter="ephemera-v"><span class="arc-nav-num">06</span><span class="arc-nav-label">Paper Ephemera (Vertical)</span></a>
     </div>
   </aside>
   <div class="archive-main">
@@ -250,6 +251,8 @@ a{color:inherit;text-decoration:none}
     <div class="archive-grid" id="archive-grid-sf"></div>
     <div class="arc-section-title" id="section-pe">Paper Ephemera</div>
     <div class="archive-grid" id="archive-grid-pe"></div>
+    <div class="arc-section-title" id="section-pev">Paper Ephemera — Vertical</div>
+    <div class="archive-grid archive-grid-v" id="archive-grid-pev"></div>
   </div>
 </div>
 
@@ -419,6 +422,7 @@ a{color:inherit;text-decoration:none}
 
   // ── LOAD PAPER EPHEMERA ──
   var gridPE = document.getElementById('archive-grid-pe');
+  var gridPEV = document.getElementById('archive-grid-pev');
   var totalPE = 33;
   var peItems = [];
   for (var p = 1; p <= totalPE; p++) {
@@ -434,6 +438,18 @@ a{color:inherit;text-decoration:none}
       '</div>';
     div.addEventListener('click', function() { openLightbox(peItems, idx); });
     gridPE.appendChild(div);
+    // Move vertical items once loaded
+    var img = div.querySelector('img');
+    var checkPEOrient = function() {
+      if (img.naturalWidth > 0 && img.naturalHeight > 0 && img.naturalWidth < img.naturalHeight) {
+        gridPEV.appendChild(div);
+      }
+    };
+    if (img.complete && img.naturalWidth > 0) {
+      checkPEOrient();
+    } else {
+      img.addEventListener('load', checkPEOrient);
+    }
   });
 
   // ── SIDEBAR FILTERING ──
@@ -449,12 +465,14 @@ a{color:inherit;text-decoration:none}
   var sectionV = document.getElementById('section-v');
   var sectionSF = document.getElementById('section-sf');
   var sectionPE = document.getElementById('section-pe');
+  var sectionPEV = document.getElementById('section-pev');
 
   function hideAll() {
     gridH.style.display = 'none'; sectionH.style.display = 'none';
     gridV.style.display = 'none'; sectionV.style.display = 'none';
     gridSF.style.display = 'none'; sectionSF.style.display = 'none';
     gridPE.style.display = 'none'; sectionPE.style.display = 'none';
+    gridPEV.style.display = 'none'; sectionPEV.style.display = 'none';
   }
 
   function showAll() {
@@ -462,6 +480,7 @@ a{color:inherit;text-decoration:none}
     gridV.style.display = ''; sectionV.style.display = '';
     gridSF.style.display = ''; sectionSF.style.display = '';
     gridPE.style.display = ''; sectionPE.style.display = '';
+    gridPEV.style.display = ''; sectionPEV.style.display = '';
     allItemEls.forEach(function(el) { el.style.display = ''; });
     allSFEls.forEach(function(el) { el.style.display = ''; });
   }
@@ -477,6 +496,9 @@ a{color:inherit;text-decoration:none}
     } else if (filter === 'ephemera') {
       hideAll();
       gridPE.style.display = ''; sectionPE.style.display = '';
+    } else if (filter === 'ephemera-v') {
+      hideAll();
+      gridPEV.style.display = ''; sectionPEV.style.display = '';
     } else if (filter === 'horizontal') {
       hideAll();
       gridH.style.display = ''; sectionH.style.display = '';
