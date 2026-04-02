@@ -605,7 +605,7 @@ a{color:inherit;text-decoration:none}
         span.className = 'arc-sub-count';
         link.insertBefore(span, link.firstChild);
       }
-      span.textContent = count;
+      span.textContent = count < 10 ? '0' + count : count;
     });
   }
   // Run after orientation detection settles
