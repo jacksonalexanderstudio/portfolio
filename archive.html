@@ -247,8 +247,24 @@ h2.arc-section-title:not(:first-child){margin-top:64px}
         <a class="arc-sub-link" data-filter="sf-virginia">Virginia</a>
         <a class="arc-sub-link" data-filter="sf-wyoming">Wyoming</a>
       </div>
-      <a class="arc-nav-item" data-filter="ephemera"><span class="arc-nav-num">05</span><span class="arc-nav-label">Paper Ephemera (Horizontal)</span></a>
-      <a class="arc-nav-item" data-filter="ephemera-v"><span class="arc-nav-num">06</span><span class="arc-nav-label">Paper Ephemera (Vertical)</span></a>
+      <a class="arc-nav-item" data-filter="ephemera"><span class="arc-nav-num">05</span><span class="arc-nav-label">Paper Ephemera (Horizontal)</span><span class="arc-nav-toggle" onclick="event.preventDefault();event.stopPropagation();var sub=this.closest('.arc-nav-item').nextElementSibling;sub.classList.toggle('sub-collapsed');this.textContent=sub.classList.contains('sub-collapsed')?'+':'−'">+</span></a>
+      <div class="arc-sub sub-collapsed" data-orient="ephemera">
+        <a class="arc-sub-link" data-filter="pe-arizona">Arizona</a>
+        <a class="arc-sub-link" data-filter="pe-kansas">Kansas</a>
+        <a class="arc-sub-link" data-filter="pe-new-mexico">New Mexico</a>
+        <a class="arc-sub-link" data-filter="pe-new-york">New York</a>
+        <a class="arc-sub-link" data-filter="pe-oregon">Oregon</a>
+        <a class="arc-sub-link" data-filter="pe-texas">Texas</a>
+      </div>
+      <a class="arc-nav-item" data-filter="ephemera-v"><span class="arc-nav-num">06</span><span class="arc-nav-label">Paper Ephemera (Vertical)</span><span class="arc-nav-toggle" onclick="event.preventDefault();event.stopPropagation();var sub=this.closest('.arc-nav-item').nextElementSibling;sub.classList.toggle('sub-collapsed');this.textContent=sub.classList.contains('sub-collapsed')?'+':'−'">+</span></a>
+      <div class="arc-sub sub-collapsed" data-orient="ephemera-v">
+        <a class="arc-sub-link" data-filter="pev-arizona">Arizona</a>
+        <a class="arc-sub-link" data-filter="pev-kansas">Kansas</a>
+        <a class="arc-sub-link" data-filter="pev-new-mexico">New Mexico</a>
+        <a class="arc-sub-link" data-filter="pev-new-york">New York</a>
+        <a class="arc-sub-link" data-filter="pev-oregon">Oregon</a>
+        <a class="arc-sub-link" data-filter="pev-texas">Texas</a>
+      </div>
       <a class="arc-nav-item" data-filter="photographs"><span class="arc-nav-num">07</span><span class="arc-nav-label">Photographs</span></a>
     </div>
   </aside>
@@ -451,19 +467,42 @@ h2.arc-section-title:not(:first-child){margin-top:64px}
   var gridPEV = document.getElementById('archive-grid-pev');
   var totalPE = 33;
   var peItems = [];
+
+  var peStateTags = {
+    arizona:[29],
+    kansas:[1,2,3],
+    'new-mexico':[18,19,20,23,24,26,27,28,30,31,32,33],
+    'new-york':[10],
+    oregon:[7],
+    texas:[4,5,6]
+  };
+  var peItemTags = {};
+  Object.keys(peStateTags).forEach(function(state) {
+    peStateTags[state].forEach(function(num) {
+      var id = String(num).padStart(3, '0');
+      if (!peItemTags[id]) peItemTags[id] = [];
+      peItemTags[id].push(state);
+    });
+  });
+
+  var allPEEls = [];
   for (var p = 1; p <= totalPE; p++) {
     peItems.push({ id: 'PE-' + String(p).padStart(3, '0'), image: 'paper-ephemera/' + String(p).padStart(3, '0') + '.jpg' });
   }
   peItems.forEach(function(item, idx) {
+    var num = item.id.replace('PE-','');
+    var tags = peItemTags[num] || [];
     var div = document.createElement('div');
     div.className = 'arc-item';
+    div.setAttribute('data-pe-tags', tags.join(','));
     div.innerHTML =
       '<img src="' + item.image + '" alt="Paper Ephemera ' + item.id + '" loading="lazy">' +
       '<div class="arc-ov">' +
-        '<div class="arc-ov-num">' + item.id.replace('PE-','') + '</div>' +
+        '<div class="arc-ov-num">' + num + '</div>' +
       '</div>';
     div.addEventListener('click', function() { openLightbox(peItems, idx); });
     gridPE.appendChild(div);
+    allPEEls.push(div);
     // Move vertical items once loaded
     var img = div.querySelector('img');
     var checkPEOrient = function() {
@@ -531,6 +570,7 @@ h2.arc-section-title:not(:first-child){margin-top:64px}
     gridPH.style.display = ''; sectionPH.style.display = '';
     allItemEls.forEach(function(el) { el.style.display = ''; });
     allSFEls.forEach(function(el) { el.style.display = ''; });
+    allPEEls.forEach(function(el) { el.style.display = ''; });
   }
 
   function applyFilter(filter) {
@@ -547,6 +587,26 @@ h2.arc-section-title:not(:first-child){margin-top:64px}
     } else if (filter === 'ephemera-v') {
       hideAll();
       gridPEV.style.display = ''; sectionPEV.style.display = '';
+    } else if (filter.indexOf('pe-') === 0) {
+      var peState = filter.substring(3);
+      hideAll();
+      gridPE.style.display = ''; sectionPE.style.display = '';
+      allPEEls.forEach(function(el) {
+        var tags = el.getAttribute('data-pe-tags');
+        var inH = el.parentNode === gridPE;
+        if (!inH) { el.style.display = 'none'; return; }
+        el.style.display = tags && tags.indexOf(peState) !== -1 ? '' : 'none';
+      });
+    } else if (filter.indexOf('pev-') === 0) {
+      var pevState = filter.substring(4);
+      hideAll();
+      gridPEV.style.display = ''; sectionPEV.style.display = '';
+      allPEEls.forEach(function(el) {
+        var tags = el.getAttribute('data-pe-tags');
+        var inV = el.parentNode === gridPEV;
+        if (!inV) { el.style.display = 'none'; return; }
+        el.style.display = tags && tags.indexOf(pevState) !== -1 ? '' : 'none';
+      });
     } else if (filter === 'photographs') {
       hideAll();
       gridPH.style.display = ''; sectionPH.style.display = '';
@@ -628,6 +688,18 @@ h2.arc-section-title:not(:first-child){margin-top:64px}
       if (filter.indexOf('sf-') === 0) {
         var state = filter.substring(3);
         count = (sfStateTags[state] || []).length;
+      } else if (filter.indexOf('pe-') === 0) {
+        var peState = filter.substring(3);
+        allPEEls.forEach(function(el) {
+          var tags = el.getAttribute('data-pe-tags');
+          if (el.parentNode === gridPE && tags && tags.indexOf(peState) !== -1) count++;
+        });
+      } else if (filter.indexOf('pev-') === 0) {
+        var pevState = filter.substring(4);
+        allPEEls.forEach(function(el) {
+          var tags = el.getAttribute('data-pe-tags');
+          if (el.parentNode === gridPEV && tags && tags.indexOf(pevState) !== -1) count++;
+        });
       } else if (filter.indexOf('horizontal-') === 0 || filter.indexOf('vertical-') === 0) {
         var parts = filter.split('-');
         var orient = parts[0];
