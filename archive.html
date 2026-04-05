@@ -263,6 +263,8 @@ h2.arc-section-title:not(:first-child){margin-top:64px}
         <a class="arc-sub-link" data-filter="pe-colorado">Colorado</a>
         <a class="arc-sub-link" data-filter="pe-kansas">Kansas</a>
         <a class="arc-sub-link" data-filter="pe-minnesota">Minnesota</a>
+        <a class="arc-sub-link" data-filter="pe-missouri">Missouri</a>
+        <a class="arc-sub-link" data-filter="pe-montana">Montana</a>
         <a class="arc-sub-link" data-filter="pe-nevada">Nevada</a>
         <a class="arc-sub-link" data-filter="pe-new-mexico">New Mexico</a>
         <a class="arc-sub-link" data-filter="pe-new-york">New York</a>
@@ -275,6 +277,8 @@ h2.arc-section-title:not(:first-child){margin-top:64px}
         <a class="arc-sub-link" data-filter="pev-colorado">Colorado</a>
         <a class="arc-sub-link" data-filter="pev-kansas">Kansas</a>
         <a class="arc-sub-link" data-filter="pev-minnesota">Minnesota</a>
+        <a class="arc-sub-link" data-filter="pev-missouri">Missouri</a>
+        <a class="arc-sub-link" data-filter="pev-montana">Montana</a>
         <a class="arc-sub-link" data-filter="pev-nevada">Nevada</a>
         <a class="arc-sub-link" data-filter="pev-new-mexico">New Mexico</a>
         <a class="arc-sub-link" data-filter="pev-new-york">New York</a>
@@ -518,7 +522,7 @@ h2.arc-section-title:not(:first-child){margin-top:64px}
   // ── LOAD PAPER EPHEMERA ──
   var gridPE = document.getElementById('archive-grid-pe');
   var gridPEV = document.getElementById('archive-grid-pev');
-  var totalPE = 48;
+  var totalPE = 70;
   var peItems = [];
 
   var peStateTags = {
@@ -526,9 +530,11 @@ h2.arc-section-title:not(:first-child){margin-top:64px}
     colorado:[34,35,36],
     kansas:[1,2,3],
     minnesota:[37],
+    missouri:[61,64],
+    montana:[62],
     nevada:[39],
     'new-mexico':[18,19,20,23,24,26,27,28,30,31,32,33,45,46,47,48],
-    'new-york':[10],
+    'new-york':[10,63],
     oregon:[7],
     texas:[4,5,6]
   };
