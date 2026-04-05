@@ -112,6 +112,11 @@ body.img-hover #cur{filter:invert(1)}
 .wir.active{opacity:1;border-bottom:1px solid var(--accent)}
 .wir.active .wt{color:var(--tx);font-weight:700;transform:scale(1.2);transform-origin:left center}
 .wir.active .wn{color:var(--accent)}
+.wi-sub{display:flex;flex-direction:column;padding-left:32px;margin-top:8px;margin-bottom:16px}
+.wi-sub.sub-collapsed{display:none}
+.wi-sub-link{font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:#000;padding:4px 0;text-decoration:none;transition:color .2s;font-family:var(--sf);cursor:pointer}
+.wi-sub-link:hover,.wi-sub-link.sub-active{color:var(--accent)}
+.wir-toggle{font-family:var(--sf);font-size:16px;font-weight:300;font-style:normal;color:var(--accent);margin-left:auto;cursor:pointer;line-height:1}
 .wn{font-size:9px;color:var(--accent);letter-spacing:.06em;font-family:var(--sf);flex-shrink:0;width:22px;display:flex;align-items:center;justify-content:center;transition:color .35s ease}
 .wt{font-size:10px;font-weight:300;letter-spacing:.14em;text-transform:uppercase;font-family:var(--sf);transition:transform .35s cubic-bezier(.4,0,.2,1);transform-origin:left center}
 
@@ -343,11 +348,48 @@ body.img-hover #cur{filter:invert(1)}
 <aside id="wi">
   <div class="wil" onclick="var w=document.getElementById('wi');w.classList.toggle('nav-collapsed');this.querySelector('.wil-toggle').textContent=w.classList.contains('nav-collapsed')?'+':'−'">Selected Work <span class="wil-toggle">&minus;</span></div>
   <div class="wi-nav-list">
-    <a href="#logos" class="wir active" data-target="logos"><span class="wn">01</span><span class="wt">Logos</span></a>
-    <a href="#illustration" class="wir" data-target="illustration"><span class="wn">02</span><span class="wt">Illustration / Graphic</span></a>
-    <a href="#typelayout" class="wir" data-target="typelayout"><span class="wn">03</span><span class="wt">Type / Layout</span></a>
-    <a href="#craft" class="wir" data-target="craft"><span class="wn">04</span><span class="wt">Fabrication</span></a>
-    <a href="#styling" class="wir" data-target="styling"><span class="wn">05</span><span class="wt">Creative Direction</span></a>
+    <a href="#logos" class="wir active" data-target="logos"><span class="wn">01</span><span class="wt">Logos</span><span class="wir-toggle" onclick="event.preventDefault();event.stopPropagation();var sub=this.closest('.wir').nextElementSibling;sub.classList.toggle('sub-collapsed');this.textContent=sub.classList.contains('sub-collapsed')?'+':'−'">+</span></a>
+    <div class="wi-sub sub-collapsed" data-section="logos">
+      <a href="#logos" class="wi-sub-link" data-client="ja-studio">JA Studio</a>
+      <a href="#logos" class="wi-sub-link" data-client="peyote-bird">Peyote Bird</a>
+      <a href="#logos" class="wi-sub-link" data-client="bird-arrow">Bird + Arrow</a>
+      <a href="#logos" class="wi-sub-link" data-client="meticulous-motors">Meticulous Motors</a>
+      <a href="#logos" class="wi-sub-link" data-client="hutton-films">Hutton Films</a>
+      <a href="#logos" class="wi-sub-link" data-client="david-brown">David Brown, MD</a>
+      <a href="#logos" class="wi-sub-link" data-client="mind-shift">Mind Shift Therapy</a>
+      <a href="#logos" class="wi-sub-link" data-client="summit-peak">Summit Peak Performance</a>
+      <a href="#logos" class="wi-sub-link" data-client="jacks-garden">Jacks Garden</a>
+      <a href="#logos" class="wi-sub-link" data-client="savs">Savs</a>
+      <a href="#logos" class="wi-sub-link" data-client="waves-at-dogs">Waves At Dogs</a>
+    </div>
+    <a href="#illustration" class="wir" data-target="illustration"><span class="wn">02</span><span class="wt">Illustration / Graphic</span><span class="wir-toggle" onclick="event.preventDefault();event.stopPropagation();var sub=this.closest('.wir').nextElementSibling;sub.classList.toggle('sub-collapsed');this.textContent=sub.classList.contains('sub-collapsed')?'+':'−'">+</span></a>
+    <div class="wi-sub sub-collapsed" data-section="illustration">
+      <a href="#illustration" class="wi-sub-link" data-client="ja-studio">JA Studio</a>
+      <a href="#illustration" class="wi-sub-link" data-client="rocket-ramps">Rocket Ramps</a>
+      <a href="#illustration" class="wi-sub-link" data-client="peyote-bird">Peyote Bird</a>
+      <a href="#illustration" class="wi-sub-link" data-client="david-brown">David Brown, MD</a>
+      <a href="#illustration" class="wi-sub-link" data-client="bis">Breakfast is Swerved</a>
+    </div>
+    <a href="#typelayout" class="wir" data-target="typelayout"><span class="wn">03</span><span class="wt">Type / Layout</span><span class="wir-toggle" onclick="event.preventDefault();event.stopPropagation();var sub=this.closest('.wir').nextElementSibling;sub.classList.toggle('sub-collapsed');this.textContent=sub.classList.contains('sub-collapsed')?'+':'−'">+</span></a>
+    <div class="wi-sub sub-collapsed" data-section="typelayout">
+      <a href="#typelayout" class="wi-sub-link" data-client="peyote-bird">Peyote Bird</a>
+      <a href="#typelayout" class="wi-sub-link" data-client="talweg-creative">Talweg Creative</a>
+      <a href="#typelayout" class="wi-sub-link" data-client="studio-bose">Studio BOSE</a>
+      <a href="#typelayout" class="wi-sub-link" data-client="jacks-garden">Jacks Garden</a>
+      <a href="#typelayout" class="wi-sub-link" data-client="hutton-films">Hutton Films</a>
+    </div>
+    <a href="#craft" class="wir" data-target="craft"><span class="wn">04</span><span class="wt">Fabrication</span><span class="wir-toggle" onclick="event.preventDefault();event.stopPropagation();var sub=this.closest('.wir').nextElementSibling;sub.classList.toggle('sub-collapsed');this.textContent=sub.classList.contains('sub-collapsed')?'+':'−'">+</span></a>
+    <div class="wi-sub sub-collapsed" data-section="craft">
+      <a href="#craft" class="wi-sub-link" data-client="signage">Signage</a>
+      <a href="#craft" class="wi-sub-link" data-client="carvings">Carvings</a>
+      <a href="#craft" class="wi-sub-link" data-client="jewelry-design">Jewelry Design</a>
+      <a href="#craft" class="wi-sub-link" data-client="display">Display</a>
+    </div>
+    <a href="#styling" class="wir" data-target="styling"><span class="wn">05</span><span class="wt">Creative Direction</span><span class="wir-toggle" onclick="event.preventDefault();event.stopPropagation();var sub=this.closest('.wir').nextElementSibling;sub.classList.toggle('sub-collapsed');this.textContent=sub.classList.contains('sub-collapsed')?'+':'−'">+</span></a>
+    <div class="wi-sub sub-collapsed" data-section="styling">
+      <a href="#styling" class="wi-sub-link" data-client="peyote-bird">Peyote Bird</a>
+      <a href="#styling" class="wi-sub-link" data-client="ja-studio">JA Studio</a>
+    </div>
     <a href="#garden" class="wir" data-target="garden"><span class="wn">06</span><span class="wt">Jack&#39;s Garden</span></a>
     <a href="#production" class="wir" data-target="production"><span class="wn">07</span><span class="wt">Production</span></a>
   </div>
@@ -660,6 +702,29 @@ body.img-hover #cur{filter:invert(1)}
     });
   }
 
+  // ── CLIENT SUB-NAV FILTERING ──
+  document.querySelectorAll('.wi-sub-link').forEach(function(link){
+    link.addEventListener('click',function(e){
+      e.preventDefault();
+      var client = this.dataset.client;
+      var section = this.closest('.wi-sub').dataset.section;
+      var sectionEl = document.getElementById(section);
+      var items = sectionEl.querySelectorAll('.wi[data-client]');
+      var wasActive = this.classList.contains('sub-active');
+      // clear all sub-active in this group
+      this.closest('.wi-sub').querySelectorAll('.wi-sub-link').forEach(function(l){l.classList.remove('sub-active')});
+      if(wasActive){
+        // show all
+        items.forEach(function(item){item.style.display=''});
+      } else {
+        this.classList.add('sub-active');
+        items.forEach(function(item){
+          item.style.display = item.dataset.client === client ? '' : 'none';
+        });
+      }
+      sectionEl.scrollIntoView({behavior:'smooth',block:'start'});
+    });
+  });
 
   // ── CURSOR ──
   var cur = document.getElementById('cur');
