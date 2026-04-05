@@ -718,6 +718,7 @@ h2.arc-section-title:not(:first-child){margin-top:64px}
         link.insertBefore(span, link.firstChild);
       }
       span.textContent = count < 10 ? '0' + count : count;
+      link.style.display = count === 0 ? 'none' : '';
     });
   }
   // Run after orientation detection settles
