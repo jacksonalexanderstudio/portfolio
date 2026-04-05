@@ -97,9 +97,9 @@ h2.arc-section-title:not(:first-child){margin-top:64px}
 .arc-item:hover{transform:translateY(-4px);border-radius:14px}
 .arc-item img{width:100%;height:auto;display:block;transition:transform .6s ease}
 .arc-item:hover img{transform:scale(1.06)}
-.arc-flip{perspective:1000px;overflow:visible}
+.arc-flip{perspective:800px;overflow:hidden}
 .arc-flip:hover{transform:none;border-radius:14px}
-.arc-flip .arc-flip-inner{position:relative;width:100%;transition:transform .7s ease;transform-style:preserve-3d}
+.arc-flip .arc-flip-inner{position:relative;width:100%;transition:transform .8s cubic-bezier(.4,0,.2,1);transform-style:preserve-3d}
 .arc-flip:hover .arc-flip-inner{transform:rotateY(180deg)}
 .arc-flip .arc-flip-front,.arc-flip .arc-flip-back{backface-visibility:hidden;border-radius:inherit}
 .arc-flip .arc-flip-front{position:relative}
