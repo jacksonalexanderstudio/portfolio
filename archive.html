@@ -260,7 +260,10 @@ h2.arc-section-title:not(:first-child){margin-top:64px}
       <a class="arc-nav-item" data-filter="ephemera"><span class="arc-nav-num">05</span><span class="arc-nav-label">Paper Ephemera (Horizontal)</span><span class="arc-nav-toggle" onclick="event.preventDefault();event.stopPropagation();var sub=this.closest('.arc-nav-item').nextElementSibling;sub.classList.toggle('sub-collapsed');this.textContent=sub.classList.contains('sub-collapsed')?'+':'−'">+</span></a>
       <div class="arc-sub sub-collapsed" data-orient="ephemera">
         <a class="arc-sub-link" data-filter="pe-arizona">Arizona</a>
+        <a class="arc-sub-link" data-filter="pe-colorado">Colorado</a>
         <a class="arc-sub-link" data-filter="pe-kansas">Kansas</a>
+        <a class="arc-sub-link" data-filter="pe-minnesota">Minnesota</a>
+        <a class="arc-sub-link" data-filter="pe-nevada">Nevada</a>
         <a class="arc-sub-link" data-filter="pe-new-mexico">New Mexico</a>
         <a class="arc-sub-link" data-filter="pe-new-york">New York</a>
         <a class="arc-sub-link" data-filter="pe-oregon">Oregon</a>
@@ -269,7 +272,10 @@ h2.arc-section-title:not(:first-child){margin-top:64px}
       <a class="arc-nav-item" data-filter="ephemera-v"><span class="arc-nav-num">06</span><span class="arc-nav-label">Paper Ephemera (Vertical)</span><span class="arc-nav-toggle" onclick="event.preventDefault();event.stopPropagation();var sub=this.closest('.arc-nav-item').nextElementSibling;sub.classList.toggle('sub-collapsed');this.textContent=sub.classList.contains('sub-collapsed')?'+':'−'">+</span></a>
       <div class="arc-sub sub-collapsed" data-orient="ephemera-v">
         <a class="arc-sub-link" data-filter="pev-arizona">Arizona</a>
+        <a class="arc-sub-link" data-filter="pev-colorado">Colorado</a>
         <a class="arc-sub-link" data-filter="pev-kansas">Kansas</a>
+        <a class="arc-sub-link" data-filter="pev-minnesota">Minnesota</a>
+        <a class="arc-sub-link" data-filter="pev-nevada">Nevada</a>
         <a class="arc-sub-link" data-filter="pev-new-mexico">New Mexico</a>
         <a class="arc-sub-link" data-filter="pev-new-york">New York</a>
         <a class="arc-sub-link" data-filter="pev-oregon">Oregon</a>
@@ -512,13 +518,16 @@ h2.arc-section-title:not(:first-child){margin-top:64px}
   // ── LOAD PAPER EPHEMERA ──
   var gridPE = document.getElementById('archive-grid-pe');
   var gridPEV = document.getElementById('archive-grid-pev');
-  var totalPE = 33;
+  var totalPE = 48;
   var peItems = [];
 
   var peStateTags = {
     arizona:[29],
+    colorado:[34,35,36],
     kansas:[1,2,3],
-    'new-mexico':[18,19,20,23,24,26,27,28,30,31,32,33],
+    minnesota:[37],
+    nevada:[39],
+    'new-mexico':[18,19,20,23,24,26,27,28,30,31,32,33,45,46,47,48],
     'new-york':[10],
     oregon:[7],
     texas:[4,5,6]
