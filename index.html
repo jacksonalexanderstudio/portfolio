@@ -1142,7 +1142,7 @@ void main(){
   function pickNewImage(excludeList) {
     var available = [];
     for (var i = 0; i < heroImages.length; i++) {
-      if (excludeList.indexOf(i) === -1) available.push(i);
+      if (textures[i] && excludeList.indexOf(i) === -1) available.push(i);
     }
     return available.length
       ? available[Math.floor(Math.random() * available.length)]
@@ -1171,13 +1171,14 @@ void main(){
     panel.fadeStart = performance.now();
   }
 
+  var warpStarted = false;
   heroImages.forEach(function(src, i) {
     var img = new Image();
     img.onload = function() {
       textures[i] = createTexture(img);
       imgData[i] = { aspect: img.naturalWidth / img.naturalHeight };
       loadedCount++;
-      if (loadedCount === heroImages.length) startWarp();
+      if (!warpStarted && loadedCount >= 4) { warpStarted = true; startWarp(); }
     };
     img.src = src;
   });
