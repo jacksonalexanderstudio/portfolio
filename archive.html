@@ -463,6 +463,7 @@ h2.arc-section-title:not(:first-child){margin-top:64px}
         hCount++;
       }
       updateCounts();
+      updateSubCounts();
     };
     if (img.complete && img.naturalWidth > 0) {
       checkOrientation();
@@ -571,6 +572,7 @@ h2.arc-section-title:not(:first-child){margin-top:64px}
       if (img.naturalWidth > 0 && img.naturalHeight > 0 && img.naturalWidth < img.naturalHeight) {
         gridPEV.appendChild(div);
       }
+      updateSubCounts();
     };
     if (img.complete && img.naturalWidth > 0) {
       checkPEOrient();
@@ -786,6 +788,8 @@ h2.arc-section-title:not(:first-child){margin-top:64px}
   // Run after orientation detection settles
   setTimeout(updateSubCounts, 2000);
   setTimeout(updateSubCounts, 5000);
+  setTimeout(updateSubCounts, 8000);
+  setTimeout(updateSubCounts, 12000);
 
   // ── LIGHTBOX ──
   var lb = document.getElementById('lb');
