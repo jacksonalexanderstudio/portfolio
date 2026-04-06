@@ -1172,10 +1172,9 @@ void main(){
 
   // Build 4 shader programs — one per quadrant
   var programs = [];
-  var vsCompiled = mkShader(gl.VERTEX_SHADER, vsSrc);
   for (var qi = 0; qi < 4; qi++) {
     var p = gl.createProgram();
-    gl.attachShader(p, vsCompiled);
+    gl.attachShader(p, mkShader(gl.VERTEX_SHADER, vsSrc));
     gl.attachShader(p, mkShader(gl.FRAGMENT_SHADER, mkFsSrc(warpVariants[qi])));
     gl.linkProgram(p);
     var aLoc = gl.getAttribLocation(p, 'a');
