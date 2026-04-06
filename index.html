@@ -1197,7 +1197,20 @@ void main(){
     tidal * sin(a) +
     cos(ex * 5.0 + ey * 4.0 + t * 0.38) * 0.006;`;
 
-  var warpVariants = [warpQ0, warpQ1, warpQ2, warpQ3];
+  // CALM — original blueprint warp, gentle organic, postcard stays legible
+  var warpCalm = `
+  float dx =
+    sin(uvA.y * 5.2  + t * 0.65) * 0.018 +
+    sin(uvA.y * 13.0 + t * 1.2)  * 0.007 +
+    cos(uvA.x * 7.3  + uvA.y * 2.8 + t * 0.42) * 0.012 +
+    sin(uvA.x * 3.0  + uvA.y * 6.0 + t * 0.28) * 0.009;
+  float dy =
+    cos(uvA.x * 4.4  + t * 0.52) * 0.015 +
+    cos(uvA.x * 10.0 + t * 0.85) * 0.006 +
+    sin(uvA.y * 5.0  + uvA.x * 4.0 + t * 0.38) * 0.010 +
+    cos(uvA.y * 8.0  + uvA.x * 2.5 + t * 0.19) * 0.007;`;
+
+  var warpVariants = [warpQ0, warpQ1, warpQ2, warpQ3, warpCalm];
 
   function mkShader(type, src) {
     var s = gl.createShader(type);
@@ -1207,9 +1220,9 @@ void main(){
     return s;
   }
 
-  // Build 4 shader programs — one per quadrant
+  // Build 5 shader programs — 4 black holes + 1 calm blueprint
   var programs = [];
-  for (var qi = 0; qi < 4; qi++) {
+  for (var qi = 0; qi < 5; qi++) {
     var p = gl.createProgram();
     gl.attachShader(p, mkShader(gl.VERTEX_SHADER, vsSrc));
     gl.attachShader(p, mkShader(gl.FRAGMENT_SHADER, mkFsSrc(warpVariants[qi])));
@@ -1339,9 +1352,11 @@ void main(){
     var t0 = performance.now();
     var raf;
     var activePanel = 0;
+    var calmQuadrant = 0;
 
     setInterval(function() {
       switchPanel(activePanel);
+      calmQuadrant = activePanel;
       activePanel = (activePanel + 1) % 4;
     }, PANEL_INTERVAL);
 
@@ -1357,7 +1372,7 @@ void main(){
       for (var p = 0; p < 4; p++) {
         var panel = panels[p];
         var q = quads[p];
-        var sp = programs[p];
+        var sp = (p === calmQuadrant) ? programs[4] : programs[p];
 
         if (panel.fading) {
           var elapsed = (now - panel.fadeStart) / 1000;
