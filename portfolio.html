@@ -70,7 +70,7 @@ body.img-hover #cur{filter:invert(1)}
 #top-about::before{content:'';position:absolute;inset:0;background-image:url('logos & backgrounds/about-bg.jpg');background-size:100% auto;background-position:center top;animation:kbAbout 18s ease-in-out infinite alternate;will-change:transform;z-index:0}
 #top-about::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,0,0,.75) 0%,rgba(0,0,0,.44) 50%,rgba(0,0,0,.68) 100%);z-index:1}
 @keyframes kbAbout{0%{transform:scale(1) translate(0%,0%)}100%{transform:scale(1.18) translate(-5%,-3%)}}
-.ta{position:absolute;z-index:5;top:0;left:0;width:50%;height:50%;padding:28px 32px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center}
+.ta{position:absolute;z-index:5;bottom:0;right:0;width:50%;height:50%;padding:28px 32px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center}
 .ta-left{display:flex;flex-direction:column;gap:24px;padding-top:6px}
 .ta-label{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.4)}
 .ta-meta{font-size:12px;font-family:var(--sf);font-weight:300;letter-spacing:.04em;line-height:2.2;color:rgba(255,255,255,.45)}
@@ -1396,7 +1396,7 @@ void main(){
       var quads = getQuadRects(w, h);
 
       for (var p = 0; p < 4; p++) {
-        if (p === 0) continue; // Q0 top-left stays pure black (text lives there)
+        if (p === 2) continue; // Q2 bottom-right stays pure black (text lives there)
         var panel = panels[p];
         var q = quads[p];
         var sp = programs[p];
