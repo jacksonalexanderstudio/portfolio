@@ -1106,14 +1106,23 @@ void main(){
     sin(uvA.y * 5.0  + uvA.x * 4.0 + t * 0.38) * 0.010 +
     cos(uvA.y * 8.0  + uvA.x * 2.5 + t * 0.19) * 0.007;`;
 
-  // Q3 bottom-left: gravitational lensing — Nolan black hole, singularity pull, accretion disk spin, tidal stretch
+  // Q3 bottom-left: drifting black hole — singularity center wanders, gravity shape morphs, spin axis wobbles
   var warpQ3 = `
-  float cx = uvA.x - 0.5;
-  float cy = uvA.y - 0.5;
-  float r = sqrt(cx*cx + cy*cy) + 0.001;
-  float a = atan(cy, cx);
-  float gravity = 0.012 / (r * r + 0.04);
-  float spin = t * 0.65 + 6.0 / (r + 0.3);
+  float st = t * 0.13;
+  float ox = 0.5 + sin(st * 1.7) * 0.15 + cos(st * 0.9) * 0.08;
+  float oy = 0.5 + cos(st * 1.3) * 0.12 + sin(st * 2.1) * 0.06;
+  float rawx = uvA.x - ox;
+  float rawy = uvA.y - oy;
+  float squash = 1.0 + 0.4 * sin(st * 2.3);
+  float skew = 0.3 * cos(st * 1.1);
+  float ex = rawx * squash + rawy * skew;
+  float ey = rawy / squash + rawx * skew * 0.5;
+  float r = sqrt(ex*ex + ey*ey) + 0.001;
+  float a = atan(ey, ex);
+  float gPulse = 0.010 + 0.004 * sin(st * 3.7);
+  float gravity = gPulse / (r * r + 0.04);
+  float spinRate = 5.0 + 2.0 * sin(st * 1.9);
+  float spin = t * 0.65 + spinRate / (r + 0.3);
   float tidal = sin(r * 8.0 - t * 1.2) * 0.02 * smoothstep(0.0, 0.4, r);
   float lensWarp = sin(a * 3.0 + spin) * gravity;
   float dx =
@@ -1121,13 +1130,13 @@ void main(){
     sin(a + spin) * 0.035 * smoothstep(0.05, 0.35, r) +
     lensWarp * cos(a * 2.0 + t * 0.42) +
     tidal * cos(a) +
-    sin(cx * 5.0 + cy * 7.0 + t * 0.28) * 0.006;
+    sin(ex * 5.0 + ey * 7.0 + t * 0.28) * 0.006;
   float dy =
     sin(a) * gravity * -0.8 +
     cos(a + spin) * 0.035 * smoothstep(0.05, 0.35, r) +
     lensWarp * sin(a * 2.0 + t * 0.52) +
     tidal * sin(a) +
-    cos(cx * 6.0 + cy * 4.0 + t * 0.38) * 0.006;`;
+    cos(ex * 6.0 + ey * 4.0 + t * 0.38) * 0.006;`;
 
   var warpVariants = [warpQ0, warpQ1, warpQ2, warpQ3];
 
