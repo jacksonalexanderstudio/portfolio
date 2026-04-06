@@ -110,11 +110,11 @@ body.img-hover #cur{filter:invert(1)}
 .wir{display:flex;align-items:center;gap:10px;padding:10px 0;transition:opacity .3s,color .3s;opacity:1;text-decoration:none;color:var(--tx);border-bottom:1px solid transparent}
 .wir:hover{opacity:.7}
 .wir.active{opacity:1;border-bottom:1px solid var(--accent)}
-.wir.active .wt{color:var(--tx)}
+.wir.active .wt{color:var(--tx);font-weight:700}
 .wir.active .wn{color:var(--accent)}
 .wi-sub{display:flex;flex-direction:column;padding-left:32px;margin-top:8px;margin-bottom:16px}
 .wi-sub.sub-collapsed{display:none}
-.wi-sub-link{font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:#000;padding:4px 0;text-decoration:none;transition:color .2s;font-family:var(--sf);cursor:pointer}
+.wi-sub-link{display:flex;align-items:center;gap:8px;font:400 10px/1 var(--sf);letter-spacing:.14em;text-transform:uppercase;color:#000;padding:5px 0;text-decoration:none;transition:color .2s;cursor:pointer}
 .wi-sub-link:hover,.wi-sub-link.sub-active{color:var(--accent)}
 .wir-toggle{font-family:var(--sf);font-size:16px;font-weight:300;font-style:normal;color:var(--accent);margin-left:auto;cursor:pointer;line-height:1}
 .wn{font-size:9px;color:var(--accent);letter-spacing:.06em;font-family:var(--sf);flex-shrink:0;width:22px;display:flex;align-items:center;justify-content:center;transition:color .35s ease}
@@ -348,7 +348,7 @@ body.img-hover #cur{filter:invert(1)}
 <aside id="wi">
   <div class="wil" onclick="var w=document.getElementById('wi');w.classList.toggle('nav-collapsed');this.querySelector('.wil-toggle').textContent=w.classList.contains('nav-collapsed')?'+':'−'">Selected Work <span class="wil-toggle">&minus;</span></div>
   <div class="wi-nav-list">
-    <a href="#logos" class="wir active" data-target="logos"><span class="wn">01</span><span class="wt">Logos</span><span class="wir-toggle" onclick="event.preventDefault();event.stopPropagation();var sub=this.closest('.wir').nextElementSibling;sub.classList.toggle('sub-collapsed');this.textContent=sub.classList.contains('sub-collapsed')?'+':'−'">+</span></a>
+    <a href="#logos" class="wir active" data-target="logos"><span class="wn">01</span><span class="wt">Logos</span><span class="wir-toggle">+</span></a>
     <div class="wi-sub sub-collapsed" data-section="logos">
       <a href="#logos" class="wi-sub-link" data-client="ja-studio">JA Studio</a>
       <a href="#logos" class="wi-sub-link" data-client="peyote-bird">Peyote Bird</a>
@@ -362,7 +362,7 @@ body.img-hover #cur{filter:invert(1)}
       <a href="#logos" class="wi-sub-link" data-client="savs">Savs</a>
       <a href="#logos" class="wi-sub-link" data-client="waves-at-dogs">Waves At Dogs</a>
     </div>
-    <a href="#illustration" class="wir" data-target="illustration"><span class="wn">02</span><span class="wt">Illustration / Graphic</span><span class="wir-toggle" onclick="event.preventDefault();event.stopPropagation();var sub=this.closest('.wir').nextElementSibling;sub.classList.toggle('sub-collapsed');this.textContent=sub.classList.contains('sub-collapsed')?'+':'−'">+</span></a>
+    <a href="#illustration" class="wir" data-target="illustration"><span class="wn">02</span><span class="wt">Illustration / Graphic</span><span class="wir-toggle">+</span></a>
     <div class="wi-sub sub-collapsed" data-section="illustration">
       <a href="#illustration" class="wi-sub-link" data-client="ja-studio">JA Studio</a>
       <a href="#illustration" class="wi-sub-link" data-client="rocket-ramps">Rocket Ramps</a>
@@ -370,7 +370,7 @@ body.img-hover #cur{filter:invert(1)}
       <a href="#illustration" class="wi-sub-link" data-client="david-brown">David Brown, MD</a>
       <a href="#illustration" class="wi-sub-link" data-client="bis">Breakfast is Swerved</a>
     </div>
-    <a href="#typelayout" class="wir" data-target="typelayout"><span class="wn">03</span><span class="wt">Type / Layout</span><span class="wir-toggle" onclick="event.preventDefault();event.stopPropagation();var sub=this.closest('.wir').nextElementSibling;sub.classList.toggle('sub-collapsed');this.textContent=sub.classList.contains('sub-collapsed')?'+':'−'">+</span></a>
+    <a href="#typelayout" class="wir" data-target="typelayout"><span class="wn">03</span><span class="wt">Type / Layout</span><span class="wir-toggle">+</span></a>
     <div class="wi-sub sub-collapsed" data-section="typelayout">
       <a href="#typelayout" class="wi-sub-link" data-client="peyote-bird">Peyote Bird</a>
       <a href="#typelayout" class="wi-sub-link" data-client="talweg-creative">Talweg Creative</a>
@@ -378,14 +378,14 @@ body.img-hover #cur{filter:invert(1)}
       <a href="#typelayout" class="wi-sub-link" data-client="jacks-garden">Jacks Garden</a>
       <a href="#typelayout" class="wi-sub-link" data-client="hutton-films">Hutton Films</a>
     </div>
-    <a href="#craft" class="wir" data-target="craft"><span class="wn">04</span><span class="wt">Fabrication</span><span class="wir-toggle" onclick="event.preventDefault();event.stopPropagation();var sub=this.closest('.wir').nextElementSibling;sub.classList.toggle('sub-collapsed');this.textContent=sub.classList.contains('sub-collapsed')?'+':'−'">+</span></a>
+    <a href="#craft" class="wir" data-target="craft"><span class="wn">04</span><span class="wt">Fabrication</span><span class="wir-toggle">+</span></a>
     <div class="wi-sub sub-collapsed" data-section="craft">
       <a href="#craft" class="wi-sub-link" data-client="signage">Signage</a>
       <a href="#craft" class="wi-sub-link" data-client="carvings">Carvings</a>
       <a href="#craft" class="wi-sub-link" data-client="jewelry-design">Jewelry Design</a>
       <a href="#craft" class="wi-sub-link" data-client="display">Display</a>
     </div>
-    <a href="#styling" class="wir" data-target="styling"><span class="wn">05</span><span class="wt">Creative Direction</span><span class="wir-toggle" onclick="event.preventDefault();event.stopPropagation();var sub=this.closest('.wir').nextElementSibling;sub.classList.toggle('sub-collapsed');this.textContent=sub.classList.contains('sub-collapsed')?'+':'−'">+</span></a>
+    <a href="#styling" class="wir" data-target="styling"><span class="wn">05</span><span class="wt">Creative Direction</span><span class="wir-toggle">+</span></a>
     <div class="wi-sub sub-collapsed" data-section="styling">
       <a href="#styling" class="wi-sub-link" data-client="peyote-bird">Peyote Bird</a>
       <a href="#styling" class="wi-sub-link" data-client="ja-studio">JA Studio</a>
@@ -692,15 +692,40 @@ body.img-hover #cur{filter:invert(1)}
   // ── FLAG JS READY — enables clip-path animations safely ──
   document.documentElement.classList.add('js-on');
 
-  // ── MOBILE NAV TOGGLE ──
+  // ── NAV TOGGLE ──
   var wiNav = document.getElementById('wi');
   var wiLabel = document.querySelector('#wi .wil');
   if(wiLabel){
     wiLabel.addEventListener('click',function(){wiNav.classList.toggle('nav-open')});
-    document.querySelectorAll('.wir').forEach(function(link){
-      link.addEventListener('click',function(){wiNav.classList.remove('nav-open')});
+  }
+  function collapseAllSubs(){
+    document.querySelectorAll('.wi-sub').forEach(function(sub){
+      sub.classList.add('sub-collapsed');
+      var toggle=sub.previousElementSibling?sub.previousElementSibling.querySelector('.wir-toggle'):null;
+      if(toggle) toggle.textContent='+';
     });
   }
+  function expandSubFor(wir){
+    var sub=wir.nextElementSibling;
+    if(sub&&sub.classList.contains('wi-sub')){
+      sub.classList.remove('sub-collapsed');
+      var toggle=wir.querySelector('.wir-toggle');
+      if(toggle) toggle.textContent='\u2212';
+    }
+  }
+  document.querySelectorAll('.wir').forEach(function(link){
+    link.addEventListener('click',function(e){
+      e.preventDefault();
+      wiNav.classList.remove('nav-open');
+      document.querySelectorAll('.wir').forEach(function(r){r.classList.remove('active')});
+      collapseAllSubs();
+      this.classList.add('active');
+      expandSubFor(this);
+      var target=this.getAttribute('data-target');
+      var el=document.getElementById(target);
+      if(el) el.scrollIntoView({behavior:'smooth',block:'start'});
+    });
+  });
 
   // ── CLIENT SUB-NAV FILTERING ──
   document.querySelectorAll('.wi-sub-link').forEach(function(link){

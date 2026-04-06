@@ -73,10 +73,10 @@ a{color:inherit;text-decoration:none}
 .arc-nav-item{display:flex;align-items:center;gap:10px;padding:10px 0;transition:opacity .3s,color .3s;opacity:1;text-decoration:none;color:var(--tx);border-bottom:1px solid transparent;cursor:pointer}
 .arc-nav-item:hover{opacity:.7}
 .arc-nav-item.active{opacity:1;border-bottom:1px solid var(--accent)}
-.arc-nav-item.active .arc-nav-label{color:var(--tx)}
+.arc-nav-item.active .arc-nav-label{color:var(--tx);font-weight:700}
 .arc-nav-item.active .arc-nav-num{color:var(--accent)}
 .arc-nav-num{font-size:9px;color:var(--accent);letter-spacing:.06em;font-family:var(--sf);flex-shrink:0;width:22px;display:flex;align-items:center;justify-content:center;transition:color .35s ease}
-.arc-nav-label{font-size:10px;font-weight:300;letter-spacing:.14em;text-transform:uppercase;font-family:var(--sf);transition:transform .35s cubic-bezier(.4,0,.2,1);transform-origin:left center}
+.arc-nav-label{font-size:10px;font-weight:300;letter-spacing:.14em;text-transform:uppercase;font-family:var(--sf)}
 .arc-nav-count{font:300 9px/1 var(--sf);color:rgba(0,0,0,.35);margin-left:auto;letter-spacing:.02em}
 .arc-nav-toggle{font-family:var(--sf);font-size:16px;font-weight:300;font-style:normal;color:var(--accent);margin-left:auto;cursor:pointer;line-height:1}
 .arc-sub{display:flex;flex-direction:column;padding-left:32px;margin-top:8px;margin-bottom:16px}
@@ -217,7 +217,7 @@ h2.arc-section-title:not(:first-child){margin-top:64px}
     <div class="arc-label" onclick="var s=document.getElementById('arc-sidebar');s.classList.toggle('nav-collapsed');this.querySelector('.arc-label-toggle').textContent=s.classList.contains('nav-collapsed')?'+':'−'">Archive <span class="arc-label-toggle">&minus;</span></div>
     <div class="arc-nav-list">
       <a class="arc-nav-item active" data-filter="all"><span class="arc-nav-num">01</span><span class="arc-nav-label">All</span></a>
-      <a class="arc-nav-item" data-filter="horizontal"><span class="arc-nav-num">02</span><span class="arc-nav-label">Postcards Horizontal</span><span class="arc-nav-toggle" onclick="event.preventDefault();event.stopPropagation();var sub=this.closest('.arc-nav-item').nextElementSibling;sub.classList.toggle('sub-collapsed');this.textContent=sub.classList.contains('sub-collapsed')?'+':'−'">+</span></a>
+      <a class="arc-nav-item" data-filter="horizontal"><span class="arc-nav-num">02</span><span class="arc-nav-label">Postcards Horizontal</span><span class="arc-nav-toggle">+</span></a>
       <div class="arc-sub sub-collapsed" data-orient="horizontal">
         <a class="arc-sub-link" data-filter="horizontal-animals">Animals</a>
         <a class="arc-sub-link" data-filter="horizontal-architecture">Architecture</a>
@@ -229,7 +229,7 @@ h2.arc-section-title:not(:first-child){margin-top:64px}
         <a class="arc-sub-link" data-filter="horizontal-trains">Trains</a>
         <a class="arc-sub-link" data-filter="horizontal-water">Water</a>
       </div>
-      <a class="arc-nav-item" data-filter="vertical"><span class="arc-nav-num">03</span><span class="arc-nav-label">Postcards Vertical</span><span class="arc-nav-toggle" onclick="event.preventDefault();event.stopPropagation();var sub=this.closest('.arc-nav-item').nextElementSibling;sub.classList.toggle('sub-collapsed');this.textContent=sub.classList.contains('sub-collapsed')?'+':'−'">+</span></a>
+      <a class="arc-nav-item" data-filter="vertical"><span class="arc-nav-num">03</span><span class="arc-nav-label">Postcards Vertical</span><span class="arc-nav-toggle">+</span></a>
       <div class="arc-sub sub-collapsed" data-orient="vertical">
         <a class="arc-sub-link" data-filter="vertical-animals">Animals</a>
         <a class="arc-sub-link" data-filter="vertical-architecture">Architecture</a>
@@ -241,7 +241,7 @@ h2.arc-section-title:not(:first-child){margin-top:64px}
         <a class="arc-sub-link" data-filter="vertical-trains">Trains</a>
         <a class="arc-sub-link" data-filter="vertical-water">Water</a>
       </div>
-      <a class="arc-nav-item" data-filter="souvenir"><span class="arc-nav-num">04</span><span class="arc-nav-label">Souvenir Folders</span><span class="arc-nav-toggle" onclick="event.preventDefault();event.stopPropagation();var sub=this.closest('.arc-nav-item').nextElementSibling;sub.classList.toggle('sub-collapsed');this.textContent=sub.classList.contains('sub-collapsed')?'+':'−'">+</span></a>
+      <a class="arc-nav-item" data-filter="souvenir"><span class="arc-nav-num">04</span><span class="arc-nav-label">Souvenir Folders</span><span class="arc-nav-toggle">+</span></a>
       <div class="arc-sub sub-collapsed" data-orient="souvenir">
         <a class="arc-sub-link" data-filter="sf-arizona">Arizona</a>
         <a class="arc-sub-link" data-filter="sf-california">California</a>
@@ -257,7 +257,7 @@ h2.arc-section-title:not(:first-child){margin-top:64px}
         <a class="arc-sub-link" data-filter="sf-virginia">Virginia</a>
         <a class="arc-sub-link" data-filter="sf-wyoming">Wyoming</a>
       </div>
-      <a class="arc-nav-item" data-filter="ephemera"><span class="arc-nav-num">05</span><span class="arc-nav-label">Paper Ephemera (Horizontal)</span><span class="arc-nav-toggle" onclick="event.preventDefault();event.stopPropagation();var sub=this.closest('.arc-nav-item').nextElementSibling;sub.classList.toggle('sub-collapsed');this.textContent=sub.classList.contains('sub-collapsed')?'+':'−'">+</span></a>
+      <a class="arc-nav-item" data-filter="ephemera"><span class="arc-nav-num">05</span><span class="arc-nav-label">Paper Ephemera (Horizontal)</span><span class="arc-nav-toggle">+</span></a>
       <div class="arc-sub sub-collapsed" data-orient="ephemera">
         <a class="arc-sub-link" data-filter="pe-arizona">Arizona</a>
         <a class="arc-sub-link" data-filter="pe-colorado">Colorado</a>
@@ -271,7 +271,7 @@ h2.arc-section-title:not(:first-child){margin-top:64px}
         <a class="arc-sub-link" data-filter="pe-oregon">Oregon</a>
         <a class="arc-sub-link" data-filter="pe-texas">Texas</a>
       </div>
-      <a class="arc-nav-item" data-filter="ephemera-v"><span class="arc-nav-num">06</span><span class="arc-nav-label">Paper Ephemera (Vertical)</span><span class="arc-nav-toggle" onclick="event.preventDefault();event.stopPropagation();var sub=this.closest('.arc-nav-item').nextElementSibling;sub.classList.toggle('sub-collapsed');this.textContent=sub.classList.contains('sub-collapsed')?'+':'−'">+</span></a>
+      <a class="arc-nav-item" data-filter="ephemera-v"><span class="arc-nav-num">06</span><span class="arc-nav-label">Paper Ephemera (Vertical)</span><span class="arc-nav-toggle">+</span></a>
       <div class="arc-sub sub-collapsed" data-orient="ephemera-v">
         <a class="arc-sub-link" data-filter="pev-arizona">Arizona</a>
         <a class="arc-sub-link" data-filter="pev-colorado">Colorado</a>
