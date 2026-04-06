@@ -1352,10 +1352,11 @@ void main(){
     var raf;
     var activePanel = 0;
     var calmQuadrant = 0;
+    var nextCalm = -1;
 
     setInterval(function() {
       switchPanel(activePanel);
-      calmQuadrant = activePanel;
+      nextCalm = activePanel;
       activePanel = (activePanel + 1) % 4;
     }, PANEL_INTERVAL);
 
@@ -1381,6 +1382,7 @@ void main(){
             panel.currentIdx = panel.nextIdx;
             panel.mixFactor  = 0;
             panel.fading     = false;
+            if (nextCalm === p) { calmQuadrant = p; nextCalm = -1; }
           }
         }
 

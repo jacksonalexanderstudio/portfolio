@@ -1402,12 +1402,13 @@ void main(){
     var t0 = performance.now();
     var raf;
     var activePanel = 0;
-    var calmQuadrant = 0; // which quadrant gets the gentle warp
+    var calmQuadrant = 0;
+    var nextCalm = -1; // queued calm swap
 
-    // Clockwise panel rotation — calm quadrant shifts each swap
+    // Clockwise panel rotation — calm swap queued for after fade completes
     setInterval(function() {
       switchPanel(activePanel);
-      calmQuadrant = activePanel; // the one that just got a new image becomes the calm one
+      nextCalm = activePanel;
       activePanel = (activePanel + 1) % 4;
     }, PANEL_INTERVAL);
 
@@ -1434,6 +1435,7 @@ void main(){
             panel.currentIdx = panel.nextIdx;
             panel.mixFactor  = 0;
             panel.fading     = false;
+            if (nextCalm === p) { calmQuadrant = p; nextCalm = -1; }
           }
         }
 
