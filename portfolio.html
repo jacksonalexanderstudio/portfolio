@@ -60,18 +60,17 @@ body.img-hover #cur{filter:invert(1)}
 .nd a::after{display:none}
 .dn{color:#D95740;margin-right:10px;font-size:10px;font-family:var(--sf)}
 
-#warp-canvas{position:absolute;top:0;left:0;width:130%;height:130%;z-index:1;pointer-events:none;animation:canvasDrift 40s cubic-bezier(.45,.05,.55,.95) infinite}
+.warp-drift{position:absolute;top:0;left:0;width:130%;height:130%;animation:canvasDrift 40s cubic-bezier(.45,.05,.55,.95) infinite}
+#warp-canvas{position:absolute;top:0;left:0;width:100%;height:100%;z-index:1;pointer-events:none}
 @keyframes canvasDrift{0%{transform:translate(0%,0%)}20%{transform:translate(-18%,-8%)}40%{transform:translate(-5%,-22%)}60%{transform:translate(-20%,-18%)}80%{transform:translate(-10%,-2%)}100%{transform:translate(0%,0%)}}
 #top-about.warp-active::before{display:none}
 #top-about.warp-active::after{display:none}
-#top-about.warp-active .abt-icons{z-index:4}
-#top-about.warp-active .ta{z-index:5}
 /* ── ABOUT (top — full-bleed bg + Ken Burns) ── */
 #top-about{position:relative;padding-top:140px;min-height:100vh;display:flex;flex-direction:column;justify-content:center;background:#0c0c0c;border-bottom:1px solid rgba(255,255,255,.1);overflow:hidden}
 #top-about::before{content:'';position:absolute;inset:0;background-image:url('logos & backgrounds/about-bg.jpg');background-size:100% auto;background-position:center top;animation:kbAbout 18s ease-in-out infinite alternate;will-change:transform;z-index:0}
 #top-about::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,0,0,.75) 0%,rgba(0,0,0,.44) 50%,rgba(0,0,0,.68) 100%);z-index:1}
 @keyframes kbAbout{0%{transform:scale(1) translate(0%,0%)}100%{transform:scale(1.18) translate(-5%,-3%)}}
-.ta{position:relative;z-index:3;padding:100px 28px 120px 280px;max-width:1100px;min-height:0}
+.ta{position:absolute;z-index:5;top:50%;left:50%;padding:28px 32px;max-width:calc(50% - 32px);box-sizing:border-box}
 .ta-left{display:flex;flex-direction:column;gap:24px;padding-top:6px}
 .ta-label{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.4)}
 .ta-meta{font-size:12px;font-family:var(--sf);font-weight:300;letter-spacing:.04em;line-height:2.2;color:rgba(255,255,255,.45)}
@@ -249,7 +248,8 @@ body.img-hover #cur{filter:invert(1)}
   .hl img{height:48px}
   .hn{gap:16px}
   .hn a,.nb{font-size:9px;letter-spacing:.08em}
-  .ta{padding:60px 20px 80px 20px}
+  .ta{position:relative;top:auto;left:auto;max-width:100%;padding:60px 20px 80px 20px}
+  .warp-drift{position:relative;width:100%;height:50vh;margin-bottom:0}
   .work-layout{flex-direction:column}
   .work-layout::before{display:none}
   #wi{position:static;width:100%;border-bottom:1px solid var(--br);padding:20px 20px;display:flex;flex-direction:column;gap:0}
@@ -319,22 +319,13 @@ body.img-hover #cur{filter:invert(1)}
 
 <!-- ABOUT (top section, replaces old hero) -->
 <section id="top-about">
-  <canvas id="warp-canvas"></canvas>
-  <div class="abt-icons">
-    <!-- icons removed — waiting for proper artwork -->
-  </div>
-  <!-- marquee-about: landscape strip behind text — commented out for later
-  <div class="marquee-about">
-    <div class="marquee-track">
-      <img src="logos &amp; backgrounds/landscape-strip.png" alt="">
-      <img src="logos &amp; backgrounds/landscape-strip.png" alt="">
+  <div class="warp-drift">
+    <canvas id="warp-canvas"></canvas>
+    <div class="ta">
+      <a href="portfolio.html" class="ta-mark swp" style="display:block;width:120px;margin-bottom:24px"><img src="logos &amp; backgrounds/jastudio_shadow.png" alt="Jackson Alexander Studio mark" style="width:100%;height:auto;filter:invert(1);display:block"></a>
+      <p class="ta-headline swp">A creative studio &#8212;<br>based in Santa Fe, NM.</p>
+      <p class="ta-body swp-d">Thanks for stopping by &#8212; I&#39;m Jackson. The studio works across a wide range of mediums: graphic design, illustration, web design, fabrication, sound, and landscape.</p>
     </div>
-  </div>
-  -->
-  <div class="ta">
-    <a href="portfolio.html" class="ta-mark swp" style="display:block;width:144px;margin-bottom:32px"><img src="logos &amp; backgrounds/jastudio_shadow.png" alt="Jackson Alexander Studio mark" style="width:100%;height:auto;filter:invert(1);display:block"></a>
-    <p class="ta-headline swp">A creative studio &#8212;<br>based in Santa Fe, NM.</p>
-    <p class="ta-body swp-d">Thanks for stopping by &#8212; I&#39;m Jackson. The studio works across a wide range of mediums: graphic design, illustration, web design, fabrication, sound, and landscape.</p>
   </div>
 </section>
 
@@ -1247,20 +1238,7 @@ void main(){
     tidal * sin(a) +
     cos(ex * 5.0 + ey * 4.0 + t * 0.38) * 0.006;`;
 
-  // CALM — original blueprint warp, gentle organic, postcard stays legible
-  var warpCalm = `
-  float dx =
-    sin(uvA.y * 5.2  + t * 0.65) * 0.018 +
-    sin(uvA.y * 13.0 + t * 1.2)  * 0.007 +
-    cos(uvA.x * 7.3  + uvA.y * 2.8 + t * 0.42) * 0.012 +
-    sin(uvA.x * 3.0  + uvA.y * 6.0 + t * 0.28) * 0.009;
-  float dy =
-    cos(uvA.x * 4.4  + t * 0.52) * 0.015 +
-    cos(uvA.x * 10.0 + t * 0.85) * 0.006 +
-    sin(uvA.y * 5.0  + uvA.x * 4.0 + t * 0.38) * 0.010 +
-    cos(uvA.y * 8.0  + uvA.x * 2.5 + t * 0.19) * 0.007;`;
-
-  var warpVariants = [warpQ0, warpQ1, warpQ2, warpQ3, warpCalm];
+  var warpVariants = [warpQ0, warpQ1, warpQ2, warpQ3];
 
   function mkShader(type, src) {
     var s = gl.createShader(type);
@@ -1270,9 +1248,9 @@ void main(){
     return s;
   }
 
-  // Build 5 shader programs — 4 black holes + 1 calm blueprint
+  // Build 4 shader programs — one per quadrant
   var programs = [];
-  for (var qi = 0; qi < 5; qi++) {
+  for (var qi = 0; qi < 4; qi++) {
     var p = gl.createProgram();
     gl.attachShader(p, mkShader(gl.VERTEX_SHADER, vsSrc));
     gl.attachShader(p, mkShader(gl.FRAGMENT_SHADER, mkFsSrc(warpVariants[qi])));
@@ -1402,13 +1380,9 @@ void main(){
     var t0 = performance.now();
     var raf;
     var activePanel = 0;
-    var calmQuadrant = 0;
-    var nextCalm = -1; // queued calm swap
 
-    // Clockwise panel rotation — calm swap queued for after fade completes
     setInterval(function() {
       switchPanel(activePanel);
-      nextCalm = activePanel;
       activePanel = (activePanel + 1) % 4;
     }, PANEL_INTERVAL);
 
@@ -1424,7 +1398,7 @@ void main(){
       for (var p = 0; p < 4; p++) {
         var panel = panels[p];
         var q = quads[p];
-        var sp = (p === calmQuadrant) ? programs[4] : programs[p];
+        var sp = programs[p];
 
         // Advance crossfade
         if (panel.fading) {
@@ -1435,7 +1409,7 @@ void main(){
             panel.currentIdx = panel.nextIdx;
             panel.mixFactor  = 0;
             panel.fading     = false;
-            if (nextCalm === p) { calmQuadrant = p; nextCalm = -1; }
+
           }
         }
 
