@@ -70,7 +70,7 @@ body.img-hover #cur{filter:invert(1)}
 #top-about::before{content:'';position:absolute;inset:0;background-image:url('logos & backgrounds/about-bg.jpg');background-size:100% auto;background-position:center top;animation:kbAbout 18s ease-in-out infinite alternate;will-change:transform;z-index:0}
 #top-about::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,0,0,.75) 0%,rgba(0,0,0,.44) 50%,rgba(0,0,0,.68) 100%);z-index:1}
 @keyframes kbAbout{0%{transform:scale(1) translate(0%,0%)}100%{transform:scale(1.18) translate(-5%,-3%)}}
-.ta{position:absolute;z-index:5;top:0;left:0;width:50%;height:50%;display:flex;flex-direction:column;justify-content:center;padding:40px 48px;box-sizing:border-box}
+.ta{position:relative;z-index:3;padding:100px 28px 120px 280px;max-width:1100px;min-height:0}
 .ta-left{display:flex;flex-direction:column;gap:24px;padding-top:6px}
 .ta-label{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.4)}
 .ta-meta{font-size:12px;font-family:var(--sf);font-weight:300;letter-spacing:.04em;line-height:2.2;color:rgba(255,255,255,.45)}
@@ -78,7 +78,7 @@ body.img-hover #cur{filter:invert(1)}
 .ta-contact a:hover{opacity:.55}
 .ta-right{}
 .ta-headline{font-size:clamp(24px,3vw,39px);font-family:'Cormorant Garamond',serif;font-weight:300;font-style:italic;line-height:1.4;letter-spacing:.04em;color:rgba(255,255,255,.92);margin-bottom:36px}
-.ta-body{font-size:15px;font-family:var(--sf);font-weight:300;color:#fff;line-height:1.9;letter-spacing:.01em;margin-bottom:20px;max-width:480px}
+.ta-body{font-size:15px;font-family:var(--sf);font-weight:300;color:#fff;line-height:1.9;letter-spacing:.01em;margin-bottom:20px;max-width:640px}
 .ta-cta{display:inline-block;margin-top:24px;font-size:12px;letter-spacing:.08em;color:#fff;border:1px solid rgba(255,255,255,.5);padding:13px 29px;text-transform:uppercase;transition:background .2s,color .2s,border-color .2s}
 .ta-cta:hover{background:#fff;color:#0c0c0c;border-color:#fff;opacity:1}
 .ta-cta:hover{opacity:.55}
@@ -1046,7 +1046,7 @@ body.img-hover #cur{filter:invert(1)}
 
   gl.enable(gl.SCISSOR_TEST);
 
-  var GAP = 6; // px — black separator lines between quadrants
+  var GAP = 12; // px — black separator lines between quadrants
 
   var heroImages = [
     'hero-images/hero-01.jpg','hero-images/hero-02.jpg','hero-images/hero-03.jpg',
@@ -1066,7 +1066,8 @@ body.img-hover #cur{filter:invert(1)}
     'hero-images/hero-43.jpg','hero-images/hero-44.jpg','hero-images/hero-45.jpg',
     'hero-images/hero-46.jpg','hero-images/hero-47.jpg','hero-images/hero-48.jpg',
     'hero-images/hero-49.jpg','hero-images/hero-50.jpg','hero-images/hero-51.jpg',
-    'hero-images/hero-52.jpg','hero-images/hero-53.jpg'
+    'hero-images/hero-52.jpg','hero-images/hero-53.jpg','hero-images/hero-54.jpg',
+    'hero-images/hero-55.jpg'
   ];
 
   var vsSrc = 'attribute vec2 a;varying vec2 v;void main(){v=a*0.5+0.5;gl_Position=vec4(a,0.0,1.0);}';
