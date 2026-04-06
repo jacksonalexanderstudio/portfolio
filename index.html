@@ -1069,46 +1069,10 @@ void main(){
 }`;
   }
 
-  // Q0 top-left: slow lateral drift — wide horizontal waves, gentle vertical pull
-  var warpQ0 = `
-  float dx =
-    sin(uvA.y * 3.1  + t * 0.65) * 0.022 +
-    cos(uvA.y * 8.7  + t * 1.2)  * 0.008 +
-    sin(uvA.x * 2.0  + uvA.y * 5.5 + t * 0.42) * 0.010;
-  float dy =
-    cos(uvA.x * 6.2  + t * 0.52) * 0.012 +
-    sin(uvA.y * 4.0  + uvA.x * 3.2 + t * 0.38) * 0.008 +
-    cos(uvA.y * 11.0 + t * 0.19) * 0.005;`;
-
-  // Q1 top-right: diagonal shear — cross-axis turbulence, angular momentum
-  var warpQ1 = `
-  float dx =
-    sin((uvA.x + uvA.y) * 4.8  + t * 0.65) * 0.016 +
-    cos(uvA.y * 9.5  + t * 1.2)  * 0.009 +
-    sin(uvA.x * 6.0  - uvA.y * 3.0 + t * 0.42) * 0.011 +
-    cos((uvA.x - uvA.y) * 7.0 + t * 0.28) * 0.007;
-  float dy =
-    cos((uvA.x + uvA.y) * 5.5  + t * 0.52) * 0.014 +
-    sin(uvA.x * 11.0 + t * 0.85) * 0.006 +
-    cos(uvA.y * 3.5  + uvA.x * 8.0 + t * 0.38) * 0.009 +
-    sin((uvA.y - uvA.x) * 6.0 + t * 0.19) * 0.005;`;
-
-  // Q2 bottom-right: ORIGINAL BLUEPRINT — do not modify
-  var warpQ2 = `
-  float dx =
-    sin(uvA.y * 5.2  + t * 0.65) * 0.018 +
-    sin(uvA.y * 13.0 + t * 1.2)  * 0.007 +
-    cos(uvA.x * 7.3  + uvA.y * 2.8 + t * 0.42) * 0.012 +
-    sin(uvA.x * 3.0  + uvA.y * 6.0 + t * 0.28) * 0.009;
-  float dy =
-    cos(uvA.x * 4.4  + t * 0.52) * 0.015 +
-    cos(uvA.x * 10.0 + t * 0.85) * 0.006 +
-    sin(uvA.y * 5.0  + uvA.x * 4.0 + t * 0.38) * 0.010 +
-    cos(uvA.y * 8.0  + uvA.x * 2.5 + t * 0.19) * 0.007;`;
-
-  // Q3 bottom-left: drifting black hole — singularity center wanders, gravity shape morphs, spin axis wobbles
-  var warpQ3 = `
-  float st = t * 0.13;
+  // Drifting black hole factory — each quadrant gets unique phase offsets
+  function mkBlackHole(phase) {
+    return `
+  float st = t * 0.13 + ${phase.toFixed(1)};
   float ox = 0.5 + sin(st * 1.7) * 0.15 + cos(st * 0.9) * 0.08;
   float oy = 0.5 + cos(st * 1.3) * 0.12 + sin(st * 2.1) * 0.06;
   float rawx = uvA.x - ox;
@@ -1137,6 +1101,13 @@ void main(){
     lensWarp * sin(a * 2.0 + t * 0.52) +
     tidal * sin(a) +
     cos(ex * 6.0 + ey * 4.0 + t * 0.38) * 0.006;`;
+  }
+
+  // Each quadrant drifts independently — phase offsets spread them apart
+  var warpQ0 = mkBlackHole(0.0);    // top-left
+  var warpQ1 = mkBlackHole(17.0);   // top-right
+  var warpQ2 = mkBlackHole(41.0);   // bottom-right
+  var warpQ3 = mkBlackHole(73.0);   // bottom-left
 
   var warpVariants = [warpQ0, warpQ1, warpQ2, warpQ3];
 
