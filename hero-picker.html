@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hero Image Picker</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0c0c0c;--card:#161616;--br:rgba(255,255,255,.1);--tx:#fff;--accent:#D95740;--fn:'DM Sans',system-ui,sans-serif}
+body{background:var(--bg);color:var(--tx);font-family:var(--fn);line-height:1.5}
+
+/* ── HEADER ── */
+.toolbar{position:sticky;top:0;z-index:100;background:rgba(12,12,12,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--br);padding:20px 28px;display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.toolbar h1{font-size:16px;font-weight:400;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
+.toolbar .count{font-size:12px;color:rgba(255,255,255,.45);letter-spacing:.04em}
+.toolbar .count strong{color:var(--accent);font-weight:400}
+.btn{font:400 11px/1 var(--fn);letter-spacing:.1em;text-transform:uppercase;color:#fff;border:1px solid rgba(255,255,255,.3);background:none;padding:10px 20px;cursor:pointer;transition:all .2s}
+.btn:hover{background:#fff;color:#0c0c0c;border-color:#fff}
+.btn.primary{background:var(--accent);border-color:var(--accent)}
+.btn.primary:hover{background:#c44a34;border-color:#c44a34}
+.spacer{flex:1}
+.search{font:400 13px var(--fn);color:#fff;background:rgba(255,255,255,.06);border:1px solid var(--br);padding:8px 14px;border-radius:0;width:160px;outline:none}
+.search:focus{border-color:var(--accent)}
+.search::placeholder{color:rgba(255,255,255,.25)}
+
+/* ── GRID ── */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:4px;padding:4px}
+.card{position:relative;aspect-ratio:1/1;overflow:hidden;cursor:pointer;border:2px solid transparent;transition:border-color .15s}
+.card:hover{border-color:rgba(255,255,255,.25)}
+.card.selected{border-color:var(--accent)}
+.card img{width:100%;height:100%;object-fit:cover;display:block;transition:opacity .3s}
+.card img.error{opacity:.15}
+.card .label{position:absolute;bottom:0;left:0;right:0;padding:6px 10px;background:linear-gradient(transparent,rgba(0,0,0,.7));font-size:11px;letter-spacing:.06em;display:flex;align-items:center;justify-content:space-between;pointer-events:none}
+.card .num{color:rgba(255,255,255,.5)}
+.card.selected .num{color:var(--accent)}
+.card .check{width:16px;height:16px;border:1px solid rgba(255,255,255,.35);border-radius:2px;display:flex;align-items:center;justify-content:center;font-size:11px;color:transparent;transition:all .15s}
+.card.selected .check{background:var(--accent);border-color:var(--accent);color:#fff}
+
+/* ── OUTPUT MODAL ── */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;display:none;align-items:center;justify-content:center}
+.modal-bg.open{display:flex}
+.modal{background:#1a1a1a;border:1px solid var(--br);padding:28px;max-width:720px;width:90%;max-height:80vh;overflow-y:auto;position:relative}
+.modal h2{font-size:13px;font-weight:400;letter-spacing:.1em;text-transform:uppercase;margin-bottom:16px}
+.modal pre{font:12px/1.6 'Fragment Mono',monospace;color:rgba(255,255,255,.8);white-space:pre-wrap;word-break:break-all;background:rgba(0,0,0,.4);padding:16px;border:1px solid var(--br);max-height:50vh;overflow-y:auto;user-select:all}
+.modal .close{position:absolute;top:12px;right:16px;background:none;border:none;color:#fff;font-size:20px;cursor:pointer;opacity:.5}
+.modal .close:hover{opacity:1}
+.modal .actions{margin-top:16px;display:flex;gap:12px}
+.copied{color:var(--accent);font-size:11px;letter-spacing:.06em;opacity:0;transition:opacity .3s}
+.copied.show{opacity:1}
+
+/* ── FILTER PILLS ── */
+.filters{display:flex;gap:8px;flex-wrap:wrap}
+.pill{font:400 10px/1 var(--fn);letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.15);background:none;padding:7px 14px;cursor:pointer;transition:all .15s}
+.pill:hover{color:#fff;border-color:rgba(255,255,255,.3)}
+.pill.active{color:var(--accent);border-color:var(--accent)}
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <h1>Hero Image Picker</h1>
+  <div class="count"><strong id="sel-count">0</strong> / <span id="total-count">587</span> selected</div>
+  <div class="filters">
+    <button class="pill active" data-filter="all">All</button>
+    <button class="pill" data-filter="selected">Selected</button>
+    <button class="pill" data-filter="unselected">Unselected</button>
+  </div>
+  <input type="text" class="search" id="search" placeholder="Search #...">
+  <div class="spacer"></div>
+  <button class="btn" id="btn-clear">Clear All</button>
+  <button class="btn" id="btn-select-all">Select All</button>
+  <button class="btn primary" id="btn-export">Export Selection</button>
+</div>
+
+<div class="grid" id="grid"></div>
+
+<!-- Output modal -->
+<div class="modal-bg" id="modal">
+  <div class="modal">
+    <button class="close" id="modal-close">&times;</button>
+    <h2>Hero Images Array</h2>
+    <p style="font-size:12px;color:rgba(255,255,255,.4);margin-bottom:12px">
+      Copy this array and paste it into portfolio.html to replace the <code>heroImages</code> variable.
+    </p>
+    <pre id="output"></pre>
+    <div class="actions">
+      <button class="btn primary" id="btn-copy">Copy to Clipboard</button>
+      <span class="copied" id="copied-msg">Copied!</span>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var TOTAL = 587;
+  var grid = document.getElementById('grid');
+  var selected = new Set();
+
+  // Build cards
+  for (var i = 1; i <= TOTAL; i++) {
+    var num = String(i).padStart(3, '0');
+    var card = document.createElement('div');
+    card.className = 'card';
+    card.dataset.num = num;
+    card.innerHTML =
+      '<img src="postcards/' + num + '.jpg" loading="lazy" alt="Postcard ' + num + '">' +
+      '<div class="label"><span class="num">' + num + '</span><span class="check">&#10003;</span></div>';
+    card.addEventListener('click', toggleCard);
+    // Mark broken images
+    card.querySelector('img').addEventListener('error', function(){ this.classList.add('error'); });
+    grid.appendChild(card);
+  }
+
+  document.getElementById('total-count').textContent = TOTAL;
+
+  function toggleCard() {
+    var num = this.dataset.num;
+    if (selected.has(num)) {
+      selected.delete(num);
+      this.classList.remove('selected');
+    } else {
+      selected.add(num);
+      this.classList.add('selected');
+    }
+    updateCount();
+  }
+
+  function updateCount() {
+    document.getElementById('sel-count').textContent = selected.size;
+  }
+
+  // Select all / clear
+  document.getElementById('btn-select-all').addEventListener('click', function(){
+    document.querySelectorAll('.card').forEach(function(c){
+      if (c.style.display !== 'none') {
+        selected.add(c.dataset.num);
+        c.classList.add('selected');
+      }
+    });
+    updateCount();
+  });
+  document.getElementById('btn-clear').addEventListener('click', function(){
+    selected.clear();
+    document.querySelectorAll('.card').forEach(function(c){ c.classList.remove('selected'); });
+    updateCount();
+  });
+
+  // Filter pills
+  var currentFilter = 'all';
+  document.querySelectorAll('.pill').forEach(function(pill){
+    pill.addEventListener('click', function(){
+      document.querySelectorAll('.pill').forEach(function(p){ p.classList.remove('active'); });
+      this.classList.add('active');
+      currentFilter = this.dataset.filter;
+      applyFilters();
+    });
+  });
+
+  // Search
+  var searchInput = document.getElementById('search');
+  searchInput.addEventListener('input', applyFilters);
+
+  function applyFilters() {
+    var query = searchInput.value.replace(/^#/, '').trim();
+    document.querySelectorAll('.card').forEach(function(c){
+      var matchSearch = !query || c.dataset.num.includes(query);
+      var matchFilter = currentFilter === 'all' ||
+        (currentFilter === 'selected' && selected.has(c.dataset.num)) ||
+        (currentFilter === 'unselected' && !selected.has(c.dataset.num));
+      c.style.display = (matchSearch && matchFilter) ? '' : 'none';
+    });
+  }
+
+  // Export
+  document.getElementById('btn-export').addEventListener('click', function(){
+    if (selected.size === 0) { alert('No images selected.'); return; }
+    var sorted = Array.from(selected).sort();
+    var lines = sorted.map(function(num){ return "    'postcards/" + num + ".jpg'"; });
+    var code = "var heroImages = [\n" + lines.join(',\n') + "\n  ];";
+    document.getElementById('output').textContent = code;
+    document.getElementById('modal').classList.add('open');
+  });
+
+  // Modal close
+  document.getElementById('modal-close').addEventListener('click', function(){
+    document.getElementById('modal').classList.remove('open');
+  });
+  document.getElementById('modal').addEventListener('click', function(e){
+    if (e.target === this) this.classList.remove('open');
+  });
+
+  // Copy
+  document.getElementById('btn-copy').addEventListener('click', function(){
+    var text = document.getElementById('output').textContent;
+    navigator.clipboard.writeText(text).then(function(){
+      var msg = document.getElementById('copied-msg');
+      msg.classList.add('show');
+      setTimeout(function(){ msg.classList.remove('show'); }, 2000);
+    });
+  });
+
+})();
+</script>
+</body>
+</html>

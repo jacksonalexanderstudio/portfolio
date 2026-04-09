@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Warp Gallery</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{background:#000;overflow-x:hidden;width:100%}
+.block{width:100vw;height:100vh;position:relative}
+.block canvas{position:absolute;top:0;left:0;width:100%;height:100%}
+</style>
+</head>
+<body>
+<script>
+(function() {
+  var TOTAL = 587;
+  var PER_BLOCK = 4;
+  var NUM_BLOCKS = Math.ceil(TOTAL / PER_BLOCK);
+  var GAP = 3;
+
+  // Create all block divs
+  var blocks = [];
+  for (var b = 0; b < NUM_BLOCKS; b++) {
+    var div = document.createElement('div');
+    div.className = 'block';
+    var canvas = document.createElement('canvas');
+    div.appendChild(canvas);
+    document.body.appendChild(div);
+    blocks.push({ div: div, canvas: canvas, gl: null, started: false, running: false, raf: null });
+  }
+
+  // Shader sources
+  var vsSrc = 'attribute vec2 a;varying vec2 v;void main(){v=a*0.5+0.5;gl_Position=vec4(a,0.0,1.0);}';
+
+  function mkFsSrc(warpBody, qi) {
+    var colorBlock = '';
+    if (qi === 0) {
+      colorBlock = '\n\
+  // Q0: warm amber/gold\n\
+  float warmCycle = sin(t * 0.099) * 0.5 + 0.5;\n\
+  float warmPulse = sin(t * 0.099 * 2.7 + 1.0) * 0.3;\n\
+  vec3 tintA = vec3(1.30, 0.92, 0.65);\n\
+  vec3 tintB = vec3(1.0, 0.80, 0.60);\n\
+  vec3 tint = mix(tintA, tintB, warmCycle) + warmPulse * vec3(0.08, -0.04, -0.10);\n\
+  col *= tint;\n\
+  float vig = 1.0 - 0.22 * length(v - 0.5) * (1.0 + 0.45 * sin(t * 0.099 * 3.0));\n\
+  col *= vig;\n';
+    } else if (qi === 1) {
+      colorBlock = '\n\
+  // Q1: cool teal/ice\n\
+  float coolCycle = sin(t * 0.099 + 2.0) * 0.5 + 0.5;\n\
+  float coolPulse = sin(t * 0.099 * 3.1 + 0.5) * 0.3;\n\
+  vec3 tintA = vec3(0.68, 0.98, 1.25);\n\
+  vec3 tintB = vec3(0.62, 0.85, 1.30);\n\
+  vec3 tint = mix(tintA, tintB, coolCycle) + coolPulse * vec3(-0.08, 0.04, 0.10);\n\
+  col *= tint;\n\
+  float vig = 1.0 - 0.20 * length(v - 0.5) * (1.0 + 0.42 * sin(t * 0.099 * 3.0 + 1.0));\n\
+  col *= vig;\n';
+    } else if (qi === 2) {
+      colorBlock = '\n\
+  // Q2: neutral brightened\n\
+  float neutralCycle = sin(t * 0.089 + 5.0) * 0.5 + 0.5;\n\
+  vec3 tintA = vec3(1.08, 1.02, 0.94);\n\
+  vec3 tintB = vec3(0.96, 0.94, 1.04);\n\
+  vec3 tint = mix(tintA, tintB, neutralCycle);\n\
+  col *= tint * 1.25;\n';
+    } else {
+      colorBlock = '\n\
+  // Q3: violet/magenta\n\
+  float roseCycle = sin(t * 0.099 + 4.0) * 0.5 + 0.5;\n\
+  float rosePulse = sin(t * 0.099 * 2.3 + 3.0) * 0.3;\n\
+  vec3 tintA = vec3(1.15, 0.72, 1.10);\n\
+  vec3 tintB = vec3(0.85, 0.70, 1.22);\n\
+  vec3 tint = mix(tintA, tintB, roseCycle) + rosePulse * vec3(0.06, -0.08, 0.10);\n\
+  col *= tint;\n\
+  float vig = 1.0 - 0.21 * length(v - 0.5) * (1.0 + 0.40 * sin(t * 0.099 * 3.0 + 2.5));\n\
+  col *= vig;\n';
+    }
+
+    return 'precision highp float;\n\
+uniform sampler2D imgA;\n\
+uniform sampler2D imgB;\n\
+uniform float mix_f;\n\
+uniform float t;\n\
+uniform float intensity;\n\
+uniform float seed;\n\
+uniform vec2 coverA;\n\
+uniform vec2 coverOffA;\n\
+uniform vec2 coverB;\n\
+uniform vec2 coverOffB;\n\
+varying vec2 v;\n\
+\n\
+void main(){\n\
+  float zoom = 1.0;\n\
+  vec2 uvA = (v - 0.5) / zoom + 0.5;\n\
+  uvA = uvA * coverA + coverOffA;\n\
+  vec2 uvB = (v - 0.5) / zoom + 0.5;\n\
+  uvB = uvB * coverB + coverOffB;\n\
+\n' + warpBody + '\n\
+\n\
+  vec2 dv = vec2(dx, dy);\n\
+  float margin = 0.005;\n\
+  vec2 minA = vec2(margin) - uvA;\n\
+  vec2 maxA = vec2(1.0 - margin) - uvA;\n\
+  vec2 minB = vec2(margin) - uvB;\n\
+  vec2 maxB = vec2(1.0 - margin) - uvB;\n\
+  dv.x = clamp(dv.x, max(minA.x, minB.x), min(maxA.x, maxB.x));\n\
+  dv.y = clamp(dv.y, max(minA.y, minB.y), min(maxA.y, maxB.y));\n\
+  float edgeFade = smoothstep(0.0, 0.08, v.x) * smoothstep(0.0, 0.08, 1.0 - v.x)\n\
+                 * smoothstep(0.0, 0.08, v.y) * smoothstep(0.0, 0.08, 1.0 - v.y);\n\
+  dv *= edgeFade;\n\
+  vec2 wuvA = uvA + dv;\n\
+  vec2 wuvB = uvB + dv;\n\
+  vec3 colA = texture2D(imgA, wuvA).rgb;\n\
+  vec3 colB = texture2D(imgB, wuvB).rgb;\n\
+  vec3 col = mix(colA, colB, mix_f);\n\
+  float breath = 0.88 + 0.12 * sin(t * 0.5 + v.y * 2.5 + v.x * 1.5);\n\
+  col *= breath;\n\
+  float shimmer = sin(v.x * 6.0 + v.y * 4.0 + t * 0.8) * 0.04;\n\
+  col *= (1.0 + shimmer);\n' + colorBlock + '\n\
+  col *= 0.62;\n\
+  gl_FragColor = vec4(col, 1.0);\n\
+}';
+  }
+
+  // Warp bodies — exact copies from portfolio.html
+  var warpQ0 = '\
+  float st = t * 0.089;\n\
+  float ox = 0.5 + sin(st * 1.3) * 0.12 + sin(st * 0.37) * 0.06 + cos(st * 2.17) * 0.04;\n\
+  float oy = 0.5 + cos(st * 0.7) * 0.18 + cos(st * 0.53) * 0.07 + sin(st * 1.73) * 0.03;\n\
+  float shape = sin(st * 0.41) * 0.5 + 0.5;\n\
+  float xStretch = mix(2.2, 1.2, shape);\n\
+  float yStretch = mix(0.6, 1.1, shape);\n\
+  float rawx = (v.x - ox) * xStretch;\n\
+  float rawy = (v.y - oy) * yStretch;\n\
+  float skew = 0.15 * sin(st * 1.8) + 0.08 * cos(st * 0.67);\n\
+  float ex = rawx + rawy * skew;\n\
+  float ey = rawy + rawx * skew * (0.3 + 0.2 * sin(st * 0.89));\n\
+  float r = sqrt(ex*ex + ey*ey) + 0.001;\n\
+  float gBase = 0.0092 + 0.004 * sin(st * 0.31);\n\
+  float pull = gBase / (r * r + 0.03 + 0.015 * sin(st * 0.53));\n\
+  float dx = -ex * pull * (1.0 + intensity * 2.5);\n\
+  float dy = -ey * pull * (1.0 + intensity * 2.5);\n\
+  float n1 = sin(ex * 4.7 + ey * 3.1 + st * 2.3) * cos(ey * 5.3 - ex * 2.9 + st * 1.7);\n\
+  float n2 = sin(ex * 7.1 - ey * 4.3 + st * 1.1) * cos(ey * 2.7 + ex * 6.3 + st * 2.9);\n\
+  float n3 = sin(ex * 2.3 + ey * 8.7 + st * 3.1) * cos(ey * 3.9 - ex * 5.7 + st * 0.7);\n\
+  float n4 = cos(ex * 5.9 + ey * 1.7 + st * 1.9) * sin(ey * 6.1 + ex * 3.3 + st * 2.3);\n\
+  float curlScale = 1.0 + intensity * 3.0;\n\
+  dx += (n1 * 0.018 + n2 * 0.012 + n3 * 0.008) * smoothstep(0.0, 0.3, r) * curlScale;\n\
+  dy += (n2 * 0.018 + n3 * 0.012 + n4 * 0.008) * smoothstep(0.0, 0.3, r) * curlScale;\n\
+  float swirl = pull * (3.5 + intensity * 8.0) * smoothstep(0.0, 0.4, r);\n\
+  dx += -ey * swirl;\n\
+  dy += ex * swirl;\n\
+  float psych = intensity;\n\
+  float s = seed;\n\
+  float spd1 = 1.2 + sin(s * 7.3) * 0.8;\n\
+  float spd2 = 0.8 + cos(s * 4.1) * 0.6;\n\
+  float spd3 = 1.0 + sin(s * 11.7) * 0.7;\n\
+  float rad1 = 0.22 + sin(s * 3.7) * 0.12;\n\
+  float rad2 = 0.28 + cos(s * 5.3) * 0.14;\n\
+  float rad3 = 0.25 + sin(s * 8.9) * 0.1;\n\
+  float ph1 = s * 2.3; float ph2 = s * 3.7; float ph3 = s * 5.1;\n\
+  float b1x = sin(st * spd1 + ph1) * rad1 + cos(st * spd1 * 0.37 + ph1) * rad1 * 0.5;\n\
+  float b1y = cos(st * spd1 * 0.8 + ph1) * rad1 + sin(st * spd1 * 0.53 + ph1) * rad1 * 0.4;\n\
+  float b2x = cos(st * spd2 + ph2) * rad2 + sin(st * spd2 * 0.41 + ph2) * rad2 * 0.5;\n\
+  float b2y = sin(st * spd2 * 1.2 + ph2) * rad2 + cos(st * spd2 * 0.61 + ph2) * rad2 * 0.3;\n\
+  float b3x = sin(st * spd3 + ph3) * rad3 + cos(st * spd3 * 0.59 + ph3) * rad3 * 0.6;\n\
+  float b3y = cos(st * spd3 * 0.7 + ph3) * rad3 + sin(st * spd3 * 0.83 + ph3) * rad3 * 0.4;\n\
+  float d1 = length(vec2(v.x - 0.5 - b1x, v.y - 0.5 - b1y));\n\
+  float d2 = length(vec2(v.x - 0.5 - b2x, v.y - 0.5 - b2y));\n\
+  float d3 = length(vec2(v.x - 0.5 - b3x, v.y - 0.5 - b3y));\n\
+  float w1 = 0.04 + sin(s * 2.1) * 0.02;\n\
+  float w2 = 0.05 + cos(s * 3.3) * 0.02;\n\
+  float w3 = 0.045 + sin(s * 6.7) * 0.015;\n\
+  float meta = w1 / (d1 + 0.08) + w2 / (d2 + 0.08) + w3 / (d3 + 0.08);\n\
+  meta = smoothstep(0.3, 1.2, meta);\n\
+  float gx = w1/(d1+0.08)*(v.x-0.5-b1x)/(d1+0.01) + w2/(d2+0.08)*(v.x-0.5-b2x)/(d2+0.01) + w3/(d3+0.08)*(v.x-0.5-b3x)/(d3+0.01);\n\
+  float gy = w1/(d1+0.08)*(v.y-0.5-b1y)/(d1+0.01) + w2/(d2+0.08)*(v.y-0.5-b2y)/(d2+0.01) + w3/(d3+0.08)*(v.y-0.5-b3y)/(d3+0.01);\n\
+  float curlDir = sin(s * 9.1);\n\
+  float curlMix = cos(s * 4.7) * 0.3;\n\
+  dx += (-gy * 0.06 * curlDir + gx * (0.02 + curlMix)) * meta * psych;\n\
+  dy += (gx * 0.06 * curlDir + gy * (0.02 + curlMix)) * meta * psych;\n\
+  float if1 = 4.0 + sin(s * 2.3) * 2.5;\n\
+  float if2 = 5.0 + cos(s * 3.9) * 2.5;\n\
+  float if3 = 3.0 + sin(s * 7.1) * 2.0;\n\
+  float ifb = 1.2 + cos(s * 5.3) * 0.5;\n\
+  float ink1 = sin(v.x * if1 + sin(v.y * if2 + st * (1.5 + sin(s*1.7)*0.5)) * ifb + st * 0.7 + s);\n\
+  float ink2 = cos(v.y * if2 + cos(v.x * if1 + st * (1.1 + cos(s*2.3)*0.4)) * ifb + st * 1.1 + s);\n\
+  float ink3 = sin(v.x * if3 + v.y * if1 + sin(v.x * (if2+3.0) - v.y * if3 + st * (1.8+sin(s*3.1)*0.5)) * (ifb*0.9));\n\
+  dx += (ink1 * 0.018 + ink3 * 0.010) * meta * psych;\n\
+  dy += (ink2 * 0.018 + ink3 * 0.010) * meta * psych;';
+
+  var warpQ1 = '\
+  float st = t * 0.089 + 23.0;\n\
+  float ox = 0.5 + cos(st * 0.9) * 0.16 + sin(st * 0.43) * 0.08 + cos(st * 1.61) * 0.04;\n\
+  float oy = 0.5 + sin(st * 1.5) * 0.08 + cos(st * 0.71) * 0.06 + sin(st * 2.03) * 0.03;\n\
+  float phase = sin(st * 0.33) * 0.5 + 0.5;\n\
+  float xComp = mix(0.5, 1.1, phase);\n\
+  float yComp = mix(1.8, 1.0, phase);\n\
+  float rawx = (v.x - ox) * xComp;\n\
+  float rawy = (v.y - oy) * yComp;\n\
+  float warpAmt = 0.25 * cos(st * 0.8) + 0.12 * sin(st * 0.37);\n\
+  float ex = rawx + rawy * warpAmt;\n\
+  float ey = rawy - rawx * warpAmt * (0.6 + 0.3 * cos(st * 0.57));\n\
+  float r = sqrt(ex*ex + ey*ey) + 0.001;\n\
+  float gPulse = 0.016 + 0.007 * sin(st * 2.9) + 0.005 * cos(st * 0.41);\n\
+  float pull = gPulse / (r * r + 0.05 - 0.02 * sin(st * 0.67));\n\
+  float dx = -ex * pull * (1.0 + intensity * 2.5);\n\
+  float dy = -ey * pull * (1.0 + intensity * 2.5);\n\
+  float n1 = sin(ex * 3.3 + ey * 6.7 + st * 1.9) * cos(ey * 4.1 - ex * 7.3 + st * 2.7);\n\
+  float n2 = sin(ex * 8.3 - ey * 2.1 + st * 2.3) * cos(ey * 5.9 + ex * 3.7 + st * 1.3);\n\
+  float n3 = cos(ex * 5.1 + ey * 7.9 + st * 0.9) * sin(ey * 2.3 - ex * 8.1 + st * 3.1);\n\
+  float n4 = cos(ex * 2.7 + ey * 4.9 + st * 2.1) * sin(ey * 7.3 + ex * 1.9 + st * 1.7);\n\
+  float curlScale = 1.0 + intensity * 3.0;\n\
+  dx += (n1 * 0.022 + n2 * 0.014 + n3 * 0.009) * smoothstep(0.0, 0.4, r) * curlScale;\n\
+  dy += (n2 * 0.022 + n3 * 0.014 + n4 * 0.009) * smoothstep(0.0, 0.4, r) * curlScale;\n\
+  float swirl = pull * (-4.0 - intensity * 9.0) * smoothstep(0.0, 0.45, r);\n\
+  dx += -ey * swirl;\n\
+  dy += ex * swirl;\n\
+  float psych = intensity;\n\
+  float s = seed + 33.0;\n\
+  float spd1 = 1.0 + cos(s * 5.9) * 0.7;\n\
+  float spd2 = 1.3 + sin(s * 3.7) * 0.6;\n\
+  float spd3 = 0.9 + cos(s * 8.3) * 0.8;\n\
+  float rad1 = 0.25 + cos(s * 4.3) * 0.13;\n\
+  float rad2 = 0.2 + sin(s * 6.1) * 0.12;\n\
+  float rad3 = 0.3 + cos(s * 9.7) * 0.11;\n\
+  float ph1 = s * 1.9; float ph2 = s * 4.3; float ph3 = s * 6.7;\n\
+  float b1x = cos(st * spd1 + ph1) * rad1 + sin(st * spd1 * 0.41 + ph1) * rad1 * 0.5;\n\
+  float b1y = sin(st * spd1 * 0.9 + ph1) * rad1 + cos(st * spd1 * 0.57 + ph1) * rad1 * 0.4;\n\
+  float b2x = sin(st * spd2 + ph2) * rad2 + cos(st * spd2 * 0.47 + ph2) * rad2 * 0.6;\n\
+  float b2y = cos(st * spd2 * 1.1 + ph2) * rad2 + sin(st * spd2 * 0.67 + ph2) * rad2 * 0.3;\n\
+  float b3x = cos(st * spd3 + ph3) * rad3 + sin(st * spd3 * 0.53 + ph3) * rad3 * 0.4;\n\
+  float b3y = sin(st * spd3 * 0.8 + ph3) * rad3 + cos(st * spd3 * 0.71 + ph3) * rad3 * 0.5;\n\
+  float d1 = length(vec2(v.x - 0.5 - b1x, v.y - 0.5 - b1y));\n\
+  float d2 = length(vec2(v.x - 0.5 - b2x, v.y - 0.5 - b2y));\n\
+  float d3 = length(vec2(v.x - 0.5 - b3x, v.y - 0.5 - b3y));\n\
+  float w1 = 0.05 + cos(s * 2.7) * 0.02;\n\
+  float w2 = 0.04 + sin(s * 4.9) * 0.02;\n\
+  float w3 = 0.055 + cos(s * 7.3) * 0.015;\n\
+  float meta = w1/(d1+0.08) + w2/(d2+0.08) + w3/(d3+0.08);\n\
+  meta = smoothstep(0.3, 1.2, meta);\n\
+  float gx = w1/(d1+0.08)*(v.x-0.5-b1x)/(d1+0.01) + w2/(d2+0.08)*(v.x-0.5-b2x)/(d2+0.01) + w3/(d3+0.08)*(v.x-0.5-b3x)/(d3+0.01);\n\
+  float gy = w1/(d1+0.08)*(v.y-0.5-b1y)/(d1+0.01) + w2/(d2+0.08)*(v.y-0.5-b2y)/(d2+0.01) + w3/(d3+0.08)*(v.y-0.5-b3y)/(d3+0.01);\n\
+  float curlDir = cos(s * 6.3);\n\
+  float curlMix = sin(s * 8.1) * 0.3;\n\
+  dx += (-gy * 0.06 * curlDir + gx * (0.02 + curlMix)) * meta * psych;\n\
+  dy += (gx * 0.06 * curlDir + gy * (0.02 + curlMix)) * meta * psych;\n\
+  float if1 = 5.0 + cos(s * 3.1) * 2.5;\n\
+  float if2 = 4.0 + sin(s * 5.7) * 2.5;\n\
+  float if3 = 3.5 + cos(s * 8.3) * 2.0;\n\
+  float ifb = 1.3 + sin(s * 4.1) * 0.5;\n\
+  float ink1 = sin(v.y * if1 + sin(v.x * if2 + st * (1.8 + cos(s*2.1)*0.5)) * ifb + st * 0.9 + s);\n\
+  float ink2 = cos(v.x * if2 + cos(v.y * if1 + st * (1.3 + sin(s*3.7)*0.4)) * ifb + st * 0.6 + s);\n\
+  float ink3 = sin(v.y * if3 - v.x * if1 + sin(v.y * (if2+2.0) + v.x * if3 + st * (1.6+cos(s*2.9)*0.5)) * (ifb*0.8));\n\
+  dx += (ink1 * 0.018 + ink3 * 0.010) * meta * psych;\n\
+  dy += (ink2 * 0.018 + ink3 * 0.010) * meta * psych;';
+
+  var warpQ2 = '\
+  float st = t * 0.111 + 47.0;\n\
+  float ox = 0.5 + sin(st * 1.1) * 0.10 + cos(st * 0.53) * 0.06;\n\
+  float oy = 0.5 + cos(st * 1.4) * 0.10 + sin(st * 0.41) * 0.05;\n\
+  float rawx = v.x - ox;\n\
+  float rawy = v.y - oy;\n\
+  float r = sqrt(rawx*rawx + rawy*rawy) + 0.001;\n\
+  float pull = 0.008 / (r * r + 0.04);\n\
+  float dx = -rawx * pull;\n\
+  float dy = -rawy * pull;\n\
+  float n1 = sin(rawx * 5.3 + rawy * 4.1 + st * 2.1) * cos(rawy * 6.7 - rawx * 3.3 + st * 1.5);\n\
+  float n2 = sin(rawx * 3.9 - rawy * 7.3 + st * 1.7) * cos(rawy * 2.1 + rawx * 5.1 + st * 2.3);\n\
+  float n3 = cos(rawx * 7.7 + rawy * 2.9 + st * 0.9) * sin(rawy * 4.3 - rawx * 6.1 + st * 1.9);\n\
+  dx += (n1 * 0.014 + n2 * 0.009) * smoothstep(0.0, 0.3, r);\n\
+  dy += (n2 * 0.014 + n3 * 0.009) * smoothstep(0.0, 0.3, r);\n\
+  float swirl = pull * 3.0 * smoothstep(0.0, 0.4, r);\n\
+  dx += -rawy * swirl;\n\
+  dy += rawx * swirl;';
+
+  var warpQ3 = '\
+  float st = t * 0.089 + 71.0;\n\
+  float ox = 0.4 + sin(st * 2.1) * 0.18 + cos(st * 0.47) * 0.08 + sin(st * 1.31) * 0.05;\n\
+  float oy = 0.6 + cos(st * 1.0) * 0.14 + sin(st * 0.59) * 0.07 + cos(st * 1.87) * 0.04;\n\
+  float rawx = v.x - ox;\n\
+  float rawy = v.y - oy;\n\
+  float fieldRot = st * 0.13 + sin(st * 0.29) * 0.4;\n\
+  float cR = cos(fieldRot); float sR = sin(fieldRot);\n\
+  float rx = rawx * cR - rawy * sR;\n\
+  float ry = rawx * sR + rawy * cR;\n\
+  float morph = sin(st * 1.6);\n\
+  float morph2 = cos(st * 0.43);\n\
+  float sx = 1.0 + 0.7 * morph + 0.3 * morph2;\n\
+  float sy = 1.0 - 0.5 * morph + 0.2 * morph2;\n\
+  float twist = 0.4 * sin(st * 2.5) + 0.2 * cos(st * 0.71);\n\
+  float ex = rx * sx + ry * twist;\n\
+  float ey = ry * sy - rx * twist * (0.7 + 0.2 * sin(st * 0.37));\n\
+  float r = sqrt(ex*ex + ey*ey) + 0.001;\n\
+  float gPulse = 0.014 + 0.006 * cos(st * 3.1) + 0.004 * sin(st * 0.53);\n\
+  float pull = gPulse / (r * r + 0.035 + 0.01 * sin(st * 0.79));\n\
+  float dx = -ex * pull * (1.0 + intensity * 2.5);\n\
+  float dy = -ey * pull * (1.0 + intensity * 2.5);\n\
+  float n1 = sin(ex * 6.1 + ey * 2.3 + st * 2.7) * cos(ey * 8.7 - ex * 3.9 + st * 1.3);\n\
+  float n2 = cos(ex * 4.3 - ey * 7.1 + st * 1.9) * sin(ey * 3.1 + ex * 5.7 + st * 3.3);\n\
+  float n3 = sin(ex * 9.3 + ey * 1.7 + st * 0.7) * cos(ey * 5.3 - ex * 2.1 + st * 2.1);\n\
+  float n4 = sin(ex * 1.9 + ey * 9.1 + st * 2.9) * cos(ey * 4.7 + ex * 7.3 + st * 0.9);\n\
+  float curlScale = 1.0 + intensity * 3.0;\n\
+  dx += (n1 * 0.020 + n2 * 0.013 + n4 * 0.008) * smoothstep(0.0, 0.35, r) * curlScale;\n\
+  dy += (n2 * 0.020 + n3 * 0.013 + n1 * 0.008) * smoothstep(0.0, 0.35, r) * curlScale;\n\
+  float swirlDir = sin(st * 0.27);\n\
+  float swirl = pull * (3.8 + intensity * 8.5) * swirlDir * smoothstep(0.0, 0.4, r);\n\
+  dx += -ey * swirl;\n\
+  dy += ex * swirl;\n\
+  float psych = intensity;\n\
+  float s = seed + 67.0;\n\
+  float spd1 = 1.1 + sin(s * 6.7) * 0.7;\n\
+  float spd2 = 0.9 + cos(s * 4.9) * 0.8;\n\
+  float spd3 = 1.3 + sin(s * 9.3) * 0.6;\n\
+  float rad1 = 0.27 + sin(s * 3.1) * 0.11;\n\
+  float rad2 = 0.23 + cos(s * 7.7) * 0.13;\n\
+  float rad3 = 0.26 + sin(s * 5.9) * 0.12;\n\
+  float ph1 = s * 3.1; float ph2 = s * 5.3; float ph3 = s * 2.7;\n\
+  float b1x = sin(st * spd1 + ph1) * rad1 + cos(st * spd1 * 0.47 + ph1) * rad1 * 0.4;\n\
+  float b1y = cos(st * spd1 * 0.7 + ph1) * rad1 + sin(st * spd1 * 0.63 + ph1) * rad1 * 0.5;\n\
+  float b2x = cos(st * spd2 + ph2) * rad2 + sin(st * spd2 * 0.53 + ph2) * rad2 * 0.5;\n\
+  float b2y = sin(st * spd2 * 1.1 + ph2) * rad2 + cos(st * spd2 * 0.43 + ph2) * rad2 * 0.4;\n\
+  float b3x = sin(st * spd3 + ph3) * rad3 + cos(st * spd3 * 0.61 + ph3) * rad3 * 0.5;\n\
+  float b3y = cos(st * spd3 * 0.9 + ph3) * rad3 + sin(st * spd3 * 0.79 + ph3) * rad3 * 0.3;\n\
+  float d1 = length(vec2(v.x - 0.5 - b1x, v.y - 0.5 - b1y));\n\
+  float d2 = length(vec2(v.x - 0.5 - b2x, v.y - 0.5 - b2y));\n\
+  float d3 = length(vec2(v.x - 0.5 - b3x, v.y - 0.5 - b3y));\n\
+  float w1 = 0.045 + sin(s * 3.3) * 0.02;\n\
+  float w2 = 0.055 + cos(s * 5.1) * 0.015;\n\
+  float w3 = 0.05 + sin(s * 8.7) * 0.02;\n\
+  float meta = w1/(d1+0.08) + w2/(d2+0.08) + w3/(d3+0.08);\n\
+  meta = smoothstep(0.3, 1.2, meta);\n\
+  float gx = w1/(d1+0.08)*(v.x-0.5-b1x)/(d1+0.01) + w2/(d2+0.08)*(v.x-0.5-b2x)/(d2+0.01) + w3/(d3+0.08)*(v.x-0.5-b3x)/(d3+0.01);\n\
+  float gy = w1/(d1+0.08)*(v.y-0.5-b1y)/(d1+0.01) + w2/(d2+0.08)*(v.y-0.5-b2y)/(d2+0.01) + w3/(d3+0.08)*(v.y-0.5-b3y)/(d3+0.01);\n\
+  float curlDir = sin(s * 7.9);\n\
+  float curlMix = cos(s * 3.7) * 0.25;\n\
+  dx += (-gy * 0.06 * curlDir + gx * (0.025 + curlMix)) * meta * psych;\n\
+  dy += (gx * 0.06 * curlDir + gy * (0.025 + curlMix)) * meta * psych;\n\
+  float if1 = 4.5 + sin(s * 4.3) * 2.0;\n\
+  float if2 = 3.5 + cos(s * 6.1) * 2.5;\n\
+  float if3 = 5.0 + sin(s * 9.7) * 2.0;\n\
+  float ifb = 1.1 + cos(s * 3.9) * 0.5;\n\
+  float ink1 = sin(v.x * if1 + v.y * if3 + sin(v.x * if2 + st * (2.0+sin(s*1.3)*0.5)) * ifb + st * 0.8 + s);\n\
+  float ink2 = cos(v.y * if2 - v.x * if1 + cos(v.y * if3 + st * (1.4+cos(s*2.7)*0.4)) * ifb + st * 1.3 + s);\n\
+  float ink3 = sin(v.x * if3 + v.y * if1 + sin(v.y * if2 - v.x * (if3+2.0) + st * (1.7+sin(s*4.1)*0.4)) * (ifb*0.9));\n\
+  dx += (ink1 * 0.018 + ink3 * 0.010) * meta * psych;\n\
+  dy += (ink2 * 0.018 + ink3 * 0.010) * meta * psych;';
+
+  var warpVariants = [warpQ0, warpQ1, warpQ2, warpQ3];
+
+  function computeCoverFor(imgAspect, quadAspect) {
+    var zoom = 0.90;
+    var sx, sy;
+    if (quadAspect > imgAspect) { sx = zoom; sy = (imgAspect / quadAspect) * zoom; }
+    else { sx = (quadAspect / imgAspect) * zoom; sy = zoom; }
+    return { sx: sx, sy: sy, ox: (1.0 - sx) * 0.5, oy: (1.0 - sy) * 0.5 };
+  }
+
+  function getQuadRects(w, h) {
+    var hw = Math.floor((w - GAP) / 2);
+    var hh = Math.floor((h - GAP) / 2);
+    return [
+      { x: 0,        y: hh + GAP, w: hw, h: hh },
+      { x: hw + GAP, y: hh + GAP, w: hw, h: hh },
+      { x: hw + GAP, y: 0,        w: hw, h: hh },
+      { x: 0,        y: 0,        w: hw, h: hh }
+    ];
+  }
+
+  function pad3(n) {
+    var s = '' + n;
+    while (s.length < 3) s = '0' + s;
+    return s;
+  }
+
+  // Initialize a block's WebGL context and load its 4 images
+  function initBlock(blockIdx) {
+    var block = blocks[blockIdx];
+    if (block.started) return;
+    block.started = true;
+
+    var canvas = block.canvas;
+    var gl = canvas.getContext('webgl', { alpha: false, antialias: false });
+    if (!gl) return;
+    block.gl = gl;
+
+    gl.enable(gl.SCISSOR_TEST);
+
+    // Compile 4 programs
+    function mkShader(type, src) {
+      var s = gl.createShader(type);
+      gl.shaderSource(s, src);
+      gl.compileShader(s);
+      if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) console.error('Shader error:', gl.getShaderInfoLog(s));
+      return s;
+    }
+
+    var programs = [];
+    for (var qi = 0; qi < 4; qi++) {
+      var p = gl.createProgram();
+      gl.attachShader(p, mkShader(gl.VERTEX_SHADER, vsSrc));
+      gl.attachShader(p, mkShader(gl.FRAGMENT_SHADER, mkFsSrc(warpVariants[qi], qi)));
+      gl.linkProgram(p);
+      var aLoc = gl.getAttribLocation(p, 'a');
+      programs.push({
+        prog: p, aLoc: aLoc,
+        uT:         gl.getUniformLocation(p, 't'),
+        uMix:       gl.getUniformLocation(p, 'mix_f'),
+        uIntensity: gl.getUniformLocation(p, 'intensity'),
+        uSeed:      gl.getUniformLocation(p, 'seed'),
+        uImgA:      gl.getUniformLocation(p, 'imgA'),
+        uImgB:      gl.getUniformLocation(p, 'imgB'),
+        uCoverA:    gl.getUniformLocation(p, 'coverA'),
+        uCoverOffA: gl.getUniformLocation(p, 'coverOffA'),
+        uCoverB:    gl.getUniformLocation(p, 'coverB'),
+        uCoverOffB: gl.getUniformLocation(p, 'coverOffB')
+      });
+    }
+
+    var buf = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, -1,1, 1,-1, 1,1]), gl.STATIC_DRAW);
+
+    function createTexture(image) {
+      var tex = gl.createTexture();
+      gl.bindTexture(gl.TEXTURE_2D, tex);
+      gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+      return tex;
+    }
+
+    // Figure out which 4 postcards this block gets
+    var startNum = blockIdx * 4 + 1;
+    var quadData = []; // { tex, aspect } per quadrant
+    var loaded = 0;
+    var needed = Math.min(4, TOTAL - blockIdx * 4);
+
+    // Unique seeds per block for liquid light variation
+    var panelSeed = [
+      (blockIdx * 4 + 0) * 1.37 % 100,
+      (blockIdx * 4 + 1) * 2.71 % 100,
+      (blockIdx * 4 + 2) * 3.14 % 100,
+      (blockIdx * 4 + 3) * 4.67 % 100
+    ];
+
+    // All quadrants full force — concert mode
+    var panelIntensity = [1.0, 1.0, 1.0, 1.0];
+
+    // Each quadrant evolves independently — random seed changes on staggered timers
+    for (var si = 0; si < 4; si++) {
+      (function(qi) {
+        var interval = 4000 + Math.random() * 8000; // 4-12s per quadrant, all different
+        setInterval(function() {
+          panelSeed[qi] = Math.random() * 100;
+        }, interval);
+        // Stagger the first change
+        setTimeout(function() {
+          panelSeed[qi] = Math.random() * 100;
+        }, Math.random() * 5000);
+      })(si);
+    }
+
+    for (var q = 0; q < 4; q++) {
+      (function(qi) {
+        var num = startNum + qi;
+        if (num > TOTAL) {
+          // No image for this quadrant — use a 1x1 black pixel
+          quadData[qi] = null;
+          loaded++;
+          if (loaded >= needed) startRendering();
+          return;
+        }
+        var img = new Image();
+        img.onload = function() {
+          quadData[qi] = { tex: createTexture(img), aspect: img.naturalWidth / img.naturalHeight };
+          loaded++;
+          if (loaded >= needed) startRendering();
+        };
+        img.onerror = function() {
+          quadData[qi] = null;
+          loaded++;
+          if (loaded >= needed) startRendering();
+        };
+        img.src = 'postcards/' + pad3(num) + '.jpg';
+      })(q);
+    }
+
+    // Create a 1x1 black texture for empty quadrants
+    var blackTex = null;
+    function getBlackTex() {
+      if (blackTex) return blackTex;
+      blackTex = gl.createTexture();
+      gl.bindTexture(gl.TEXTURE_2D, blackTex);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array([0,0,0,255]));
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+      return blackTex;
+    }
+
+    function startRendering() {
+      var t0 = performance.now();
+
+      function resize() {
+        var rect = block.div.getBoundingClientRect();
+        canvas.width = rect.width;
+        canvas.height = rect.height;
+      }
+      resize();
+
+      gl.clearColor(0, 0, 0, 1);
+
+      block.resize = resize;
+      block.frame = function(now) {
+        var t = (now - t0) / 1000;
+        var w = canvas.width, h = canvas.height;
+        if (w === 0 || h === 0) return;
+
+        gl.clear(gl.COLOR_BUFFER_BIT);
+        var quads = getQuadRects(w, h);
+
+        // All quadrants full intensity — no fading
+
+        for (var p = 0; p < 4; p++) {
+          var qd = quadData[p];
+          if (!qd) continue; // skip empty quadrants
+
+          var qr = quads[p];
+          var sp = programs[p];
+
+          gl.useProgram(sp.prog);
+          gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+          gl.enableVertexAttribArray(sp.aLoc);
+          gl.vertexAttribPointer(sp.aLoc, 2, gl.FLOAT, false, 0, 0);
+
+          gl.viewport(qr.x, qr.y, qr.w, qr.h);
+          gl.scissor(qr.x, qr.y, qr.w, qr.h);
+
+          var quadAspect = qr.w / qr.h;
+          var cov = computeCoverFor(qd.aspect, quadAspect);
+
+          gl.uniform1f(sp.uT, t);
+          gl.uniform1f(sp.uMix, 0.0); // no crossfade — static image
+          gl.uniform1f(sp.uIntensity, panelIntensity[p]);
+          gl.uniform1f(sp.uSeed, panelSeed[p]);
+          gl.uniform2f(sp.uCoverA, cov.sx, cov.sy);
+          gl.uniform2f(sp.uCoverOffA, cov.ox, cov.oy);
+          gl.uniform2f(sp.uCoverB, cov.sx, cov.sy);
+          gl.uniform2f(sp.uCoverOffB, cov.ox, cov.oy);
+
+          gl.activeTexture(gl.TEXTURE0);
+          gl.bindTexture(gl.TEXTURE_2D, qd.tex);
+          gl.uniform1i(sp.uImgA, 0);
+
+          gl.activeTexture(gl.TEXTURE1);
+          gl.bindTexture(gl.TEXTURE_2D, qd.tex); // same image for A and B
+          gl.uniform1i(sp.uImgB, 1);
+
+          gl.drawArrays(gl.TRIANGLES, 0, 6);
+        }
+      };
+
+      block.ready = true;
+
+      // If already visible, start immediately
+      if (block.running) {
+        runBlock(blockIdx);
+      }
+    }
+  }
+
+  function runBlock(blockIdx) {
+    var block = blocks[blockIdx];
+    block.running = true;
+    if (!block.ready) return; // will start when ready
+
+    if (block.raf) return; // already running
+
+    // Resize on start
+    if (block.resize) block.resize();
+
+    function loop(now) {
+      if (!block.running) { block.raf = null; return; }
+      block.raf = requestAnimationFrame(loop);
+      block.frame(now);
+    }
+    block.raf = requestAnimationFrame(loop);
+  }
+
+  function stopBlock(blockIdx) {
+    var block = blocks[blockIdx];
+    block.running = false;
+    if (block.raf) {
+      cancelAnimationFrame(block.raf);
+      block.raf = null;
+    }
+  }
+
+  // Handle resize
+  var resizeTimer;
+  window.addEventListener('resize', function() {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function() {
+      for (var i = 0; i < blocks.length; i++) {
+        if (blocks[i].resize && blocks[i].running) blocks[i].resize();
+      }
+    }, 100);
+  });
+
+  // IntersectionObserver — init + run visible blocks, pause off-screen ones
+  // Use a generous margin to preload blocks before they scroll into view
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      var idx = parseInt(entry.target.dataset.blockIdx, 10);
+      if (entry.isIntersecting) {
+        initBlock(idx);
+        runBlock(idx);
+      } else {
+        stopBlock(idx);
+      }
+    });
+  }, { rootMargin: '200px 0px' });
+
+  for (var i = 0; i < blocks.length; i++) {
+    blocks[i].div.dataset.blockIdx = i;
+    observer.observe(blocks[i].div);
+  }
+})();
+</script>
+</body>
+</html>

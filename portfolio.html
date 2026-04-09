@@ -60,17 +60,18 @@ body.img-hover #cur{filter:invert(1)}
 .nd a::after{display:none}
 .dn{color:#D95740;margin-right:10px;font-size:10px;font-family:var(--sf)}
 
-.warp-drift{position:absolute;top:0;left:0;width:130%;height:130%;animation:canvasDrift 40s cubic-bezier(.45,.05,.55,.95) infinite}
+/* ── HERO WARP CANVAS ── */
+.warp-wrap{position:absolute;top:0;left:0;width:100%;height:100%}
 #warp-canvas{position:absolute;top:0;left:0;width:100%;height:100%;z-index:1;pointer-events:none}
-@keyframes canvasDrift{0%{transform:translate(0%,0%)}20%{transform:translate(-18%,-8%)}40%{transform:translate(-5%,-22%)}60%{transform:translate(-20%,-18%)}80%{transform:translate(-10%,-2%)}100%{transform:translate(0%,0%)}}
 #top-about.warp-active::before{display:none}
 #top-about.warp-active::after{display:none}
 /* ── ABOUT (top — full-bleed bg + Ken Burns) ── */
-#top-about{position:relative;padding-top:140px;min-height:100vh;display:flex;flex-direction:column;justify-content:center;background:#0c0c0c;border-bottom:1px solid rgba(255,255,255,.1);overflow:hidden}
+#top-about{position:relative;padding-top:0;height:100vh;min-height:100vh;display:flex;flex-direction:column;justify-content:center;background:#0c0c0c;border-bottom:1px solid rgba(255,255,255,.1);overflow:hidden}
 #top-about::before{content:'';position:absolute;inset:0;background-image:url('logos & backgrounds/about-bg.jpg');background-size:100% auto;background-position:center top;animation:kbAbout 18s ease-in-out infinite alternate;will-change:transform;z-index:0}
 #top-about::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,0,0,.75) 0%,rgba(0,0,0,.44) 50%,rgba(0,0,0,.68) 100%);z-index:1}
 @keyframes kbAbout{0%{transform:scale(1) translate(0%,0%)}100%{transform:scale(1.18) translate(-5%,-3%)}}
-.ta{position:absolute;z-index:5;bottom:0;right:0;width:50%;height:50%;padding:28px 32px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center}
+.ta{position:absolute;z-index:5;bottom:0;right:0;width:50%;height:50%;padding:64px 72px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;background:#000000;mix-blend-mode:multiply}
+.ta-text-overlay{position:absolute;z-index:6;bottom:0;right:0;width:50%;height:50%;padding:64px 72px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;pointer-events:none}
 .ta-left{display:flex;flex-direction:column;gap:24px;padding-top:6px}
 .ta-label{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.4)}
 .ta-meta{font-size:12px;font-family:var(--sf);font-weight:300;letter-spacing:.04em;line-height:2.2;color:rgba(255,255,255,.45)}
@@ -182,7 +183,7 @@ body.img-hover #cur{filter:invert(1)}
 .gl .wi,.gm .wi,.gp .wi{aspect-ratio:1/1;background:transparent;overflow:hidden;transition:transform .4s ease,box-shadow .4s ease}
 .gm .wi:hover,.gp .wi:hover{transform:translateY(-4px)}
 .gl .wi img,.gm .wi img,.gp .wi img{width:100%;height:100%;object-fit:cover;display:block}
-/* Logos: contain with padding, uniform squares */
+/* Logos: contain with generous inner padding for breathing room */
 .gl .wi{background:transparent}
 .gl .wi img{object-fit:contain;padding:20px}
 .gl .wi video,.gm .wi video,.gp .wi video{width:100%;height:100%;object-fit:cover;display:block}
@@ -249,7 +250,7 @@ body.img-hover #cur{filter:invert(1)}
   .hn{gap:16px}
   .hn a,.nb{font-size:9px;letter-spacing:.08em}
   .ta{position:relative;top:auto;left:auto;max-width:100%;padding:60px 20px 80px 20px}
-  .warp-drift{position:relative;width:100%;height:50vh;margin-bottom:0}
+  .warp-wrap{position:relative;width:100%;height:50vh;margin-bottom:0}
   .work-layout{flex-direction:column}
   .work-layout::before{display:none}
   #wi{position:static;width:100%;border-bottom:1px solid var(--br);padding:20px 20px;display:flex;flex-direction:column;gap:0}
@@ -319,13 +320,18 @@ body.img-hover #cur{filter:invert(1)}
 
 <!-- ABOUT (top section, replaces old hero) -->
 <section id="top-about">
-  <div class="warp-drift">
+  <div class="warp-wrap">
     <canvas id="warp-canvas"></canvas>
   </div>
   <div class="ta">
     <a href="portfolio.html" class="ta-mark swp" style="display:block;width:120px;margin-bottom:24px"><img src="logos &amp; backgrounds/jastudio_shadow.png" alt="Jackson Alexander Studio mark" style="width:100%;height:auto;filter:invert(1);display:block"></a>
-    <p class="ta-headline swp">A creative studio &#8212;<br>based in Santa Fe, NM.</p>
-    <p class="ta-body swp-d">Thanks for stopping by &#8212; I&#39;m Jackson. The studio works across a wide range of mediums: graphic design, illustration, web design, fabrication, sound, and landscape.</p>
+    <p class="ta-headline swp" style="visibility:hidden">A creative studio &#8212;<br>based in Santa Fe, NM.</p>
+    <p class="ta-body swp-d" style="visibility:hidden">Thanks for stopping by &#8212; I&#39;m Jackson. The studio works across a wide range of mediums: graphic design, illustration, web design, fabrication, sound, and landscape.</p>
+  </div>
+  <div class="ta-text-overlay">
+    <img src="logos &amp; backgrounds/jastudio_shadow.png" alt="" style="display:block;width:120px;margin-bottom:24px;visibility:hidden">
+    <p class="ta-headline">A creative studio &#8212;<br>based in Santa Fe, NM.</p>
+    <p class="ta-body">Thanks for stopping by &#8212; I&#39;m Jackson. The studio works across a wide range of mediums: graphic design, illustration, web design, fabrication, sound, and landscape.</p>
   </div>
 </section>
 
@@ -689,10 +695,6 @@ body.img-hover #cur{filter:invert(1)}
 
   // ── NAV TOGGLE ──
   var wiNav = document.getElementById('wi');
-  var wiLabel = document.querySelector('#wi .wil');
-  if(wiLabel){
-    wiLabel.addEventListener('click',function(){wiNav.classList.toggle('nav-open')});
-  }
   function collapseAllSubs(){
     document.querySelectorAll('.wi-sub').forEach(function(sub){
       sub.classList.add('sub-collapsed');
@@ -711,14 +713,21 @@ body.img-hover #cur{filter:invert(1)}
   document.querySelectorAll('.wir').forEach(function(link){
     link.addEventListener('click',function(e){
       e.preventDefault();
-      wiNav.classList.remove('nav-open');
+      var wasActive=this.classList.contains('active');
+      var sub=this.nextElementSibling;
+      var hadExpandedSub=sub&&sub.classList.contains('wi-sub')&&!sub.classList.contains('sub-collapsed');
       document.querySelectorAll('.wir').forEach(function(r){r.classList.remove('active')});
       collapseAllSubs();
-      this.classList.add('active');
-      expandSubFor(this);
-      var target=this.getAttribute('data-target');
-      var el=document.getElementById(target);
-      if(el) el.scrollIntoView({behavior:'smooth',block:'start'});
+      if(wasActive&&hadExpandedSub){
+        // clicking an already-active section with open sub → collapse it
+        this.classList.add('active');
+      } else {
+        this.classList.add('active');
+        expandSubFor(this);
+        var target=this.getAttribute('data-target');
+        var el=document.getElementById(target);
+        if(el) el.scrollIntoView({behavior:'smooth',block:'start'});
+      }
     });
   });
 
@@ -1040,50 +1049,101 @@ body.img-hover #cur{filter:invert(1)}
 
   gl.enable(gl.SCISSOR_TEST);
 
-  var GAP = 12; // px — black separator lines between quadrants
+  var GAP = 12;
 
   var heroImages = [
-    'hero-images/hero-01.jpg','hero-images/hero-02.jpg','hero-images/hero-03.jpg',
-    'hero-images/hero-04.jpg','hero-images/hero-05.jpg','hero-images/hero-06.jpg',
-    'hero-images/hero-07.jpg','hero-images/hero-08.jpg','hero-images/hero-09.jpg',
-    'hero-images/hero-10.jpg','hero-images/hero-11.jpg','hero-images/hero-12.jpg',
-    'hero-images/hero-13.jpg','hero-images/hero-14.jpg','hero-images/hero-15.jpg',
-    'hero-images/hero-16.jpg','hero-images/hero-17.jpg','hero-images/hero-18.jpg',
-    'hero-images/hero-19.jpg','hero-images/hero-20.jpg','hero-images/hero-21.jpg',
-    'hero-images/hero-22.jpg','hero-images/hero-23.jpg','hero-images/hero-24.jpg',
-    'hero-images/hero-25.jpg','hero-images/hero-26.jpg','hero-images/hero-27.jpg',
-    'hero-images/hero-28.jpg','hero-images/hero-29.jpg','hero-images/hero-30.jpg',
-    'hero-images/hero-31.jpg','hero-images/hero-32.jpg','hero-images/hero-33.jpg',
-    'hero-images/hero-34.jpg','hero-images/hero-35.jpg','hero-images/hero-36.jpg',
-    'hero-images/hero-37.jpg','hero-images/hero-38.jpg','hero-images/hero-39.jpg',
-    'hero-images/hero-40.jpg','hero-images/hero-41.jpg','hero-images/hero-42.jpg',
-    'hero-images/hero-43.jpg','hero-images/hero-44.jpg','hero-images/hero-45.jpg',
-    'hero-images/hero-46.jpg','hero-images/hero-47.jpg','hero-images/hero-48.jpg',
-    'hero-images/hero-49.jpg','hero-images/hero-50.jpg','hero-images/hero-51.jpg',
-    'hero-images/hero-52.jpg','hero-images/hero-53.jpg','hero-images/hero-54.jpg',
-    'hero-images/hero-55.jpg','hero-images/hero-56.jpg','hero-images/hero-57.jpg',
-    'hero-images/hero-58.jpg','hero-images/hero-59.jpg','hero-images/hero-60.jpg',
-    'hero-images/hero-61.jpg','hero-images/hero-62.jpg','hero-images/hero-63.jpg',
-    'hero-images/hero-64.jpg','hero-images/hero-65.jpg','hero-images/hero-66.jpg',
-    'hero-images/hero-67.jpg','hero-images/hero-68.jpg','hero-images/hero-69.jpg',
-    'hero-images/hero-70.jpg','hero-images/hero-71.jpg','hero-images/hero-72.jpg',
-    'hero-images/hero-73.jpg','hero-images/hero-74.jpg','hero-images/hero-75.jpg',
-    'hero-images/hero-76.jpg','hero-images/hero-77.jpg','hero-images/hero-78.jpg',
-    'hero-images/hero-79.jpg','hero-images/hero-80.jpg','hero-images/hero-81.jpg',
-    'hero-images/hero-82.jpg','hero-images/hero-83.jpg','hero-images/hero-84.jpg',
-    'hero-images/hero-85.jpg'
+    'postcards/003.jpg','postcards/004.jpg','postcards/009.jpg',
+    'postcards/012.jpg','postcards/017.jpg','postcards/024.jpg',
+    'postcards/025.jpg','postcards/026.jpg','postcards/028.jpg',
+    'postcards/030.jpg','postcards/034.jpg','postcards/037.jpg',
+    'postcards/055.jpg','postcards/081.jpg','postcards/083.jpg',
+    'postcards/085.jpg','postcards/091.jpg','postcards/097.jpg',
+    'postcards/120.jpg','postcards/130.jpg','postcards/132.jpg',
+    'postcards/134.jpg','postcards/137.jpg','postcards/138.jpg',
+    'postcards/145.jpg','postcards/147.jpg','postcards/157.jpg',
+    'postcards/164.jpg','postcards/172.jpg','postcards/174.jpg',
+    'postcards/179.jpg','postcards/198.jpg','postcards/201.jpg',
+    'postcards/208.jpg','postcards/217.jpg','postcards/218.jpg',
+    'postcards/224.jpg','postcards/243.jpg','postcards/253.jpg',
+    'postcards/256.jpg','postcards/258.jpg','postcards/266.jpg',
+    'postcards/281.jpg','postcards/288.jpg','postcards/298.jpg',
+    'postcards/313.jpg','postcards/315.jpg','postcards/316.jpg',
+    'postcards/326.jpg','postcards/328.jpg','postcards/332.jpg',
+    'postcards/333.jpg','postcards/334.jpg','postcards/335.jpg',
+    'postcards/336.jpg','postcards/338.jpg','postcards/340.jpg',
+    'postcards/341.jpg','postcards/342.jpg','postcards/344.jpg',
+    'postcards/349.jpg','postcards/352.jpg','postcards/392.jpg',
+    'postcards/397.jpg','postcards/399.jpg','postcards/406.jpg',
+    'postcards/408.jpg','postcards/414.jpg','postcards/424.jpg',
+    'postcards/432.jpg','postcards/448.jpg','postcards/449.jpg',
+    'postcards/464.jpg','postcards/469.jpg','postcards/477.jpg',
+    'postcards/479.jpg','postcards/481.jpg','postcards/483.jpg',
+    'postcards/486.jpg','postcards/515.jpg','postcards/534.jpg'
   ];
 
   var vsSrc = 'attribute vec2 a;varying vec2 v;void main(){v=a*0.5+0.5;gl_Position=vec4(a,0.0,1.0);}';
 
-  // Shared fragment shader shell — warp body injected per quadrant
-  function mkFsSrc(warpBody) {
+  function mkFsSrc(warpBody, qi) {
+    // Each quadrant gets its own color palette that slowly cycles
+    // Q0 top-left: warm amber/sepia
+    // Q1 top-right: cool teal/cyan
+    // Q3 bottom-left: muted violet/rose
+    var colorBlock = '';
+    if (qi === 0) {
+      colorBlock = `
+  // Q0: warm amber/gold — dramatic pulsing
+  float warmCycle = sin(t * 0.099) * 0.5 + 0.5;
+  float warmPulse = sin(t * 0.099 * 2.7 + 1.0) * 0.3;
+  vec3 tintA = vec3(1.30, 0.92, 0.65); // hot gold
+  vec3 tintB = vec3(1.0, 0.80, 0.60); // deep sepia
+  vec3 tint = mix(tintA, tintB, warmCycle) + warmPulse * vec3(0.08, -0.04, -0.10);
+  col *= tint;
+  float vig = 1.0 - 0.22 * length(v - 0.5) * (1.0 + 0.45 * sin(t * 0.099 * 3.0));
+  col *= vig;
+`;
+    } else if (qi === 1) {
+      colorBlock = `
+  // Q1: cool teal/ice — dramatic pulsing
+  float coolCycle = sin(t * 0.099 + 2.0) * 0.5 + 0.5;
+  float coolPulse = sin(t * 0.099 * 3.1 + 0.5) * 0.3;
+  vec3 tintA = vec3(0.68, 0.98, 1.25); // electric teal
+  vec3 tintB = vec3(0.62, 0.85, 1.30); // deep ice
+  vec3 tint = mix(tintA, tintB, coolCycle) + coolPulse * vec3(-0.08, 0.04, 0.10);
+  col *= tint;
+  float vig = 1.0 - 0.20 * length(v - 0.5) * (1.0 + 0.42 * sin(t * 0.099 * 3.0 + 1.0));
+  col *= vig;
+`;
+    } else if (qi === 2) {
+      colorBlock = `
+  // Q2: brightened for knockout text visibility
+  float neutralCycle = sin(t * 0.089 + 5.0) * 0.5 + 0.5;
+  vec3 tintA = vec3(1.08, 1.02, 0.94);
+  vec3 tintB = vec3(0.96, 0.94, 1.04);
+  vec3 tint = mix(tintA, tintB, neutralCycle);
+  col *= tint * 1.25;
+`;
+    } else {
+      colorBlock = `
+  // Q3: violet/magenta — dramatic pulsing
+  float roseCycle = sin(t * 0.099 + 4.0) * 0.5 + 0.5;
+  float rosePulse = sin(t * 0.099 * 2.3 + 3.0) * 0.3;
+  vec3 tintA = vec3(1.15, 0.72, 1.10); // hot magenta
+  vec3 tintB = vec3(0.85, 0.70, 1.22); // deep violet
+  vec3 tint = mix(tintA, tintB, roseCycle) + rosePulse * vec3(0.06, -0.08, 0.10);
+  col *= tint;
+  float vig = 1.0 - 0.21 * length(v - 0.5) * (1.0 + 0.40 * sin(t * 0.099 * 3.0 + 2.5));
+  col *= vig;
+`;
+    }
+
     return `
 precision highp float;
 uniform sampler2D imgA;
 uniform sampler2D imgB;
 uniform float mix_f;
 uniform float t;
+uniform float intensity;
+uniform float seed;
 uniform vec2 coverA;
 uniform vec2 coverOffA;
 uniform vec2 coverB;
@@ -1091,22 +1151,52 @@ uniform vec2 coverOffB;
 varying vec2 v;
 
 void main(){
-  vec2 uvA = v * coverA + coverOffA;
-  vec2 uvB = v * coverB + coverOffB;
+  // Per-quadrant zoom pulse — zooms into center of image
+  float zoom = 1.0;
+  vec2 uvA = (v - 0.5) / zoom + 0.5;
+  uvA = uvA * coverA + coverOffA;
+  vec2 uvB = (v - 0.5) / zoom + 0.5;
+  uvB = uvB * coverB + coverOffB;
 
 ` + warpBody + `
 
-  vec2 wuvA = clamp(uvA + vec2(dx, dy), 0.0, 1.0);
-  vec2 wuvB = clamp(uvB + vec2(dx, dy), 0.0, 1.0);
+  // Hard boundary: limit displacement so UVs never leave 0-1
+  vec2 dv = vec2(dx, dy);
+
+  // Compute what the final UVs would be and cap displacement to stay in bounds
+  vec2 targetA = uvA + dv;
+  vec2 targetB = uvB + dv;
+
+  // Reduce displacement to keep both A and B within [margin, 1-margin]
+  float margin = 0.005;
+  vec2 minA = vec2(margin) - uvA;
+  vec2 maxA = vec2(1.0 - margin) - uvA;
+  vec2 minB = vec2(margin) - uvB;
+  vec2 maxB = vec2(1.0 - margin) - uvB;
+  dv.x = clamp(dv.x, max(minA.x, minB.x), min(maxA.x, maxB.x));
+  dv.y = clamp(dv.y, max(minA.y, minB.y), min(maxA.y, maxB.y));
+
+  // Also fade near viewport edges for smooth visual boundary
+  float edgeFade = smoothstep(0.0, 0.08, v.x) * smoothstep(0.0, 0.08, 1.0 - v.x)
+                 * smoothstep(0.0, 0.08, v.y) * smoothstep(0.0, 0.08, 1.0 - v.y);
+  dv *= edgeFade;
+
+  vec2 wuvA = uvA + dv;
+  vec2 wuvB = uvB + dv;
 
   vec3 colA = texture2D(imgA, wuvA).rgb;
   vec3 colB = texture2D(imgB, wuvB).rgb;
   vec3 col = mix(colA, colB, mix_f);
 
-  float breath = 0.92 + 0.08 * sin(t * 0.7 + uvA.y * 3.5 + uvA.x * 2.0);
+  // Shared: slow luminance breathing
+  float breath = 0.88 + 0.12 * sin(t * 0.5 + v.y * 2.5 + v.x * 1.5);
   col *= breath;
-  float ripple = sin(uvA.x * 9.0 + uvA.y * 7.0 + t * 1.1) * 0.06;
-  col *= (1.0 + ripple);
+
+  // Shared: light shimmer
+  float shimmer = sin(v.x * 6.0 + v.y * 4.0 + t * 0.8) * 0.04;
+  col *= (1.0 + shimmer);
+
+` + colorBlock + `
 
   col *= 0.62;
 
@@ -1114,129 +1204,247 @@ void main(){
 }`;
   }
 
-  // Q0 top-left: TALL NARROW vortex — vertical slit, spins CLOCKWISE, tight pull
+  // Q0 top-left: wandering vortex — morphs between tight spiral and loose bloom
   var warpQ0 = `
-  float st = t * 0.13;
-  float ox = 0.5 + sin(st * 1.3) * 0.12;
-  float oy = 0.5 + cos(st * 0.7) * 0.18;
-  float rawx = (uvA.x - ox) * 2.2;
-  float rawy = (uvA.y - oy) * 0.6;
-  float skew = 0.15 * sin(st * 1.8);
+  float st = t * 0.089;
+  // Center drifts on layered irrational orbits — never repeats
+  float ox = 0.5 + sin(st * 1.3) * 0.12 + sin(st * 0.37) * 0.06 + cos(st * 2.17) * 0.04;
+  float oy = 0.5 + cos(st * 0.7) * 0.18 + cos(st * 0.53) * 0.07 + sin(st * 1.73) * 0.03;
+  // Field geometry morphs between tall-narrow and round
+  float shape = sin(st * 0.41) * 0.5 + 0.5;
+  float xStretch = mix(2.2, 1.2, shape);
+  float yStretch = mix(0.6, 1.1, shape);
+  float rawx = (v.x - ox) * xStretch;
+  float rawy = (v.y - oy) * yStretch;
+  // Skew drifts and reverses
+  float skew = 0.15 * sin(st * 1.8) + 0.08 * cos(st * 0.67);
   float ex = rawx + rawy * skew;
-  float ey = rawy + rawx * skew * 0.3;
+  float ey = rawy + rawx * skew * (0.3 + 0.2 * sin(st * 0.89));
   float r = sqrt(ex*ex + ey*ey) + 0.001;
-  float a = atan(ey, ex);
-  float gravity = 0.008 / (r * r + 0.03);
-  float spin = t * 0.65 + 7.0 / (r + 0.25);
-  float tidal = sin(r * 10.0 - t * 1.2) * 0.015 * smoothstep(0.0, 0.3, r);
-  float lensWarp = sin(a * 4.0 + spin) * gravity;
-  float dx =
-    cos(a) * gravity * -0.6 +
-    sin(a + spin) * 0.028 * smoothstep(0.05, 0.3, r) +
-    lensWarp * cos(a * 3.0 + t * 0.42) +
-    tidal * cos(a) +
-    sin(ex * 6.0 + ey * 9.0 + t * 0.28) * 0.005;
-  float dy =
-    sin(a) * gravity * -0.6 +
-    cos(a + spin) * 0.028 * smoothstep(0.05, 0.3, r) +
-    lensWarp * sin(a * 3.0 + t * 0.52) +
-    tidal * sin(a) +
-    cos(ex * 8.0 + ey * 4.0 + t * 0.38) * 0.005;`;
+  // Purely position-based flow — no polar sweeps
+  float gBase = 0.0092 + 0.004 * sin(st * 0.31);
+  float pull = gBase / (r * r + 0.03 + 0.015 * sin(st * 0.53));
+  float dx = -ex * pull * (1.0 + intensity * 2.5);
+  float dy = -ey * pull * (1.0 + intensity * 2.5);
+  float n1 = sin(ex * 4.7 + ey * 3.1 + st * 2.3) * cos(ey * 5.3 - ex * 2.9 + st * 1.7);
+  float n2 = sin(ex * 7.1 - ey * 4.3 + st * 1.1) * cos(ey * 2.7 + ex * 6.3 + st * 2.9);
+  float n3 = sin(ex * 2.3 + ey * 8.7 + st * 3.1) * cos(ey * 3.9 - ex * 5.7 + st * 0.7);
+  float n4 = cos(ex * 5.9 + ey * 1.7 + st * 1.9) * sin(ey * 6.1 + ex * 3.3 + st * 2.3);
+  float curlScale = 1.0 + intensity * 3.0;
+  dx += (n1 * 0.018 + n2 * 0.012 + n3 * 0.008) * smoothstep(0.0, 0.3, r) * curlScale;
+  dy += (n2 * 0.018 + n3 * 0.012 + n4 * 0.008) * smoothstep(0.0, 0.3, r) * curlScale;
+  float swirl = pull * (3.5 + intensity * 8.0) * smoothstep(0.0, 0.4, r);
+  dx += -ey * swirl;
+  dy += ex * swirl;
+  // Liquid light — seed-driven, every spawn is unique
+  float psych = intensity;
+  float s = seed;
+  // Seed-driven blob orbit parameters — different every time
+  float spd1 = 1.2 + sin(s * 7.3) * 0.8;
+  float spd2 = 0.8 + cos(s * 4.1) * 0.6;
+  float spd3 = 1.0 + sin(s * 11.7) * 0.7;
+  float rad1 = 0.22 + sin(s * 3.7) * 0.12;
+  float rad2 = 0.28 + cos(s * 5.3) * 0.14;
+  float rad3 = 0.25 + sin(s * 8.9) * 0.1;
+  float ph1 = s * 2.3; float ph2 = s * 3.7; float ph3 = s * 5.1;
+  float b1x = sin(st * spd1 + ph1) * rad1 + cos(st * spd1 * 0.37 + ph1) * rad1 * 0.5;
+  float b1y = cos(st * spd1 * 0.8 + ph1) * rad1 + sin(st * spd1 * 0.53 + ph1) * rad1 * 0.4;
+  float b2x = cos(st * spd2 + ph2) * rad2 + sin(st * spd2 * 0.41 + ph2) * rad2 * 0.5;
+  float b2y = sin(st * spd2 * 1.2 + ph2) * rad2 + cos(st * spd2 * 0.61 + ph2) * rad2 * 0.3;
+  float b3x = sin(st * spd3 + ph3) * rad3 + cos(st * spd3 * 0.59 + ph3) * rad3 * 0.6;
+  float b3y = cos(st * spd3 * 0.7 + ph3) * rad3 + sin(st * spd3 * 0.83 + ph3) * rad3 * 0.4;
+  float d1 = length(vec2(v.x - 0.5 - b1x, v.y - 0.5 - b1y));
+  float d2 = length(vec2(v.x - 0.5 - b2x, v.y - 0.5 - b2y));
+  float d3 = length(vec2(v.x - 0.5 - b3x, v.y - 0.5 - b3y));
+  float w1 = 0.04 + sin(s * 2.1) * 0.02;
+  float w2 = 0.05 + cos(s * 3.3) * 0.02;
+  float w3 = 0.045 + sin(s * 6.7) * 0.015;
+  float meta = w1 / (d1 + 0.08) + w2 / (d2 + 0.08) + w3 / (d3 + 0.08);
+  meta = smoothstep(0.3, 1.2, meta);
+  float gx = w1/(d1+0.08)*(v.x-0.5-b1x)/(d1+0.01) + w2/(d2+0.08)*(v.x-0.5-b2x)/(d2+0.01) + w3/(d3+0.08)*(v.x-0.5-b3x)/(d3+0.01);
+  float gy = w1/(d1+0.08)*(v.y-0.5-b1y)/(d1+0.01) + w2/(d2+0.08)*(v.y-0.5-b2y)/(d2+0.01) + w3/(d3+0.08)*(v.y-0.5-b3y)/(d3+0.01);
+  // Seed-driven curl direction — CW, CCW, or figure-8
+  float curlDir = sin(s * 9.1);
+  float curlMix = cos(s * 4.7) * 0.3;
+  dx += (-gy * 0.06 * curlDir + gx * (0.02 + curlMix)) * meta * psych;
+  dy += (gx * 0.06 * curlDir + gy * (0.02 + curlMix)) * meta * psych;
+  // Seed-driven ink frequencies — always different patterns
+  float if1 = 4.0 + sin(s * 2.3) * 2.5;
+  float if2 = 5.0 + cos(s * 3.9) * 2.5;
+  float if3 = 3.0 + sin(s * 7.1) * 2.0;
+  float ifb = 1.2 + cos(s * 5.3) * 0.5;
+  float ink1 = sin(v.x * if1 + sin(v.y * if2 + st * (1.5 + sin(s*1.7)*0.5)) * ifb + st * 0.7 + s);
+  float ink2 = cos(v.y * if2 + cos(v.x * if1 + st * (1.1 + cos(s*2.3)*0.4)) * ifb + st * 1.1 + s);
+  float ink3 = sin(v.x * if3 + v.y * if1 + sin(v.x * (if2+3.0) - v.y * if3 + st * (1.8+sin(s*3.1)*0.5)) * (ifb*0.9));
+  dx += (ink1 * 0.018 + ink3 * 0.010) * meta * psych;
+  dy += (ink2 * 0.018 + ink3 * 0.010) * meta * psych;`;
 
-  // Q1 top-right: WIDE FAT horizon — horizontal slit, spins COUNTER-CLOCKWISE, heavy gravity
+  // Q1 top-right: oceanic horizon — morphs between wide horizon and collapsing whirlpool
   var warpQ1 = `
-  float st = t * 0.13 + 23.0;
-  float ox = 0.5 + cos(st * 0.9) * 0.16;
-  float oy = 0.5 + sin(st * 1.5) * 0.08;
-  float rawx = (uvA.x - ox) * 0.5;
-  float rawy = (uvA.y - oy) * 1.8;
-  float warp = 0.25 * cos(st * 0.8);
-  float ex = rawx + rawy * warp;
-  float ey = rawy - rawx * warp * 0.6;
+  float st = t * 0.089 + 23.0;
+  float ox = 0.5 + cos(st * 0.9) * 0.16 + sin(st * 0.43) * 0.08 + cos(st * 1.61) * 0.04;
+  float oy = 0.5 + sin(st * 1.5) * 0.08 + cos(st * 0.71) * 0.06 + sin(st * 2.03) * 0.03;
+  // Morphs between wide-flat horizon and more circular pool
+  float phase = sin(st * 0.33) * 0.5 + 0.5;
+  float xComp = mix(0.5, 1.1, phase);
+  float yComp = mix(1.8, 1.0, phase);
+  float rawx = (v.x - ox) * xComp;
+  float rawy = (v.y - oy) * yComp;
+  // Warp coupling evolves
+  float warpAmt = 0.25 * cos(st * 0.8) + 0.12 * sin(st * 0.37);
+  float ex = rawx + rawy * warpAmt;
+  float ey = rawy - rawx * warpAmt * (0.6 + 0.3 * cos(st * 0.57));
   float r = sqrt(ex*ex + ey*ey) + 0.001;
-  float a = atan(ey, ex);
-  float gPulse = 0.014 + 0.006 * sin(st * 2.9);
-  float gravity = gPulse / (r * r + 0.05);
-  float spin = -t * 0.65 - 5.0 / (r + 0.35);
-  float tidal = sin(r * 6.0 + t * 1.2) * 0.025 * smoothstep(0.0, 0.45, r);
-  float lensWarp = sin(a * 2.0 + spin) * gravity;
-  float dx =
-    cos(a) * gravity * -1.0 +
-    sin(a + spin) * 0.04 * smoothstep(0.05, 0.4, r) +
-    lensWarp * cos(a + t * 0.42) +
-    tidal * cos(a) +
-    sin(ex * 4.0 + ey * 3.0 + t * 0.28) * 0.007;
-  float dy =
-    sin(a) * gravity * -1.0 +
-    cos(a + spin) * 0.04 * smoothstep(0.05, 0.4, r) +
-    lensWarp * sin(a + t * 0.52) +
-    tidal * sin(a) +
-    cos(ex * 3.0 + ey * 5.0 + t * 0.38) * 0.007;`;
+  float gPulse = 0.016 + 0.007 * sin(st * 2.9) + 0.005 * cos(st * 0.41);
+  float pull = gPulse / (r * r + 0.05 - 0.02 * sin(st * 0.67));
+  float dx = -ex * pull * (1.0 + intensity * 2.5);
+  float dy = -ey * pull * (1.0 + intensity * 2.5);
+  float n1 = sin(ex * 3.3 + ey * 6.7 + st * 1.9) * cos(ey * 4.1 - ex * 7.3 + st * 2.7);
+  float n2 = sin(ex * 8.3 - ey * 2.1 + st * 2.3) * cos(ey * 5.9 + ex * 3.7 + st * 1.3);
+  float n3 = cos(ex * 5.1 + ey * 7.9 + st * 0.9) * sin(ey * 2.3 - ex * 8.1 + st * 3.1);
+  float n4 = cos(ex * 2.7 + ey * 4.9 + st * 2.1) * sin(ey * 7.3 + ex * 1.9 + st * 1.7);
+  float curlScale = 1.0 + intensity * 3.0;
+  dx += (n1 * 0.022 + n2 * 0.014 + n3 * 0.009) * smoothstep(0.0, 0.4, r) * curlScale;
+  dy += (n2 * 0.022 + n3 * 0.014 + n4 * 0.009) * smoothstep(0.0, 0.4, r) * curlScale;
+  float swirl = pull * (-4.0 - intensity * 9.0) * smoothstep(0.0, 0.45, r);
+  dx += -ey * swirl;
+  dy += ex * swirl;
+  // Liquid light — Q1, seed-driven unique every spawn
+  float psych = intensity;
+  float s = seed + 33.0;
+  float spd1 = 1.0 + cos(s * 5.9) * 0.7;
+  float spd2 = 1.3 + sin(s * 3.7) * 0.6;
+  float spd3 = 0.9 + cos(s * 8.3) * 0.8;
+  float rad1 = 0.25 + cos(s * 4.3) * 0.13;
+  float rad2 = 0.2 + sin(s * 6.1) * 0.12;
+  float rad3 = 0.3 + cos(s * 9.7) * 0.11;
+  float ph1 = s * 1.9; float ph2 = s * 4.3; float ph3 = s * 6.7;
+  float b1x = cos(st * spd1 + ph1) * rad1 + sin(st * spd1 * 0.41 + ph1) * rad1 * 0.5;
+  float b1y = sin(st * spd1 * 0.9 + ph1) * rad1 + cos(st * spd1 * 0.57 + ph1) * rad1 * 0.4;
+  float b2x = sin(st * spd2 + ph2) * rad2 + cos(st * spd2 * 0.47 + ph2) * rad2 * 0.6;
+  float b2y = cos(st * spd2 * 1.1 + ph2) * rad2 + sin(st * spd2 * 0.67 + ph2) * rad2 * 0.3;
+  float b3x = cos(st * spd3 + ph3) * rad3 + sin(st * spd3 * 0.53 + ph3) * rad3 * 0.4;
+  float b3y = sin(st * spd3 * 0.8 + ph3) * rad3 + cos(st * spd3 * 0.71 + ph3) * rad3 * 0.5;
+  float d1 = length(vec2(v.x - 0.5 - b1x, v.y - 0.5 - b1y));
+  float d2 = length(vec2(v.x - 0.5 - b2x, v.y - 0.5 - b2y));
+  float d3 = length(vec2(v.x - 0.5 - b3x, v.y - 0.5 - b3y));
+  float w1 = 0.05 + cos(s * 2.7) * 0.02;
+  float w2 = 0.04 + sin(s * 4.9) * 0.02;
+  float w3 = 0.055 + cos(s * 7.3) * 0.015;
+  float meta = w1/(d1+0.08) + w2/(d2+0.08) + w3/(d3+0.08);
+  meta = smoothstep(0.3, 1.2, meta);
+  float gx = w1/(d1+0.08)*(v.x-0.5-b1x)/(d1+0.01) + w2/(d2+0.08)*(v.x-0.5-b2x)/(d2+0.01) + w3/(d3+0.08)*(v.x-0.5-b3x)/(d3+0.01);
+  float gy = w1/(d1+0.08)*(v.y-0.5-b1y)/(d1+0.01) + w2/(d2+0.08)*(v.y-0.5-b2y)/(d2+0.01) + w3/(d3+0.08)*(v.y-0.5-b3y)/(d3+0.01);
+  float curlDir = cos(s * 6.3);
+  float curlMix = sin(s * 8.1) * 0.3;
+  dx += (-gy * 0.06 * curlDir + gx * (0.02 + curlMix)) * meta * psych;
+  dy += (gx * 0.06 * curlDir + gy * (0.02 + curlMix)) * meta * psych;
+  float if1 = 5.0 + cos(s * 3.1) * 2.5;
+  float if2 = 4.0 + sin(s * 5.7) * 2.5;
+  float if3 = 3.5 + cos(s * 8.3) * 2.0;
+  float ifb = 1.3 + sin(s * 4.1) * 0.5;
+  float ink1 = sin(v.y * if1 + sin(v.x * if2 + st * (1.8 + cos(s*2.1)*0.5)) * ifb + st * 0.9 + s);
+  float ink2 = cos(v.x * if2 + cos(v.y * if1 + st * (1.3 + sin(s*3.7)*0.4)) * ifb + st * 0.6 + s);
+  float ink3 = sin(v.y * if3 - v.x * if1 + sin(v.y * (if2+2.0) + v.x * if3 + st * (1.6+cos(s*2.9)*0.5)) * (ifb*0.8));
+  dx += (ink1 * 0.018 + ink3 * 0.010) * meta * psych;
+  dy += (ink2 * 0.018 + ink3 * 0.010) * meta * psych;`;
 
-  // Q2 bottom-right: DIAGONAL SLASH — 45-degree rotated field, spins CLOCKWISE, moderate pull
+  // Q2 bottom-right: faster warp behind knockout text — no liquid light effect
   var warpQ2 = `
-  float st = t * 0.13 + 47.0;
-  float ox = 0.5 + sin(st * 1.1) * 0.10 + cos(st * 1.9) * 0.06;
-  float oy = 0.5 + cos(st * 1.4) * 0.10 + sin(st * 0.6) * 0.08;
-  float rawx = uvA.x - ox;
-  float rawy = uvA.y - oy;
-  float rot = 0.785 + 0.3 * sin(st * 0.7);
-  float cr = cos(rot); float sr = sin(rot);
-  float rx = rawx * cr - rawy * sr;
-  float ry = rawx * sr + rawy * cr;
-  float ex = rx * 1.6;
-  float ey = ry * 0.7;
-  float r = sqrt(ex*ex + ey*ey) + 0.001;
-  float a = atan(ey, ex);
-  float gravity = 0.011 / (r * r + 0.04);
-  float spin = t * 0.65 + 4.5 / (r + 0.3);
-  float tidal = sin(r * 7.0 - t * 1.2) * 0.018 * smoothstep(0.0, 0.35, r);
-  float lensWarp = sin(a * 5.0 + spin) * gravity * 0.8;
-  float dx =
-    cos(a) * gravity * -0.7 +
-    sin(a + spin) * 0.032 * smoothstep(0.05, 0.35, r) +
-    lensWarp * cos(a * 2.0 + t * 0.42) +
-    tidal * cos(a) +
-    sin(ex * 5.0 + ey * 8.0 + t * 0.28) * 0.005;
-  float dy =
-    sin(a) * gravity * -0.7 +
-    cos(a + spin) * 0.032 * smoothstep(0.05, 0.35, r) +
-    lensWarp * sin(a * 2.0 + t * 0.52) +
-    tidal * sin(a) +
-    cos(ex * 7.0 + ey * 3.0 + t * 0.38) * 0.005;`;
+  float st = t * 0.111 + 47.0;
+  float ox = 0.5 + sin(st * 1.1) * 0.10 + cos(st * 0.53) * 0.06;
+  float oy = 0.5 + cos(st * 1.4) * 0.10 + sin(st * 0.41) * 0.05;
+  float rawx = v.x - ox;
+  float rawy = v.y - oy;
+  float r = sqrt(rawx*rawx + rawy*rawy) + 0.001;
+  float pull = 0.008 / (r * r + 0.04);
+  float dx = -rawx * pull;
+  float dy = -rawy * pull;
+  float n1 = sin(rawx * 5.3 + rawy * 4.1 + st * 2.1) * cos(rawy * 6.7 - rawx * 3.3 + st * 1.5);
+  float n2 = sin(rawx * 3.9 - rawy * 7.3 + st * 1.7) * cos(rawy * 2.1 + rawx * 5.1 + st * 2.3);
+  float n3 = cos(rawx * 7.7 + rawy * 2.9 + st * 0.9) * sin(rawy * 4.3 - rawx * 6.1 + st * 1.9);
+  dx += (n1 * 0.014 + n2 * 0.009) * smoothstep(0.0, 0.3, r);
+  dy += (n2 * 0.014 + n3 * 0.009) * smoothstep(0.0, 0.3, r);
+  float swirl = pull * 3.0 * smoothstep(0.0, 0.4, r);
+  dx += -rawy * swirl;
+  dy += rawx * swirl;`;
 
-  // Q3 bottom-left: ASYMMETRIC BLOB — off-center mass, spins COUNTER-CW, pulsing between round and stretched
+  // Q3 bottom-left: living organism — breathes, stretches, contracts, rotates
   var warpQ3 = `
-  float st = t * 0.13 + 71.0;
-  float ox = 0.4 + sin(st * 2.1) * 0.18;
-  float oy = 0.6 + cos(st * 1.0) * 0.14;
-  float rawx = uvA.x - ox;
-  float rawy = uvA.y - oy;
+  float st = t * 0.089 + 71.0;
+  // Center roams widely
+  float ox = 0.4 + sin(st * 2.1) * 0.18 + cos(st * 0.47) * 0.08 + sin(st * 1.31) * 0.05;
+  float oy = 0.6 + cos(st * 1.0) * 0.14 + sin(st * 0.59) * 0.07 + cos(st * 1.87) * 0.04;
+  float rawx = v.x - ox;
+  float rawy = v.y - oy;
+  // Whole field rotates slowly over time
+  float fieldRot = st * 0.13 + sin(st * 0.29) * 0.4;
+  float cR = cos(fieldRot); float sR = sin(fieldRot);
+  float rx = rawx * cR - rawy * sR;
+  float ry = rawx * sR + rawy * cR;
+  // Morphing blob shape — breathes between stretched and compressed
   float morph = sin(st * 1.6);
-  float sx = 1.0 + 0.7 * morph;
-  float sy = 1.0 - 0.5 * morph;
-  float twist = 0.4 * sin(st * 2.5);
-  float ex = rawx * sx + rawy * twist;
-  float ey = rawy * sy - rawx * twist * 0.7;
+  float morph2 = cos(st * 0.43);
+  float sx = 1.0 + 0.7 * morph + 0.3 * morph2;
+  float sy = 1.0 - 0.5 * morph + 0.2 * morph2;
+  float twist = 0.4 * sin(st * 2.5) + 0.2 * cos(st * 0.71);
+  float ex = rx * sx + ry * twist;
+  float ey = ry * sy - rx * twist * (0.7 + 0.2 * sin(st * 0.37));
   float r = sqrt(ex*ex + ey*ey) + 0.001;
-  float a = atan(ey, ex);
-  float gPulse = 0.012 + 0.005 * cos(st * 3.1);
-  float gravity = gPulse / (r * r + 0.035);
-  float spin = -t * 0.65 - 6.0 / (r + 0.28);
-  float tidal = sin(r * 9.0 + t * 1.2) * 0.022 * smoothstep(0.0, 0.4, r);
-  float lensWarp = sin(a * 3.0 + spin) * gravity;
-  float dx =
-    cos(a) * gravity * -0.9 +
-    sin(a + spin) * 0.038 * smoothstep(0.05, 0.38, r) +
-    lensWarp * cos(a * 2.0 + t * 0.42) +
-    tidal * cos(a) +
-    sin(ex * 4.0 + ey * 6.0 + t * 0.28) * 0.006;
-  float dy =
-    sin(a) * gravity * -0.9 +
-    cos(a + spin) * 0.038 * smoothstep(0.05, 0.38, r) +
-    lensWarp * sin(a * 2.0 + t * 0.52) +
-    tidal * sin(a) +
-    cos(ex * 5.0 + ey * 4.0 + t * 0.38) * 0.006;`;
+  float gPulse = 0.014 + 0.006 * cos(st * 3.1) + 0.004 * sin(st * 0.53);
+  float pull = gPulse / (r * r + 0.035 + 0.01 * sin(st * 0.79));
+  float dx = -ex * pull * (1.0 + intensity * 2.5);
+  float dy = -ey * pull * (1.0 + intensity * 2.5);
+  float n1 = sin(ex * 6.1 + ey * 2.3 + st * 2.7) * cos(ey * 8.7 - ex * 3.9 + st * 1.3);
+  float n2 = cos(ex * 4.3 - ey * 7.1 + st * 1.9) * sin(ey * 3.1 + ex * 5.7 + st * 3.3);
+  float n3 = sin(ex * 9.3 + ey * 1.7 + st * 0.7) * cos(ey * 5.3 - ex * 2.1 + st * 2.1);
+  float n4 = sin(ex * 1.9 + ey * 9.1 + st * 2.9) * cos(ey * 4.7 + ex * 7.3 + st * 0.9);
+  float curlScale = 1.0 + intensity * 3.0;
+  dx += (n1 * 0.020 + n2 * 0.013 + n4 * 0.008) * smoothstep(0.0, 0.35, r) * curlScale;
+  dy += (n2 * 0.020 + n3 * 0.013 + n1 * 0.008) * smoothstep(0.0, 0.35, r) * curlScale;
+  float swirlDir = sin(st * 0.27);
+  float swirl = pull * (3.8 + intensity * 8.5) * swirlDir * smoothstep(0.0, 0.4, r);
+  dx += -ey * swirl;
+  dy += ex * swirl;
+  // Liquid light — Q3, seed-driven unique every spawn
+  float psych = intensity;
+  float s = seed + 67.0;
+  float spd1 = 1.1 + sin(s * 6.7) * 0.7;
+  float spd2 = 0.9 + cos(s * 4.9) * 0.8;
+  float spd3 = 1.3 + sin(s * 9.3) * 0.6;
+  float rad1 = 0.27 + sin(s * 3.1) * 0.11;
+  float rad2 = 0.23 + cos(s * 7.7) * 0.13;
+  float rad3 = 0.26 + sin(s * 5.9) * 0.12;
+  float ph1 = s * 3.1; float ph2 = s * 5.3; float ph3 = s * 2.7;
+  float b1x = sin(st * spd1 + ph1) * rad1 + cos(st * spd1 * 0.47 + ph1) * rad1 * 0.4;
+  float b1y = cos(st * spd1 * 0.7 + ph1) * rad1 + sin(st * spd1 * 0.63 + ph1) * rad1 * 0.5;
+  float b2x = cos(st * spd2 + ph2) * rad2 + sin(st * spd2 * 0.53 + ph2) * rad2 * 0.5;
+  float b2y = sin(st * spd2 * 1.1 + ph2) * rad2 + cos(st * spd2 * 0.43 + ph2) * rad2 * 0.4;
+  float b3x = sin(st * spd3 + ph3) * rad3 + cos(st * spd3 * 0.61 + ph3) * rad3 * 0.5;
+  float b3y = cos(st * spd3 * 0.9 + ph3) * rad3 + sin(st * spd3 * 0.79 + ph3) * rad3 * 0.3;
+  float d1 = length(vec2(v.x - 0.5 - b1x, v.y - 0.5 - b1y));
+  float d2 = length(vec2(v.x - 0.5 - b2x, v.y - 0.5 - b2y));
+  float d3 = length(vec2(v.x - 0.5 - b3x, v.y - 0.5 - b3y));
+  float w1 = 0.045 + sin(s * 3.3) * 0.02;
+  float w2 = 0.055 + cos(s * 5.1) * 0.015;
+  float w3 = 0.05 + sin(s * 8.7) * 0.02;
+  float meta = w1/(d1+0.08) + w2/(d2+0.08) + w3/(d3+0.08);
+  meta = smoothstep(0.3, 1.2, meta);
+  float gx = w1/(d1+0.08)*(v.x-0.5-b1x)/(d1+0.01) + w2/(d2+0.08)*(v.x-0.5-b2x)/(d2+0.01) + w3/(d3+0.08)*(v.x-0.5-b3x)/(d3+0.01);
+  float gy = w1/(d1+0.08)*(v.y-0.5-b1y)/(d1+0.01) + w2/(d2+0.08)*(v.y-0.5-b2y)/(d2+0.01) + w3/(d3+0.08)*(v.y-0.5-b3y)/(d3+0.01);
+  float curlDir = sin(s * 7.9);
+  float curlMix = cos(s * 3.7) * 0.25;
+  dx += (-gy * 0.06 * curlDir + gx * (0.025 + curlMix)) * meta * psych;
+  dy += (gx * 0.06 * curlDir + gy * (0.025 + curlMix)) * meta * psych;
+  float if1 = 4.5 + sin(s * 4.3) * 2.0;
+  float if2 = 3.5 + cos(s * 6.1) * 2.5;
+  float if3 = 5.0 + sin(s * 9.7) * 2.0;
+  float ifb = 1.1 + cos(s * 3.9) * 0.5;
+  float ink1 = sin(v.x * if1 + v.y * if3 + sin(v.x * if2 + st * (2.0+sin(s*1.3)*0.5)) * ifb + st * 0.8 + s);
+  float ink2 = cos(v.y * if2 - v.x * if1 + cos(v.y * if3 + st * (1.4+cos(s*2.7)*0.4)) * ifb + st * 1.3 + s);
+  float ink3 = sin(v.x * if3 + v.y * if1 + sin(v.y * if2 - v.x * (if3+2.0) + st * (1.7+sin(s*4.1)*0.4)) * (ifb*0.9));
+  dx += (ink1 * 0.018 + ink3 * 0.010) * meta * psych;
+  dy += (ink2 * 0.018 + ink3 * 0.010) * meta * psych;`;
 
   var warpVariants = [warpQ0, warpQ1, warpQ2, warpQ3];
 
@@ -1248,19 +1456,19 @@ void main(){
     return s;
   }
 
-  // Build 4 shader programs — one per quadrant
   var programs = [];
   for (var qi = 0; qi < 4; qi++) {
     var p = gl.createProgram();
     gl.attachShader(p, mkShader(gl.VERTEX_SHADER, vsSrc));
-    gl.attachShader(p, mkShader(gl.FRAGMENT_SHADER, mkFsSrc(warpVariants[qi])));
+    gl.attachShader(p, mkShader(gl.FRAGMENT_SHADER, mkFsSrc(warpVariants[qi], qi)));
     gl.linkProgram(p);
     var aLoc = gl.getAttribLocation(p, 'a');
     programs.push({
-      prog: p,
-      aLoc: aLoc,
+      prog: p, aLoc: aLoc,
       uT:         gl.getUniformLocation(p, 't'),
       uMix:       gl.getUniformLocation(p, 'mix_f'),
+      uIntensity: gl.getUniformLocation(p, 'intensity'),
+      uSeed:      gl.getUniformLocation(p, 'seed'),
       uImgA:      gl.getUniformLocation(p, 'imgA'),
       uImgB:      gl.getUniformLocation(p, 'imgB'),
       uCoverA:    gl.getUniformLocation(p, 'coverA'),
@@ -1293,41 +1501,53 @@ void main(){
   function computeCoverFor(imgAspect, quadAspect) {
     var zoom = 0.90;
     var sx, sy;
-    if (quadAspect > imgAspect) {
-      sx = zoom;
-      sy = (imgAspect / quadAspect) * zoom;
-    } else {
-      sx = (quadAspect / imgAspect) * zoom;
-      sy = zoom;
-    }
+    if (quadAspect > imgAspect) { sx = zoom; sy = (imgAspect / quadAspect) * zoom; }
+    else { sx = (quadAspect / imgAspect) * zoom; sy = zoom; }
     return { sx: sx, sy: sy, ox: (1.0 - sx) * 0.5, oy: (1.0 - sy) * 0.5 };
   }
 
-  // 4 panel states — clockwise: top-left(0), top-right(1), bottom-right(2), bottom-left(3)
   var panels = [];
-  var FADE_DUR = 2.5;        // seconds per crossfade
-  var PANEL_INTERVAL = 2500; // ms between each panel's turn (full cycle = 10s)
+  var FADE_DUR = 3.85;
+  var PANEL_INTERVAL = 3850;
 
   function getQuadRects(w, h) {
     var hw = Math.floor((w - GAP) / 2);
     var hh = Math.floor((h - GAP) / 2);
-    // GL y=0 is at bottom
     return [
-      { x: 0,        y: hh + GAP, w: hw, h: hh }, // 0: top-left
-      { x: hw + GAP, y: hh + GAP, w: hw, h: hh }, // 1: top-right
-      { x: hw + GAP, y: 0,        w: hw, h: hh }, // 2: bottom-right
-      { x: 0,        y: 0,        w: hw, h: hh }  // 3: bottom-left
+      { x: 0,        y: hh + GAP, w: hw, h: hh },
+      { x: hw + GAP, y: hh + GAP, w: hw, h: hh },
+      { x: hw + GAP, y: 0,        w: hw, h: hh },
+      { x: 0,        y: 0,        w: hw, h: hh }
     ];
   }
 
+  var recentHistory = [];
+  var HISTORY_SIZE = Math.min(Math.floor(heroImages.length * 0.7), 60); // avoid ~70% of pool before recycling
+
   function pickNewImage(excludeList) {
+    // Exclude currently visible + mid-fade + recent history
+    var blocked = excludeList.slice();
+    panels.forEach(function(pan) {
+      if (blocked.indexOf(pan.nextIdx) === -1) blocked.push(pan.nextIdx);
+    });
+    recentHistory.forEach(function(idx) {
+      if (blocked.indexOf(idx) === -1) blocked.push(idx);
+    });
     var available = [];
     for (var i = 0; i < heroImages.length; i++) {
-      if (excludeList.indexOf(i) === -1) available.push(i);
+      if (textures[i] && blocked.indexOf(i) === -1) available.push(i);
     }
-    return available.length
-      ? available[Math.floor(Math.random() * available.length)]
-      : Math.floor(Math.random() * heroImages.length);
+    // If we've exhausted the pool, clear history and try again with just current exclusions
+    if (!available.length) {
+      recentHistory = [];
+      for (var j = 0; j < heroImages.length; j++) {
+        if (textures[j] && excludeList.indexOf(j) === -1) available.push(j);
+      }
+    }
+    var pick = available.length ? available[Math.floor(Math.random() * available.length)] : 0;
+    recentHistory.push(pick);
+    if (recentHistory.length > HISTORY_SIZE) recentHistory.shift();
+    return pick;
   }
 
   function initPanels() {
@@ -1335,30 +1555,47 @@ void main(){
     for (var p = 0; p < 4; p++) {
       var idx = pickNewImage(used);
       used.push(idx);
-      panels.push({ currentIdx: idx, nextIdx: idx, mixFactor: 0, fading: false, fadeStart: 0 });
+      panels.push({ currentIdx: idx, nextIdx: idx, mixFactor: 0, fading: false, fadeStart: 0, swapNext: false });
     }
   }
 
   function switchPanel(p) {
     var panel = panels[p];
+    // Complete any pending swap before starting a new fade
+    if (panel.swapNext || panel.fading) {
+      panel.currentIdx = panel.nextIdx;
+      panel.mixFactor = 0;
+      panel.fading = false;
+      panel.swapNext = false;
+    }
     var used = panels.map(function(pan) { return pan.currentIdx; });
     var newIdx = pickNewImage(used);
-    if (panel.fading) {
-      panel.currentIdx = panel.nextIdx;
-      panel.fading = false;
-    }
     panel.nextIdx = newIdx;
     panel.fading = true;
     panel.fadeStart = performance.now();
   }
 
-  heroImages.forEach(function(src, i) {
+  // Shuffle load order so different images appear first on each page load
+  var loadOrder = [];
+  for (var li = 0; li < heroImages.length; li++) loadOrder.push(li);
+  for (var si = loadOrder.length - 1; si > 0; si--) {
+    var sj = Math.floor(Math.random() * (si + 1));
+    var tmp = loadOrder[si]; loadOrder[si] = loadOrder[sj]; loadOrder[sj] = tmp;
+  }
+
+  var failedCount = 0;
+  loadOrder.forEach(function(i) {
+    var src = heroImages[i];
     var img = new Image();
     img.onload = function() {
       textures[i] = createTexture(img);
       imgData[i] = { aspect: img.naturalWidth / img.naturalHeight };
       loadedCount++;
-      if (loadedCount === heroImages.length) startWarp();
+      if (loadedCount + failedCount === heroImages.length && loadedCount >= 4) startWarp();
+    };
+    img.onerror = function() {
+      failedCount++;
+      if (loadedCount + failedCount === heroImages.length && loadedCount >= 4) startWarp();
     };
     img.src = src;
   });
@@ -1380,38 +1617,66 @@ void main(){
     var t0 = performance.now();
     var raf;
     var activePanel = 0;
+    // Hot quadrant cycling — the psychedelic boost rotates through panels
+    var hotQuad = 0; // which of [0,1,3] is currently hot
+    var hotTargets = [0, 1, 3]; // the 3 visible quadrants
+    var hotIdx = 0;
+    var panelIntensity = [1.0, 0.0, 0.0, 0.0]; // start Q0 hot
+    var panelSeed = [Math.random() * 100, Math.random() * 100, Math.random() * 100, Math.random() * 100];
 
+    // Image swap stays on its own timer
     setInterval(function() {
       switchPanel(activePanel);
       activePanel = (activePanel + 1) % 4;
     }, PANEL_INTERVAL);
+
+    // Q2 gets its own faster swap — 25% quicker
+    setInterval(function() {
+      switchPanel(2);
+    }, Math.round(PANEL_INTERVAL * 0.75));
+
+    // Hot quadrant cycles much slower — lets it linger and seep
+    setInterval(function() {
+      hotIdx = (hotIdx + 1) % 3;
+      hotQuad = hotTargets[hotIdx];
+      panelSeed[hotQuad] = Math.random() * 100;
+    }, 12000);
 
     function frame(now) {
       raf = requestAnimationFrame(frame);
       var t = (now - t0) / 1000;
       var w = canvas.width, h = canvas.height;
 
-      gl.clear(gl.COLOR_BUFFER_BIT); // black — becomes the separator lines
+      gl.clear(gl.COLOR_BUFFER_BIT);
 
       var quads = getQuadRects(w, h);
 
+      // Fade intensity — gradual seep in, moderate decay out
+      for (var pi = 0; pi < 4; pi++) {
+        var target = (pi === hotQuad) ? 1.0 : 0.0;
+        var rate = (pi === hotQuad) ? 0.02 : 0.008;
+        panelIntensity[pi] += (target - panelIntensity[pi]) * rate;
+        if (panelIntensity[pi] < 0.005) panelIntensity[pi] = 0.0;
+      }
+
       for (var p = 0; p < 4; p++) {
-        if (p === 2) continue; // Q2 bottom-right stays pure black (text lives there)
         var panel = panels[p];
         var q = quads[p];
         var sp = programs[p];
 
-        // Advance crossfade
         if (panel.fading) {
           var elapsed = (now - panel.fadeStart) / 1000;
           var raw = Math.min(elapsed / FADE_DUR, 1.0);
           panel.mixFactor = raw < 0.5 ? 2*raw*raw : 1 - Math.pow(-2*raw+2, 2)/2;
           if (raw >= 1.0) {
-            panel.currentIdx = panel.nextIdx;
-            panel.mixFactor  = 0;
-            panel.fading     = false;
-
+            // Hold at mix=1 this frame, swap next frame to avoid UV jump
+            panel.mixFactor = 1.0;
+            panel.swapNext = true;
           }
+        } else if (panel.swapNext) {
+          panel.currentIdx = panel.nextIdx;
+          panel.mixFactor = 0;
+          panel.swapNext = false;
         }
 
         gl.useProgram(sp.prog);
@@ -1428,6 +1693,8 @@ void main(){
 
         gl.uniform1f(sp.uT,   t);
         gl.uniform1f(sp.uMix, panel.mixFactor);
+        gl.uniform1f(sp.uIntensity, panelIntensity[p]);
+        gl.uniform1f(sp.uSeed, panelSeed[p]);
         gl.uniform2f(sp.uCoverA,    cA.sx, cA.sy);
         gl.uniform2f(sp.uCoverOffA, cA.ox, cA.oy);
         gl.uniform2f(sp.uCoverB,    cB.sx, cB.sy);
@@ -1456,6 +1723,7 @@ void main(){
     observer.observe(section);
   }
 })();
+
 </script>
 </body>
 </html>
