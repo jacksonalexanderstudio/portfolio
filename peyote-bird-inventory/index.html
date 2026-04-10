@@ -3,53 +3,69 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Peyote Bird — Inventory Report</title>
+<title>Peyote Bird — Inventory Report 2025</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   :root {
-    --bg: #0f1117;
-    --surface: #1a1d27;
-    --surface-2: #232733;
-    --border: #2e3345;
-    --text: #e4e6ef;
-    --text-muted: #8b8fa3;
+    --bg: #0c0e14;
+    --surface: #161923;
+    --surface-2: #1e2230;
+    --surface-3: #262a3a;
+    --border: #2a2f42;
+    --border-light: #363c54;
+    --text: #e8eaf4;
+    --text-muted: #7d829a;
+    --text-dim: #555970;
     --accent: #c9a96e;
-    --accent-dim: rgba(201,169,110,0.15);
+    --accent-light: #dfc291;
+    --accent-dim: rgba(201,169,110,0.12);
     --green: #4ade80;
-    --green-dim: rgba(74,222,128,0.12);
+    --green-dim: rgba(74,222,128,0.10);
     --red: #f87171;
-    --red-dim: rgba(248,113,113,0.12);
+    --red-dim: rgba(248,113,113,0.10);
     --blue: #60a5fa;
-    --blue-dim: rgba(96,165,250,0.12);
+    --blue-dim: rgba(96,165,250,0.10);
     --purple: #a78bfa;
-    --purple-dim: rgba(167,139,250,0.12);
+    --purple-dim: rgba(167,139,250,0.10);
+    --orange: #fb923c;
+    --orange-dim: rgba(251,146,60,0.10);
   }
 
   body {
     font-family: 'Inter', -apple-system, sans-serif;
     background: var(--bg);
     color: var(--text);
-    line-height: 1.5;
-    padding: 2rem;
+    line-height: 1.6;
+    padding: 2.5rem;
+    max-width: 1400px;
+    margin: 0 auto;
   }
 
+  /* HEADER */
   header {
-    display: flex;
-    align-items: baseline;
-    gap: 1rem;
-    margin-bottom: 2rem;
+    margin-bottom: 2.5rem;
+    padding-bottom: 2rem;
     border-bottom: 1px solid var(--border);
-    padding-bottom: 1.5rem;
+  }
+
+  header .brand {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
   }
 
   header h1 {
-    font-size: 1.75rem;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    color: var(--accent);
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--text);
+    margin-bottom: 0.35rem;
   }
 
   header .subtitle {
@@ -58,118 +74,157 @@
     font-weight: 400;
   }
 
-  .stats-row {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
-    margin-bottom: 2rem;
+  header .meta-row {
+    display: flex;
+    gap: 2rem;
+    margin-top: 1rem;
+    font-size: 0.72rem;
+    color: var(--text-dim);
   }
 
-  .stat-card {
+  header .meta-row span { display: flex; align-items: center; gap: 0.35rem; }
+
+  /* HERO STATS */
+  .hero-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .hero-card {
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 1.25rem;
+    border-radius: 12px;
+    padding: 1.4rem;
+    position: relative;
+    overflow: hidden;
   }
 
-  .stat-card .label {
-    font-size: 0.7rem;
+  .hero-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+  }
+
+  .hero-card.gold::before { background: var(--accent); }
+  .hero-card.silver::before { background: var(--blue); }
+  .hero-card.stones::before { background: var(--purple); }
+  .hero-card.delta::before { background: var(--red); }
+
+  .hero-card .h-label {
+    font-size: 0.65rem;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.1em;
     color: var(--text-muted);
-    margin-bottom: 0.35rem;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
   }
 
-  .stat-card .value {
-    font-size: 1.6rem;
-    font-weight: 700;
+  .hero-card .h-value {
+    font-size: 1.8rem;
+    font-weight: 800;
     font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
   }
 
-  .stat-card .sub {
-    font-size: 0.75rem;
-    color: var(--text-muted);
-    margin-top: 0.2rem;
+  .hero-card .h-sub {
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    margin-top: 0.3rem;
+    line-height: 1.4;
   }
 
-  .accent-value { color: var(--accent); }
-  .green-value { color: var(--green); }
-  .red-value { color: var(--red); }
-  .blue-value { color: var(--blue); }
-  .purple-value { color: var(--purple); }
+  .c-accent { color: var(--accent); }
+  .c-blue { color: var(--blue); }
+  .c-purple { color: var(--purple); }
+  .c-green { color: var(--green); }
+  .c-red { color: var(--red); }
+  .c-orange { color: var(--orange); }
 
+  /* TABS */
   nav.tabs {
     display: flex;
-    gap: 0.25rem;
-    margin-bottom: 1.5rem;
-    border-bottom: 1px solid var(--border);
-    flex-wrap: wrap;
+    gap: 0.15rem;
+    margin-bottom: 2rem;
+    background: var(--surface);
+    border-radius: 10px;
+    padding: 0.3rem;
+    border: 1px solid var(--border);
   }
 
   nav.tabs button {
     background: none;
     border: none;
     color: var(--text-muted);
-    padding: 0.65rem 1.1rem;
-    font-size: 0.8rem;
+    padding: 0.6rem 1.2rem;
+    font-size: 0.78rem;
     font-weight: 500;
     cursor: pointer;
-    border-bottom: 2px solid transparent;
+    border-radius: 7px;
     transition: all 0.2s;
     font-family: inherit;
   }
 
-  nav.tabs button:hover { color: var(--text); }
+  nav.tabs button:hover { color: var(--text); background: var(--surface-2); }
   nav.tabs button.active {
-    color: var(--accent);
-    border-bottom-color: var(--accent);
+    color: var(--bg);
+    background: var(--accent);
+    font-weight: 600;
   }
 
   .tab-panel { display: none; }
   .tab-panel.active { display: block; }
 
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.8rem;
-  }
+  /* TABLES */
+  table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
 
   thead th {
     text-align: left;
-    padding: 0.6rem 0.75rem;
-    font-size: 0.68rem;
+    padding: 0.65rem 0.8rem;
+    font-size: 0.65rem;
     text-transform: uppercase;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.07em;
     color: var(--text-muted);
     border-bottom: 1px solid var(--border);
     font-weight: 600;
     position: sticky;
     top: 0;
     background: var(--bg);
+    z-index: 1;
   }
 
   thead th.num { text-align: right; }
 
   tbody td {
-    padding: 0.55rem 0.75rem;
-    border-bottom: 1px solid var(--border);
+    padding: 0.5rem 0.8rem;
+    border-bottom: 1px solid rgba(42,47,66,0.5);
     font-variant-numeric: tabular-nums;
   }
 
-  tbody td.num { text-align: right; font-family: 'Inter', monospace; }
-
+  tbody td.num { text-align: right; font-weight: 500; }
   tbody tr:hover { background: var(--surface); }
+  tbody td.item-name { font-weight: 500; }
 
-  .change-up { color: var(--green); }
-  .change-down { color: var(--red); }
-  .change-flat { color: var(--text-muted); }
+  tfoot td {
+    padding: 0.75rem 0.8rem;
+    font-weight: 700;
+    border-top: 2px solid var(--accent);
+    border-bottom: none;
+    color: var(--accent);
+  }
 
+  /* BADGES */
   .badge {
     display: inline-block;
-    padding: 0.15rem 0.5rem;
+    padding: 0.12rem 0.5rem;
     border-radius: 999px;
-    font-size: 0.68rem;
-    font-weight: 500;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
   }
 
   .badge-green { background: var(--green-dim); color: var(--green); }
@@ -177,185 +232,456 @@
   .badge-blue { background: var(--blue-dim); color: var(--blue); }
   .badge-accent { background: var(--accent-dim); color: var(--accent); }
   .badge-purple { background: var(--purple-dim); color: var(--purple); }
+  .badge-orange { background: var(--orange-dim); color: var(--orange); }
 
-  .section-title {
-    font-size: 1.05rem;
-    font-weight: 600;
-    margin: 2rem 0 1rem;
-    color: var(--text);
-  }
+  .up { color: var(--green); }
+  .down { color: var(--red); }
+  .flat { color: var(--text-muted); }
 
-  .section-subtitle {
-    font-size: 0.78rem;
-    color: var(--text-muted);
-    margin-bottom: 1rem;
-  }
-
-  tfoot td {
-    padding: 0.7rem 0.75rem;
+  /* SECTIONS */
+  .s-title {
+    font-size: 1.1rem;
     font-weight: 700;
-    border-top: 2px solid var(--accent);
-    border-bottom: none;
-    color: var(--accent);
+    margin: 2.5rem 0 0.5rem;
+    color: var(--text);
+    letter-spacing: -0.01em;
   }
 
-  .flag { color: var(--red); font-weight: 600; }
-  .note { font-size: 0.72rem; color: var(--text-muted); font-style: italic; }
+  .s-sub {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-bottom: 1.25rem;
+  }
 
-  .two-col {
+  /* CARDS */
+  .card-row {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
   }
 
-  @media (max-width: 768px) {
-    .two-col { grid-template-columns: 1fr; }
-    body { padding: 1rem; }
-  }
-
-  .findings-list {
+  .card {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 10px;
-    padding: 1.25rem;
-    margin-bottom: 1rem;
+    padding: 1.15rem;
   }
 
-  .findings-list h3 {
-    font-size: 0.85rem;
-    font-weight: 600;
-    margin-bottom: 0.75rem;
-    color: var(--accent);
-  }
-
-  .findings-list li {
-    font-size: 0.8rem;
-    margin-bottom: 0.5rem;
-    padding-left: 0.5rem;
-    list-style: none;
-    position: relative;
-  }
-
-  .findings-list li::before {
-    content: '—';
-    position: absolute;
-    left: -0.75rem;
+  .card .c-label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
     color: var(--text-muted);
+    margin-bottom: 0.4rem;
+    font-weight: 500;
   }
 
-  .valuation-highlight {
-    background: var(--surface);
-    border: 1px solid var(--accent);
-    border-radius: 10px;
-    padding: 1.5rem;
-    margin: 1.5rem 0;
-  }
-
-  .valuation-highlight .big-number {
-    font-size: 2.2rem;
+  .card .c-value {
+    font-size: 1.5rem;
     font-weight: 700;
-    color: var(--accent);
     font-variant-numeric: tabular-nums;
   }
 
-  .valuation-highlight .context {
-    font-size: 0.8rem;
+  .card .c-sub {
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    margin-top: 0.2rem;
+  }
+
+  /* FINDINGS PANELS */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.4rem;
+    margin-bottom: 1rem;
+  }
+
+  .panel h3 {
+    font-size: 0.82rem;
+    font-weight: 700;
+    margin-bottom: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .panel h3 .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  .panel li {
+    font-size: 0.78rem;
+    margin-bottom: 0.55rem;
+    padding-left: 1rem;
+    list-style: none;
+    position: relative;
+    line-height: 1.5;
+  }
+
+  .panel li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.55rem;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--text-dim);
+  }
+
+  .panel li.flag::before { background: var(--red); }
+  .panel li.win::before { background: var(--green); }
+  .panel li.warn::before { background: var(--orange); }
+
+  /* VALUATION BOX */
+  .val-box {
+    background: linear-gradient(135deg, var(--surface) 0%, var(--surface-2) 100%);
+    border: 1px solid var(--accent);
+    border-radius: 12px;
+    padding: 1.75rem;
+    margin: 1.5rem 0;
+    text-align: center;
+  }
+
+  .val-box .vb-number {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+  }
+
+  .val-box .vb-label {
+    font-size: 0.82rem;
     color: var(--text-muted);
     margin-top: 0.25rem;
   }
 
-  .price-ref {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    background: var(--surface-2);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 0.4rem 0.75rem;
-    font-size: 0.75rem;
-    margin-right: 0.5rem;
-    margin-bottom: 0.5rem;
+  .val-box .vb-detail {
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    margin-top: 0.5rem;
   }
 
-  .price-ref .price-label { color: var(--text-muted); }
-  .price-ref .price-val { color: var(--text); font-weight: 600; }
-
-  .location-grid {
+  /* LOCATION GRID */
+  .loc-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 0.75rem;
     margin: 1rem 0;
   }
 
-  .location-card {
-    background: var(--surface);
+  .loc-card {
+    background: var(--surface-2);
     border: 1px solid var(--border);
     border-radius: 8px;
-    padding: 0.85rem;
+    padding: 0.8rem 1rem;
   }
 
-  .location-card .loc-name {
-    font-size: 0.78rem;
-    font-weight: 600;
-    margin-bottom: 0.25rem;
+  .loc-card .lc-name { font-size: 0.76rem; font-weight: 600; }
+  .loc-card .lc-sub { font-size: 0.66rem; color: var(--text-muted); margin-top: 0.15rem; }
+
+  /* PRICE PILLS */
+  .pill-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem; }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.35rem 0.7rem;
+    font-size: 0.72rem;
   }
 
-  .location-card .loc-counter {
-    font-size: 0.68rem;
-    color: var(--text-muted);
+  .pill .p-label { color: var(--text-muted); }
+  .pill .p-val { color: var(--text); font-weight: 600; }
+  .pill.active { border-color: var(--accent); }
+  .pill.active .p-val { color: var(--accent); }
+
+  /* SEPARATOR */
+  .sep { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    .hero-stats { grid-template-columns: repeat(2, 1fr); }
+    .grid-2 { grid-template-columns: 1fr; }
+    body { padding: 1.25rem; }
+  }
+  @media (max-width: 500px) {
+    .hero-stats { grid-template-columns: 1fr; }
+    nav.tabs { flex-wrap: wrap; }
   }
 </style>
 </head>
 <body>
 
+<!-- ═══════════════════════ HEADER ═══════════════════════ -->
 <header>
-  <h1>Peyote Bird</h1>
-  <span class="subtitle">Physical Inventory Report — April 2025</span>
+  <div class="brand">Peyote Bird Designs</div>
+  <h1>Physical Inventory Report</h1>
+  <div class="subtitle">Comprehensive analysis of metals, components, and gemstone inventory</div>
+  <div class="meta-row">
+    <span>Report Date: April 2025</span>
+    <span>Count Period: 2025 Physical Inventory</span>
+    <span>Valuation: 10-Year Silver Average</span>
+    <span>Prepared by: Jackson Alexander Studio</span>
+  </div>
 </header>
 
-<!-- TOP-LEVEL SUMMARY CARDS -->
-<div class="stats-row">
-  <div class="stat-card">
-    <div class="label">Total Metals Value (2025)</div>
-    <div class="value accent-value">$109,857</div>
-    <div class="sub">441.62 lbs total — all metals</div>
+<!-- ═══════════════════════ HERO STATS ═══════════════════════ -->
+<div class="hero-stats">
+  <div class="hero-card gold">
+    <div class="h-label">Total Inventory (2025)</div>
+    <div class="h-value c-accent">$240,156</div>
+    <div class="h-sub">Metals $109,857 + Cabs & Stones $130,299</div>
   </div>
-  <div class="stat-card">
-    <div class="label">Silver Valuation Rate</div>
-    <div class="value green-value">$0.663/g</div>
-    <div class="sub">10-year average (2016–2024)</div>
+  <div class="hero-card silver">
+    <div class="h-label">Metals (2025)</div>
+    <div class="h-value c-blue">$109,857</div>
+    <div class="h-sub">441.62 lbs — Silver $92,740 + Gold/GF $17,117</div>
   </div>
-  <div class="stat-card">
-    <div class="label">Silver Physical Count</div>
-    <div class="value blue-value">139,880g</div>
-    <div class="sub">308 lbs — hand-counted</div>
+  <div class="hero-card stones">
+    <div class="h-label">Cabs & Cut Stones (2025)</div>
+    <div class="h-value c-purple">$130,299</div>
+    <div class="h-sub">77 stone types — priced per carat (1g = 5ct)</div>
   </div>
-  <div class="stat-card">
-    <div class="label">YoY Metals Variance</div>
-    <div class="value red-value">-$10,478</div>
-    <div class="sub">$120,335 (2024) → $109,857 (2025)</div>
+  <div class="hero-card delta">
+    <div class="h-label">Stones Variance</div>
+    <div class="h-value c-green">+$8,779</div>
+    <div class="h-sub">Cabs up despite weight declines (price adjustments)</div>
   </div>
 </div>
 
+<!-- ═══════════════════════ TABS ═══════════════════════ -->
 <nav class="tabs">
-  <button class="active" onclick="switchTab('metals')">Metals & Valuation</button>
-  <button onclick="switchTab('silver')">Silver Components</button>
+  <button class="active" onclick="switchTab('findings')">Key Findings</button>
+  <button onclick="switchTab('metals')">Metals & Valuation</button>
+  <button onclick="switchTab('silver')">Silver Detail</button>
   <button onclick="switchTab('cabs')">Cabs & Cut Stones</button>
-  <button onclick="switchTab('findings')">Key Findings</button>
+  <button onclick="switchTab('locations')">Locations</button>
 </nav>
 
-<!-- METALS & VALUATION TAB -->
-<div id="tab-metals" class="tab-panel active">
+<!-- ═══════════════════════ KEY FINDINGS TAB ═══════════════════════ -->
+<div id="tab-findings" class="tab-panel active">
 
-  <div class="section-title">Silver Pricing Reference</div>
-  <div style="margin-bottom: 1.5rem;">
-    <span class="price-ref"><span class="price-label">10-Year Avg:</span> <span class="price-val">$0.663/gram</span></span>
-    <span class="price-ref"><span class="price-label">Spot (noted):</span> <span class="price-val">$75/oz ($2.41/g)</span></span>
-    <span class="price-ref"><span class="price-label">Alt noted:</span> <span class="price-val">$71.48/oz</span></span>
-    <span class="price-ref"><span class="price-label">Alt avg:</span> <span class="price-val">$23/oz ($0.74/g)</span></span>
+  <div class="s-title">Executive Summary</div>
+  <div class="s-sub">Complete analysis from all source documents — metals schedule, silver count sheets, and Schedule D digital with dollar values</div>
+
+  <div class="val-box" style="text-align:left; display:grid; grid-template-columns:1fr 1fr 1fr; gap:1.5rem;">
+    <div>
+      <div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);margin-bottom:0.3rem;">Total Inventory 2025</div>
+      <div style="font-size:2rem;font-weight:800;color:var(--accent);">$240,156</div>
+      <div style="font-size:0.72rem;color:var(--text-dim);margin-top:0.2rem;">Metals + Cabs & Stones combined</div>
+    </div>
+    <div>
+      <div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);margin-bottom:0.3rem;">Metals</div>
+      <div style="font-size:1.6rem;font-weight:700;color:var(--blue);">$109,857</div>
+      <div style="font-size:0.72rem;color:var(--text-dim);margin-top:0.2rem;">441.62 lbs — down $10,478 (-8.7%)</div>
+    </div>
+    <div>
+      <div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);margin-bottom:0.3rem;">Cabs & Cut Stones</div>
+      <div style="font-size:1.6rem;font-weight:700;color:var(--purple);">$130,299</div>
+      <div style="font-size:0.72rem;color:var(--text-dim);margin-top:0.2rem;">77 stone types — up $8,779 (pricing)</div>
+    </div>
   </div>
 
-  <div class="section-title">Silver Valuation @ $0.663/gram</div>
+  <div class="grid-2">
+    <div class="panel">
+      <h3><span class="dot" style="background:var(--red)"></span> Metals Inventory Declining</h3>
+      <ul>
+        <li class="flag"><strong>Metals down $10,478 (-8.7%)</strong> from $120,335 to $109,857 year-over-year</li>
+        <li class="flag"><strong>Silver is the primary driver</strong> — 139,880g on hand valued at $92,740 (84% of metals total)</li>
+        <li class="flag"><strong>Stone weights declining 15–25%</strong> across most categories — consistent drawdown without full replenishment</li>
+        <li class="flag"><strong>Three-year compounding:</strong> many stone categories now at 50–60% of their 2023 weight levels</li>
+      </ul>
+    </div>
+
+    <div class="panel">
+      <h3><span class="dot" style="background:var(--green)"></span> Stones Value UP Despite Weight Declines</h3>
+      <ul>
+        <li class="win"><strong>Cabs & Stones up $8,779</strong> in dollar value — pricing adjustments offsetting weight declines</li>
+        <li class="win"><strong>Stones ($130K) now exceed metals ($110K)</strong> — cabs are the larger asset class</li>
+        <li class="win"><strong>Per-carat pricing structure</strong> allows value to hold even as quantities shrink</li>
+        <li class="win"><strong>77 active stone categories</strong> tracked with individual cost-per-carat rates</li>
+      </ul>
+    </div>
+
+    <div class="panel">
+      <h3><span class="dot" style="background:var(--orange)"></span> Critical Stockout Risks</h3>
+      <ul>
+        <li class="warn"><strong>Amber down 55%</strong> — 850g vs 1,905g prior year. Largest percentage decline of any stone</li>
+        <li class="warn"><strong>Moonstone down 43%</strong> — 2,600g vs 4,595g. High-demand stone, down 53% over 2 years</li>
+        <li class="warn"><strong>Garnet down 43%</strong> — 1,816g vs 3,175g. Needs immediate replenishment review</li>
+        <li class="warn"><strong>Asia Trip Turquoise down 40%</strong> — 1,543g vs 2,559g. Down 55% over 2 years</li>
+        <li class="warn"><strong>Turquoise Round down 40%</strong> — 2,360g vs 3,931g. Core product component</li>
+        <li class="warn"><strong>Carved Animals/Cameos down 56%</strong> — spiked in 2024, now correcting sharply</li>
+      </ul>
+    </div>
+
+    <div class="panel">
+      <h3><span class="dot" style="background:var(--red)"></span> Missing, Excluded & Written Off</h3>
+      <ul>
+        <li class="flag"><strong>Chalcedony - Blue: MISSING</strong> — marked "missing" on count sheet. 2,993g in 2024. Needs physical location search</li>
+        <li class="flag"><strong>Write-offs per Mark Alexander (3.30.26):</strong> multiple items written off cost — Bone, Coral Red, Cubic Zirconia, and others</li>
+        <li class="flag"><strong>Pearls relocated:</strong> Pearl Cabs, Loose, and Strands "moved to pile" per Mark Alexander</li>
+        <li class="flag"><strong>Coral (Apple Sponge, Bamboo): Zero count</strong> — combined 3,582g in 2023, showing zero in 2024</li>
+      </ul>
+    </div>
+
+    <div class="panel">
+      <h3><span class="dot" style="background:var(--green)"></span> Positive Signals</h3>
+      <ul>
+        <li class="win"><strong>Turquoise Singles to Pair up 20%</strong> — 10,105g vs 8,443g. Strong pairing stock for production</li>
+        <li class="win"><strong>Mixed Turquoise Singles up 12.5%</strong> — healthy inventory level maintained</li>
+        <li class="win"><strong>Labradorite up 6.4%</strong> — 3,207g, well-stocked and growing</li>
+        <li class="win"><strong>Turquoise Triangle/Diamond:</strong> new category added for 2025</li>
+        <li class="win"><strong>Silver market upside:</strong> book value ($0.663/g) vs spot ($2.41/g) = $337K potential — 3.6× book</li>
+      </ul>
+    </div>
+
+    <div class="panel">
+      <h3><span class="dot" style="background:var(--blue)"></span> Insurance & Financial Note</h3>
+      <ul>
+        <li class="warn"><strong>Book inventory: $240,156</strong> — metals at 10-yr avg, stones at cost-per-carat</li>
+        <li class="warn"><strong>Market value (silver at spot): ~$484K+</strong> — silver alone at $337K vs $93K book</li>
+        <li class="warn"><strong>Potential underinsured gap: $244K+</strong> if insured at book value</li>
+        <li class="warn">Stone valuations use fixed cost-per-carat — may not reflect current market for rare stones</li>
+        <li>Source: S:\Tony\Finance\INVENTORY RECORDS\2025\</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="s-title">Silver Valuation Insight</div>
+  <div class="s-sub">Book vs. market value comparison — important for insurance and financial reporting</div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Valuation Method</th>
+        <th class="num">Rate per Gram</th>
+        <th class="num">Rate per Oz</th>
+        <th class="num">Silver Value (139,880g)</th>
+        <th class="num">vs. Book</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="item-name">10-Year Average (Book Value)</td>
+        <td class="num"><strong>$0.663</strong></td>
+        <td class="num">$20.62</td>
+        <td class="num c-accent"><strong>$92,740</strong></td>
+        <td class="num flat">—</td>
+      </tr>
+      <tr>
+        <td class="item-name">Noted Spot Price</td>
+        <td class="num">$2.41</td>
+        <td class="num">$75.00</td>
+        <td class="num c-green">$337,011</td>
+        <td class="num up">+263%</td>
+      </tr>
+      <tr>
+        <td class="item-name">Alt. Noted Price</td>
+        <td class="num">$2.30</td>
+        <td class="num">$71.48</td>
+        <td class="num">$321,724</td>
+        <td class="num up">+247%</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <hr class="sep">
+
+  <div class="s-title">Recommended Actions</div>
+  <table>
+    <thead>
+      <tr><th>Priority</th><th>Action</th><th>Category</th><th>Impact</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><span class="badge badge-red">URGENT</span></td><td>Locate missing Chalcedony - Blue inventory</td><td>Cabs</td><td>~$1,985 unaccounted</td></tr>
+      <tr><td><span class="badge badge-red">URGENT</span></td><td>Review Amber, Moonstone, Garnet sourcing — all down 43–55%</td><td>Cabs</td><td>Stockout risk on key stones</td></tr>
+      <tr><td><span class="badge badge-red">URGENT</span></td><td>Review Mark Alexander write-offs (3.30.26) — confirm all items and dollar impact</td><td>Cabs</td><td>Multiple items written off cost</td></tr>
+      <tr><td><span class="badge badge-orange">HIGH</span></td><td>Confirm Coral category status (zero counts)</td><td>Cabs</td><td>3,582g vanished from 2023→2024</td></tr>
+      <tr><td><span class="badge badge-orange">HIGH</span></td><td>Review insurance coverage — book ($240K) vs market ($484K+)</td><td>All</td><td>Potential $244K+ underinsured gap</td></tr>
+      <tr><td><span class="badge badge-orange">HIGH</span></td><td>Verify Pearl relocation — "moved to pile" per Mark Alexander</td><td>Cabs</td><td>Pearl Cabs, Loose, Strands affected</td></tr>
+      <tr><td><span class="badge badge-blue">MEDIUM</span></td><td>Verify Page 2 silver line items against physical sheets</td><td>Silver</td><td>Lazy-0 corrections applied but not line-verified</td></tr>
+      <tr><td><span class="badge badge-accent">PLAN</span></td><td>Evaluate replenishment strategy for declining turquoise categories</td><td>Cabs</td><td>Multiple turquoise types down 15–40%</td></tr>
+      <tr><td><span class="badge badge-accent">PLAN</span></td><td>Assess Serpentine overstock (up 38%)</td><td>Cabs</td><td>Monitor sell-through before reordering</td></tr>
+    </tbody>
+  </table>
+
+  <hr class="sep">
+
+  <div class="s-title">Data Completeness</div>
+  <table>
+    <thead>
+      <tr><th>Source Document</th><th>Status</th><th>Detail</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Silver Components — Page 1 (handwritten)</td><td><span class="badge badge-green">Verified</span></td><td>36,030g — math confirmed, all 13 line items</td></tr>
+      <tr><td>Silver Inventory — Page 2 (handwritten, red ink)</td><td><span class="badge badge-orange">Corrected</span></td><td>103,850g — lazy-0 handwriting correction applied. Subtotals trusted, line items need verification</td></tr>
+      <tr><td>PD & Design Metals & Stones (digital PDF)</td><td><span class="badge badge-green">Verified</span></td><td>$109,857 total, 441.62 lbs, all metal types, 10+ locations</td></tr>
+      <tr><td>Schedule D: Cabs & Stones (handwritten count sheets)</td><td><span class="badge badge-green">Digitized</span></td><td>3 pages, 100+ stone types, 3-year weight comparison</td></tr>
+      <tr><td>Schedule D: Cabs & Stones (digital with $ values)</td><td><span class="badge badge-green">Verified</span></td><td>$130,299 total, 77 types, cost-per-carat pricing, write-off notes. Source: S:\Tony\Finance\</td></tr>
+      <tr><td>Remaining Schedules (A, B, C, E…)</td><td><span class="badge badge-red">Not Received</span></td><td>May contain finished goods, WIP, packaging, etc.</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ═══════════════════════ METALS & VALUATION TAB ═══════════════════════ -->
+<div id="tab-metals" class="tab-panel">
+
+  <div class="s-title">Silver Pricing Reference</div>
+  <div class="pill-row">
+    <span class="pill active"><span class="p-label">Valuation Rate (10-yr avg):</span> <span class="p-val">$0.663/g</span></span>
+    <span class="pill"><span class="p-label">Spot (noted):</span> <span class="p-val">$75/oz = $2.41/g</span></span>
+    <span class="pill"><span class="p-label">Alt spot:</span> <span class="p-val">$71.48/oz = $2.30/g</span></span>
+    <span class="pill"><span class="p-label">Alt avg:</span> <span class="p-val">$23/oz = $0.74/g</span></span>
+  </div>
+
+  <div class="val-box">
+    <div class="vb-number">$109,857</div>
+    <div class="vb-label">Total Metals Inventory — 2025</div>
+    <div class="vb-detail">441.62 lbs total weight &nbsp;|&nbsp; Down $10,478 (-8.7%) from $120,335 in 2024</div>
+  </div>
+
+  <div class="s-title">Metals Breakdown by Category</div>
+  <div class="s-sub">From PD & Design Metals & Stones master schedule — digital PDF verified</div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Category</th>
+        <th class="num">2025 Cost</th>
+        <th class="num">2024 Cost</th>
+        <th class="num">Variance</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td class="item-name">Silver — All Components</td><td class="num">$92,740</td><td class="num">—</td><td class="num">—</td><td>139,880g @ $0.663/g. Largest category (~84% of total)</td></tr>
+      <tr><td class="item-name">Silver — Lobster Claws (all sizes)</td><td class="num">included above</td><td class="num">—</td><td class="num">—</td><td>8+ size/style variants tracked individually</td></tr>
+      <tr><td class="item-name">Gold Components (14K, 18K, 22K)</td><td class="num">$4,494</td><td class="num">—</td><td class="num down">($421)</td><td>Cabs, chain, components</td></tr>
+      <tr><td class="item-name">Gold Filled</td><td class="num">$534</td><td class="num">$534</td><td class="num flat">$0</td><td>Lobster claws, hoops, wire, scarab</td></tr>
+      <tr><td class="item-name">Gold + Chain, Gold Filled</td><td class="num">$973</td><td class="num">—</td><td class="num">—</td><td>Combined gold chain items</td></tr>
+      <tr><td class="item-name">Gold Filled Wire & Scarab</td><td class="num">$1,790</td><td class="num">—</td><td class="num down">($962)</td><td>Largest gold-category item</td></tr>
+      <tr><td class="item-name">Silver Wire & Scrap</td><td class="num">$242</td><td class="num">—</td><td class="num">—</td><td>Scrap silver value</td></tr>
+    </tbody>
+    <tfoot>
+      <tr><td>DESIGN Metals Total</td><td class="num">$109,857</td><td class="num">$120,335</td><td class="num down">($10,478)</td><td></td></tr>
+    </tfoot>
+  </table>
+
+  <div class="s-title">Silver Valuation — Physical Count</div>
+  <div class="s-sub">Broken down by source document, valued at $0.663/gram (10-year average)</div>
 
   <table>
     <thead>
@@ -363,148 +689,51 @@
         <th>Source</th>
         <th class="num">Weight (g)</th>
         <th class="num">Weight (lbs)</th>
-        <th class="num">Value @ $0.663/g</th>
+        <th class="num">Value</th>
+        <th>Status</th>
       </tr>
     </thead>
     <tbody>
       <tr>
-        <td>Page 1 — Silver Components</td>
+        <td class="item-name">Page 1 — Silver Components</td>
         <td class="num">36,030</td>
         <td class="num">79.4</td>
         <td class="num">$23,888</td>
+        <td><span class="badge badge-green">Verified</span></td>
       </tr>
       <tr>
-        <td>Page 2 — Left Column (Chains, Charms, Beads)</td>
+        <td class="item-name">Page 2 — Left Column</td>
         <td class="num">32,910</td>
         <td class="num">72.5</td>
         <td class="num">$21,819</td>
+        <td><span class="badge badge-orange">Corrected</span></td>
       </tr>
       <tr>
-        <td>Page 2 — Right Top (Findings, Chains, Misc)</td>
+        <td class="item-name">Page 2 — Right Top</td>
         <td class="num">39,030</td>
         <td class="num">86.0</td>
         <td class="num">$25,877</td>
+        <td><span class="badge badge-orange">Corrected</span></td>
       </tr>
       <tr>
-        <td>Page 2 — Right Bottom (Findings, Western, Beads)</td>
+        <td class="item-name">Page 2 — Right Bottom</td>
         <td class="num">31,910</td>
         <td class="num">70.3</td>
         <td class="num">$21,156</td>
+        <td><span class="badge badge-blue">Best Read</span></td>
       </tr>
     </tbody>
     <tfoot>
-      <tr>
-        <td>Total Silver (Physical Count)</td>
-        <td class="num">139,880g</td>
-        <td class="num">308.2 lbs</td>
-        <td class="num">$92,740</td>
-      </tr>
+      <tr><td>Total Silver</td><td class="num">139,880g</td><td class="num">308.2 lbs</td><td class="num">$92,740</td><td></td></tr>
     </tfoot>
-  </table>
-
-  <div class="section-title">Total Metals Breakdown</div>
-  <div class="section-subtitle">From PD & Design Metals & Stones master sheet</div>
-
-  <table>
-    <thead>
-      <tr>
-        <th>Category</th>
-        <th class="num">2025 Value</th>
-        <th class="num">2024 Value</th>
-        <th class="num">Variance</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>Silver (all components, findings, chain, lobster claws, wire, scrap)</td>
-        <td class="num">$92,740</td>
-        <td class="num">—</td>
-        <td class="num">—</td>
-      </tr>
-      <tr>
-        <td>Gold (14K, 18K, 22K) + Gold Filled + Resin</td>
-        <td class="num">$17,117</td>
-        <td class="num">—</td>
-        <td class="num">—</td>
-      </tr>
-    </tbody>
-    <tfoot>
-      <tr>
-        <td>All Metals Combined</td>
-        <td class="num">$109,857</td>
-        <td class="num">$120,335</td>
-        <td class="num change-down">-$10,478 (-8.7%)</td>
-      </tr>
-    </tfoot>
-  </table>
-
-  <div class="section-title">Physical Count Locations</div>
-  <div class="section-subtitle">10 count stations across the facility — each assigned to named counters</div>
-
-  <div class="location-grid">
-    <div class="location-card">
-      <div class="loc-name">Mark's Newly Installed Cabinet</div>
-      <div class="loc-counter">Primary metals storage</div>
-    </div>
-    <div class="location-card">
-      <div class="loc-name">Shelves in the Hall / Natasha's Walk</div>
-      <div class="loc-counter">Shimonishi / Chipuwa counter</div>
-    </div>
-    <div class="location-card">
-      <div class="loc-name">Cabinets & Shelves</div>
-      <div class="loc-counter">Counted by Alexander</div>
-    </div>
-    <div class="location-card">
-      <div class="loc-name">Jackson / Alexander Station</div>
-      <div class="loc-counter">Joint count area</div>
-    </div>
-    <div class="location-card">
-      <div class="loc-name">Danny's Desk</div>
-      <div class="loc-counter">Components & drawers</div>
-    </div>
-    <div class="location-card">
-      <div class="loc-name">Whitney's Drawers</div>
-      <div class="loc-counter">Counted by Katherine, Nolan</div>
-    </div>
-    <div class="location-card">
-      <div class="loc-name">Mary / Conon's / Salazar's Desk</div>
-      <div class="loc-counter">Desk inventory station</div>
-    </div>
-    <div class="location-card">
-      <div class="loc-name">Tables, Bins, Shelves & All Sides</div>
-      <div class="loc-counter">Counted by Whitney — bulk storage</div>
-    </div>
-    <div class="location-card">
-      <div class="loc-name">Former Pillar / Leyla's Catalog</div>
-      <div class="loc-counter">Historical reference area</div>
-    </div>
-    <div class="location-card">
-      <div class="loc-name">Inv #236 / Upstairs #196 / Cabinet #3</div>
-      <div class="loc-counter">Referenced on handwritten silver sheets</div>
-    </div>
-  </div>
-
-  <div class="section-title">Metals Schedule — Item Categories</div>
-  <div class="section-subtitle">From PD & Design Metals & Stones — all line items tracked</div>
-  <table>
-    <thead>
-      <tr><th>Metal Type</th><th>Items Tracked</th></tr>
-    </thead>
-    <tbody>
-      <tr><td><span class="badge badge-accent">Gold</span></td><td>Cabs 14K, Chain/Br/Coll 14K, Components 18K, Components 22K</td></tr>
-      <tr><td><span class="badge badge-accent">Gold Filled</span></td><td>Hoops, Leather Claws (Lg/Med/Sm), Wire & Scarab</td></tr>
-      <tr><td><span class="badge badge-blue">Silver</span></td><td>Misc, Chain, Lobster Claws (Fancy XL/Lg/Med, Flat Lg/Med/Sm, Heart Lg/Med/Sm, X-Large, Med, Small), Parts, Scarab</td></tr>
-      <tr><td><span class="badge badge-blue">Silver</span></td><td>Wire & Scrap, Title Silver Metals</td></tr>
-      <tr><td><span class="badge badge-purple">Resin</span></td><td>Resin Metals</td></tr>
-    </tbody>
   </table>
 </div>
 
-<!-- SILVER TAB -->
+<!-- ═══════════════════════ SILVER DETAIL TAB ═══════════════════════ -->
 <div id="tab-silver" class="tab-panel">
 
-  <div class="section-title">Page 1 — Silver Components by Category</div>
-  <div class="section-subtitle">Physical count, measured in grams. Math verified ✓</div>
+  <div class="s-title">Page 1 — Silver Components</div>
+  <div class="s-sub">Physical count by category. Math verified — 36,030g total ✓</div>
 
   <table>
     <thead>
@@ -512,61 +741,101 @@
         <th>#</th>
         <th>Item</th>
         <th class="num">Weight (g)</th>
-        <th class="num">Value @ $0.663/g</th>
-        <th class="num">Running Total</th>
+        <th class="num">Value</th>
+        <th class="num">% of Page</th>
       </tr>
     </thead>
     <tbody>
-      <tr><td>1</td><td>Silver Buckle</td><td class="num">1,650</td><td class="num">$1,094</td><td class="num">1,650</td></tr>
-      <tr><td>2</td><td>Silver Bead</td><td class="num">4,350</td><td class="num">$2,884</td><td class="num">6,000</td></tr>
-      <tr><td>3</td><td>Ear Parts</td><td class="num">1,800</td><td class="num">$1,193</td><td class="num">7,800</td></tr>
-      <tr><td>4</td><td>Ear Parts</td><td class="num">2,100</td><td class="num">$1,392</td><td class="num">9,900</td></tr>
-      <tr><td>5</td><td>Asst Beads</td><td class="num">5,050</td><td class="num">$3,348</td><td class="num">14,950</td></tr>
-      <tr><td>6</td><td>XMAS</td><td class="num">1,050</td><td class="num">$696</td><td class="num">16,000</td></tr>
-      <tr><td>7</td><td>Toggles</td><td class="num">620</td><td class="num">$411</td><td class="num">16,620</td></tr>
-      <tr><td>8</td><td>Silver Beads</td><td class="num">6,500</td><td class="num">$4,310</td><td class="num">23,120</td></tr>
-      <tr><td>9</td><td>Ear Parts</td><td class="num">1,250</td><td class="num">$829</td><td class="num">24,370</td></tr>
-      <tr><td>10</td><td>Charms</td><td class="num">3,230</td><td class="num">$2,142</td><td class="num">27,600</td></tr>
-      <tr><td>11</td><td>Br. Comp/Chain</td><td class="num">3,680</td><td class="num">$2,440</td><td class="num">31,280</td></tr>
-      <tr><td>12</td><td>Toggle Bars</td><td class="num">950</td><td class="num">$630</td><td class="num">32,230</td></tr>
-      <tr><td>13</td><td>Charms/Toggles</td><td class="num">3,800</td><td class="num">$2,519</td><td class="num">36,030</td></tr>
+      <tr><td>1</td><td class="item-name">Silver Beads</td><td class="num">6,500</td><td class="num">$4,310</td><td class="num">18.0%</td></tr>
+      <tr><td>2</td><td class="item-name">Asst Beads</td><td class="num">5,050</td><td class="num">$3,348</td><td class="num">14.0%</td></tr>
+      <tr><td>3</td><td class="item-name">Silver Bead</td><td class="num">4,350</td><td class="num">$2,884</td><td class="num">12.1%</td></tr>
+      <tr><td>4</td><td class="item-name">Charms/Toggles</td><td class="num">3,800</td><td class="num">$2,519</td><td class="num">10.5%</td></tr>
+      <tr><td>5</td><td class="item-name">Br. Comp/Chain</td><td class="num">3,680</td><td class="num">$2,440</td><td class="num">10.2%</td></tr>
+      <tr><td>6</td><td class="item-name">Charms</td><td class="num">3,230</td><td class="num">$2,142</td><td class="num">9.0%</td></tr>
+      <tr><td>7</td><td class="item-name">Ear Parts</td><td class="num">2,100</td><td class="num">$1,392</td><td class="num">5.8%</td></tr>
+      <tr><td>8</td><td class="item-name">Ear Parts</td><td class="num">1,800</td><td class="num">$1,193</td><td class="num">5.0%</td></tr>
+      <tr><td>9</td><td class="item-name">Silver Buckle</td><td class="num">1,650</td><td class="num">$1,094</td><td class="num">4.6%</td></tr>
+      <tr><td>10</td><td class="item-name">Ear Parts</td><td class="num">1,250</td><td class="num">$829</td><td class="num">3.5%</td></tr>
+      <tr><td>11</td><td class="item-name">XMAS</td><td class="num">1,050</td><td class="num">$696</td><td class="num">2.9%</td></tr>
+      <tr><td>12</td><td class="item-name">Toggle Bars</td><td class="num">950</td><td class="num">$630</td><td class="num">2.6%</td></tr>
+      <tr><td>13</td><td class="item-name">Toggles</td><td class="num">620</td><td class="num">$411</td><td class="num">1.7%</td></tr>
     </tbody>
     <tfoot>
-      <tr><td></td><td>Total</td><td class="num">36,030g</td><td class="num">$23,888</td><td class="num">✓</td></tr>
+      <tr><td></td><td>Total — Page 1</td><td class="num">36,030g</td><td class="num">$23,888</td><td class="num">100%</td></tr>
     </tfoot>
   </table>
 
-  <div class="section-title">Page 2 — Silver Detailed Inventory</div>
-  <div class="section-subtitle">Three sections. Written subtotals trusted (lazy/broken 0 correction applied).</div>
+  <div class="s-title">Page 2 — Silver Detailed Inventory</div>
+  <div class="s-sub">Three sections from handwritten count sheet. Written subtotals used (lazy/broken 0 correction applied to individual digits).</div>
 
-  <div class="stats-row">
-    <div class="stat-card">
-      <div class="label">Left Column</div>
-      <div class="value accent-value">32,910g</div>
-      <div class="sub">$21,819 — Chains, Charms, Beads, Closures</div>
+  <div class="card-row">
+    <div class="card">
+      <div class="c-label">Left Column — 29 Items</div>
+      <div class="c-value c-accent">32,910g</div>
+      <div class="c-sub">$21,819 — Chains, Charms, Beads, Closures, Buttons, Hooks, Ears</div>
     </div>
-    <div class="stat-card">
-      <div class="label">Right Column — Top</div>
-      <div class="value accent-value">39,030g</div>
-      <div class="sub">$25,877 — Findings, Chains, Misc Silver</div>
+    <div class="card">
+      <div class="c-label">Right Top — 23 Items</div>
+      <div class="c-value c-accent">39,030g</div>
+      <div class="c-sub">$25,877 — Findings Silver, Chains, Misc, Hooks, Religious, Machine, ASST</div>
     </div>
-    <div class="stat-card">
-      <div class="label">Right Column — Bottom</div>
-      <div class="value accent-value">31,910g</div>
-      <div class="sub">$21,156 — Findings, Western, Beads, Charms</div>
+    <div class="card">
+      <div class="c-label">Right Bottom — 22 Items</div>
+      <div class="c-value c-accent">31,910g</div>
+      <div class="c-sub">$21,156 — Findings, Western, Beads, Sil. Beads, Animal, Charms, End Caps</div>
     </div>
   </div>
 
-  <div class="valuation-highlight">
-    <div class="big-number">$92,740</div>
-    <div class="context">Total silver valuation (139,880g × $0.663/g) — 10-year average rate</div>
-  </div>
+  <div class="s-title">Metals Schedule — Silver Line Items</div>
+  <div class="s-sub">From PD & Design master sheet — silver lobster claws tracked at granular level</div>
+
+  <table>
+    <thead>
+      <tr><th>Item</th><th>Variants Tracked</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="item-name">Silver Lobster Claws</td><td>Fancy XL, Fancy Large, Fancy, Fancy Medium, Flat Large, Flat Medium, Flat Small, Heart Large, Heart Medium, Heart Small, X-Large, Medium, Small</td></tr>
+      <tr><td class="item-name">Silver Chain</td><td>Single category — all chain types combined</td></tr>
+      <tr><td class="item-name">Silver Misc / Scarab</td><td>Bulk miscellaneous silver and scarab components</td></tr>
+      <tr><td class="item-name">Silver Wire & Scrap</td><td>Wire stock and silver scrap for reclamation ($242 value)</td></tr>
+    </tbody>
+  </table>
 </div>
 
-<!-- CABS TAB -->
+<!-- ═══════════════════════ CABS & CUT STONES TAB ═══════════════════════ -->
 <div id="tab-cabs" class="tab-panel">
-  <div class="section-title">Schedule D: Cabs & Cut Stones — 3-Year Comparison</div>
-  <div class="section-subtitle">Top 25 categories by 2024 weight. Yellow-highlighted items from source indicated with ★</div>
+
+  <div class="val-box">
+    <div class="vb-number">$130,299</div>
+    <div class="vb-label">Total Cabs & Cut Stones — 2025</div>
+    <div class="vb-detail">77 stone types &nbsp;|&nbsp; Priced per carat (1 gram = 5 carats) &nbsp;|&nbsp; Variance: +$8,779 vs 2024</div>
+  </div>
+
+  <div class="s-title">Pricing Structure</div>
+  <div class="s-sub">Each stone has a cost-per-carat rate. Total Cost = Grams × 5 carats × Cost/Carat</div>
+
+  <div class="pill-row">
+    <span class="pill"><span class="p-label">Conversion:</span> <span class="p-val">1g = 5 carats</span></span>
+    <span class="pill"><span class="p-label">Turquoise:</span> <span class="p-val">$0.15/ct ($0.75/g)</span></span>
+    <span class="pill"><span class="p-label">Abalone:</span> <span class="p-val">$0.20/ct ($1.00/g)</span></span>
+    <span class="pill"><span class="p-label">Chrysoprase:</span> <span class="p-val">$0.15/ct ($0.75/g)</span></span>
+    <span class="pill"><span class="p-label">Agate:</span> <span class="p-val">$0.05/ct ($0.25/g)</span></span>
+  </div>
+
+  <div class="s-title">Inventory Notes from Count Team</div>
+  <table>
+    <thead>
+      <tr><th>Note</th><th>Items Affected</th><th>Source</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><span class="badge badge-red">WRITE OFF</span> Cost written off per Mark Alexander on 3.30.26</td><td>Multiple items (Bone, Coral Red, Cubic Zirconia, others)</td><td>Digital Schedule D</td></tr>
+      <tr><td><span class="badge badge-orange">MOVED</span> Pearl moved to pile per Mark Alexander</td><td>Pearl - Cabs, Pearl - Loose, Pearl - Strands</td><td>Digital Schedule D</td></tr>
+      <tr><td><span class="badge badge-green">NEW</span> New category added for Year 2025</td><td>Turquoise Triangle/Diamond</td><td>Digital Schedule D</td></tr>
+    </tbody>
+  </table>
+
+  <div class="s-title">Top 25 Stones — 3-Year Weight Comparison</div>
+  <div class="s-sub">★ = yellow-highlighted on source (flagged by count team). Digital Schedule D confirms valuations.</div>
 
   <table>
     <thead>
@@ -575,120 +844,136 @@
         <th class="num">2025 (g)</th>
         <th class="num">2024 (g)</th>
         <th class="num">2023 (g)</th>
-        <th class="num">YoY 24→25</th>
+        <th class="num">24→25</th>
+        <th class="num">23→25 (2yr)</th>
       </tr>
     </thead>
     <tbody>
-      <tr><td>Turquoise Oval</td><td class="num">11,895</td><td class="num">12,746.98</td><td class="num">13,196.00</td><td class="num change-down">-6.7%</td></tr>
-      <tr><td>Singles to be Paired (Turq)</td><td class="num">10,105</td><td class="num">8,442.75</td><td class="num">11,257.00</td><td class="num change-up">+19.7%</td></tr>
-      <tr><td>Chinese Medium/Big (Turq)</td><td class="num">5,357</td><td class="num">5,099.25</td><td class="num">6,799.00</td><td class="num change-up">+5.1%</td></tr>
-      <tr><td>Lapis ★</td><td class="num">4,098</td><td class="num">5,500.00</td><td class="num">4,733.00</td><td class="num change-down">-25.5%</td></tr>
-      <tr><td>★ Moonstone</td><td class="num">2,600</td><td class="num">4,595.10</td><td class="num">5,579.00</td><td class="num change-down">-43.4%</td></tr>
-      <tr><td>Carved Animals/Cameos</td><td class="num">2,106</td><td class="num">4,808.08</td><td class="num">2,225.00</td><td class="num change-down">-56.2%</td></tr>
-      <tr><td>★ Jasper & Picture Jasper</td><td class="num">3,820</td><td class="num">4,626.64</td><td class="num">5,693.00</td><td class="num change-down">-17.4%</td></tr>
-      <tr><td>Chinese Big/Crazy Big (Turq)</td><td class="num">4,177</td><td class="num">3,877.50</td><td class="num">5,170.00</td><td class="num change-up">+7.7%</td></tr>
-      <tr><td>Chrysoprase</td><td class="num">3,632</td><td class="num">4,100.00</td><td class="num">4,101.00</td><td class="num change-down">-11.4%</td></tr>
-      <tr><td>Turquoise Round</td><td class="num">2,360</td><td class="num">3,930.83</td><td class="num">3,727.00</td><td class="num change-down">-40.0%</td></tr>
-      <tr><td>★ Jaspar Yellow & Red</td><td class="num">3,030</td><td class="num">3,881.58</td><td class="num">3,765.00</td><td class="num change-down">-21.9%</td></tr>
-      <tr><td>Mixed Turquoise Singles</td><td class="num">4,267</td><td class="num">3,793.50</td><td class="num">5,058.00</td><td class="num change-up">+12.5%</td></tr>
-      <tr><td>★ Gaspeite</td><td class="num">3,805</td><td class="num">3,718.00</td><td class="num">3,755.00</td><td class="num change-up">+2.3%</td></tr>
-      <tr><td>Turquoise Pairs</td><td class="num">2,451</td><td class="num">3,430.50</td><td class="num">4,574.00</td><td class="num change-down">-28.6%</td></tr>
-      <tr><td>Turquoise American Big</td><td class="num">2,905</td><td class="num">3,441.00</td><td class="num">4,588.00</td><td class="num change-down">-15.6%</td></tr>
-      <tr><td>Garnet</td><td class="num">1,816</td><td class="num">3,175.14</td><td class="num">3,532.00</td><td class="num change-down">-42.8%</td></tr>
-      <tr><td>Carnelian</td><td class="num">2,810</td><td class="num">3,130.43</td><td class="num">3,570.00</td><td class="num change-down">-10.2%</td></tr>
-      <tr><td>Snake Farm (Turq)</td><td class="num">3,359</td><td class="num">3,235.50</td><td class="num">4,314.00</td><td class="num change-up">+3.8%</td></tr>
-      <tr><td>Abalone - California</td><td class="num">3,065</td><td class="num">3,991.61</td><td class="num">4,996.00</td><td class="num change-down">-23.2%</td></tr>
-      <tr><td>Labradorite</td><td class="num">3,207</td><td class="num">3,014.37</td><td class="num">3,352.00</td><td class="num change-up">+6.4%</td></tr>
-      <tr><td>Turquoise Rectangle</td><td class="num">2,905</td><td class="num">2,902.99</td><td class="num">3,026.00</td><td class="num change-up">+0.1%</td></tr>
-      <tr><td>Onyx</td><td class="num">2,723</td><td class="num">2,899.55</td><td class="num">3,553.00</td><td class="num change-down">-6.1%</td></tr>
-      <tr><td>Tiger Eye</td><td class="num">2,270</td><td class="num">2,538.52</td><td class="num">2,698.00</td><td class="num change-down">-10.6%</td></tr>
-      <tr><td>American Medium (Turq)</td><td class="num">2,814</td><td class="num">2,558.25</td><td class="num">3,411.00</td><td class="num change-up">+10.0%</td></tr>
-      <tr><td>Asia Trip Turquoise</td><td class="num">1,543</td><td class="num">2,559.00</td><td class="num">3,412.00</td><td class="num change-down">-39.7%</td></tr>
+      <tr><td class="item-name">Turquoise Oval</td><td class="num">11,895</td><td class="num">12,747</td><td class="num">13,196</td><td class="num down">-6.7%</td><td class="num down">-9.9%</td></tr>
+      <tr><td class="item-name">Singles to be Paired (Turq)</td><td class="num">10,105</td><td class="num">8,443</td><td class="num">11,257</td><td class="num up">+19.7%</td><td class="num down">-10.2%</td></tr>
+      <tr><td class="item-name">Chinese Med/Big (Turq)</td><td class="num">5,357</td><td class="num">5,099</td><td class="num">6,799</td><td class="num up">+5.1%</td><td class="num down">-21.2%</td></tr>
+      <tr><td class="item-name">★ Lapis</td><td class="num">4,098</td><td class="num">5,500</td><td class="num">4,733</td><td class="num down">-25.5%</td><td class="num down">-13.4%</td></tr>
+      <tr><td class="item-name">★ Moonstone</td><td class="num">2,600</td><td class="num">4,595</td><td class="num">5,579</td><td class="num down">-43.4%</td><td class="num down">-53.4%</td></tr>
+      <tr><td class="item-name">Carved Animals/Cameos</td><td class="num">2,106</td><td class="num">4,808</td><td class="num">2,225</td><td class="num down">-56.2%</td><td class="num down">-5.3%</td></tr>
+      <tr><td class="item-name">★ Jasper & Picture Jasper</td><td class="num">3,820</td><td class="num">4,627</td><td class="num">5,693</td><td class="num down">-17.4%</td><td class="num down">-32.9%</td></tr>
+      <tr><td class="item-name">Chinese Big/Crazy Big (Turq)</td><td class="num">4,177</td><td class="num">3,878</td><td class="num">5,170</td><td class="num up">+7.7%</td><td class="num down">-19.2%</td></tr>
+      <tr><td class="item-name">Chrysoprase</td><td class="num">3,632</td><td class="num">4,100</td><td class="num">4,101</td><td class="num down">-11.4%</td><td class="num down">-11.4%</td></tr>
+      <tr><td class="item-name">Turquoise Round</td><td class="num">2,360</td><td class="num">3,931</td><td class="num">3,727</td><td class="num down">-40.0%</td><td class="num down">-36.7%</td></tr>
+      <tr><td class="item-name">★ Jaspar Yellow & Red</td><td class="num">3,030</td><td class="num">3,882</td><td class="num">3,765</td><td class="num down">-21.9%</td><td class="num down">-19.5%</td></tr>
+      <tr><td class="item-name">Mixed Turq Singles</td><td class="num">4,267</td><td class="num">3,794</td><td class="num">5,058</td><td class="num up">+12.5%</td><td class="num down">-15.6%</td></tr>
+      <tr><td class="item-name">★ Gaspeite</td><td class="num">3,805</td><td class="num">3,718</td><td class="num">3,755</td><td class="num up">+2.3%</td><td class="num up">+1.3%</td></tr>
+      <tr><td class="item-name">Turquoise Pairs</td><td class="num">2,451</td><td class="num">3,431</td><td class="num">4,574</td><td class="num down">-28.6%</td><td class="num down">-46.4%</td></tr>
+      <tr><td class="item-name">Turquoise American Big</td><td class="num">2,905</td><td class="num">3,441</td><td class="num">4,588</td><td class="num down">-15.6%</td><td class="num down">-36.7%</td></tr>
+      <tr><td class="item-name">Garnet</td><td class="num">1,816</td><td class="num">3,175</td><td class="num">3,532</td><td class="num down">-42.8%</td><td class="num down">-48.6%</td></tr>
+      <tr><td class="item-name">Carnelian</td><td class="num">2,810</td><td class="num">3,130</td><td class="num">3,570</td><td class="num down">-10.2%</td><td class="num down">-21.3%</td></tr>
+      <tr><td class="item-name">Snake Farm (Turq)</td><td class="num">3,359</td><td class="num">3,236</td><td class="num">4,314</td><td class="num up">+3.8%</td><td class="num down">-22.1%</td></tr>
+      <tr><td class="item-name">Abalone - California</td><td class="num">3,065</td><td class="num">3,992</td><td class="num">4,996</td><td class="num down">-23.2%</td><td class="num down">-38.6%</td></tr>
+      <tr><td class="item-name">Labradorite</td><td class="num">3,207</td><td class="num">3,014</td><td class="num">3,352</td><td class="num up">+6.4%</td><td class="num down">-4.3%</td></tr>
+      <tr><td class="item-name">Turquoise Rectangle</td><td class="num">2,905</td><td class="num">2,903</td><td class="num">3,026</td><td class="num up">+0.1%</td><td class="num down">-4.0%</td></tr>
+      <tr><td class="item-name">Onyx</td><td class="num">2,723</td><td class="num">2,900</td><td class="num">3,553</td><td class="num down">-6.1%</td><td class="num down">-23.4%</td></tr>
+      <tr><td class="item-name">Tiger Eye</td><td class="num">2,270</td><td class="num">2,539</td><td class="num">2,698</td><td class="num down">-10.6%</td><td class="num down">-15.9%</td></tr>
+      <tr><td class="item-name">American Medium (Turq)</td><td class="num">2,814</td><td class="num">2,558</td><td class="num">3,411</td><td class="num up">+10.0%</td><td class="num down">-17.5%</td></tr>
+      <tr><td class="item-name">Asia Trip Turquoise</td><td class="num">1,543</td><td class="num">2,559</td><td class="num">3,412</td><td class="num down">-39.7%</td><td class="num down">-54.8%</td></tr>
     </tbody>
   </table>
 
-  <div class="section-title">Notable Flags</div>
+  <div class="s-title">Flagged Items</div>
   <table>
     <thead>
-      <tr><th>Item</th><th>Status</th><th>Note</th></tr>
+      <tr><th>Item</th><th>Flag</th><th>Detail</th></tr>
     </thead>
     <tbody>
-      <tr><td>Chalcedony - Blue</td><td><span class="badge badge-red">MISSING</span></td><td>2,993.71g in 2024, 3,374g in 2023 — not counted in 2025</td></tr>
-      <tr><td>Bone</td><td><span class="badge badge-accent">W/O</span></td><td>Excluded from 2025 count (907.18g in 2024)</td></tr>
-      <tr><td>Cubic Zirconia</td><td><span class="badge badge-accent">W/O</span></td><td>Excluded from 2025 count (827.75g in 2024)</td></tr>
-      <tr><td>Amber</td><td><span class="badge badge-red">-55%</span></td><td>850g vs 1,905g — largest percentage decline</td></tr>
-      <tr><td>Coral (Apple, Bamboo)</td><td><span class="badge badge-red">ZERO</span></td><td>No 2024 count despite 2023 values (3,582g combined)</td></tr>
+      <tr><td class="item-name">Chalcedony - Blue</td><td><span class="badge badge-red">MISSING</span></td><td>Marked "missing" — 2,993.71g in 2024, 3,374g in 2023</td></tr>
+      <tr><td class="item-name">Bone</td><td><span class="badge badge-orange">W/O</span></td><td>Excluded from 2025 count — 907.18g in 2024, 777g in 2023</td></tr>
+      <tr><td class="item-name">Cubic Zirconia</td><td><span class="badge badge-orange">W/O</span></td><td>Excluded from 2025 count — 827.75g in 2024, 631g in 2023</td></tr>
+      <tr><td class="item-name">Amber</td><td><span class="badge badge-red">-55%</span></td><td>850g (2025) vs 1,905g (2024) — steepest single-year decline</td></tr>
+      <tr><td class="item-name">Coral - Apple (Sponge)</td><td><span class="badge badge-red">ZERO</span></td><td>No 2024 count — 2,141g in 2023</td></tr>
+      <tr><td class="item-name">Coral - Bamboo</td><td><span class="badge badge-red">ZERO</span></td><td>No 2024 count — 1,441g in 2023</td></tr>
+      <tr><td class="item-name">Moonstone</td><td><span class="badge badge-red">-53% 2yr</span></td><td>2,600g from 5,579g over 2 years — accelerating decline</td></tr>
+      <tr><td class="item-name">Turquoise Pairs</td><td><span class="badge badge-red">-46% 2yr</span></td><td>2,451g from 4,574g over 2 years</td></tr>
+    </tbody>
+  </table>
+
+  <div class="s-title">Spiney Oyster — Consolidated (Page 3)</div>
+  <div class="s-sub">9,650g total noted on count sheet — covers all Spiney color variants</div>
+  <table>
+    <thead>
+      <tr><th>Variant</th><th class="num">2024 (g)</th><th class="num">2023 (g)</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="item-name">Spiney - Orange Assorted Shapes</td><td class="num">3,085</td><td class="num">3,428</td></tr>
+      <tr><td class="item-name">Spiney - Orange Rectangle</td><td class="num">3,652</td><td class="num">4,058</td></tr>
+      <tr><td class="item-name">Spiney - Red Oval & Round</td><td class="num">2,344</td><td class="num">2,604</td></tr>
+      <tr><td class="item-name">Spiney - Sets</td><td class="num">2,043</td><td class="num">2,270</td></tr>
+      <tr><td class="item-name">Spiney - Purple</td><td class="num">983</td><td class="num">1,092</td></tr>
+      <tr><td class="item-name">Other Spiney variants</td><td class="num">various</td><td class="num">various</td></tr>
     </tbody>
   </table>
 </div>
 
-<!-- FINDINGS TAB -->
-<div id="tab-findings" class="tab-panel">
-  <div class="section-title">Key Findings & Analysis</div>
+<!-- ═══════════════════════ LOCATIONS TAB ═══════════════════════ -->
+<div id="tab-locations" class="tab-panel">
 
-  <div class="two-col">
-    <div class="findings-list">
-      <h3>Silver Inventory & Valuation</h3>
-      <ul>
-        <li><strong>Total silver: 139,880g (308 lbs) = $92,740</strong> at $0.663/g (10-year avg)</li>
-        <li>At current spot ($75/oz / $2.41/g), same silver would be worth <strong>$337,011</strong> — 3.6x the book value</li>
-        <li>Gold + Gold Filled + Resin accounts for remaining <strong>$17,117</strong> of the $109,857 total</li>
-        <li>Page 1 math verified at 36,030g — clean count</li>
-        <li>Page 2 required "lazy zero" handwriting correction — 103,850g across 3 sections</li>
-        <li>Inventory spread across <strong>10+ named locations</strong> with assigned counters</li>
-      </ul>
+  <div class="s-title">Physical Count Stations</div>
+  <div class="s-sub">10 named locations across the Peyote Bird facility — each assigned to specific counters for the 2025 physical inventory</div>
+
+  <div class="loc-grid">
+    <div class="loc-card">
+      <div class="lc-name">Mark's Newly Installed Cabinet & Other</div>
+      <div class="lc-sub">Primary metals storage — Showroom area</div>
     </div>
-
-    <div class="findings-list">
-      <h3>Year-over-Year Decline</h3>
-      <ul>
-        <li><strong>Metals down $10,478 (-8.7%)</strong> — $120,335 → $109,857</li>
-        <li><strong>Cabs & Stones declining 15-25%</strong> across most categories</li>
-        <li>Pattern: <strong>selling through without full replenishment</strong></li>
-        <li>Sharpest declines: Moonstone (-43%), Garnet (-43%), Amber (-55%), Asia Trip Turquoise (-40%)</li>
-        <li>Three-year compounding: many stones at 50-60% of 2023 levels</li>
-      </ul>
+    <div class="loc-card">
+      <div class="lc-name">Shelves in the Hall / Natasha's Walk</div>
+      <div class="lc-sub">Counted by Shimonishi / Chipuwa / Mochiawa</div>
     </div>
-
-    <div class="findings-list">
-      <h3>Positive Trends</h3>
-      <ul>
-        <li><strong>Singles to be Paired up 20%</strong> (10,105g vs 8,442g) — strong turquoise pairing stock</li>
-        <li><strong>Mixed Turq Singles up 12.5%</strong> — healthy inventory level</li>
-        <li><strong>Labradorite up 6.4%</strong> — well-stocked</li>
-        <li><strong>Serpentine up 38%</strong> — potentially overstocked</li>
-        <li><strong>Book value uses conservative 10-year avg</strong> — significant unrealized market value at spot price</li>
-      </ul>
+    <div class="loc-card">
+      <div class="lc-name">Cabinets & Shelves</div>
+      <div class="lc-sub">Counted by Alexander</div>
     </div>
-
-    <div class="findings-list">
-      <h3>Action Items</h3>
-      <ul>
-        <li class="flag">Locate missing Chalcedony - Blue (3,374g / ~$2,237 value)</li>
-        <li class="flag">Clarify W/O status for Bone and Cubic Zirconia</li>
-        <li class="flag">Review Amber sourcing — 55% decline year-over-year</li>
-        <li class="flag">Moonstone & Garnet both down 43% — replenishment critical</li>
-        <li>Confirm Coral inventory status (Apple Sponge, Bamboo showing zero)</li>
-        <li>Obtain remaining schedules (A, B, C, E) for complete picture</li>
-        <li>Get digital export of metals master sheet for cell-level verification</li>
-        <li>Verify Page 2 individual silver line items against physical sheets</li>
-        <li>Consider insurance implications: book value ($110K) vs market value ($337K+)</li>
-      </ul>
+    <div class="loc-card">
+      <div class="lc-name">Jackson / Alexander Station</div>
+      <div class="lc-sub">Joint count area</div>
+    </div>
+    <div class="loc-card">
+      <div class="lc-name">Danny's Desk</div>
+      <div class="lc-sub">Components & drawers — counted by Danny</div>
+    </div>
+    <div class="loc-card">
+      <div class="lc-name">Whitney's Drawers</div>
+      <div class="lc-sub">Components drawers in cords — counted by Katherine, Nolan</div>
+    </div>
+    <div class="loc-card">
+      <div class="lc-name">Mary / Conon's / Salazar's Desk</div>
+      <div class="lc-sub">Desk-based inventory station</div>
+    </div>
+    <div class="loc-card">
+      <div class="lc-name">Tables, Bins, Shelves & All Sides</div>
+      <div class="lc-sub">Bulk storage — counted by Whitney. Includes new Casita items and Casita drawer</div>
+    </div>
+    <div class="loc-card">
+      <div class="lc-name">Former Pillar / Leyla's Catalog Area</div>
+      <div class="lc-sub">Includes grey desk, divided safe holder, drawer in Casita — counted by Whitney</div>
+    </div>
+    <div class="loc-card">
+      <div class="lc-name">Inv #236 / Upstairs #196 / Cabinet #3</div>
+      <div class="lc-sub">Referenced on handwritten silver count sheets — separate storage zones</div>
     </div>
   </div>
 
-  <div class="section-title" style="margin-top: 2rem;">Data Completeness</div>
+  <div class="s-title">Location Weight Distribution</div>
+  <div class="s-sub">Key weights by location from the metals schedule (lbs, where readable from digital PDF)</div>
+
   <table>
     <thead>
-      <tr><th>Data Source</th><th>Status</th><th>Notes</th></tr>
+      <tr><th>Location</th><th class="num">Weight (lbs)</th><th>Contains</th></tr>
     </thead>
     <tbody>
-      <tr><td>Silver Components (Page 1)</td><td><span class="badge badge-green">Verified</span></td><td>36,030g / $23,888 — math confirmed</td></tr>
-      <tr><td>Silver Inventory (Page 2)</td><td><span class="badge badge-accent">Corrected</span></td><td>103,850g / $68,853 — lazy-0 correction, needs line-item verification</td></tr>
-      <tr><td>PD & Design Metals Sheet</td><td><span class="badge badge-green">Digitized</span></td><td>$109,857 total — 441.62 lbs, 10+ locations, all metal types</td></tr>
-      <tr><td>Schedule D: Cabs & Stones</td><td><span class="badge badge-green">Digitized</span></td><td>3 pages, 100+ stone types, 3-year comparison</td></tr>
-      <tr><td>Schedules A, B, C, E…</td><td><span class="badge badge-red">Missing</span></td><td>Not yet received</td></tr>
-      <tr><td>Digital POS/System Export</td><td><span class="badge badge-red">Missing</span></td><td>Needed for cross-reference</td></tr>
+      <tr><td class="item-name">Mark's Cabinet</td><td class="num">245.15</td><td>Gold Filled Wire, Scarab, and primary silver stock</td></tr>
+      <tr><td class="item-name">Tables, Bins, Shelves (Whitney)</td><td class="num">168.38</td><td>Bulk silver — largest single-location concentration</td></tr>
+      <tr><td class="item-name">Shimonishi / Chipuwa</td><td class="num">13.35</td><td>Hall shelves — secondary storage</td></tr>
+      <tr><td class="item-name">Whitney (Drawers)</td><td class="num">13.58</td><td>Component drawers — small parts</td></tr>
+      <tr><td class="item-name">Danny's Desk</td><td class="num">0.83</td><td>Active work components</td></tr>
+      <tr><td class="item-name">Mary / Salazar's Desk</td><td class="num">0.25</td><td>Small component inventory</td></tr>
     </tbody>
   </table>
 </div>
@@ -698,8 +983,11 @@ function switchTab(name) {
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('nav.tabs button').forEach(b => b.classList.remove('active'));
   document.getElementById('tab-' + name).classList.add('active');
-  event.target.classList.add('active');
+  const buttons = document.querySelectorAll('nav.tabs button');
+  const tabMap = { findings: 0, metals: 1, silver: 2, cabs: 3, locations: 4 };
+  buttons[tabMap[name]].classList.add('active');
 }
 </script>
+
 </body>
 </html>
