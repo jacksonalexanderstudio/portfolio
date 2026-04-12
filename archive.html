@@ -584,8 +584,10 @@ h2.arc-section-title:not(:first-child){margin-top:64px}
   // ── LOAD PHOTOGRAPHS ──
   var gridPH = document.getElementById('archive-grid-ph');
   var totalPH = 32;
+  var skipPH = [14];
   var phItems = [];
   for (var ph = 1; ph <= totalPH; ph++) {
+    if (skipPH.indexOf(ph) !== -1) continue;
     phItems.push({ id: 'PH-' + String(ph).padStart(3, '0'), image: 'photographs/' + String(ph).padStart(3, '0') + '.jpg' });
   }
   phItems.forEach(function(item, idx) {
