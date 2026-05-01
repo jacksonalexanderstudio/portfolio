@@ -84,7 +84,7 @@ body{background:var(--bg);color:var(--tx);font-family:'DM Sans',sans-serif;paddi
 .picker-head-title{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:300;font-size:18px;color:var(--tx);letter-spacing:.02em}
 .picker-head-title .role{font-family:'DM Sans',sans-serif;font-style:normal;font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--accent);margin-right:12px;font-weight:400}
 .picker-head-hint{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--tx);font-weight:300}
-.picker-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:32px}
+.picker-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:24px}
 .picker-col-label{font-size:8px;letter-spacing:2.5px;text-transform:uppercase;color:var(--tx);font-weight:400;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--bd)}
 .picker-list{display:flex;flex-direction:column;gap:2px}
 .picker-item{background:transparent;border:none;color:var(--tx);font-size:16px;text-align:left;padding:8px 8px;cursor:pointer;transition:color .15s,background .15s;border-radius:2px;line-height:1.2}
@@ -100,13 +100,8 @@ body{background:var(--bg);color:var(--tx);font-family:'DM Sans',sans-serif;paddi
 .sec-meta{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--tx);font-weight:300}
 .sec-meta.error{color:var(--accent)}
 
-/* ── CONTROL STRIPS (Tracking + Leading sliders) ──
-   Sticky within their parent section so they stay reachable while scrolling
-   through long specimen lists. They release when the section ends. The top
-   offset clears the sticky search-wrap (~76px desktop, ~190px on mobile
-   where the inputs stack vertically). z-index sits below the picker overlay
-   (20) so the dropdown panel covers them when open. */
-.ctrl-strip{position:sticky;top:76px;z-index:10;background:var(--bg);display:flex;align-items:center;gap:32px;padding:18px 0 22px;border-bottom:1px solid var(--bd);margin-bottom:32px;flex-wrap:wrap}
+/* ── CONTROL STRIPS (Tracking + Leading sliders) ── */
+.ctrl-strip{display:flex;align-items:center;gap:32px;padding:18px 0 22px;border-bottom:1px solid var(--bd);margin-bottom:32px;flex-wrap:wrap}
 .ctrl-strip-label{font-size:8px;letter-spacing:2.5px;text-transform:uppercase;color:var(--tx);font-weight:400;flex-shrink:0;min-width:130px}
 .ctrl-strip-label .role{color:var(--accent);margin-right:8px}
 .ctrl-group{display:flex;align-items:center;gap:14px;flex-shrink:0}
@@ -189,6 +184,9 @@ body{background:var(--bg);color:var(--tx);font-family:'DM Sans',sans-serif;paddi
 .empty{padding:80px 40px;text-align:center;font:300 13px/1.8 'DM Sans',sans-serif;color:var(--tx);letter-spacing:.04em}
 .empty .accent{color:var(--accent)}
 
+@media(max-width:1100px){
+  .picker-grid{grid-template-columns:repeat(3,1fr);gap:24px}
+}
 @media(max-width:900px){
   .pair-grid{grid-template-columns:1fr}
   .picker-grid{grid-template-columns:repeat(2,1fr);gap:24px}
@@ -199,7 +197,6 @@ body{background:var(--bg);color:var(--tx);font-family:'DM Sans',sans-serif;paddi
   .search-row{flex-direction:column;align-items:stretch;gap:18px}
   .swap-btn{align-self:center;margin:0}
   .sec{padding:0 20px}
-  .ctrl-strip{top:200px}
   .picker-inner{padding:24px 20px}
   .picker-grid{grid-template-columns:1fr;gap:20px}
   .pair-mock{padding:36px 28px;min-height:0}
@@ -461,34 +458,12 @@ body{background:var(--bg);color:var(--tx);font-family:'DM Sans',sans-serif;paddi
 
   // ── CURATED FONT PICKER ──
   var FONT_PICKER = {
-    'Serif': ['Cormorant Garamond','EB Garamond','Lora','Playfair Display','Cormorant Infant','Crimson Text','Libre Baskerville','Spectral','PT Serif','Source Serif 4'],
-    'Sans': ['DM Sans','Inter','Work Sans','Manrope','Public Sans','Sora','Plus Jakarta Sans','Bricolage Grotesque','Archivo','Hanken Grotesk'],
-    'Mono': ['Fragment Mono','JetBrains Mono','Space Mono','IBM Plex Mono','DM Mono','Fira Code','Roboto Mono','Inconsolata','Anonymous Pro','Source Code Pro'],
-    'Decorative': ['Anton','Bebas Neue','Bungee','Workbench','Special Elite','Rubik Distressed','Climate Crisis','Pixelify Sans','Knewave','Black Ops One']
+    'Serif': ['Cormorant Garamond','EB Garamond','Lora','Playfair Display','Cormorant Infant','Crimson Text','Libre Baskerville','Spectral','PT Serif','Source Serif 4','Newsreader','Petrona','Marcellus','Italiana','Old Standard TT','Rozha One','Gloock','Yeseva One','Forum','Cinzel','DM Serif Display','Fraunces','Abril Fatface','Cormorant Unicase','Bilbo Swash Caps'],
+    'Sans': ['DM Sans','Inter','Work Sans','Manrope','Public Sans','Sora','Plus Jakarta Sans','Bricolage Grotesque','Archivo','Hanken Grotesk','Outfit','Onest','Figtree','Lexend','Karla','Rubik','Fira Sans','Saira','Comfortaa','Big Shoulders Display','Unbounded','Familjen Grotesk','Albert Sans','Mulish','Quicksand'],
+    'Mono': ['Fragment Mono','JetBrains Mono','Space Mono','IBM Plex Mono','DM Mono','Fira Code','Roboto Mono','Inconsolata','Anonymous Pro','Source Code Pro','Major Mono Display','Rubik Mono One','Cutive Mono','Audiowide','Iceberg','Krona One','Faster One','Monoton'],
+    'Decorative': ['Anton','Bebas Neue','Bungee','Workbench','Special Elite','Rubik Distressed','Climate Crisis','Pixelify Sans','Knewave','Black Ops One','Bungee Inline','Bungee Outline','Bowlby One','Bagel Fat One','Caprasimo','Fascinate','Limelight','Saira Stencil One','Allerta Stencil','Frijole','Eater','Ribeye','Sigmar','Ranchers','Modak'],
+    'Script / Hand': ['Caveat','Permanent Marker','Kalam','Sacramento','Architects Daughter','Dancing Script','Shadows Into Light','Indie Flower','Reenie Beanie','Homemade Apple']
   };
-  // Extras pulled into the title's font cycle for variety. Not shown in the
-  // picker dropdown — that stays at its curated 40 for clean browsing.
-  var TITLE_EXTRAS = [
-    'Major Mono Display','Rubik Mono One','Cutive Mono','Audiowide','Iceberg','Monoton','Krona One','Faster One',
-    'Bungee Inline','Bungee Outline','Bowlby One','Bagel Fat One','Caprasimo','Fascinate','Limelight','Saira Stencil One','Allerta Stencil','Frijole','Eater','Ribeye','Sigmar','Ranchers','Modak',
-    'Bodoni Moda','Marcellus','Italiana','Old Standard TT','Rozha One','Gloock','Yeseva One','Forum','Cinzel','DM Serif Display','Fraunces','Abril Fatface','Cormorant Unicase','Bilbo Swash Caps',
-    'Outfit','Onest','Figtree','Lexend','Karla','Rubik','Fira Sans','Saira','Quicksand','Comfortaa','Big Shoulders Display','Unbounded','Familjen Grotesk','Albert Sans','Mulish',
-    'Caveat','Permanent Marker','Kalam','Sacramento','Architects Daughter','Dancing Script','Shadows Into Light','Indie Flower','Reenie Beanie','Homemade Apple',
-    'Newsreader','Petrona','Merriweather','Bree Serif','Quattrocento','Cardo','Rufina'
-  ];
-  var titleExtrasLoaded = false;
-  function ensureTitleExtrasLoaded(){
-    if (titleExtrasLoaded) return;
-    titleExtrasLoaded = true;
-    var url = 'https://fonts.googleapis.com/css2?' + TITLE_EXTRAS.map(function(f){
-      return 'family=' + f.replace(/\s+/g,'+') + ':wght@400';
-    }).join('&') + '&display=swap';
-    var link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = url;
-    document.head.appendChild(link);
-  }
-
   var pickerPanel = document.getElementById('picker-panel');
   var pickerOverlay = document.getElementById('picker-overlay');
   var pickerGrid = document.getElementById('picker-grid');
@@ -726,7 +701,10 @@ body{background:var(--bg);color:var(--tx);font-family:'DM Sans',sans-serif;paddi
         item.className = 'picker-item';
         item.type = 'button';
         item.textContent = font;
-        item.style.fontFamily = '"' + font + '", ' + (cat === 'Mono' ? 'monospace' : cat === 'Sans' ? 'sans-serif' : 'serif');
+        var fallback = cat === 'Mono' ? 'monospace' :
+                       cat === 'Sans' ? 'sans-serif' :
+                       cat === 'Script / Hand' ? 'cursive' : 'serif';
+        item.style.fontFamily = '"' + font + '", ' + fallback;
         item.addEventListener('click', function(){
           if (pickerTarget === 'a') {
             inputA.value = font;
@@ -885,13 +863,12 @@ body{background:var(--bg);color:var(--tx);font-family:'DM Sans',sans-serif;paddi
     if (!titleEl) return;
     var text = titleEl.textContent;
 
-    // Build the cycling pool: picker (40) + extras (~70). Letters cycle
-    // through this big set so repeats feel rare.
+    // Build the cycling pool from every category in the picker (~103 fonts).
+    // Letters cycle through this set so repeats feel rare.
     var allFonts = [];
     Object.keys(FONT_PICKER).forEach(function(cat){
       FONT_PICKER[cat].forEach(function(f){ allFonts.push(f); });
     });
-    TITLE_EXTRAS.forEach(function(f){ allFonts.push(f); });
 
     // Split title into nodes. Only alpha chars become animatable letter spans;
     // the "." (and any other punctuation) stays a plain text node so it isn't
@@ -911,9 +888,9 @@ body{background:var(--bg);color:var(--tx);font-family:'DM Sans',sans-serif;paddi
       }
     }
 
-    // Lazy-load both font pools so we have a deep bench to swap from.
+    // Eagerly trigger the picker font preload so the title has a deep bench
+    // to swap from (~103 fonts at weight 400).
     ensurePreviewFontsLoaded();
-    ensureTitleExtrasLoaded();
 
     function pickFont(){ return allFonts[Math.floor(Math.random() * allFonts.length)]; }
     function pickLetter(){ return letters[Math.floor(Math.random() * letters.length)]; }
