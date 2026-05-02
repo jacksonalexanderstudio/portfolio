@@ -13,7 +13,7 @@
 :root{
   --ff-a:'Cormorant Garamond',serif;
   --ff-b:'DM Sans',sans-serif;
-  --accent:#D95740;
+  --accent:#4A6B3A;
   /* Light theme (default) */
   --bg:#ffffff;
   --bg-elev:#f7f7f7;
@@ -41,7 +41,7 @@ body{background:var(--bg);color:var(--tx);font-family:'DM Sans',sans-serif;paddi
 /* ── PAGE HERO ── */
 .page-hero{background:var(--bg);padding:96px 40px 56px;border-bottom:1px solid var(--hero-border)}
 .page-hero-inner{max-width:1100px;margin:0 auto}
-.page-hero h1{font-size:clamp(40px,7vw,88px);font-family:'Pixelify Sans','DM Sans',sans-serif;font-weight:700;letter-spacing:0;color:var(--tx);margin-bottom:28px;line-height:.95;text-transform:uppercase}
+.page-hero h1{font-size:clamp(40px,7vw,88px);font-family:'Pixelify Sans','DM Sans',sans-serif;font-weight:700;letter-spacing:0;color:var(--accent);margin-bottom:28px;line-height:.95;text-transform:uppercase}
 /* Each letter sits in a fixed-width slot (locked to its Pixelify width by JS
    on init) so font swaps don't reflow the title or shake the rest of the
    page. Different fonts render centered within the slot. */
@@ -88,7 +88,7 @@ body{background:var(--bg);color:var(--tx);font-family:'DM Sans',sans-serif;paddi
 .picker-col-label{font-size:8px;letter-spacing:2.5px;text-transform:uppercase;color:var(--tx);font-weight:400;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--bd)}
 .picker-list{display:flex;flex-direction:column;gap:2px}
 .picker-item{background:transparent;border:none;color:var(--tx);font-size:16px;text-align:left;padding:8px 8px;cursor:pointer;transition:color .15s,background .15s;border-radius:2px;line-height:1.2}
-.picker-item:hover{color:var(--tx);background:rgba(217,87,64,.08)}
+.picker-item:hover{color:var(--tx);background:rgba(74,107,58,.08)}
 .picker-item.active{color:var(--accent)}
 .picker-item.preview-loading{color:var(--tx)}
 
