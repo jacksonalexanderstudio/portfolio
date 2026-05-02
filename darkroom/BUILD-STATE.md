@@ -70,25 +70,63 @@ Resets that module's knobs to defaults plus mode/IR/division/LFO state. Filter r
 ### Default state on page load
 **All 4 FX modules bypassed**, audio plays clean until user opts in. The bypass dot starts dim and lights up green when engaged. Stream connections don't insert the worklet until tempo bypass is disengaged → zero added latency on initial connect.
 
-## Open decisions (mid-pivot)
+## Rams pivot — current state (Phase 5 v1 SHIPPED)
 
-### Visual direction
-Pivoting from dark/moss/forest to Dieter Rams cream/grey/Braun-orange/olive-green. Confirmed:
-- **Panel base:** warm cream `oklch(0.92 0.012 80)`
-- **Ink:** deep charcoal `oklch(0.18 0.008 80)` on cream
-- **Primary control accent:** Braun signal-orange `oklch(0.62 0.18 35)` (replacing moss)
-- **Secondary visualization:** olive-Braun green `oklch(0.50 0.11 130)` (replacing forest)
-- **Warning:** signal red `oklch(0.50 0.18 25)` (replacing amber)
-- **3D buttons:** linear-gradient(180deg, light, base) + `inset 0 1px 0 rgba(255,255,255,.6)` + soft drop shadow. Pressed = inverted gradient + no shadow.
-- **3D knobs:** SVG with radialGradient simulating brushed-aluminum dial under top-left light source, knurled rim hint, dark tick mark, CSS `filter: drop-shadow()` for the lift.
-- **Tape disc:** stays dark (becomes THE one dark element on the page, like a calculator screen embedded in the cream panel).
+The cream/grey/Braun-orange/olive Rams aesthetic is shipped at v1. `darkroom.html` is the live working copy; `darkroom-dark.html` is the frozen pre-pivot snapshot for A/B comparison. Both viewable at localhost:8765 simultaneously.
 
-### Future direction (deferred)
-- **Path B for tape deck:** rolling buffer for stream rewind (OB-4 style time machine), reverse playback for files
-- **Real-space CC0 IRs** to replace synthesized reverbs
-- **Playground tile registration** so darkroom shows up on jacksonalexanderstudio.com/playground
-- **Web MIDI** for Maschine pad mapping
-- **Preset save/load** via localStorage
+### Color system (locked)
+- **Panel base:** `oklch(0.83 0.013 80)` — warm grey canvas, like Braun T3 case body. Note: this is DARKER than module surfaces, so modules read as "elevated" on the canvas.
+- **Panel-2:** `oklch(0.90 0.014 80)` — module/section surface
+- **Panel-3:** `oklch(0.96 0.014 80)` — gradient highlight tone
+- **Panel-4:** `oklch(0.76 0.016 78)` — recessed shadow tone
+- **Ink:** `oklch(0.18 0.008 80)` — deep charcoal silkscreen
+- **Primary control accent (was moss):** `oklch(0.64 0.18 35)` — Braun Hermes orange. Used on knob arcs, active modules, bypass dot active, mode buttons active, kill button active border, bay button active text.
+- **Secondary visualization (was forest):** `oklch(0.50 0.11 130)` — olive-Braun green. Used on waveform peaks, IR display, filter spectrum overlay, level meters, source label, delay tap visualization.
+- **Warning (was amber):** `oklch(0.52 0.18 25)` — signal red. Used on recording armed, clipping warning, kill active, playhead cursors.
+- **Aluminum gradient stops** for tactile knob faces: `--dr-alu-hi 0.97`, `--dr-alu-mid 0.86`, `--dr-alu-lo 0.62` (all hue 80).
+
+### Tactile surfaces (locked)
+- **Lifted surfaces** (bay buttons, modules, transport, kill, tape) use a layered background:
+  1. **Viewport-anchored radial sheen** at upper-left (`background-attachment: fixed`, ellipse 120vw × 80vh at 22% / 8%, max opacity 0.25) — creates a single shared world light source. As elements move past this point under scroll, their highlight position shifts naturally.
+  2. **Compressed linear-gradient body** (0.92 → 0.90 lightness, only 0.02 range) — barely-perceptible matte, reads nearly flat.
+  3. **Sharp top edge highlight** via `inset 0 1px 0 rgba(255,255,255,.92–1)`
+  4. **Soft bottom inset shadow** via `inset 0 -1px 0 rgba(0,0,0,.05–.06)`
+  5. **Tight ground shadow** + **soft elevation shadow** below.
+- **Recessed surfaces** (waveform strip): inverted lighting — dark inset at top, no top highlight, gentle bottom edge highlight. Reads as cut-into-panel.
+- **Press states** on bay buttons, kill, mode buttons, tap, transport: `:active` swaps to inset shadow (depressed feel) without translateY (per Jackson's no-jitter rule).
+
+### Knob faces (locked)
+- Shared SVG `<radialGradient id="knobFace">` defined globally in body, all knobs reference via `fill="url(#knobFace)"`
+- Inner circle (r=38) = brushed-aluminum face with radial gradient simulating top-left light
+- Outer circle (r=42) = decorative concentric rim line stroke
+- Tick mark in deep charcoal at 2.4 stroke-width
+- Soft outer drop shadow via CSS `filter: drop-shadow(0 2px 3px rgba(0,0,0,.18))`
+
+### Tape disc (locked)
+- Face stays `#050505` — becomes THE one dark element on the cream panel, like an ET66 calculator screen embedded in a Rams product.
+- All on-disc text/lines hardcoded to light grey/white values so they read against the dark face (cannot use the now-charcoal `--dr-ink-dim`).
+
+### Typography (locked)
+- **Google Sans Code** (Google Fonts, weights 300–700) — masthead "darkroom" + BPM display + module names (TEMPO/PITCH, FILTER, DELAY, REVERB, MASTER) + input bay button names (TAB, DEVICE, FILE).
+- **Excon** (Fontshare CDN) — control labels: knob labels, mode buttons, IR slot names, meter labels, transport buttons, LFO controls.
+- **Departure Mono** (self-hosted in darkroom/fonts/) — technical readouts: knob values, time, IR slot numbers, on-disc text, filter/IR/delay canvas labels.
+- Workbench is loaded via Google Fonts as a fallback for the masthead but Google Sans Code now leads.
+
+### Future direction (deferred — pick up in fresh session)
+
+Priority order for what's left:
+
+1. **Real-space CC0 reverb IRs** — replace the 8 procedurally synthesized IRs with actual room recordings. Source: openair.hosted.york.ac.uk (CC license), or the IRCAM repository, or Fokke van Saane's archive. Need stereo, normalized, ideally 48kHz, total budget ~2MB. Save to `darkroom/irs/01-wood.wav` etc., update `loadIR()` in darkroom.html to fetch and decode WAV instead of calling `synthesizeIR()`. ~30–45 min of work.
+
+2. **Playground tile registration** — add darkroom as a tile in `playground.html`. Edit the `items` array (around line 316), add a new entry under a new "Tools" category or under "Visualizers". Needs a thumbnail (could be a static screenshot of the cream UI, or a generated tile with the masthead text). The tile links to `darkroom.html`. ~20 min.
+
+3. **Tape rolling buffer (Path B)** — the OB-4-style time-machine. Custom AudioWorklet with a circular Float32Array buffer (~30s default), playhead position param, scratch playback that can read backwards through the buffer. The current scratch is rate-modulation only (forward); Path B lets you rewind into the past on a live stream. Real engineering: ~1–2 hours. Architecture: replace or wrap the current SoundTouch worklet — needs careful state management so SCREW/RATE/PITCH still work alongside the rewind buffer.
+
+4. **Site-wide orange→green accent migration** — `portfolio.html` and `playground.html` still show the legacy `#D95740` orange in their `--accent` variable. Per Jackson's memory note, mossy forest green is the new direction sitewide. Update the `--accent` value in those files to the new green. Note: darkroom itself just pivoted to Rams cream/orange so its accent is intentionally different — the sitewide migration is for the Jackson Alexander Studio site overall, not for darkroom.
+
+5. **Rams polish iterations** — possibly fine-tune the knob highlight positions (currently radial light from top-left at 35%/30%), refine the press-state shadow falloff, double-check IR display + filter curve readability on cream, possibly add subtle texture (paper/grain) to the panel surfaces for more material feel. ~30–60 min.
+
+6. **Phase 6+ stretch goals** — Web MIDI for Maschine pad mapping, preset save/load via localStorage, more reverb IRs, additional FX (phaser, saturation, tape character single-toggle).
 
 ## Critical inline-comment markers in darkroom.html
 
