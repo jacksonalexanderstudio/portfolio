@@ -25,29 +25,39 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
 :root{
-  /* panel system — OKLCH for perceptual cleanness, all neutrals tinted toward the brand hue */
-  --dr-panel:    oklch(0.17 0.008 145);   /* off-black canvas, slight green tint */
-  --dr-panel-2:  oklch(0.22 0.010 145);   /* module surface, one step up */
-  --dr-panel-3:  oklch(0.27 0.011 145);   /* edge / inset / hover */
-  --dr-line:     oklch(0.34 0.012 145);   /* hairlines / borders */
-  --dr-line-2:   oklch(0.44 0.014 145);   /* signal-flow ambient */
+  /* panel system — Dieter Rams / Braun T3 cream + warm grey, neutrals tinted to ~80hue (warm) */
+  /* values go light→darker as the number drops, so existing
+     `linear-gradient(180deg, var(--dr-panel-3), var(--dr-panel-2))` still
+     produces a lifted (light top → mid bottom) feel. Recessed canvases use
+     var(--dr-panel) which is now the darkest warm grey. */
+  --dr-panel:    oklch(0.83 0.013 80);    /* warm grey canvas, like Braun T3 case body */
+  --dr-panel-2:  oklch(0.90 0.014 80);    /* default module surface — sits on canvas */
+  --dr-panel-3:  oklch(0.96 0.014 80);    /* highlight — tops of lifted gradients, hover */
+  --dr-panel-4:  oklch(0.76 0.016 78);    /* deeper recess for inset shadows */
+  --dr-line:     oklch(0.62 0.014 75);    /* warm grey hairlines / borders */
+  --dr-line-2:   oklch(0.50 0.016 75);    /* darker hairline for emphasis */
 
-  --dr-ink:      oklch(0.95 0.006 145);   /* off-white type */
-  --dr-ink-dim:  oklch(0.70 0.012 145);   /* secondary type */
-  --dr-ink-2:    oklch(0.54 0.014 145);   /* tertiary / spec lines */
+  --dr-ink:      oklch(0.18 0.008 80);    /* deep charcoal — printed silkscreen on cream */
+  --dr-ink-dim:  oklch(0.42 0.010 80);    /* secondary type */
+  --dr-ink-2:    oklch(0.58 0.012 80);    /* tertiary / spec lines on cream */
 
-  /* primary control accent — vibrant moss green, music-producer-friendly, eye-friendly */
-  --dr-moss:       oklch(0.74 0.18 142);
-  --dr-moss-dim:   oklch(0.56 0.13 142);
-  --dr-moss-glow:  oklch(0.74 0.18 142 / 0.32);
+  /* primary control accent — Braun Hermes orange (the SK4 / TS45 / ET66 button) */
+  --dr-moss:       oklch(0.64 0.18 35);
+  --dr-moss-dim:   oklch(0.50 0.14 35);
+  --dr-moss-glow:  oklch(0.64 0.18 35 / 0.30);
 
-  /* secondary accent — darker forest green for source/visualization (waveform, levels, spectrum) */
-  --dr-coral:      oklch(0.52 0.14 150);
-  --dr-coral-dim:  oklch(0.36 0.10 150);
-  --dr-coral-glow: oklch(0.52 0.14 150 / 0.32);
+  /* secondary accent — Braun olive green (the ET66 function key, the LE1 detail) */
+  --dr-coral:      oklch(0.50 0.10 130);
+  --dr-coral-dim:  oklch(0.38 0.07 130);
+  --dr-coral-glow: oklch(0.50 0.10 130 / 0.30);
 
-  /* warning — only for recording armed, clipping, errors */
-  --dr-amber:      oklch(0.80 0.17 75);
+  /* warning — Braun signal red (record / stop / clipping) */
+  --dr-amber:      oklch(0.52 0.18 25);
+
+  /* aluminum gradient stops for tactile knobs and rims */
+  --dr-alu-hi:   oklch(0.97 0.005 80);
+  --dr-alu-mid:  oklch(0.86 0.008 80);
+  --dr-alu-lo:   oklch(0.62 0.012 80);
 
   --dr-mono:     'Departure Mono','Fragment Mono','Courier New',monospace;
   --dr-disp:     'Workbench','Fragment Mono',monospace;
@@ -63,6 +73,9 @@
 
 html{scroll-behavior:smooth;background:var(--dr-panel)}
 body{background:var(--dr-panel);color:var(--dr-ink);font-family:var(--dr-mono);line-height:1.5;overflow-x:hidden;min-height:100vh}
+/* ambient background — subtle warm-grey gradient, like Braun T3 case under raked light.
+   Modules sit ON this base in lighter cream (--dr-panel-2), reading as elevated. */
+body{background:linear-gradient(180deg,oklch(0.86 0.012 78) 0%,oklch(0.83 0.013 80) 50%,oklch(0.80 0.014 76) 100%);background-attachment:fixed}
 a{color:inherit;text-decoration:none}
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 canvas{display:block}
@@ -84,7 +97,7 @@ canvas{display:block}
 .nw:hover .nd{opacity:1;pointer-events:all;transform:translateY(0)}
 .nd a{display:flex;align-items:center;padding:12px 18px;font-size:11px;letter-spacing:.08em;border-bottom:1px solid rgba(255,255,255,.08);color:#fff}
 .nd a:last-child{border-bottom:none}
-.nd a:hover{background:rgba(255,255,255,.06)}
+.nd a:hover{background:rgba(255,255,255,.95)}
 .nd a::after{display:none}
 .dn{color:var(--dr-moss);margin-right:10px;font-size:10px;font-family:var(--dr-sf)}
 
@@ -94,8 +107,9 @@ canvas{display:block}
 /* ── MASTHEAD — Workbench display, Carson-broken energy ── */
 .dr-mast{position:relative;padding:var(--s5) 0 var(--s6);border-bottom:1px solid var(--dr-line);padding-right:200px}
 @media (max-width: 720px){.dr-mast{padding-right:0}}
-.dr-mast-title{font-family:var(--dr-disp);font-weight:400;font-size:clamp(72px,12vw,148px);line-height:.84;letter-spacing:-.025em;color:var(--dr-ink);text-transform:lowercase}
+.dr-mast-title{font-family:var(--dr-disp);font-weight:400;font-size:clamp(72px,12vw,148px);line-height:.84;letter-spacing:-.028em;color:var(--dr-ink);text-transform:lowercase}
 .dr-mast-title em{font-style:normal;color:var(--dr-moss)}
+.dr-mast-back{color:var(--dr-ink-dim)}
 .dr-mast-meta{display:flex;align-items:baseline;gap:var(--s5);margin-top:var(--s4);font-family:var(--dr-mono);font-size:11px;letter-spacing:.08em;color:var(--dr-ink-dim);text-transform:uppercase}
 .dr-mast-version{color:var(--dr-moss);font-weight:400}
 .dr-mast-tag{flex:1}
@@ -103,7 +117,7 @@ canvas{display:block}
 .dr-mast-back:hover{color:var(--dr-ink)}
 
 /* ── MASTER KILLSWITCH (A/B compare, top-right of masthead) ── */
-.dr-kill{position:absolute;top:var(--s5);right:0;display:flex;flex-direction:column;align-items:flex-end;gap:4px;padding:14px 22px;background:linear-gradient(180deg,var(--dr-panel-3),var(--dr-panel-2));border:1px solid var(--dr-line);border-radius:var(--r-lg);transition:border-color .15s,background .15s,color .15s,box-shadow .15s;box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 4px 16px -8px rgba(0,0,0,.4)}
+.dr-kill{position:absolute;top:var(--s5);right:0;display:flex;flex-direction:column;align-items:flex-end;gap:4px;padding:14px 22px;background:linear-gradient(180deg,var(--dr-panel-3),var(--dr-panel-2));border:1px solid var(--dr-line);border-radius:var(--r-lg);transition:border-color .15s,background .15s,color .15s,box-shadow .15s;box-shadow:inset 0 1px 0 rgba(255,255,255,.85),0 4px 16px -8px rgba(0,0,0,.08)}
 .dr-kill:hover{border-color:var(--dr-moss-dim);background:linear-gradient(180deg,var(--dr-panel-3),var(--dr-panel-3))}
 .dr-kill-dot{width:10px;height:10px;border-radius:50%;background:var(--dr-line-2);box-shadow:0 0 0 0 var(--dr-amber);transition:background .2s,box-shadow .2s}
 .dr-kill-label{font-family:var(--dr-fx);font-weight:700;font-size:12px;letter-spacing:.16em;color:var(--dr-ink);text-transform:uppercase;line-height:1}
@@ -121,11 +135,11 @@ canvas{display:block}
 /* ── INPUT BAY ── */
 .dr-bay{display:grid;grid-template-columns:1fr auto;gap:var(--s6);align-items:stretch}
 .dr-bay-options{position:relative;display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s3)}
-.dr-bay-btn{position:relative;padding:var(--s5);background:linear-gradient(180deg,var(--dr-panel-3),var(--dr-panel-2));border:1px solid var(--dr-line);border-radius:var(--r-md);text-align:left;display:flex;flex-direction:column;gap:var(--s3);transition:border-color .2s,background .2s,box-shadow .2s,transform .12s;outline:none;box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
-.dr-bay-btn:hover{border-color:var(--dr-moss-dim);background:linear-gradient(180deg,var(--dr-panel-3),var(--dr-panel-3));box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 4px 16px -8px var(--dr-moss-glow)}
+.dr-bay-btn{position:relative;padding:var(--s5);background:linear-gradient(180deg,var(--dr-panel-3),var(--dr-panel-2));border:1px solid var(--dr-line);border-radius:var(--r-md);text-align:left;display:flex;flex-direction:column;gap:var(--s3);transition:border-color .2s,background .2s,box-shadow .2s,transform .12s;outline:none;box-shadow:inset 0 1px 0 rgba(255,255,255,.85)}
+.dr-bay-btn:hover{border-color:var(--dr-moss-dim);background:linear-gradient(180deg,var(--dr-panel-3),var(--dr-panel-3));box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 4px 16px -8px var(--dr-moss-glow)}
 .dr-bay-btn:focus-visible{border-color:var(--dr-moss)}
 .dr-bay-btn[aria-disabled="true"]{opacity:.42;cursor:not-allowed}
-.dr-bay-btn[data-active="true"]{border-color:var(--dr-moss);background:linear-gradient(180deg,var(--dr-panel-3),var(--dr-panel-3));box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 0 24px -8px var(--dr-moss-glow)}
+.dr-bay-btn[data-active="true"]{border-color:var(--dr-moss);background:linear-gradient(180deg,var(--dr-panel-3),var(--dr-panel-3));box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 0 24px -8px var(--dr-moss-glow)}
 .dr-bay-btn[data-active="true"] .dr-bay-btn-name{color:var(--dr-moss)}
 .dr-bay-btn-name{font-family:var(--dr-fx);font-weight:700;font-size:22px;letter-spacing:.04em;color:var(--dr-ink);transition:color .2s;line-height:1}
 .dr-bay-btn-spec{font-family:var(--dr-fx);font-weight:400;font-size:12px;line-height:1.55;letter-spacing:.01em;color:var(--dr-ink-dim);max-width:42ch}
@@ -138,7 +152,7 @@ canvas{display:block}
 .dr-bay-level-tick{position:absolute;top:0;bottom:0;width:1px;background:var(--dr-line)}
 
 /* ── DEVICE PICKER POPOVER ── */
-.dr-device-picker{position:absolute;top:calc(100% + var(--s2));left:0;right:0;background:var(--dr-panel-2);border:1px solid var(--dr-line);border-radius:var(--r-lg);z-index:50;box-shadow:0 12px 36px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.04);max-height:320px;display:flex;flex-direction:column;overflow:hidden}
+.dr-device-picker{position:absolute;top:calc(100% + var(--s2));left:0;right:0;background:var(--dr-panel-2);border:1px solid var(--dr-line);border-radius:var(--r-lg);z-index:50;box-shadow:0 12px 36px rgba(0,0,0,.10),inset 0 1px 0 rgba(255,255,255,.85);max-height:320px;display:flex;flex-direction:column;overflow:hidden}
 .dr-device-picker[hidden]{display:none}
 .dr-device-picker-head{display:flex;align-items:center;justify-content:space-between;padding:var(--s3) var(--s4);border-bottom:1px solid var(--dr-line)}
 .dr-device-picker-label{font-family:var(--dr-fx);font-weight:700;font-size:10px;letter-spacing:.20em;color:var(--dr-ink-2);text-transform:uppercase}
@@ -157,26 +171,29 @@ canvas{display:block}
 .dr-device-picker-foot{padding:var(--s3) var(--s4);border-top:1px solid var(--dr-line);font-family:var(--dr-mono);font-size:9px;letter-spacing:.06em;color:var(--dr-ink-2)}
 
 /* ── LIVE WAVEFORM STRIP ── */
-.dr-strip{position:relative;background:linear-gradient(180deg,var(--dr-panel-3),var(--dr-panel-2));border:1px solid var(--dr-line);border-radius:var(--r-lg);height:104px;overflow:hidden;box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 6px 20px -10px rgba(0,0,0,.4)}
+.dr-strip{position:relative;background:linear-gradient(180deg,var(--dr-panel-3),var(--dr-panel-2));border:1px solid var(--dr-line);border-radius:var(--r-lg);height:104px;overflow:hidden;box-shadow:inset 0 1px 0 rgba(255,255,255,.85),0 6px 20px -10px rgba(0,0,0,.08)}
 .dr-strip-canvas{width:100%;height:100%}
 .dr-strip-meta{position:absolute;top:var(--s3);left:var(--s3);display:flex;gap:var(--s4);font-family:var(--dr-mono);font-size:9px;letter-spacing:.16em;color:var(--dr-ink-2);text-transform:uppercase;pointer-events:none}
 .dr-strip-meta span b{color:var(--dr-ink-dim);font-weight:400}
 
 /* ── AUDIO PLAYER — TAPE DECK + WAVEFORM PANEL ── */
-.dr-tape{display:grid;grid-template-columns:auto 1fr;gap:var(--s5);align-items:stretch;padding:var(--s5) var(--s5);background:linear-gradient(180deg,var(--dr-panel-3),var(--dr-panel-2));border:1px solid var(--dr-line);border-radius:var(--r-lg);box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 8px 24px -12px rgba(0,0,0,.5)}
+.dr-tape{display:grid;grid-template-columns:auto 1fr;gap:var(--s5);align-items:stretch;padding:var(--s5) var(--s5);background:linear-gradient(180deg,var(--dr-panel-3),var(--dr-panel-2));border:1px solid var(--dr-line);border-radius:var(--r-lg);box-shadow:inset 0 1px 0 rgba(255,255,255,.85),0 8px 24px -12px rgba(0,0,0,.10)}
 .dr-tape-deck{display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.dr-tape-disc{width:280px;height:280px;cursor:grab;user-select:none;touch-action:none;display:block;filter:drop-shadow(0 8px 16px rgba(0,0,0,.55))}
+.dr-tape-disc{width:280px;height:280px;cursor:grab;user-select:none;touch-action:none;display:block;filter:drop-shadow(0 8px 16px rgba(0,0,0,.12))}
 .dr-tape-disc:active{cursor:grabbing}
+/* tape disc face stays dark — becomes THE one black element on the cream panel,
+   like a calculator screen embedded in a Braun product. All on-disc colors are
+   hardcoded LIGHT values (the disc is its own coordinate system). */
 .dr-tape-face{fill:#050505;stroke:none}
-.dr-tape-rim{fill:none;stroke:var(--dr-line-2);stroke-width:1;opacity:.55}
-.dr-tape-pinhole{fill:#000;stroke:var(--dr-line);stroke-width:.5}
-.dr-tape-corner-l,.dr-tape-corner-r{fill:var(--dr-ink-dim);font-family:var(--dr-mono);font-size:8.5px;letter-spacing:.16em}
-.dr-tape-corner-r{text-anchor:end;fill:var(--dr-ink)}
+.dr-tape-rim{fill:none;stroke:oklch(0.40 0.014 80);stroke-width:1;opacity:.55}
+.dr-tape-pinhole{fill:#000;stroke:oklch(0.40 0.014 80);stroke-width:.5}
+.dr-tape-corner-l,.dr-tape-corner-r{fill:oklch(0.72 0.010 80);font-family:var(--dr-mono);font-size:8.5px;letter-spacing:.16em}
+.dr-tape-corner-r{text-anchor:end;fill:oklch(0.94 0.006 80)}
 .dr-tape-rotor{transform-origin:0 0;transform-box:view-box}
-.dr-tape-line{stroke:var(--dr-ink);stroke-width:.7;opacity:.55}
-.dr-tape-spec{fill:var(--dr-ink-2);font-family:var(--dr-mono);font-size:9px;letter-spacing:.06em;text-anchor:middle}
-.dr-tape-spindle{fill:#020202;stroke:var(--dr-line);stroke-width:.5}
-.dr-tape-dot{fill:var(--dr-ink-2);opacity:.7}
+.dr-tape-line{stroke:oklch(0.94 0.006 80);stroke-width:.7;opacity:.55}
+.dr-tape-spec{fill:oklch(0.62 0.010 80);font-family:var(--dr-mono);font-size:9px;letter-spacing:.06em;text-anchor:middle}
+.dr-tape-spindle{fill:#020202;stroke:oklch(0.50 0.014 80);stroke-width:.5}
+.dr-tape-dot{fill:oklch(0.62 0.010 80);opacity:.7}
 
 /* right panel: source/elapsed/rate row + waveform + hint, stacked */
 .dr-tape-panel{display:flex;flex-direction:column;gap:var(--s4);min-width:0;padding:var(--s2) 0}
@@ -212,7 +229,7 @@ canvas{display:block}
 }
 
 /* ── MODULES ── */
-.dr-mod{position:relative;background:linear-gradient(180deg,var(--dr-panel-3) 0%,var(--dr-panel-2) 18%,var(--dr-panel-2) 100%);border:1px solid var(--dr-line);border-radius:var(--r-lg);padding:var(--s5) var(--s4);display:flex;flex-direction:column;gap:var(--s4);min-height:340px;box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 8px 24px -12px rgba(0,0,0,.5)}
+.dr-mod{position:relative;background:linear-gradient(180deg,var(--dr-panel-3) 0%,var(--dr-panel-2) 18%,var(--dr-panel-2) 100%);border:1px solid var(--dr-line);border-radius:var(--r-lg);padding:var(--s5) var(--s4);display:flex;flex-direction:column;gap:var(--s4);min-height:340px;box-shadow:inset 0 1px 0 rgba(255,255,255,.85),0 8px 24px -12px rgba(0,0,0,.10)}
 .dr-mod[data-bypassed="true"]{opacity:.45}
 .dr-mod-head{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--s3);padding-bottom:var(--s4);border-bottom:1px solid var(--dr-line)}
 .dr-mod-head-text{display:flex;flex-direction:column;gap:var(--s2);min-width:0}
@@ -230,12 +247,15 @@ canvas{display:block}
 .dr-knobs{display:flex;align-items:flex-end;justify-content:space-around;gap:var(--s3);padding:var(--s2) 0}
 .dr-knob{display:flex;flex-direction:column;align-items:center;gap:var(--s2);user-select:none}
 .dr-knob-label{font-family:var(--dr-fx);font-weight:600;font-size:10px;letter-spacing:.16em;color:var(--dr-ink-dim);text-transform:uppercase}
-.dr-knob-dial{width:64px;height:64px;cursor:grab;display:block}
+.dr-knob-dial{width:64px;height:64px;cursor:grab;display:block;filter:drop-shadow(0 2px 3px rgba(0,0,0,.18))}
 .dr-knob-dial:active{cursor:grabbing}
-.dr-knob-dial circle{fill:none;stroke:var(--dr-line-2);stroke-width:1}
-.dr-knob-dial .dr-ring-inner{stroke:var(--dr-line)}
-.dr-knob-dial .dr-arc{fill:none;stroke:var(--dr-moss);stroke-width:1.5;stroke-linecap:butt}
-.dr-knob-dial .dr-tick{stroke:var(--dr-ink);stroke-width:1.5;stroke-linecap:square}
+/* inner circle (r=38) → the actual brushed-aluminum face, fills with radial gradient */
+.dr-knob-dial .dr-ring-inner{fill:url(#knobFace);stroke:oklch(0.48 0.014 80);stroke-width:.7}
+/* outer circle (r=42) → decorative concentric rim line, sits around the face */
+.dr-knob-dial circle:not(.dr-ring-inner){fill:none;stroke:oklch(0.58 0.014 80);stroke-width:.7;opacity:.55}
+.dr-knob-dial .dr-arc{fill:none;stroke:var(--dr-moss);stroke-width:1.8;stroke-linecap:butt}
+/* tick mark — deep charcoal, slightly thicker so it reads as molded plastic on metal */
+.dr-knob-dial .dr-tick{stroke:oklch(0.18 0.008 80);stroke-width:2.4;stroke-linecap:square}
 .dr-knob-value{font-family:var(--dr-mono);font-size:10px;letter-spacing:.04em;color:var(--dr-ink);min-width:54px;text-align:center;font-variant-numeric:tabular-nums}
 
 .dr-knob-screw .dr-knob-dial{width:80px;height:80px}
@@ -254,7 +274,7 @@ canvas{display:block}
 .dr-mod[data-mod="tempo"] .dr-knob-label{font-size:9px;letter-spacing:.16em}
 
 /* ── FILTER MODULE — curve display + spectrum ── */
-.dr-curve{width:100%;height:120px;background:var(--dr-panel);border:1px solid var(--dr-line);border-radius:var(--r-md);display:block;cursor:crosshair;box-shadow:inset 0 2px 6px rgba(0,0,0,.3)}
+.dr-curve{width:100%;height:120px;background:var(--dr-panel);border:1px solid var(--dr-line);border-radius:var(--r-md);display:block;cursor:crosshair;box-shadow:inset 0 2px 6px rgba(0,0,0,.08)}
 .dr-mode-row{display:flex;gap:var(--s2);justify-content:flex-end}
 .dr-mode-btn{padding:5px 12px;font-family:var(--dr-fx);font-weight:600;font-size:10px;letter-spacing:.16em;color:var(--dr-ink-dim);text-transform:uppercase;background:var(--dr-panel);border:1px solid var(--dr-line);border-radius:var(--r-sm);transition:color .15s,border-color .15s,background .15s,box-shadow .15s}
 .dr-mode-btn:hover{color:var(--dr-ink);border-color:var(--dr-line-2)}
@@ -266,7 +286,7 @@ canvas{display:block}
 .dr-mod[data-mod="reverb"] .dr-knob-value{font-size:9px;min-width:48px}
 .dr-mod[data-mod="reverb"] .dr-knob-label{font-size:9px;letter-spacing:.18em}
 
-.dr-ir{width:100%;height:64px;background:var(--dr-panel);border:1px solid var(--dr-line);border-radius:var(--r-md);display:block;box-shadow:inset 0 2px 6px rgba(0,0,0,.3)}
+.dr-ir{width:100%;height:64px;background:var(--dr-panel);border:1px solid var(--dr-line);border-radius:var(--r-md);display:block;box-shadow:inset 0 2px 6px rgba(0,0,0,.08)}
 .dr-ir-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(86px,1fr));gap:1px;background:var(--dr-line);overflow:hidden;border-radius:var(--r-md);border:1px solid var(--dr-line)}
 .dr-ir-btn{display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;padding:6px 10px;min-height:48px;background:var(--dr-panel-2);transition:background .15s,color .15s;min-width:0;overflow:hidden}
 .dr-ir-btn b{font-family:var(--dr-mono);font-weight:400;font-size:12px;color:var(--dr-ink-dim);letter-spacing:.02em;font-variant-numeric:tabular-nums}
@@ -288,7 +308,7 @@ canvas{display:block}
 .dr-lfo-toggle[data-active="false"]::before{content:'OFF'}
 .dr-lfo-toggle{font-size:0}
 .dr-lfo-toggle::before{font-size:9px}
-.dr-lfo-vis{width:100%;height:64px;background:var(--dr-panel);border:1px solid var(--dr-line);border-radius:var(--r-md);display:block;box-shadow:inset 0 2px 6px rgba(0,0,0,.3)}
+.dr-lfo-vis{width:100%;height:64px;background:var(--dr-panel);border:1px solid var(--dr-line);border-radius:var(--r-md);display:block;box-shadow:inset 0 2px 6px rgba(0,0,0,.08)}
 .dr-lfo-shape-row{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--dr-line);border-radius:var(--r-md);overflow:hidden;border:1px solid var(--dr-line)}
 .dr-lfo-shape{padding:8px 4px;font-family:var(--dr-mono);font-size:14px;color:var(--dr-ink-dim);background:var(--dr-panel-2);transition:color .12s,background .12s;text-align:center;line-height:1}
 .dr-lfo-shape:hover{color:var(--dr-ink);background:var(--dr-panel-3)}
@@ -317,7 +337,7 @@ canvas{display:block}
 .dr-tap-btn{padding:6px 14px;font-family:var(--dr-fx);font-weight:600;font-size:10px;letter-spacing:.20em;color:var(--dr-ink-dim);text-transform:uppercase;background:var(--dr-panel);border:1px solid var(--dr-line);border-radius:var(--r-sm);transition:color .12s,border-color .12s,background .12s,box-shadow .12s}
 .dr-tap-btn:hover{color:var(--dr-ink);border-color:var(--dr-line-2)}
 .dr-tap-btn[data-pulsing="true"]{color:var(--dr-moss);border-color:var(--dr-moss);background:var(--dr-panel-3);box-shadow:0 0 12px -4px var(--dr-moss-glow)}
-.dr-delay-vis{width:100%;height:80px;background:var(--dr-panel);border:1px solid var(--dr-line);border-radius:var(--r-md);display:block;box-shadow:inset 0 2px 6px rgba(0,0,0,.3)}
+.dr-delay-vis{width:100%;height:80px;background:var(--dr-panel);border:1px solid var(--dr-line);border-radius:var(--r-md);display:block;box-shadow:inset 0 2px 6px rgba(0,0,0,.08)}
 .dr-div-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--dr-line);border-radius:var(--r-md);border:1px solid var(--dr-line);overflow:hidden}
 .dr-div-btn{padding:8px var(--s3);font-family:var(--dr-mono);font-size:11px;letter-spacing:.02em;color:var(--dr-ink-dim);background:var(--dr-panel-2);font-variant-numeric:tabular-nums;transition:color .12s,background .12s;text-align:center}
 .dr-div-btn:hover{color:var(--dr-ink);background:var(--dr-panel-3)}
@@ -341,7 +361,7 @@ canvas{display:block}
 .dr-mod[data-mod="master"] .dr-knobs{margin-top:auto}
 
 /* ── TRANSPORT ── */
-.dr-trans{display:grid;grid-template-columns:auto auto 1fr auto auto;align-items:center;gap:var(--s4);padding:var(--s4) var(--s5);background:linear-gradient(180deg,var(--dr-panel-3),var(--dr-panel-2));border:1px solid var(--dr-line);border-radius:var(--r-lg);box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 6px 20px -10px rgba(0,0,0,.4)}
+.dr-trans{display:grid;grid-template-columns:auto auto 1fr auto auto;align-items:center;gap:var(--s4);padding:var(--s4) var(--s5);background:linear-gradient(180deg,var(--dr-panel-3),var(--dr-panel-2));border:1px solid var(--dr-line);border-radius:var(--r-lg);box-shadow:inset 0 1px 0 rgba(255,255,255,.85),0 6px 20px -10px rgba(0,0,0,.08)}
 .dr-trans-arm,.dr-trans-rec{display:flex;align-items:center;gap:var(--s2);padding:var(--s3) var(--s4);font-family:var(--dr-fx);font-weight:600;font-size:11px;letter-spacing:.16em;color:var(--dr-ink-dim);text-transform:uppercase;background:var(--dr-panel);border:1px solid var(--dr-line);border-radius:var(--r-sm);transition:border-color .15s,color .15s,background .15s,box-shadow .15s}
 .dr-trans-arm:hover,.dr-trans-rec:hover:not(:disabled){border-color:var(--dr-moss-dim);color:var(--dr-ink)}
 .dr-trans-arm[data-armed="true"]{border-color:var(--dr-amber);color:var(--dr-amber)}
@@ -391,6 +411,28 @@ canvas{display:block}
 </style>
 </head>
 <body>
+
+<!-- shared SVG defs for tactile knob gradients (referenced by every knob via url(#...)) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <radialGradient id="knobFace" cx="35%" cy="30%" r="75%">
+      <stop offset="0%" stop-color="oklch(0.97 0.005 80)"/>
+      <stop offset="40%" stop-color="oklch(0.88 0.008 80)"/>
+      <stop offset="80%" stop-color="oklch(0.74 0.010 80)"/>
+      <stop offset="100%" stop-color="oklch(0.66 0.012 80)"/>
+    </radialGradient>
+    <radialGradient id="knobFaceActive" cx="35%" cy="30%" r="75%">
+      <stop offset="0%" stop-color="oklch(0.97 0.005 80)"/>
+      <stop offset="40%" stop-color="oklch(0.88 0.008 80)"/>
+      <stop offset="80%" stop-color="oklch(0.74 0.010 80)"/>
+      <stop offset="100%" stop-color="oklch(0.66 0.012 80)"/>
+    </radialGradient>
+    <linearGradient id="knobRim" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="oklch(0.96 0.005 80)"/>
+      <stop offset="100%" stop-color="oklch(0.62 0.014 80)"/>
+    </linearGradient>
+  </defs>
+</svg>
 
 <header id="hdr">
   <div class="hi">
@@ -2014,7 +2056,7 @@ canvas{display:block}
     pushPeak();
 
     // tick grid every 1/8 — softer than before
-    cx.strokeStyle = 'oklch(0.24 0.010 145)';
+    cx.strokeStyle = 'oklch(0.74 0.014 80)';
     cx.lineWidth = 1;
     for (let i = 1; i < 8; i++) {
       const x = (w / 8) * i;
@@ -2022,7 +2064,7 @@ canvas{display:block}
     }
 
     // baseline
-    cx.strokeStyle = 'oklch(0.32 0.012 145)';
+    cx.strokeStyle = 'oklch(0.62 0.014 80)';
     cx.beginPath(); cx.moveTo(0, h/2); cx.lineTo(w, h/2); cx.stroke();
 
     // peak bars — coral, gradient + glow for FabFilter-class punch
@@ -2030,9 +2072,9 @@ canvas{display:block}
     const amp = h * 0.50;
     if (DR.state.isPlaying) {
       // glow pass — translucent coral, 2x line width, draws under the main bars
-      cx.shadowColor = 'oklch(0.52 0.14 150 / 0.55)';
+      cx.shadowColor = 'oklch(0.50 0.11 130 / 0.55)';
       cx.shadowBlur = 6;
-      cx.fillStyle = 'oklch(0.52 0.14 150)';
+      cx.fillStyle = 'oklch(0.50 0.11 130)';
       for (let i = 0; i < STRIP_HISTORY; i++) {
         const idx = (peakHead + i) % STRIP_HISTORY;
         const mn = peakMin[idx];
@@ -2045,7 +2087,7 @@ canvas{display:block}
       cx.shadowBlur = 0;
 
       // bright crown — peak tops slightly hotter for highlight feel
-      cx.fillStyle = 'oklch(0.70 0.14 150)';
+      cx.fillStyle = 'oklch(0.62 0.10 130)';
       for (let i = 0; i < STRIP_HISTORY; i++) {
         const idx = (peakHead + i) % STRIP_HISTORY;
         const mx = peakMax[idx];
@@ -2057,7 +2099,7 @@ canvas{display:block}
         cx.fillRect(i * colW, bottom - 1, Math.max(1.2, colW + 0.5), 1);
       }
     } else {
-      cx.fillStyle = 'oklch(0.34 0.02 145)';
+      cx.fillStyle = 'oklch(0.66 0.014 80)';
       for (let i = 0; i < STRIP_HISTORY; i++) {
         const idx = (peakHead + i) % STRIP_HISTORY;
         const mn = peakMin[idx];
@@ -2071,9 +2113,9 @@ canvas{display:block}
 
     // playhead cursor on the right edge — amber, glowing
     if (DR.state.isPlaying) {
-      cx.shadowColor = 'oklch(0.80 0.17 75 / 0.7)';
+      cx.shadowColor = 'oklch(0.52 0.18 25 / 0.7)';
       cx.shadowBlur = 8;
-      cx.fillStyle = 'oklch(0.80 0.17 75 / 0.9)';
+      cx.fillStyle = 'oklch(0.52 0.18 25 / 0.9)';
       cx.fillRect(w - 2, 0, 2, h);
       cx.shadowBlur = 0;
     }
@@ -2083,12 +2125,12 @@ canvas{display:block}
     if (!curveCanvas) return;
     const { cx, w, h } = setupCanvas(curveCanvas);
     cx.clearRect(0, 0, w, h);
-    cx.strokeStyle = 'oklch(0.24 0.009 140)';
+    cx.strokeStyle = 'oklch(0.74 0.014 80)';
     cx.lineWidth = 1;
     [0.25, 0.5, 0.75].forEach(p => {
       const x = w * p; cx.beginPath(); cx.moveTo(x, 0); cx.lineTo(x, h); cx.stroke();
     });
-    cx.strokeStyle = 'oklch(0.30 0.010 140)';
+    cx.strokeStyle = 'oklch(0.60 0.014 80)';
     cx.beginPath(); cx.moveTo(0, h*0.5); cx.lineTo(w, h*0.5); cx.stroke();
 
     // live spectrum behind the curve — coral, FabFilter-style warm overlay
@@ -2097,8 +2139,8 @@ canvas{display:block}
       if (!curveBuf || curveBuf.length !== a.frequencyBinCount) curveBuf = new Uint8Array(a.frequencyBinCount);
       a.getByteFrequencyData(curveBuf);
       const grad = cx.createLinearGradient(0, 0, 0, h);
-      grad.addColorStop(0, 'oklch(0.52 0.14 150 / 0.30)');
-      grad.addColorStop(1, 'oklch(0.52 0.14 150 / 0.06)');
+      grad.addColorStop(0, 'oklch(0.50 0.11 130 / 0.30)');
+      grad.addColorStop(1, 'oklch(0.50 0.11 130 / 0.06)');
       cx.fillStyle = grad;
       cx.beginPath();
       cx.moveTo(0, h);
@@ -2125,10 +2167,10 @@ canvas{display:block}
       res = DR.state.res;
     }
     const type = DR.state.filterType;
-    cx.strokeStyle = DR.state.bypassed.filter ? 'oklch(0.40 0.04 145)' : 'oklch(0.74 0.18 142)';
+    cx.strokeStyle = DR.state.bypassed.filter ? 'oklch(0.68 0.014 80)' : 'oklch(0.64 0.18 35)';
     cx.lineWidth = 1.8;
     if (!DR.state.bypassed.filter) {
-      cx.shadowColor = 'oklch(0.74 0.18 142 / 0.35)';
+      cx.shadowColor = 'oklch(0.64 0.18 35 / 0.35)';
       cx.shadowBlur = 6;
     }
     cx.beginPath();
@@ -2155,15 +2197,15 @@ canvas{display:block}
     // cutoff handle — glowing moss circle
     const cutX = w * (Math.log(cut/20) / Math.log(20000/20));
     if (!DR.state.bypassed.filter) {
-      cx.shadowColor = 'oklch(0.74 0.18 142 / 0.6)';
+      cx.shadowColor = 'oklch(0.64 0.18 35 / 0.6)';
       cx.shadowBlur = 8;
     }
-    cx.fillStyle = DR.state.bypassed.filter ? 'oklch(0.40 0.04 145)' : 'oklch(0.74 0.18 142)';
+    cx.fillStyle = DR.state.bypassed.filter ? 'oklch(0.68 0.014 80)' : 'oklch(0.64 0.18 35)';
     cx.beginPath(); cx.arc(cutX, h*0.5, 5, 0, Math.PI * 2); cx.fill();
     cx.shadowBlur = 0;
 
     // axis labels
-    cx.fillStyle = 'oklch(0.50 0.012 140)';
+    cx.fillStyle = 'oklch(0.45 0.012 80)';
     cx.font = '9px "Departure Mono", "Fragment Mono", monospace';
     cx.fillText('20', 4, h - 6);
     cx.fillText('200', w*0.25 + 4, h - 6);
@@ -2175,15 +2217,15 @@ canvas{display:block}
     if (!irCanvas) return;
     const { cx, w, h } = setupCanvas(irCanvas);
     cx.clearRect(0, 0, w, h);
-    cx.strokeStyle = 'oklch(0.30 0.010 140)';
+    cx.strokeStyle = 'oklch(0.60 0.014 80)';
     cx.lineWidth = 1;
     cx.beginPath(); cx.moveTo(0, h/2); cx.lineTo(w, h/2); cx.stroke();
     if (DR.ctx && DR.irs[DR.state.irSlot]) {
       const buf = DR.irs[DR.state.irSlot];
       const data = buf.getChannelData(0);
-      cx.strokeStyle = DR.state.bypassed.reverb ? 'oklch(0.40 0.04 145)' : 'oklch(0.52 0.14 150)';
+      cx.strokeStyle = DR.state.bypassed.reverb ? 'oklch(0.68 0.014 80)' : 'oklch(0.50 0.11 130)';
       if (!DR.state.bypassed.reverb) {
-        cx.shadowColor = 'oklch(0.52 0.14 150 / 0.45)';
+        cx.shadowColor = 'oklch(0.50 0.11 130 / 0.45)';
         cx.shadowBlur = 4;
       }
       cx.lineWidth = 1;
@@ -2202,7 +2244,7 @@ canvas{display:block}
       }
       cx.stroke();
       cx.shadowBlur = 0;
-      cx.fillStyle = 'oklch(0.54 0.014 145)';
+      cx.fillStyle = 'oklch(0.55 0.012 80)';
       cx.font = '8px "Departure Mono", "Fragment Mono", monospace';
       cx.fillText('0 ms', 4, h - 4);
       cx.fillText(`${(buf.duration*1000).toFixed(0)} ms`, w - 56, h - 4);
@@ -2221,7 +2263,7 @@ canvas{display:block}
 
     // beat grid (faint vertical lines at every quarter note based on current bpm)
     const beat = 60 / d.bpm;
-    cx.strokeStyle = 'oklch(0.22 0.008 140)';
+    cx.strokeStyle = 'oklch(0.78 0.014 80)';
     cx.lineWidth = 1;
     for (let t = 0; t < totalSpan; t += beat) {
       const x = (t / totalSpan) * w;
@@ -2231,7 +2273,7 @@ canvas{display:block}
     }
 
     // baseline
-    cx.strokeStyle = 'oklch(0.30 0.010 140)';
+    cx.strokeStyle = 'oklch(0.60 0.014 80)';
     cx.beginPath(); cx.moveTo(0, h * 0.85); cx.lineTo(w, h * 0.85); cx.stroke();
 
     // initial impulse (the dry signal at t=0)
@@ -2245,11 +2287,11 @@ canvas{display:block}
     // simulated tap sequence — each tap is at n * delayTime, height decays by feedback^n
     const dimmed = DR.state.bypassed.delay;
     const wetMag = dimmed ? 0 : Math.max(0.001, d.mix);
-    const tapColor = dimmed ? 'oklch(0.40 0.04 145)' : 'oklch(0.52 0.14 150)';
+    const tapColor = dimmed ? 'oklch(0.68 0.014 80)' : 'oklch(0.50 0.11 130)';
     cx.strokeStyle = tapColor;
     cx.lineWidth = 1.8;
     if (!dimmed) {
-      cx.shadowColor = 'oklch(0.52 0.14 150 / 0.5)';
+      cx.shadowColor = 'oklch(0.50 0.11 130 / 0.5)';
       cx.shadowBlur = 5;
     }
     const fb = d.feedback;
@@ -2274,7 +2316,7 @@ canvas{display:block}
     cx.shadowBlur = 0;
 
     // axis labels
-    cx.fillStyle = 'oklch(0.50 0.012 140)';
+    cx.fillStyle = 'oklch(0.45 0.012 80)';
     cx.font = '8px "Departure Mono", "Fragment Mono", monospace';
     cx.fillText('0', 4, h - 4);
     cx.fillText(`${(time*1000).toFixed(0)} ms`, Math.min(w - 56, (time/totalSpan)*w + 6), h - 4);
@@ -2436,10 +2478,10 @@ canvas{display:block}
     cx.clearRect(0, 0, w, h);
 
     // background grid
-    cx.strokeStyle = 'oklch(0.24 0.010 145)';
+    cx.strokeStyle = 'oklch(0.74 0.014 80)';
     cx.lineWidth = 1;
     cx.beginPath(); cx.moveTo(0, h/2); cx.lineTo(w, h/2); cx.stroke();
-    cx.strokeStyle = 'oklch(0.22 0.008 140)';
+    cx.strokeStyle = 'oklch(0.78 0.014 80)';
     for (let i = 1; i < 4; i++) {
       const x = (w / 4) * i;
       cx.beginPath(); cx.moveTo(x, 0); cx.lineTo(x, h); cx.stroke();
@@ -2449,10 +2491,10 @@ canvas{display:block}
     const dimmed = !enabled;
 
     // draw two cycles of the current shape
-    cx.strokeStyle = dimmed ? 'oklch(0.40 0.04 145)' : 'oklch(0.74 0.18 142)';
+    cx.strokeStyle = dimmed ? 'oklch(0.68 0.014 80)' : 'oklch(0.64 0.18 35)';
     cx.lineWidth = 1.6;
     if (!dimmed) {
-      cx.shadowColor = 'oklch(0.74 0.18 142 / 0.45)';
+      cx.shadowColor = 'oklch(0.64 0.18 35 / 0.45)';
       cx.shadowBlur = 5;
     }
     cx.beginPath();
@@ -2477,13 +2519,13 @@ canvas{display:block}
     // playhead — current LFO phase (only one cycle's worth visible)
     if (enabled) {
       const playX = (DR.state.lfo.phase % 1) * (w / cycles);
-      cx.fillStyle = 'oklch(0.80 0.17 75 / 0.85)';
+      cx.fillStyle = 'oklch(0.52 0.18 25 / 0.85)';
       cx.fillRect(playX, 0, 2, h);
       cx.fillRect(playX + (w / cycles), 0, 2, h);
     }
 
     // labels
-    cx.fillStyle = 'oklch(0.54 0.014 145)';
+    cx.fillStyle = 'oklch(0.55 0.012 80)';
     cx.font = '8px "Departure Mono", "Fragment Mono", monospace';
     let rateLabel;
     if (DR.state.lfo.sync) {
