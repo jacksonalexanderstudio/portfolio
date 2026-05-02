@@ -166,6 +166,51 @@ body{background:var(--bg);color:var(--tx);font-family:'DM Sans',sans-serif;paddi
 .pair-quote .pq-attr{font-family:var(--ff-b);font-size:10px;letter-spacing:calc(2.5px + var(--ls-pb));text-transform:uppercase;color:var(--tx);font-weight:400}
 .pair-quote .pq-attr .pq-attr-name{color:var(--tx);font-weight:400}
 
+/* Article — long-form body reading */
+.pair-article{align-items:flex-start}
+.pair-article .par-section{font-family:var(--ff-b);font-size:9px;letter-spacing:calc(2.5px + var(--ls-pb));text-transform:uppercase;color:var(--accent);font-weight:400;margin-bottom:14px}
+.pair-article .par-title{font-family:var(--ff-a);font-weight:500;font-size:26px;line-height:calc(1.2 * var(--lh-ph));color:var(--tx);letter-spacing:var(--ls-ph);margin-bottom:16px}
+.pair-article .par-body{font-family:var(--ff-b);font-size:12px;line-height:calc(1.7 * var(--lh-pb));color:var(--tx);font-weight:300;letter-spacing:var(--ls-pb);max-width:96%}
+
+/* Logo — wordmark + tagline */
+.pair-logo{align-items:center;justify-content:center;text-align:center}
+.pair-logo .plo-mark{font-family:var(--ff-a);font-weight:700;font-size:54px;line-height:calc(1 * var(--lh-ph));color:var(--tx);letter-spacing:calc(.04em + var(--ls-ph));text-transform:uppercase;margin-bottom:18px}
+.pair-logo .plo-tag{font-family:var(--ff-b);font-size:10px;letter-spacing:calc(2.5px + var(--ls-pb));text-transform:uppercase;color:var(--tx);font-weight:400}
+
+/* Menu — small text + prices */
+.pair-menu{align-items:flex-start;justify-content:flex-start;padding-top:36px}
+.pair-menu .pmn-cat{font-family:var(--ff-b);font-size:9px;letter-spacing:calc(2.5px + var(--ls-pb));text-transform:uppercase;color:var(--accent);font-weight:400;margin-bottom:18px;border-bottom:1px solid var(--bd-strong);padding-bottom:8px;align-self:stretch}
+.pair-menu .pmn-row{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:16px;width:100%}
+.pair-menu .pmn-row:last-child{margin-bottom:0}
+.pair-menu .pmn-item{flex:1}
+.pair-menu .pmn-name{font-family:var(--ff-a);font-weight:500;font-size:16px;line-height:1.2;color:var(--tx);letter-spacing:var(--ls-ph);margin-bottom:4px}
+.pair-menu .pmn-desc{font-family:var(--ff-b);font-size:10px;line-height:1.4;color:var(--tx);font-weight:300;letter-spacing:var(--ls-pb)}
+.pair-menu .pmn-price{font-family:var(--ff-b);font-size:13px;color:var(--tx);font-weight:400;letter-spacing:calc(.02em + var(--ls-pb));white-space:nowrap}
+
+/* Newsletter / Dispatch */
+.pair-news{align-items:flex-start}
+.pair-news .pnw-meta{font-family:var(--ff-b);font-size:9px;letter-spacing:calc(2.5px + var(--ls-pb));text-transform:uppercase;color:var(--accent);font-weight:400;margin-bottom:18px}
+.pair-news .pnw-head{font-family:var(--ff-a);font-style:italic;font-weight:400;font-size:30px;line-height:calc(1.1 * var(--lh-ph));color:var(--tx);letter-spacing:calc(.005em + var(--ls-ph));margin-bottom:16px}
+.pair-news .pnw-lede{font-family:var(--ff-b);font-size:13px;line-height:calc(1.55 * var(--lh-pb));color:var(--tx);font-weight:400;letter-spacing:var(--ls-pb);max-width:94%}
+
+/* Subscribe form — UI buttons + input */
+.pair-form{align-items:flex-start;justify-content:center}
+.pair-form .pfm-label{font-family:var(--ff-b);font-size:9px;letter-spacing:calc(2.5px + var(--ls-pb));text-transform:uppercase;color:var(--accent);font-weight:400;margin-bottom:14px}
+.pair-form .pfm-title{font-family:var(--ff-a);font-style:italic;font-weight:400;font-size:24px;line-height:calc(1.15 * var(--lh-ph));color:var(--tx);letter-spacing:var(--ls-ph);margin-bottom:20px}
+.pair-form .pfm-row{display:flex;gap:8px;width:100%;align-items:stretch;margin-bottom:14px}
+.pair-form .pfm-input{flex:1;border:1px solid var(--bd-strong);background:transparent;padding:12px 14px;font-family:var(--ff-b);font-size:13px;color:var(--tx);letter-spacing:var(--ls-pb);outline:none}
+.pair-form .pfm-btn{font-family:var(--ff-b);font-size:10px;letter-spacing:calc(.16em + var(--ls-pb));text-transform:uppercase;color:var(--bg);background:var(--tx);border:none;padding:0 22px;cursor:default;font-weight:500}
+.pair-form .pfm-help{font-family:var(--ff-b);font-size:10px;line-height:1.5;color:var(--tx);font-weight:300;letter-spacing:var(--ls-pb);opacity:.7}
+
+/* Pricing card — large numerals + feature list */
+.pair-price{align-items:flex-start}
+.pair-price .pcg-plan{font-family:var(--ff-b);font-size:9px;letter-spacing:calc(2.5px + var(--ls-pb));text-transform:uppercase;color:var(--accent);font-weight:400;margin-bottom:14px}
+.pair-price .pcg-amount{display:flex;align-items:baseline;gap:6px;margin-bottom:22px}
+.pair-price .pcg-price{font-family:var(--ff-a);font-style:italic;font-weight:400;font-size:56px;line-height:1;color:var(--tx);letter-spacing:calc(-.01em + var(--ls-ph))}
+.pair-price .pcg-per{font-family:var(--ff-b);font-size:11px;letter-spacing:calc(.04em + var(--ls-pb));text-transform:uppercase;color:var(--tx);font-weight:400}
+.pair-price .pcg-feat-item{display:flex;align-items:center;gap:10px;margin-bottom:8px;font-family:var(--ff-b);font-size:11px;line-height:1.5;color:var(--tx);font-weight:300;letter-spacing:var(--ls-pb)}
+.pair-price .pcg-feat-bullet{width:4px;height:4px;background:var(--accent);border-radius:50%;flex-shrink:0}
+
 /* ── VARIANT BLOCKS ── */
 .list{padding:0 0 40px}
 .option{border-bottom:1px solid var(--bd);padding:42px 0}
@@ -317,25 +362,25 @@ body{background:var(--bg);color:var(--tx);font-family:'DM Sans',sans-serif;paddi
   <div class="pair-grid">
     <div class="pair-mock pair-editorial">
       <div class="pair-mock-tag">Editorial</div>
-      <div class="pe-eyebrow">Feature — Issue 04</div>
-      <div class="pe-headline">The shape of land before language.</div>
-      <div class="pe-deck">A photographer's notebook from a season spent walking the high desert, listening for what stays after the wind.</div>
-      <div class="pe-body">Begin again at the edge of the mesa, where the road thins to a track and the track thins to a memory of one. The juniper holds its breath. The light, having no preference, falls on everything equally — the bone, the page, the open palm.</div>
+      <div class="pe-eyebrow">Field Studies — No. 04</div>
+      <div class="pe-headline">On the soils of the upper Rio Grande.</div>
+      <div class="pe-deck">Soil profiles, hydrology, and Pueblo agricultural practice in the Galisteo Basin.</div>
+      <div class="pe-body">The acequia system at San Cristóbal predates Spanish settlement by at least three centuries. Pueblo farmers diverted water from arroyo seeps and seasonal springs to irrigate small rectangular fields of corn, beans, squash, and amaranth. Archaeologists have documented over forty distinct field complexes within a five-mile radius of the pueblo.</div>
     </div>
     <div class="pair-mock pair-poster">
       <div class="pair-mock-tag">Poster</div>
-      <div class="pp-meta">Oct 17 — 19 / 2026 / Santa Fe</div>
-      <div class="pp-title">Desert<br>Sounds</div>
-      <div class="pp-sub">Free Admission · All Ages</div>
+      <div class="pp-meta">14 — 16 June 2026 / Albuquerque, NM</div>
+      <div class="pp-title">Pueblo<br>IV</div>
+      <div class="pp-sub">Annual Symposium · Open to the public</div>
     </div>
     <div class="pair-mock pair-card">
-      <div class="pair-mock-tag">Product Card</div>
-      <div class="pc-tag">New Arrival</div>
-      <div class="pc-title">Field Guide to Native Grasses</div>
-      <div class="pc-body">Hand-bound, screen-printed cover, 96 pages of photographs and notes from a year of fieldwork in northern New Mexico.</div>
+      <div class="pair-mock-tag">Publication</div>
+      <div class="pc-tag">Recent Acquisition</div>
+      <div class="pc-title">Native Grasses of the Galisteo Basin</div>
+      <div class="pc-body">112 pages, 86 black-and-white photographs, indexed. A field guide to the perennial bunchgrasses of north-central New Mexico, with notes on traditional Pueblo uses.</div>
       <div class="pc-row">
-        <div class="pc-meta">Edition of 50</div>
-        <div class="pc-price">$48.00</div>
+        <div class="pc-meta">Cloth, sewn binding</div>
+        <div class="pc-price">$32.00</div>
       </div>
     </div>
     <div class="pair-mock pair-quote">
@@ -343,6 +388,69 @@ body{background:var(--bg);color:var(--tx);font-family:'DM Sans',sans-serif;paddi
       <div class="pq-mark">"</div>
       <div class="pq-text">Grass is the forgiveness of nature — her constant benediction. Forests decay, harvests perish, flowers vanish, but grass is immortal.</div>
       <div class="pq-attr"><span class="pq-attr-name">John James Ingalls</span> · 1872</div>
+    </div>
+    <div class="pair-mock pair-article">
+      <div class="pair-mock-tag">Article</div>
+      <div class="par-section">Volume IV · Essay 03</div>
+      <div class="par-title">The Galisteo Basin pueblos</div>
+      <div class="par-body">The Galisteo Basin lies at the eastern edge of the Pueblo IV cultural area. Between 1300 and 1600 CE, at least six major puebloan settlements stood within a ten-mile radius of present-day San Cristóbal. The petroglyph panels along the eastern arroyos record this period in dense palimpsest: hunters, kachinas, and stylized cosmographies cut into volcanic basalt with stone or copper tools.</div>
+    </div>
+    <div class="pair-mock pair-logo">
+      <div class="pair-mock-tag">Wordmark</div>
+      <div class="plo-mark">Galisteo</div>
+      <div class="plo-tag">Studies in Southwestern Archaeology · Quarterly · Vol. XII</div>
+    </div>
+    <div class="pair-mock pair-menu">
+      <div class="pair-mock-tag">Catalog</div>
+      <div class="pmn-cat">Native Plants — Spring 2026</div>
+      <div class="pmn-row">
+        <div class="pmn-item">
+          <div class="pmn-name">Pinyon Pine</div>
+          <div class="pmn-desc">Pinus edulis · drought-hardy native, 1-gal container</div>
+        </div>
+        <div class="pmn-price">$24</div>
+      </div>
+      <div class="pmn-row">
+        <div class="pmn-item">
+          <div class="pmn-name">Apache Plume</div>
+          <div class="pmn-desc">Fallugia paradoxa · summer flowering, 5-gal container</div>
+        </div>
+        <div class="pmn-price">$48</div>
+      </div>
+      <div class="pmn-row">
+        <div class="pmn-item">
+          <div class="pmn-name">Chamisa</div>
+          <div class="pmn-desc">Ericameria nauseosa · pollinator habitat, 1-gal container</div>
+        </div>
+        <div class="pmn-price">$18</div>
+      </div>
+    </div>
+    <div class="pair-mock pair-news">
+      <div class="pair-mock-tag">Bulletin</div>
+      <div class="pnw-meta">Bulletin · Vol. XII · No. 3 · Spring 2026</div>
+      <div class="pnw-head">On the desert ephemerals.</div>
+      <div class="pnw-lede">A note on the brief spring flowering of the desert candytuft (Aethionema thomasianum) and four other endemic species of the Galisteo Basin watershed, with field observations from March through early May.</div>
+    </div>
+    <div class="pair-mock pair-form">
+      <div class="pair-mock-tag">Subscription</div>
+      <div class="pfm-label">Subscribe</div>
+      <div class="pfm-title">Quarterly Field Bulletin.</div>
+      <div class="pfm-row">
+        <input class="pfm-input" type="text" value="your.email@example.com" readonly>
+        <button class="pfm-btn" type="button" tabindex="-1">Join</button>
+      </div>
+      <div class="pfm-help">Print only. Four issues per year, mailed in March, June, September, and December.</div>
+    </div>
+    <div class="pair-mock pair-price">
+      <div class="pair-mock-tag">Membership</div>
+      <div class="pcg-plan">Annual Subscription</div>
+      <div class="pcg-amount">
+        <div class="pcg-price">$48</div>
+        <div class="pcg-per">/year</div>
+      </div>
+      <div class="pcg-feat-item"><span class="pcg-feat-bullet"></span>Four print bulletins, mailed quarterly</div>
+      <div class="pcg-feat-item"><span class="pcg-feat-bullet"></span>Access to the digital archive (1962–present)</div>
+      <div class="pcg-feat-item"><span class="pcg-feat-bullet"></span>Annual field meeting (June, Albuquerque)</div>
     </div>
   </div>
 </div>
