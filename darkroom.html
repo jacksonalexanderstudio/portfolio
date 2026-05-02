@@ -357,7 +357,8 @@ canvas{display:block}
 .dr-knob-screw .dr-knob-value{font-size:12px;color:var(--dr-moss);font-weight:500}
 
 /* TEMPO/PITCH module — dimmed when source is a live stream (worklet phase vocoder ships in v1.1) */
-.dr-mod[data-mod="tempo"][data-stream-dim="true"] .dr-knob{opacity:.42}
+.dr-mod[data-mod="tempo"][data-stream-dim="true"] .dr-knob{opacity:.42;pointer-events:none}
+.dr-mod[data-mod="tempo"][data-stream-dim="true"] .dr-mod-bypass{opacity:.42;pointer-events:none}
 .dr-mod[data-mod="tempo"][data-stream-dim="true"]::after{content:'STREAM — TIME/PITCH IN V1.1';position:absolute;bottom:var(--s3);left:var(--s4);right:var(--s4);font-family:var(--dr-mono);font-size:8px;letter-spacing:.16em;color:var(--dr-amber);text-align:center;pointer-events:none;text-transform:uppercase}
 /* TEMPO/PITCH module — tighten so the SCREW + 2 fine knobs always fit at narrow widths */
 .dr-mod[data-mod="tempo"] .dr-knobs{flex-wrap:wrap;gap:var(--s2);justify-content:center}
@@ -379,6 +380,10 @@ canvas{display:block}
 .dr-mode-btn:active{box-shadow:inset 0 1px 3px rgba(0,0,0,.12),inset 0 1px 0 rgba(255,255,255,.4)}
 .dr-mode-btn:hover{color:var(--dr-ink);border-color:var(--dr-line-2)}
 .dr-mode-btn[data-active="true"]{color:var(--dr-moss);border-color:var(--dr-moss);box-shadow:0 0 12px -4px var(--dr-moss-glow)}
+
+/* ── EQ MODULE — 3-band, drag-anywhere curve as the centerpiece ── */
+.dr-eq-curve{width:100%;height:200px;background:var(--dr-panel);border:1px solid var(--dr-line);border-radius:var(--r-md);display:block;cursor:crosshair;box-shadow:inset 0 2px 6px rgba(0,0,0,.08);touch-action:none}
+.dr-mod[data-mod="eq"] .dr-knobs{justify-content:space-around;padding-top:var(--s3)}
 
 /* ── REVERB MODULE — IR display + 8-slot grid + 2 knobs (kept compact like delay) ── */
 .dr-mod[data-mod="reverb"] .dr-knobs{flex-wrap:wrap;gap:var(--s3);justify-content:space-around;padding:var(--s2) 0 0}
@@ -825,6 +830,50 @@ canvas{display:block}
       </div>
     </article>
 
+    <!-- EQ -->
+    <article class="dr-mod" data-mod="eq" data-bypassed="true">
+      <header class="dr-mod-head">
+        <div class="dr-mod-head-text">
+          <span class="dr-mod-name">EQ</span>
+          <span class="dr-mod-spec">3-band · shelf · bell · shelf</span>
+        </div>
+        <button class="dr-mod-reset" type="button" aria-label="reset module" title="reset to defaults">↺</button>
+        <button class="dr-mod-bypass" type="button" aria-label="bypass module"></button>
+      </header>
+      <div class="dr-mod-body">
+        <canvas class="dr-eq-curve" width="480" height="280"></canvas>
+        <div class="dr-knobs">
+          <div class="dr-knob" data-param="eqLow">
+            <span class="dr-knob-label">LOW</span>
+            <svg class="dr-knob-dial" viewBox="-50 -50 100 100">
+              <circle r="38" class="dr-ring-inner"/>
+              <circle r="42"/>
+              <line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/>
+            </svg>
+            <span class="dr-knob-value">+0.0 dB</span>
+          </div>
+          <div class="dr-knob" data-param="eqMid">
+            <span class="dr-knob-label">MID</span>
+            <svg class="dr-knob-dial" viewBox="-50 -50 100 100">
+              <circle r="38" class="dr-ring-inner"/>
+              <circle r="42"/>
+              <line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/>
+            </svg>
+            <span class="dr-knob-value">+0.0 dB</span>
+          </div>
+          <div class="dr-knob" data-param="eqHigh">
+            <span class="dr-knob-label">HIGH</span>
+            <svg class="dr-knob-dial" viewBox="-50 -50 100 100">
+              <circle r="38" class="dr-ring-inner"/>
+              <circle r="42"/>
+              <line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/>
+            </svg>
+            <span class="dr-knob-value">+0.0 dB</span>
+          </div>
+        </div>
+      </div>
+    </article>
+
     <!-- DELAY -->
     <article class="dr-mod" data-mod="delay" data-bypassed="true">
       <header class="dr-mod-head">
@@ -1022,6 +1071,7 @@ canvas{display:block}
   // ─── DOM REFS ────────────────────────────────────────────────────
   const stripCanvas  = document.querySelector('.dr-strip-canvas');
   const curveCanvas  = document.querySelector('.dr-curve');
+  const eqCurveCanvas= document.querySelector('.dr-eq-curve');
   const irCanvas     = document.querySelector('.dr-ir');
   const delayCanvas  = document.querySelector('.dr-delay-vis');
   const fileInput    = document.getElementById('dr-file-input');
@@ -1076,7 +1126,14 @@ canvas{display:block}
         shLast: 0,          // last sampled value for sample-and-hold
         shPhase: 1          // tracking previous phase for retrigger detection
       },
-      bypassed: { tempo: true, filter: true, delay: true, reverb: true }
+      eq: {
+        // Q is pinch-controlled (trackpad ctrl+wheel). Shelves use it as slope steepness;
+        // peaking bell uses it as bandwidth. Defaults read as flat / neutral.
+        low:  { freq: 120,  gain: 0, q: 0.7 },   // low shelf
+        mid:  { freq: 1000, gain: 0, q: 1.0 },   // peaking bell
+        high: { freq: 8000, gain: 0, q: 0.7 }    // high shelf
+      },
+      bypassed: { tempo: true, filter: true, eq: true, delay: true, reverb: true }
     },
     irs: {},
     recorder: null,
@@ -1108,6 +1165,23 @@ canvas{display:block}
     n.filter.type = DR.state.filterType;
     n.filter.frequency.value = DR.state.cut;
     n.filter.Q.value = DR.state.res;
+
+    // EQ — 3-band: low shelf → peaking → high shelf, all flat by default
+    n.eqLow = ctx.createBiquadFilter();
+    n.eqLow.type = 'lowshelf';
+    n.eqLow.frequency.value = DR.state.eq.low.freq;
+    n.eqLow.Q.value = DR.state.eq.low.q;
+    n.eqLow.gain.value = 0;
+    n.eqMid = ctx.createBiquadFilter();
+    n.eqMid.type = 'peaking';
+    n.eqMid.frequency.value = DR.state.eq.mid.freq;
+    n.eqMid.Q.value = DR.state.eq.mid.q;
+    n.eqMid.gain.value = 0;
+    n.eqHigh = ctx.createBiquadFilter();
+    n.eqHigh.type = 'highshelf';
+    n.eqHigh.frequency.value = DR.state.eq.high.freq;
+    n.eqHigh.Q.value = DR.state.eq.high.q;
+    n.eqHigh.gain.value = 0;
 
     // delay chain
     n.delayLine = ctx.createDelay(4.0); // up to 4s
@@ -1142,11 +1216,14 @@ canvas{display:block}
     n.outputAnalyser.fftSize = 2048;
     n.outputAnalyser.smoothingTimeConstant = 0.6;
 
-    // routing: source → inputAnalyser → filter → delay(dry|line→tone→wet) → reverb(dry|conv→wet) → preAnalyser → limiter → master → outputAnalyser → destination
+    // routing: source → inputAnalyser → filter → eqLow → eqMid → eqHigh → delay(dry|line→tone→wet) → reverb(dry|conv→wet) → preAnalyser → limiter → master → outputAnalyser → destination
     n.inputAnalyser.connect(n.filter);
+    n.filter.connect(n.eqLow);
+    n.eqLow.connect(n.eqMid);
+    n.eqMid.connect(n.eqHigh);
     // delay section
-    n.filter.connect(n.delayDry);
-    n.filter.connect(n.delayLine);
+    n.eqHigh.connect(n.delayDry);
+    n.eqHigh.connect(n.delayLine);
     n.delayLine.connect(n.delayTone);
     n.delayTone.connect(n.delayWet);
     n.delayTone.connect(n.delayFb);
@@ -1258,15 +1335,12 @@ canvas{display:block}
       // file input → native playbackRate/detune (zero added latency)
       DR.state.source.playbackRate.setValueAtTime(DR.state.screw * DR.state.rate, t);
       DR.state.source.detune.setValueAtTime(DR.state.pitch * 100, t);
-    } else if (DR.state.sourceType === 'stream' && DR.nodes.soundTouch) {
-      // stream input → SoundTouch worklet
-      // rate (combined tempo+pitch like a turntable) ← SCREW
-      // tempo (independent speed)                    ← RATE
-      // pitchSemitones (independent pitch shift)     ← PITCH
-      DR.nodes.soundTouch.parameters.get('rate').setValueAtTime(DR.state.screw, t);
-      DR.nodes.soundTouch.parameters.get('tempo').setValueAtTime(DR.state.rate, t);
-      DR.nodes.soundTouch.parameters.get('pitchSemitones').setValueAtTime(DR.state.pitch, t);
     }
+    // streams: tempo/pitch unsupported until v1.1 (phase vocoder). The current
+    // SoundTouch worklet accumulates buffer over time on live audio because input
+    // arrives at realtime but is consumed at a different rate — produces growing
+    // latency at SCREW < 1 and dropouts at SCREW > 1. Keeping streams clean (1×)
+    // until a real time-stretching engine is in place.
   }
 
   // ─── SoundTouch worklet (ensures the time-stretch processor is registered) ──
@@ -1363,20 +1437,20 @@ canvas{display:block}
     // connect using the original stream — Chrome's createMediaStreamSource ignores video tracks
     disconnectSource();
     const src = DR.ctx.createMediaStreamSource(stream);
-    // tempo is bypassed by default → connect direct, no worklet, zero latency
+    // streams always run direct to inputAnalyser (no worklet). Tempo/pitch v1.1.
     src.connect(DR.nodes.inputAnalyser);
     DR.state.source = src;
     DR.state.sourceType = 'stream';
     DR.state.isPlaying = true;
     DR.state.streamRef = stream;
+    // dim the tempo module so users see it's inert on streams
+    document.querySelector('.dr-mod[data-mod="tempo"]')?.setAttribute('data-stream-dim', 'true');
     // free the video tracks — we never needed them
     videoTracks.forEach(t => t.stop());
     audioTrack.onended = () => {
       setStatus(`<b>tab disconnected</b> — pick a new source to continue`);
       disconnectSource();
     };
-    // if tempo isn't bypassed (user already engaged it), insert worklet
-    if (!DR.state.bypassed.tempo) await applyTempoBypass();
     const label = audioTrack.label || 'tab audio';
     const settings = audioTrack.getSettings ? audioTrack.getSettings() : {};
     const sr = settings.sampleRate ? `${(settings.sampleRate/1000).toFixed(1)}kHz` : '?';
@@ -1459,17 +1533,17 @@ canvas{display:block}
     }
     disconnectSource();
     const src = DR.ctx.createMediaStreamSource(stream);
-    // tempo bypassed by default → no worklet, zero latency on connect
+    // streams always run direct (no worklet). Tempo/pitch v1.1.
     src.connect(DR.nodes.inputAnalyser);
     DR.state.source = src;
     DR.state.sourceType = 'stream';
     DR.state.isPlaying = true;
     DR.state.streamRef = stream;
+    document.querySelector('.dr-mod[data-mod="tempo"]')?.setAttribute('data-stream-dim', 'true');
     stream.getAudioTracks()[0].onended = () => {
       setStatus(`<b>device disconnected</b>`);
       disconnectSource();
     };
-    if (!DR.state.bypassed.tempo) await applyTempoBypass();
     setStatus(`<b>device</b> — ${label} · live`);
     hideDevicePicker();
   }
@@ -1543,12 +1617,12 @@ canvas{display:block}
   knobs.screw = makeKnob(document.querySelector('.dr-knob[data-param="screw"]'), {
     min: 0.5, max: 1.5, default: 1.0,
     format: v => v.toFixed(3) + '×',
-    onChange: v => { DR.state.screw = v; updateRateDetune(); }
+    onChange: v => { DR.state.screw = v; updateRateDetune(); applySyncedTime?.(); }
   });
   knobs.rate = makeKnob(document.querySelector('.dr-knob[data-param="rate"]'), {
     min: 0.85, max: 1.15, default: 1.0,
     format: v => v.toFixed(3) + '×',
-    onChange: v => { DR.state.rate = v; updateRateDetune(); }
+    onChange: v => { DR.state.rate = v; updateRateDetune(); applySyncedTime?.(); }
   });
   knobs.pitch = makeKnob(document.querySelector('.dr-knob[data-param="pitch"]'), {
     min: -12, max: 12, default: 0,
@@ -1571,6 +1645,36 @@ canvas{display:block}
       if (DR.nodes.filter && !DR.state.bypassed.filter) DR.nodes.filter.Q.setValueAtTime(v, DR.ctx.currentTime);
     }
   });
+  // ─── EQ KNOBS (gain only — frequencies live on the curve) ──────
+  function fmtGain(v) {
+    const r = Math.round(v * 10) / 10;
+    return (r >= 0 ? '+' : '') + r.toFixed(1) + ' dB';
+  }
+  knobs.eqLow = makeKnob(document.querySelector('.dr-knob[data-param="eqLow"]'), {
+    min: -15, max: 15, default: 0,
+    format: fmtGain,
+    onChange: v => {
+      DR.state.eq.low.gain = v;
+      if (DR.nodes.eqLow && !DR.state.bypassed.eq) DR.nodes.eqLow.gain.setValueAtTime(v, DR.ctx.currentTime);
+    }
+  });
+  knobs.eqMid = makeKnob(document.querySelector('.dr-knob[data-param="eqMid"]'), {
+    min: -15, max: 15, default: 0,
+    format: fmtGain,
+    onChange: v => {
+      DR.state.eq.mid.gain = v;
+      if (DR.nodes.eqMid && !DR.state.bypassed.eq) DR.nodes.eqMid.gain.setValueAtTime(v, DR.ctx.currentTime);
+    }
+  });
+  knobs.eqHigh = makeKnob(document.querySelector('.dr-knob[data-param="eqHigh"]'), {
+    min: -15, max: 15, default: 0,
+    format: fmtGain,
+    onChange: v => {
+      DR.state.eq.high.gain = v;
+      if (DR.nodes.eqHigh && !DR.state.bypassed.eq) DR.nodes.eqHigh.gain.setValueAtTime(v, DR.ctx.currentTime);
+    }
+  });
+
   knobs.size = makeKnob(document.querySelector('.dr-knob[data-param="size"]'), {
     min: 0.25, max: 2.0, default: 1.0,
     format: v => v.toFixed(2) + '×',
@@ -1719,7 +1823,12 @@ canvas{display:block}
   const tapBtn = document.getElementById('dr-tap');
 
   function computeSyncedTime() {
-    const beatDuration = 60 / DR.state.delay.bpm;          // seconds per quarter note
+    // tempo scaling — when SCREW or RATE moves the playback speed, scale the delay
+    // time inversely so musical sync is preserved (e.g. 0.7× screw → delay node time
+    // grows by 1/0.7 to land on the slowed beat). Mirrors how every DAW handles
+    // synced FX over warped audio.
+    const tempoScale = DR.state.screw * DR.state.rate || 1;
+    const beatDuration = 60 / (DR.state.delay.bpm * tempoScale); // real seconds per beat at current tempo
     const noteFraction = 4 / DR.state.delay.division;      // 1/4 → 1, 1/8 → 0.5, 1/16 → 0.25
     let factor = 1;
     if (DR.state.delay.modifier === 'dot') factor = 1.5;
@@ -1812,6 +1921,117 @@ canvas{display:block}
     });
   }
 
+  // ─── EQ CURVE — drag-anywhere, picks the nearest handle ─────────
+  // X = freq (log), Y = gain (top = +15 dB, middle = 0, bottom = -15)
+  // Each band has its own freq range so users can't drag bands past each other.
+  if (eqCurveCanvas) {
+    const FREQ_BOUNDS = {
+      low:  [30,    500],
+      mid:  [200,   8000],
+      high: [1000, 18000]
+    };
+    let activeBand = null;
+    function pickBand(px, py, rect) {
+      let best = null, bestD = Infinity;
+      ['low', 'mid', 'high'].forEach(k => {
+        const b = DR.state.eq[k];
+        const bx = rect.width * (Math.log(b.freq / 20) / Math.log(20000 / 20));
+        const by = rect.height * 0.5 - (b.gain / 15) * rect.height * 0.45;
+        const d = Math.hypot(px - bx, py - by);
+        if (d < bestD) { bestD = d; best = k; }
+      });
+      return best;
+    }
+    function onEqMove(e) {
+      if (!activeBand) return;
+      const rect = eqCurveCanvas.getBoundingClientRect();
+      const x = Math.max(0, Math.min(rect.width,  e.clientX - rect.left));
+      const y = Math.max(0, Math.min(rect.height, e.clientY - rect.top));
+      let freq = 20 * Math.pow(20000 / 20, x / rect.width);
+      const [fmin, fmax] = FREQ_BOUNDS[activeBand];
+      freq = Math.max(fmin, Math.min(fmax, freq));
+      let gain = -((y - rect.height * 0.5) / (rect.height * 0.45)) * 15;
+      gain = Math.max(-15, Math.min(15, gain));
+      DR.state.eq[activeBand].freq = freq;
+      const t = DR.ctx ? DR.ctx.currentTime : 0;
+      if (activeBand === 'low'  && DR.nodes.eqLow)  DR.nodes.eqLow.frequency.setValueAtTime(freq, t);
+      if (activeBand === 'mid'  && DR.nodes.eqMid)  DR.nodes.eqMid.frequency.setValueAtTime(freq, t);
+      if (activeBand === 'high' && DR.nodes.eqHigh) DR.nodes.eqHigh.frequency.setValueAtTime(freq, t);
+      const knobName = activeBand === 'low' ? 'eqLow' : activeBand === 'mid' ? 'eqMid' : 'eqHigh';
+      knobs[knobName]?.setValue(gain); // onChange will write the biquad gain + state
+    }
+    function onEqUp() {
+      activeBand = null;
+      document.removeEventListener('pointermove', onEqMove);
+      document.removeEventListener('pointerup', onEqUp);
+      document.removeEventListener('pointercancel', onEqUp);
+      document.body.style.userSelect = '';
+    }
+    eqCurveCanvas.addEventListener('pointerdown', e => {
+      if (e.button !== undefined && e.button !== 0) return;
+      ensureCtx();
+      const rect = eqCurveCanvas.getBoundingClientRect();
+      activeBand = pickBand(e.clientX - rect.left, e.clientY - rect.top, rect);
+      onEqMove(e);
+      document.addEventListener('pointermove', onEqMove);
+      document.addEventListener('pointerup', onEqUp);
+      document.addEventListener('pointercancel', onEqUp);
+      document.body.style.userSelect = 'none';
+      e.preventDefault();
+    });
+    eqCurveCanvas.addEventListener('dblclick', e => {
+      // double-click a handle area → reset that band to flat 0 dB AND default Q
+      const rect = eqCurveCanvas.getBoundingClientRect();
+      const k = pickBand(e.clientX - rect.left, e.clientY - rect.top, rect);
+      const knobName = k === 'low' ? 'eqLow' : k === 'mid' ? 'eqMid' : 'eqHigh';
+      knobs[knobName]?.setValue(0);
+      const defaultQ = k === 'mid' ? 1.0 : 0.7;
+      DR.state.eq[k].q = defaultQ;
+      const node = k === 'low' ? DR.nodes.eqLow : k === 'mid' ? DR.nodes.eqMid : DR.nodes.eqHigh;
+      if (node && DR.ctx) node.Q.setValueAtTime(defaultQ, DR.ctx.currentTime);
+    });
+
+    // Pinch-to-Q (Pro-Q-style). On macOS Chrome, trackpad pinch fires `wheel` with
+    // ctrlKey:true — same signal native pinch-zoom uses. Pick the band whose handle
+    // is closest to the cursor X (band picked by frequency proximity, not Y).
+    // Q ranges differ per band type: peaking bell goes wider (0.3) and surgical (8.0);
+    // shelves cap lower (2.5) because higher Q on a shelf produces awkward overshoot.
+    const Q_BOUNDS = {
+      low:  [0.3, 2.5],
+      mid:  [0.3, 8.0],
+      high: [0.3, 2.5]
+    };
+    function pickBandByX(px, rect) {
+      let best = null, bestD = Infinity;
+      ['low', 'mid', 'high'].forEach(k => {
+        const b = DR.state.eq[k];
+        const bx = rect.width * (Math.log(b.freq / 20) / Math.log(20000 / 20));
+        const d = Math.abs(px - bx);
+        if (d < bestD) { bestD = d; best = k; }
+      });
+      return best;
+    }
+    eqCurveCanvas.addEventListener('wheel', e => {
+      // only react to true pinch (ctrlKey on wheel), so plain scroll keeps scrolling the page
+      if (!e.ctrlKey) return;
+      e.preventDefault();
+      ensureCtx();
+      const rect = eqCurveCanvas.getBoundingClientRect();
+      const k = pickBandByX(e.clientX - rect.left, rect);
+      if (!k) return;
+      const [qmin, qmax] = Q_BOUNDS[k];
+      // log-scaled so the response feels even at the extremes
+      const cur = DR.state.eq[k].q;
+      // ~6% per tick. deltaY > 0 = pinch in (zoom out gesture) → tighter Q (higher).
+      // Browser convention: pinch-out (spread fingers) sends negative deltaY.
+      const factor = Math.exp(e.deltaY * 0.006);
+      const next = Math.max(qmin, Math.min(qmax, cur * factor));
+      DR.state.eq[k].q = next;
+      const node = k === 'low' ? DR.nodes.eqLow : k === 'mid' ? DR.nodes.eqMid : DR.nodes.eqHigh;
+      if (node) node.Q.setValueAtTime(next, DR.ctx.currentTime);
+    }, { passive: false });
+  }
+
   // ─── FILTER MODE ─────────────────────────────────────────────────
   document.querySelectorAll('.dr-mode-btn').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -1859,6 +2079,13 @@ canvas{display:block}
       DR.nodes.filter.frequency.setValueAtTime(DR.state.cut, t);
       DR.nodes.filter.Q.setValueAtTime(DR.state.res, t);
     }
+    // EQ — when bypassed, force all gains to 0 dB (flat). When active, restore stored gains.
+    if (DR.nodes.eqLow && DR.nodes.eqMid && DR.nodes.eqHigh) {
+      const off = DR.state.bypassed.eq;
+      DR.nodes.eqLow.gain.setValueAtTime(off ? 0 : DR.state.eq.low.gain, t);
+      DR.nodes.eqMid.gain.setValueAtTime(off ? 0 : DR.state.eq.mid.gain, t);
+      DR.nodes.eqHigh.gain.setValueAtTime(off ? 0 : DR.state.eq.high.gain, t);
+    }
     if (DR.nodes.delayWet) DR.nodes.delayWet.gain.setValueAtTime(
       DR.state.bypassed.delay ? 0 : DR.state.delay.mix, t
     );
@@ -1870,9 +2097,11 @@ canvas{display:block}
     );
   }
 
-  // tempo bypass — for streams, swaps the worklet in/out of the chain.
-  // When bypassed, source → inputAnalyser direct (zero added latency).
-  // When active, source → soundTouch → inputAnalyser (~30ms phase vocoder).
+  // tempo bypass.
+  // FILES: native playbackRate/detune. Bypass = force 1× / 0¢; active = apply knob values.
+  // STREAMS: worklet phase vocoder ships v1.1. Until then, streams run direct (1×) —
+  // the SoundTouch worklet accumulates latency on live audio because input is realtime.
+  // Knobs are dimmed and inert (see [data-stream-dim="true"] CSS).
   async function applyTempoBypass() {
     if (!DR.state.source || !DR.ctx) return;
     if (DR.state.sourceType === 'buffer') {
@@ -1886,29 +2115,20 @@ canvas{display:block}
       return;
     }
     if (DR.state.sourceType !== 'stream') return;
-    if (DR.state.bypassed.tempo) {
-      try { DR.state.source.disconnect(); } catch(_){}
-      if (DR.nodes.soundTouch) { try { DR.nodes.soundTouch.disconnect(); } catch(_){} }
-      DR.state.source.connect(DR.nodes.inputAnalyser);
-    } else {
-      const ready = await ensureWorklet();
-      if (!ready) return;
-      try { DR.state.source.disconnect(); } catch(_){}
-      if (!DR.nodes.soundTouch) {
-        DR.nodes.soundTouch = createSoundTouchNode();
-      } else {
-        try { DR.nodes.soundTouch.disconnect(); } catch(_){}
-      }
-      DR.state.source.connect(DR.nodes.soundTouch);
-      DR.nodes.soundTouch.connect(DR.nodes.inputAnalyser);
-      updateRateDetune();
+    // streams: always connect direct, no worklet. Idempotent — safe to call repeatedly.
+    try { DR.state.source.disconnect(); } catch(_){}
+    if (DR.nodes.soundTouch) {
+      try { DR.nodes.soundTouch.disconnect(); } catch(_){}
+      DR.nodes.soundTouch = null;
     }
+    DR.state.source.connect(DR.nodes.inputAnalyser);
   }
 
   // ─── PER-MODULE RESET ───────────────────────────────────────────
   const moduleKnobs = {
     tempo: ['screw', 'rate', 'pitch'],
     filter: ['cut', 'res', 'lrate', 'ldepth'],
+    eq: ['eqLow', 'eqMid', 'eqHigh'],
     delay: ['dtime', 'fb', 'dtone', 'dmix'],
     reverb: ['size', 'mix'],
     master: ['out']
@@ -1936,6 +2156,7 @@ canvas{display:block}
   const knobDefaults = {
     screw: 1.0, rate: 1.0, pitch: 0,
     cut: 20000, res: 0.1, lrate: 1.5, ldepth: 0.5,
+    eqLow: 0, eqMid: 0, eqHigh: 0,
     size: 1.0, mix: 0,
     dtime: 500, fb: 0.4, dtone: 6000, dmix: 0,
     out: 0
@@ -1974,6 +2195,17 @@ canvas{display:block}
       document.querySelectorAll('.dr-lfo-div').forEach(b => b.removeAttribute('data-active'));
       const sDiv = document.querySelector('.dr-lfo-div[data-div="1/4"]');
       if (sDiv) sDiv.setAttribute('data-active', 'true');
+    }
+    if (which === 'eq') {
+      DR.state.eq.low.freq  = 120;  DR.state.eq.low.q  = 0.7;
+      DR.state.eq.mid.freq  = 1000; DR.state.eq.mid.q  = 1.0;
+      DR.state.eq.high.freq = 8000; DR.state.eq.high.q = 0.7;
+      if (DR.ctx) {
+        const t = DR.ctx.currentTime;
+        if (DR.nodes.eqLow)  { DR.nodes.eqLow.frequency.setValueAtTime(120,  t); DR.nodes.eqLow.Q.setValueAtTime(0.7,  t); }
+        if (DR.nodes.eqMid)  { DR.nodes.eqMid.frequency.setValueAtTime(1000, t); DR.nodes.eqMid.Q.setValueAtTime(1.0,  t); }
+        if (DR.nodes.eqHigh) { DR.nodes.eqHigh.frequency.setValueAtTime(8000, t); DR.nodes.eqHigh.Q.setValueAtTime(0.7, t); }
+      }
     }
     if (which === 'delay') {
       DR.state.delay.bpm = 120;
@@ -2333,6 +2565,112 @@ canvas{display:block}
     cx.fillText('20k', w - 24, h - 6);
   }
 
+  // ─── EQ CURVE DRAW — combined response from Web Audio's getFrequencyResponse ──
+  let eqSpecBuf = null;
+  let eqFreqArr = null, eqMagL, eqPhL, eqMagM, eqPhM, eqMagH, eqPhH;
+  function drawEqCurve() {
+    if (!eqCurveCanvas) return;
+    const { cx, w, h } = setupCanvas(eqCurveCanvas);
+    cx.clearRect(0, 0, w, h);
+
+    // grid — vertical freq guides + ±6 dB & 0 dB horizontals
+    cx.strokeStyle = 'oklch(0.74 0.014 80)';
+    cx.lineWidth = 1;
+    [0.25, 0.5, 0.75].forEach(p => {
+      const x = w * p; cx.beginPath(); cx.moveTo(x, 0); cx.lineTo(x, h); cx.stroke();
+    });
+    [0.275, 0.725].forEach(p => {
+      cx.beginPath(); cx.moveTo(0, h * p); cx.lineTo(w, h * p); cx.stroke();
+    });
+    cx.strokeStyle = 'oklch(0.60 0.014 80)';
+    cx.beginPath(); cx.moveTo(0, h * 0.5); cx.lineTo(w, h * 0.5); cx.stroke();
+
+    // input spectrum behind — olive overlay so user sees what they're shaping
+    if (DR.nodes.inputAnalyser && DR.state.isPlaying) {
+      const a = DR.nodes.inputAnalyser;
+      if (!eqSpecBuf || eqSpecBuf.length !== a.frequencyBinCount) eqSpecBuf = new Uint8Array(a.frequencyBinCount);
+      a.getByteFrequencyData(eqSpecBuf);
+      const grad = cx.createLinearGradient(0, 0, 0, h);
+      grad.addColorStop(0, 'oklch(0.50 0.11 130 / 0.30)');
+      grad.addColorStop(1, 'oklch(0.50 0.11 130 / 0.06)');
+      cx.fillStyle = grad;
+      cx.beginPath();
+      cx.moveTo(0, h);
+      const sr = DR.ctx.sampleRate;
+      for (let x = 0; x < w; x++) {
+        const freq = 20 * Math.pow(20000 / 20, x / w);
+        const bin = Math.min(eqSpecBuf.length - 1, Math.floor((freq / (sr / 2)) * eqSpecBuf.length));
+        const m = eqSpecBuf[bin] / 255;
+        cx.lineTo(x, h - m * h * 0.95);
+      }
+      cx.lineTo(w, h); cx.closePath(); cx.fill();
+    }
+
+    // combined EQ response — uses getFrequencyResponse for accurate biquad math
+    const bypassed = DR.state.bypassed.eq;
+    const accent = bypassed ? 'oklch(0.68 0.014 80)' : 'oklch(0.64 0.18 35)';
+    cx.strokeStyle = accent;
+    cx.lineWidth = 1.8;
+    if (!bypassed) { cx.shadowColor = 'oklch(0.64 0.18 35 / 0.35)'; cx.shadowBlur = 6; }
+    cx.beginPath();
+    if (DR.nodes.eqLow && DR.nodes.eqMid && DR.nodes.eqHigh) {
+      const N = Math.max(2, Math.floor(w));
+      if (!eqFreqArr || eqFreqArr.length !== N) {
+        eqFreqArr = new Float32Array(N);
+        eqMagL = new Float32Array(N); eqPhL = new Float32Array(N);
+        eqMagM = new Float32Array(N); eqPhM = new Float32Array(N);
+        eqMagH = new Float32Array(N); eqPhH = new Float32Array(N);
+      }
+      for (let x = 0; x < N; x++) eqFreqArr[x] = 20 * Math.pow(20000 / 20, x / N);
+      DR.nodes.eqLow.getFrequencyResponse(eqFreqArr, eqMagL, eqPhL);
+      DR.nodes.eqMid.getFrequencyResponse(eqFreqArr, eqMagM, eqPhM);
+      DR.nodes.eqHigh.getFrequencyResponse(eqFreqArr, eqMagH, eqPhH);
+      for (let x = 0; x < N; x++) {
+        const mag = bypassed ? 1 : eqMagL[x] * eqMagM[x] * eqMagH[x];
+        const db = 20 * Math.log10(Math.max(1e-6, mag));
+        const y = h * 0.5 - (db / 15) * h * 0.45;
+        const yc = Math.max(0, Math.min(h, y));
+        if (x === 0) cx.moveTo(x, yc); else cx.lineTo(x, yc);
+      }
+    } else {
+      cx.moveTo(0, h * 0.5); cx.lineTo(w, h * 0.5);
+    }
+    cx.stroke();
+    cx.shadowBlur = 0;
+
+    // 3 numbered handles
+    const bands = [
+      { freq: DR.state.eq.low.freq,  gain: DR.state.eq.low.gain,  n: '1' },
+      { freq: DR.state.eq.mid.freq,  gain: DR.state.eq.mid.gain,  n: '2' },
+      { freq: DR.state.eq.high.freq, gain: DR.state.eq.high.gain, n: '3' }
+    ];
+    bands.forEach(b => {
+      const x = w * (Math.log(b.freq / 20) / Math.log(20000 / 20));
+      const y = h * 0.5 - (b.gain / 15) * h * 0.45;
+      if (!bypassed) { cx.shadowColor = 'oklch(0.64 0.18 35 / 0.6)'; cx.shadowBlur = 8; }
+      cx.fillStyle = accent;
+      cx.beginPath(); cx.arc(x, y, 9, 0, Math.PI * 2); cx.fill();
+      cx.shadowBlur = 0;
+      cx.fillStyle = bypassed ? 'oklch(0.45 0.012 80)' : 'oklch(0.96 0.014 80)';
+      cx.font = 'bold 10px "Excon", system-ui, sans-serif';
+      cx.textAlign = 'center';
+      cx.textBaseline = 'middle';
+      cx.fillText(b.n, x, y + 0.5);
+    });
+    cx.textAlign = 'start';
+    cx.textBaseline = 'alphabetic';
+
+    // axis labels — freq across bottom, ±15 dB on the left
+    cx.fillStyle = 'oklch(0.45 0.012 80)';
+    cx.font = '9px "Departure Mono", "Fragment Mono", monospace';
+    cx.fillText('20', 4, h - 6);
+    cx.fillText('200', w * 0.25 + 4, h - 6);
+    cx.fillText('2k',  w * 0.5  + 4, h - 6);
+    cx.fillText('20k', w - 24, h - 6);
+    cx.fillText('+15', 4, 12);
+    cx.fillText('-15', 4, h - 18);
+  }
+
   function drawIR() {
     if (!irCanvas) return;
     const { cx, w, h } = setupCanvas(irCanvas);
@@ -2558,10 +2896,12 @@ canvas{display:block}
 
     if (!DR.state.lfo.enabled || DR.state.bypassed.filter || !DR.ctx) return;
 
-    // current rate in Hz
+    // current rate in Hz — sync mode applies the same tempo scaling as DELAY so the
+    // LFO follows SCREW/RATE through the audio's musical timeline.
     let rateHz = DR.state.lfo.rate;
     if (DR.state.lfo.sync) {
-      const beatHz = DR.state.delay.bpm / 60;
+      const tempoScale = DR.state.screw * DR.state.rate || 1;
+      const beatHz = (DR.state.delay.bpm * tempoScale) / 60;
       const divs = { '1/16': 4, '1/8': 2, '1/4': 1, '1/2': 0.5, '1/1': 0.25, '2/1': 0.125 };
       rateHz = beatHz * (divs[DR.state.lfo.division] || 1);
     }
@@ -2862,6 +3202,7 @@ canvas{display:block}
     tickBpm();
     drawStrip();
     drawCurve();
+    drawEqCurve();
     drawDelay();
     drawLfo();
     updateMeters();
@@ -2872,7 +3213,7 @@ canvas{display:block}
   drawIR();
 
   window.addEventListener('resize', () => {
-    drawStrip(); drawCurve(); drawIR(); drawDelay(); drawLfo();
+    drawStrip(); drawCurve(); drawEqCurve(); drawIR(); drawDelay(); drawLfo();
   });
 
   // expose for debugging
