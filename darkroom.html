@@ -1,0 +1,2721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>darkroom.ja — Jackson Alexander Studio</title>
+<meta name="description" content="darkroom.ja — a real-time browser-resident audio processor. Tempo, pitch, filter, convolution reverb, and recording, with no install.">
+<link rel="canonical" href="https://jacksonalexanderstudio.com/darkroom.html">
+<meta name="robots" content="noindex">
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fragment+Mono&family=Workbench&family=DM+Sans:wght@200;300;400&display=swap" rel="stylesheet">
+<link href="https://api.fontshare.com/v2/css?f[]=excon@400,500,600,700&display=swap" rel="stylesheet">
+<style>
+@font-face{
+  font-family:'Departure Mono';
+  src:url('darkroom/fonts/DepartureMono-Regular.woff2') format('woff2');
+  font-weight:400;
+  font-style:normal;
+  font-display:swap;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  /* panel system — OKLCH for perceptual cleanness, all neutrals tinted toward the brand hue */
+  --dr-panel:    oklch(0.17 0.008 145);   /* off-black canvas, slight green tint */
+  --dr-panel-2:  oklch(0.22 0.010 145);   /* module surface, one step up */
+  --dr-panel-3:  oklch(0.27 0.011 145);   /* edge / inset / hover */
+  --dr-line:     oklch(0.34 0.012 145);   /* hairlines / borders */
+  --dr-line-2:   oklch(0.44 0.014 145);   /* signal-flow ambient */
+
+  --dr-ink:      oklch(0.95 0.006 145);   /* off-white type */
+  --dr-ink-dim:  oklch(0.70 0.012 145);   /* secondary type */
+  --dr-ink-2:    oklch(0.54 0.014 145);   /* tertiary / spec lines */
+
+  /* primary control accent — vibrant moss green, music-producer-friendly, eye-friendly */
+  --dr-moss:       oklch(0.74 0.18 142);
+  --dr-moss-dim:   oklch(0.56 0.13 142);
+  --dr-moss-glow:  oklch(0.74 0.18 142 / 0.32);
+
+  /* secondary accent — darker forest green for source/visualization (waveform, levels, spectrum) */
+  --dr-coral:      oklch(0.52 0.14 150);
+  --dr-coral-dim:  oklch(0.36 0.10 150);
+  --dr-coral-glow: oklch(0.52 0.14 150 / 0.32);
+
+  /* warning — only for recording armed, clipping, errors */
+  --dr-amber:      oklch(0.80 0.17 75);
+
+  --dr-mono:     'Departure Mono','Fragment Mono','Courier New',monospace;
+  --dr-disp:     'Workbench','Fragment Mono',monospace;
+  --dr-fx:       'Excon',system-ui,sans-serif;
+  --dr-sf:       'DM Sans',sans-serif;
+
+  /* spacing — 4pt scale */
+  --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 24px; --s6: 32px; --s7: 48px; --s8: 64px; --s9: 96px;
+
+  /* radii — softer corners across the board */
+  --r-sm: 4px; --r-md: 8px; --r-lg: 12px; --r-xl: 16px;
+}
+
+html{scroll-behavior:smooth;background:var(--dr-panel)}
+body{background:var(--dr-panel);color:var(--dr-ink);font-family:var(--dr-mono);line-height:1.5;overflow-x:hidden;min-height:100vh}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+canvas{display:block}
+
+/* ── EXISTING SITE HEADER (consistent with rest of site) ── */
+#hdr{position:fixed;top:0;left:0;right:0;z-index:1000;height:140px;background:#0c0c0c;border-bottom:1px solid rgba(255,255,255,.1);display:flex;align-items:center;transition:height .4s,box-shadow .4s}
+#hdr.sc{box-shadow:0 1px 32px rgba(0,0,0,.06);height:88px}
+.hi{width:100%;padding:0 28px;display:flex;align-items:center;justify-content:space-between}
+.hl img{height:102px;width:auto;transition:height .4s;filter:invert(1)}
+#hdr.sc .hl img{height:61px}
+.hn{display:flex;align-items:center;gap:36px}
+.hn a,.nb{font:400 11px/1 var(--dr-sf);letter-spacing:.13em;text-transform:uppercase;color:#fff;background:none;border:none;padding:0;position:relative}
+.hn a::after,.nb::after{content:'';position:absolute;bottom:-3px;left:0;width:0;height:1px;background:var(--dr-moss);transition:width .3s ease}
+.hn a:hover::after,.nb:hover::after{width:100%}
+.nw{position:relative}
+.nb{display:flex;align-items:center;gap:5px}
+.nw::before{content:'';position:absolute;top:100%;left:-20px;right:-20px;height:28px;z-index:99}
+.nd{position:absolute;top:calc(100% + 28px);right:0;background:#0c0c0c;border:1px solid rgba(255,255,255,.1);min-width:260px;opacity:0;pointer-events:none;transform:translateY(-8px);transition:opacity .2s,transform .2s;z-index:100}
+.nw:hover .nd{opacity:1;pointer-events:all;transform:translateY(0)}
+.nd a{display:flex;align-items:center;padding:12px 18px;font-size:11px;letter-spacing:.08em;border-bottom:1px solid rgba(255,255,255,.08);color:#fff}
+.nd a:last-child{border-bottom:none}
+.nd a:hover{background:rgba(255,255,255,.06)}
+.nd a::after{display:none}
+.dn{color:var(--dr-moss);margin-right:10px;font-size:10px;font-family:var(--dr-sf)}
+
+/* ── DARKROOM CANVAS ── */
+.dr{padding:200px 52px 80px;max-width:1440px;margin:0 auto;display:flex;flex-direction:column;gap:var(--s7)}
+
+/* ── MASTHEAD — Workbench display, Carson-broken energy ── */
+.dr-mast{position:relative;padding:var(--s5) 0 var(--s6);border-bottom:1px solid var(--dr-line);padding-right:200px}
+@media (max-width: 720px){.dr-mast{padding-right:0}}
+.dr-mast-title{font-family:var(--dr-disp);font-weight:400;font-size:clamp(72px,12vw,148px);line-height:.84;letter-spacing:-.025em;color:var(--dr-ink);text-transform:lowercase}
+.dr-mast-title em{font-style:normal;color:var(--dr-moss)}
+.dr-mast-meta{display:flex;align-items:baseline;gap:var(--s5);margin-top:var(--s4);font-family:var(--dr-mono);font-size:11px;letter-spacing:.08em;color:var(--dr-ink-dim);text-transform:uppercase}
+.dr-mast-version{color:var(--dr-moss);font-weight:400}
+.dr-mast-tag{flex:1}
+.dr-mast-back{color:var(--dr-ink-dim);transition:color .2s}
+.dr-mast-back:hover{color:var(--dr-ink)}
+
+/* ── MASTER KILLSWITCH (A/B compare, top-right of masthead) ── */
+.dr-kill{position:absolute;top:var(--s5);right:0;display:flex;flex-direction:column;align-items:flex-end;gap:4px;padding:14px 22px;background:linear-gradient(180deg,var(--dr-panel-3),var(--dr-panel-2));border:1px solid var(--dr-line);border-radius:var(--r-lg);transition:border-color .15s,background .15s,color .15s,box-shadow .15s;box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 4px 16px -8px rgba(0,0,0,.4)}
+.dr-kill:hover{border-color:var(--dr-moss-dim);background:linear-gradient(180deg,var(--dr-panel-3),var(--dr-panel-3))}
+.dr-kill-dot{width:10px;height:10px;border-radius:50%;background:var(--dr-line-2);box-shadow:0 0 0 0 var(--dr-amber);transition:background .2s,box-shadow .2s}
+.dr-kill-label{font-family:var(--dr-fx);font-weight:700;font-size:12px;letter-spacing:.16em;color:var(--dr-ink);text-transform:uppercase;line-height:1}
+.dr-kill-sub{font-family:var(--dr-mono);font-size:9px;letter-spacing:.32em;color:var(--dr-ink-2)}
+.dr-kill[data-active="true"]{background:var(--dr-panel-3);border-color:var(--dr-amber)}
+.dr-kill[data-active="true"] .dr-kill-dot{background:var(--dr-amber);box-shadow:0 0 14px var(--dr-amber)}
+.dr-kill[data-active="true"] .dr-kill-label{color:var(--dr-amber)}
+.dr-kill[data-active="true"] .dr-kill-sub{color:var(--dr-amber)}
+
+/* ── PER-MODULE RESET BUTTON ── */
+.dr-mod-reset{width:14px;height:14px;border:1px solid var(--dr-line-2);border-radius:50%;flex-shrink:0;font-family:var(--dr-fx);font-size:10px;line-height:1;color:var(--dr-ink-dim);background:transparent;display:flex;align-items:center;justify-content:center;transition:border-color .15s,color .15s,background .15s;margin-top:1px;margin-right:6px;padding:0}
+.dr-mod-reset:hover{border-color:var(--dr-moss);color:var(--dr-moss);background:var(--dr-panel)}
+.dr-mod-reset:active{background:var(--dr-moss);color:var(--dr-panel)}
+
+/* ── INPUT BAY ── */
+.dr-bay{display:grid;grid-template-columns:1fr auto;gap:var(--s6);align-items:stretch}
+.dr-bay-options{position:relative;display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s3)}
+.dr-bay-btn{position:relative;padding:var(--s5);background:linear-gradient(180deg,var(--dr-panel-3),var(--dr-panel-2));border:1px solid var(--dr-line);border-radius:var(--r-md);text-align:left;display:flex;flex-direction:column;gap:var(--s3);transition:border-color .2s,background .2s,box-shadow .2s,transform .12s;outline:none;box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
+.dr-bay-btn:hover{border-color:var(--dr-moss-dim);background:linear-gradient(180deg,var(--dr-panel-3),var(--dr-panel-3));box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 4px 16px -8px var(--dr-moss-glow)}
+.dr-bay-btn:focus-visible{border-color:var(--dr-moss)}
+.dr-bay-btn[aria-disabled="true"]{opacity:.42;cursor:not-allowed}
+.dr-bay-btn[data-active="true"]{border-color:var(--dr-moss);background:linear-gradient(180deg,var(--dr-panel-3),var(--dr-panel-3));box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 0 24px -8px var(--dr-moss-glow)}
+.dr-bay-btn[data-active="true"] .dr-bay-btn-name{color:var(--dr-moss)}
+.dr-bay-btn-name{font-family:var(--dr-fx);font-weight:700;font-size:22px;letter-spacing:.04em;color:var(--dr-ink);transition:color .2s;line-height:1}
+.dr-bay-btn-spec{font-family:var(--dr-fx);font-weight:400;font-size:12px;line-height:1.55;letter-spacing:.01em;color:var(--dr-ink-dim);max-width:42ch}
+.dr-bay-btn-corner{position:absolute;top:var(--s3);right:var(--s3);font-family:var(--dr-mono);font-size:9px;color:var(--dr-ink-2);letter-spacing:.16em}
+.dr-bay-status{display:flex;flex-direction:column;justify-content:flex-end;gap:var(--s2);min-width:200px;text-align:right}
+.dr-bay-source{font-family:var(--dr-mono);font-size:11px;color:var(--dr-ink-dim);letter-spacing:.04em}
+.dr-bay-source b{color:var(--dr-coral);font-weight:400}
+.dr-bay-level{position:relative;height:6px;background:var(--dr-panel);overflow:hidden;border-radius:var(--r-sm);border:1px solid var(--dr-line)}
+.dr-bay-level-bar{position:absolute;left:0;top:0;bottom:0;width:0%;background:linear-gradient(90deg,var(--dr-coral-dim),var(--dr-coral));transition:width .08s linear}
+.dr-bay-level-tick{position:absolute;top:0;bottom:0;width:1px;background:var(--dr-line)}
+
+/* ── DEVICE PICKER POPOVER ── */
+.dr-device-picker{position:absolute;top:calc(100% + var(--s2));left:0;right:0;background:var(--dr-panel-2);border:1px solid var(--dr-line);border-radius:var(--r-lg);z-index:50;box-shadow:0 12px 36px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.04);max-height:320px;display:flex;flex-direction:column;overflow:hidden}
+.dr-device-picker[hidden]{display:none}
+.dr-device-picker-head{display:flex;align-items:center;justify-content:space-between;padding:var(--s3) var(--s4);border-bottom:1px solid var(--dr-line)}
+.dr-device-picker-label{font-family:var(--dr-fx);font-weight:700;font-size:10px;letter-spacing:.20em;color:var(--dr-ink-2);text-transform:uppercase}
+.dr-device-picker-close{font-size:18px;line-height:1;color:var(--dr-ink-dim);padding:2px 8px;transition:color .15s}
+.dr-device-picker-close:hover{color:var(--dr-ink)}
+.dr-device-picker-list{overflow-y:auto;flex:1;padding:var(--s2) 0}
+.dr-device-item{display:flex;align-items:baseline;gap:var(--s3);width:100%;padding:var(--s3) var(--s4);text-align:left;font-family:var(--dr-fx);font-weight:500;font-size:12px;color:var(--dr-ink);letter-spacing:.02em;background:transparent;border:none;transition:background .12s,color .12s;cursor:pointer}
+.dr-device-item::before{content:'·';font-family:var(--dr-mono);color:var(--dr-ink-2);width:8px;flex-shrink:0;transition:color .12s}
+.dr-device-item:hover{background:var(--dr-panel-3)}
+.dr-device-item:hover::before{color:var(--dr-moss-dim)}
+.dr-device-item[data-active="true"]{background:var(--dr-panel-3);color:var(--dr-moss)}
+.dr-device-item[data-active="true"]::before{content:'▶';color:var(--dr-moss);font-size:9px}
+.dr-device-item-text{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0;overflow:hidden}
+.dr-device-item-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dr-device-item-id{display:block;font-family:var(--dr-mono);font-size:9px;color:var(--dr-ink-2);margin-top:2px;letter-spacing:.04em}
+.dr-device-picker-foot{padding:var(--s3) var(--s4);border-top:1px solid var(--dr-line);font-family:var(--dr-mono);font-size:9px;letter-spacing:.06em;color:var(--dr-ink-2)}
+
+/* ── LIVE WAVEFORM STRIP ── */
+.dr-strip{position:relative;background:linear-gradient(180deg,var(--dr-panel-3),var(--dr-panel-2));border:1px solid var(--dr-line);border-radius:var(--r-lg);height:104px;overflow:hidden;box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 6px 20px -10px rgba(0,0,0,.4)}
+.dr-strip-canvas{width:100%;height:100%}
+.dr-strip-meta{position:absolute;top:var(--s3);left:var(--s3);display:flex;gap:var(--s4);font-family:var(--dr-mono);font-size:9px;letter-spacing:.16em;color:var(--dr-ink-2);text-transform:uppercase;pointer-events:none}
+.dr-strip-meta span b{color:var(--dr-ink-dim);font-weight:400}
+
+/* ── AUDIO PLAYER — TAPE DECK + WAVEFORM PANEL ── */
+.dr-tape{display:grid;grid-template-columns:auto 1fr;gap:var(--s5);align-items:stretch;padding:var(--s5) var(--s5);background:linear-gradient(180deg,var(--dr-panel-3),var(--dr-panel-2));border:1px solid var(--dr-line);border-radius:var(--r-lg);box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 8px 24px -12px rgba(0,0,0,.5)}
+.dr-tape-deck{display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.dr-tape-disc{width:280px;height:280px;cursor:grab;user-select:none;touch-action:none;display:block;filter:drop-shadow(0 8px 16px rgba(0,0,0,.55))}
+.dr-tape-disc:active{cursor:grabbing}
+.dr-tape-face{fill:#050505;stroke:none}
+.dr-tape-rim{fill:none;stroke:var(--dr-line-2);stroke-width:1;opacity:.55}
+.dr-tape-pinhole{fill:#000;stroke:var(--dr-line);stroke-width:.5}
+.dr-tape-corner-l,.dr-tape-corner-r{fill:var(--dr-ink-dim);font-family:var(--dr-mono);font-size:8.5px;letter-spacing:.16em}
+.dr-tape-corner-r{text-anchor:end;fill:var(--dr-ink)}
+.dr-tape-rotor{transform-origin:0 0;transform-box:view-box}
+.dr-tape-line{stroke:var(--dr-ink);stroke-width:.7;opacity:.55}
+.dr-tape-spec{fill:var(--dr-ink-2);font-family:var(--dr-mono);font-size:9px;letter-spacing:.06em;text-anchor:middle}
+.dr-tape-spindle{fill:#020202;stroke:var(--dr-line);stroke-width:.5}
+.dr-tape-dot{fill:var(--dr-ink-2);opacity:.7}
+
+/* right panel: source/elapsed/rate row + waveform + hint, stacked */
+.dr-tape-panel{display:flex;flex-direction:column;gap:var(--s4);min-width:0;padding:var(--s2) 0}
+.dr-tape-info{display:grid;grid-template-columns:1fr auto auto auto;gap:var(--s5);padding-bottom:var(--s3);border-bottom:1px solid var(--dr-line)}
+.dr-tape-info-cell{display:flex;flex-direction:column;gap:4px;min-width:0}
+.dr-tape-info-cell:nth-child(1) .dr-tape-meta-value{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dr-tape-info-cell:nth-child(2),.dr-tape-info-cell:nth-child(3),.dr-tape-info-cell:nth-child(4){text-align:right}
+.dr-tape-info-bpm{justify-self:end}
+.dr-tape-bpm-value{font-family:var(--dr-disp);font-size:24px;line-height:1;color:var(--dr-moss);letter-spacing:.02em;font-variant-numeric:tabular-nums}
+.dr-tape-info-bpm[data-locked="false"] .dr-tape-bpm-value{color:var(--dr-ink-dim);opacity:.55}
+.dr-tape-bpm-conf{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--dr-line-2);vertical-align:middle;margin-left:4px;font-size:0;transition:background .3s,box-shadow .3s}
+.dr-tape-info-bpm[data-locked="true"] .dr-tape-bpm-conf{background:var(--dr-moss);box-shadow:0 0 8px var(--dr-moss-glow)}
+.dr-tape-meta-label{font-family:var(--dr-fx);font-weight:700;font-size:10px;letter-spacing:.20em;color:var(--dr-ink-2);text-transform:uppercase}
+.dr-tape-meta-value{font-family:var(--dr-mono);font-size:18px;color:var(--dr-ink);font-variant-numeric:tabular-nums;letter-spacing:.02em;line-height:1.1}
+.dr-tape-hint{font-family:var(--dr-mono);font-size:10px;letter-spacing:.06em;color:var(--dr-ink-2);line-height:1.6}
+
+/* the waveform strip nested inside the tape panel */
+.dr-tape-panel .dr-strip{flex:1;min-height:140px;height:auto}
+
+@media (max-width:920px){
+  .dr-tape{grid-template-columns:1fr;gap:var(--s5);justify-items:stretch}
+  .dr-tape-deck{justify-self:center}
+  .dr-tape-info{grid-template-columns:1fr 1fr 1fr}
+  .dr-tape-info-cell:nth-child(2),.dr-tape-info-cell:nth-child(3){text-align:left}
+}
+
+/* ── RACK — fluid grid (signal flow is implicit in module order, no decorative line) ── */
+.dr-rack{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(248px,1fr));
+  gap:var(--s5);
+  align-items:stretch;
+}
+
+/* ── MODULES ── */
+.dr-mod{position:relative;background:linear-gradient(180deg,var(--dr-panel-3) 0%,var(--dr-panel-2) 18%,var(--dr-panel-2) 100%);border:1px solid var(--dr-line);border-radius:var(--r-lg);padding:var(--s5) var(--s4);display:flex;flex-direction:column;gap:var(--s4);min-height:340px;box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 8px 24px -12px rgba(0,0,0,.5)}
+.dr-mod[data-bypassed="true"]{opacity:.45}
+.dr-mod-head{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--s3);padding-bottom:var(--s4);border-bottom:1px solid var(--dr-line)}
+.dr-mod-head-text{display:flex;flex-direction:column;gap:var(--s2);min-width:0}
+.dr-mod-name{font-family:var(--dr-fx);font-weight:600;font-size:15px;letter-spacing:.04em;color:var(--dr-ink);text-transform:uppercase;line-height:1.05}
+.dr-mod-spec{font-family:var(--dr-mono);font-size:9px;letter-spacing:.12em;color:var(--dr-ink-2);text-transform:uppercase;line-height:1.4}
+.dr-mod-bypass{width:14px;height:14px;border:1px solid var(--dr-line-2);border-radius:50%;flex-shrink:0;transition:background .2s,border-color .2s,box-shadow .2s;margin-top:1px}
+.dr-mod-bypass:hover{border-color:var(--dr-moss)}
+.dr-mod[data-bypassed="true"] .dr-mod-bypass{background:transparent}
+.dr-mod:not([data-bypassed="true"]) .dr-mod-bypass{background:var(--dr-moss);border-color:var(--dr-moss);box-shadow:0 0 8px -2px var(--dr-moss)}
+
+
+.dr-mod-body{flex:1;display:flex;flex-direction:column;gap:var(--s4)}
+
+/* ── KNOBS (SVG line-drawn, no skeuomorphism) ── */
+.dr-knobs{display:flex;align-items:flex-end;justify-content:space-around;gap:var(--s3);padding:var(--s2) 0}
+.dr-knob{display:flex;flex-direction:column;align-items:center;gap:var(--s2);user-select:none}
+.dr-knob-label{font-family:var(--dr-fx);font-weight:600;font-size:10px;letter-spacing:.16em;color:var(--dr-ink-dim);text-transform:uppercase}
+.dr-knob-dial{width:64px;height:64px;cursor:grab;display:block}
+.dr-knob-dial:active{cursor:grabbing}
+.dr-knob-dial circle{fill:none;stroke:var(--dr-line-2);stroke-width:1}
+.dr-knob-dial .dr-ring-inner{stroke:var(--dr-line)}
+.dr-knob-dial .dr-arc{fill:none;stroke:var(--dr-moss);stroke-width:1.5;stroke-linecap:butt}
+.dr-knob-dial .dr-tick{stroke:var(--dr-ink);stroke-width:1.5;stroke-linecap:square}
+.dr-knob-value{font-family:var(--dr-mono);font-size:10px;letter-spacing:.04em;color:var(--dr-ink);min-width:54px;text-align:center;font-variant-numeric:tabular-nums}
+
+.dr-knob-screw .dr-knob-dial{width:80px;height:80px}
+.dr-knob-screw .dr-knob-label{font-size:11px;color:var(--dr-moss);letter-spacing:.20em;font-weight:700}
+.dr-knob-screw .dr-knob-value{font-size:12px;color:var(--dr-moss);font-weight:500}
+
+/* TEMPO/PITCH module — dimmed when source is a live stream (worklet phase vocoder ships in v1.1) */
+.dr-mod[data-mod="tempo"][data-stream-dim="true"] .dr-knob{opacity:.42}
+.dr-mod[data-mod="tempo"][data-stream-dim="true"]::after{content:'STREAM — TIME/PITCH IN V1.1';position:absolute;bottom:var(--s3);left:var(--s4);right:var(--s4);font-family:var(--dr-mono);font-size:8px;letter-spacing:.16em;color:var(--dr-amber);text-align:center;pointer-events:none;text-transform:uppercase}
+/* TEMPO/PITCH module — tighten so the SCREW + 2 fine knobs always fit at narrow widths */
+.dr-mod[data-mod="tempo"] .dr-knobs{flex-wrap:wrap;gap:var(--s2);justify-content:center}
+.dr-mod[data-mod="tempo"] .dr-knob-dial{width:56px;height:56px}
+.dr-mod[data-mod="tempo"] .dr-knob-screw .dr-knob-dial{width:80px;height:80px}
+.dr-mod[data-mod="tempo"] .dr-knob-value{font-size:9px;min-width:48px}
+.dr-mod[data-mod="tempo"] .dr-knob-screw .dr-knob-value{font-size:12px}
+.dr-mod[data-mod="tempo"] .dr-knob-label{font-size:9px;letter-spacing:.16em}
+
+/* ── FILTER MODULE — curve display + spectrum ── */
+.dr-curve{width:100%;height:120px;background:var(--dr-panel);border:1px solid var(--dr-line);border-radius:var(--r-md);display:block;cursor:crosshair;box-shadow:inset 0 2px 6px rgba(0,0,0,.3)}
+.dr-mode-row{display:flex;gap:var(--s2);justify-content:flex-end}
+.dr-mode-btn{padding:5px 12px;font-family:var(--dr-fx);font-weight:600;font-size:10px;letter-spacing:.16em;color:var(--dr-ink-dim);text-transform:uppercase;background:var(--dr-panel);border:1px solid var(--dr-line);border-radius:var(--r-sm);transition:color .15s,border-color .15s,background .15s,box-shadow .15s}
+.dr-mode-btn:hover{color:var(--dr-ink);border-color:var(--dr-line-2)}
+.dr-mode-btn[data-active="true"]{color:var(--dr-moss);border-color:var(--dr-moss);box-shadow:0 0 12px -4px var(--dr-moss-glow)}
+
+/* ── REVERB MODULE — IR display + 8-slot grid + 2 knobs (kept compact like delay) ── */
+.dr-mod[data-mod="reverb"] .dr-knobs{flex-wrap:wrap;gap:var(--s3);justify-content:space-around;padding:var(--s2) 0 0}
+.dr-mod[data-mod="reverb"] .dr-knob-dial{width:56px;height:56px}
+.dr-mod[data-mod="reverb"] .dr-knob-value{font-size:9px;min-width:48px}
+.dr-mod[data-mod="reverb"] .dr-knob-label{font-size:9px;letter-spacing:.18em}
+
+.dr-ir{width:100%;height:64px;background:var(--dr-panel);border:1px solid var(--dr-line);border-radius:var(--r-md);display:block;box-shadow:inset 0 2px 6px rgba(0,0,0,.3)}
+.dr-ir-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(86px,1fr));gap:1px;background:var(--dr-line);overflow:hidden;border-radius:var(--r-md);border:1px solid var(--dr-line)}
+.dr-ir-btn{display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;padding:6px 10px;min-height:48px;background:var(--dr-panel-2);transition:background .15s,color .15s;min-width:0;overflow:hidden}
+.dr-ir-btn b{font-family:var(--dr-mono);font-weight:400;font-size:12px;color:var(--dr-ink-dim);letter-spacing:.02em;font-variant-numeric:tabular-nums}
+.dr-ir-btn span{font-family:var(--dr-fx);font-weight:500;font-size:9px;letter-spacing:.06em;color:var(--dr-ink-2);text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:100%}
+.dr-ir-btn:hover{background:var(--dr-panel-3)}
+.dr-ir-btn:hover b{color:var(--dr-ink)}
+.dr-ir-btn[data-active="true"]{background:var(--dr-panel-3)}
+.dr-ir-btn[data-active="true"] b{color:var(--dr-moss)}
+.dr-ir-btn[data-active="true"] span{color:var(--dr-ink-dim)}
+
+/* ── FILTER LFO sub-section ── */
+.dr-lfo{display:flex;flex-direction:column;gap:var(--s3);padding-top:var(--s4);margin-top:var(--s2);border-top:1px solid var(--dr-line)}
+.dr-lfo-head{display:flex;align-items:center;justify-content:space-between;gap:var(--s3)}
+.dr-lfo-label{font-family:var(--dr-fx);font-weight:700;font-size:11px;letter-spacing:.20em;color:var(--dr-ink-2);text-transform:uppercase}
+.dr-lfo-toggle{padding:4px 12px;font-family:var(--dr-fx);font-weight:700;font-size:9px;letter-spacing:.20em;color:var(--dr-ink-dim);text-transform:uppercase;background:var(--dr-panel);border:1px solid var(--dr-line);border-radius:var(--r-sm);transition:color .12s,border-color .12s,background .12s,box-shadow .12s}
+.dr-lfo-toggle:hover{color:var(--dr-ink);border-color:var(--dr-line-2)}
+.dr-lfo-toggle[data-active="true"]{color:var(--dr-moss);border-color:var(--dr-moss);background:var(--dr-panel-3);box-shadow:0 0 12px -4px var(--dr-moss-glow)}
+.dr-lfo-toggle[data-active="true"]::before{content:'ON'}
+.dr-lfo-toggle[data-active="false"]::before{content:'OFF'}
+.dr-lfo-toggle{font-size:0}
+.dr-lfo-toggle::before{font-size:9px}
+.dr-lfo-vis{width:100%;height:64px;background:var(--dr-panel);border:1px solid var(--dr-line);border-radius:var(--r-md);display:block;box-shadow:inset 0 2px 6px rgba(0,0,0,.3)}
+.dr-lfo-shape-row{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--dr-line);border-radius:var(--r-md);overflow:hidden;border:1px solid var(--dr-line)}
+.dr-lfo-shape{padding:8px 4px;font-family:var(--dr-mono);font-size:14px;color:var(--dr-ink-dim);background:var(--dr-panel-2);transition:color .12s,background .12s;text-align:center;line-height:1}
+.dr-lfo-shape:hover{color:var(--dr-ink);background:var(--dr-panel-3)}
+.dr-lfo-shape[data-active="true"]{color:var(--dr-moss);background:var(--dr-panel-3)}
+.dr-lfo-target-row{display:grid;grid-template-columns:auto 1fr 1fr 1fr auto;gap:var(--s2);align-items:center}
+.dr-lfo-target-label{font-family:var(--dr-fx);font-weight:600;font-size:9px;letter-spacing:.18em;color:var(--dr-ink-2);text-transform:uppercase;padding-right:var(--s2)}
+.dr-lfo-target{padding:5px 8px;font-family:var(--dr-fx);font-weight:600;font-size:9px;letter-spacing:.16em;color:var(--dr-ink-dim);text-transform:uppercase;background:var(--dr-panel);border:1px solid var(--dr-line);border-radius:var(--r-sm);transition:color .12s,border-color .12s,background .12s,box-shadow .12s}
+.dr-lfo-target:hover{color:var(--dr-ink);border-color:var(--dr-line-2)}
+.dr-lfo-target[data-active="true"]{color:var(--dr-moss);border-color:var(--dr-moss);background:var(--dr-panel-3);box-shadow:0 0 10px -4px var(--dr-moss-glow)}
+.dr-lfo-sync{padding:5px 10px;font-family:var(--dr-fx);font-weight:700;font-size:9px;letter-spacing:.18em;color:var(--dr-ink-dim);text-transform:uppercase;background:var(--dr-panel);border:1px solid var(--dr-line);border-radius:var(--r-sm);transition:color .12s,border-color .12s,background .12s,box-shadow .12s;margin-left:var(--s2)}
+.dr-lfo-sync:hover{color:var(--dr-ink);border-color:var(--dr-line-2)}
+.dr-lfo-sync[data-active="true"]{color:var(--dr-moss);border-color:var(--dr-moss);background:var(--dr-panel-3);box-shadow:0 0 10px -4px var(--dr-moss-glow)}
+.dr-lfo-div-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:1px;background:var(--dr-line);border-radius:var(--r-md);overflow:hidden;border:1px solid var(--dr-line)}
+.dr-lfo-div-grid[hidden]{display:none}
+.dr-lfo-div-grid .dr-div-btn{padding:6px 4px;font-size:10px}
+/* compact knobs inside the LFO section */
+.dr-lfo .dr-knobs{justify-content:space-around;gap:var(--s3);padding:var(--s2) 0 0}
+.dr-lfo .dr-knob-dial{width:54px;height:54px}
+.dr-lfo .dr-knob-value{font-size:9px;min-width:50px}
+.dr-lfo .dr-knob-label{font-size:9px;letter-spacing:.18em}
+
+/* ── DELAY MODULE — tempo + divisions + 4 knobs ── */
+.dr-tempo{display:flex;align-items:baseline;gap:var(--s3);padding:var(--s2) 0}
+.dr-tempo-label{font-family:var(--dr-fx);font-weight:600;font-size:10px;letter-spacing:.20em;color:var(--dr-ink-2);text-transform:uppercase}
+.dr-tempo-value{font-family:var(--dr-mono);font-size:22px;line-height:1;color:var(--dr-ink);font-variant-numeric:tabular-nums;flex:1;letter-spacing:.02em}
+.dr-tap-btn{padding:6px 14px;font-family:var(--dr-fx);font-weight:600;font-size:10px;letter-spacing:.20em;color:var(--dr-ink-dim);text-transform:uppercase;background:var(--dr-panel);border:1px solid var(--dr-line);border-radius:var(--r-sm);transition:color .12s,border-color .12s,background .12s,box-shadow .12s}
+.dr-tap-btn:hover{color:var(--dr-ink);border-color:var(--dr-line-2)}
+.dr-tap-btn[data-pulsing="true"]{color:var(--dr-moss);border-color:var(--dr-moss);background:var(--dr-panel-3);box-shadow:0 0 12px -4px var(--dr-moss-glow)}
+.dr-delay-vis{width:100%;height:80px;background:var(--dr-panel);border:1px solid var(--dr-line);border-radius:var(--r-md);display:block;box-shadow:inset 0 2px 6px rgba(0,0,0,.3)}
+.dr-div-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--dr-line);border-radius:var(--r-md);border:1px solid var(--dr-line);overflow:hidden}
+.dr-div-btn{padding:8px var(--s3);font-family:var(--dr-mono);font-size:11px;letter-spacing:.02em;color:var(--dr-ink-dim);background:var(--dr-panel-2);font-variant-numeric:tabular-nums;transition:color .12s,background .12s;text-align:center}
+.dr-div-btn:hover{color:var(--dr-ink);background:var(--dr-panel-3)}
+.dr-div-btn[data-active="true"]{color:var(--dr-moss);background:var(--dr-panel-3)}
+.dr-mod[data-mod="delay"] .dr-knobs{display:grid;grid-template-columns:1fr 1fr;grid-auto-rows:auto;gap:var(--s3) var(--s2);padding:var(--s2) 0 0;justify-items:center}
+.dr-mod[data-mod="delay"] .dr-knob{width:100%;align-items:center}
+.dr-mod[data-mod="delay"] .dr-knob-dial{width:56px;height:56px}
+.dr-mod[data-mod="delay"] .dr-knob-value{font-size:9px;min-width:48px}
+.dr-mod[data-mod="delay"] .dr-knob-label{font-size:9px;letter-spacing:.18em}
+
+/* ── MASTER MODULE — meters + output ── */
+.dr-meters{display:flex;flex-direction:column;gap:var(--s2)}
+.dr-meter{display:grid;grid-template-columns:32px 1fr 56px;align-items:center;gap:var(--s3);font-family:var(--dr-mono)}
+.dr-meter-label{font-family:var(--dr-fx);font-weight:600;font-size:10px;letter-spacing:.16em;color:var(--dr-ink-dim);text-transform:uppercase}
+.dr-meter-bar{position:relative;height:6px;background:var(--dr-panel);border:1px solid var(--dr-line);border-radius:var(--r-sm);overflow:hidden}
+.dr-meter-bar > span{position:absolute;left:0;top:0;bottom:0;width:0%;background:linear-gradient(90deg,var(--dr-moss-dim),var(--dr-moss));transition:width .06s linear}
+.dr-meter-bar.dr-meter-gr > span{background:var(--dr-amber);right:0;left:auto}
+.dr-meter-tick{position:absolute;top:0;bottom:0;width:1px;background:var(--dr-line);left:75%}
+.dr-meter-value{font-size:10px;color:var(--dr-ink);text-align:right;font-variant-numeric:tabular-nums}
+
+.dr-mod[data-mod="master"] .dr-knobs{margin-top:auto}
+
+/* ── TRANSPORT ── */
+.dr-trans{display:grid;grid-template-columns:auto auto 1fr auto auto;align-items:center;gap:var(--s4);padding:var(--s4) var(--s5);background:linear-gradient(180deg,var(--dr-panel-3),var(--dr-panel-2));border:1px solid var(--dr-line);border-radius:var(--r-lg);box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 6px 20px -10px rgba(0,0,0,.4)}
+.dr-trans-arm,.dr-trans-rec{display:flex;align-items:center;gap:var(--s2);padding:var(--s3) var(--s4);font-family:var(--dr-fx);font-weight:600;font-size:11px;letter-spacing:.16em;color:var(--dr-ink-dim);text-transform:uppercase;background:var(--dr-panel);border:1px solid var(--dr-line);border-radius:var(--r-sm);transition:border-color .15s,color .15s,background .15s,box-shadow .15s}
+.dr-trans-arm:hover,.dr-trans-rec:hover:not(:disabled){border-color:var(--dr-moss-dim);color:var(--dr-ink)}
+.dr-trans-arm[data-armed="true"]{border-color:var(--dr-amber);color:var(--dr-amber)}
+.dr-trans-arm[data-armed="true"] .dr-trans-dot{background:var(--dr-amber);box-shadow:0 0 12px var(--dr-amber)}
+.dr-trans-rec:disabled{opacity:.4;cursor:not-allowed}
+.dr-trans-rec[data-recording="true"]{border-color:var(--dr-amber);color:var(--dr-amber)}
+.dr-trans-dot{width:8px;height:8px;border-radius:50%;background:var(--dr-line-2);display:inline-block;flex-shrink:0;transition:background .2s,box-shadow .2s}
+.dr-trans-arrow{font-size:10px;line-height:1;color:inherit}
+.dr-trans-time{justify-self:end;font-family:var(--dr-mono);font-size:22px;color:var(--dr-ink);font-variant-numeric:tabular-nums;letter-spacing:.02em;font-weight:400}
+.dr-trans-file{justify-self:end;font-family:var(--dr-mono);font-size:10px;color:var(--dr-ink-dim);letter-spacing:.04em}
+.dr-trans-status{font-family:var(--dr-mono);font-size:10px;letter-spacing:.16em;color:var(--dr-ink-2);text-transform:uppercase}
+
+/* ── FOOTER ── */
+.dr-foot{margin-top:var(--s7);padding:var(--s5) 0;border-top:1px solid var(--dr-line);display:flex;justify-content:space-between;align-items:center;font-family:var(--dr-mono);font-size:10px;letter-spacing:.16em;color:var(--dr-ink-2);text-transform:uppercase}
+.dr-foot a{color:var(--dr-ink-dim);transition:color .2s}
+.dr-foot a:hover{color:var(--dr-ink)}
+.dr-foot-meta{display:flex;gap:var(--s5)}
+
+/* ── HIDDEN FILE INPUT ── */
+.dr-file-input{position:absolute;left:-9999px;opacity:0;width:1px;height:1px}
+
+/* ── INTERMEDIATE WIDTHS — keep schematic, tighten chrome ── */
+@media (max-width: 1180px){
+  .dr{padding:180px 32px 64px}
+  .dr-mast-axis{display:none}
+}
+@media (max-width: 920px){
+  .dr-bay{grid-template-columns:1fr;gap:var(--s4)}
+  .dr-bay-head{flex-direction:row;align-items:baseline;gap:var(--s4)}
+  .dr-bay-status{text-align:left;min-width:0}
+  .dr-trans{grid-template-columns:auto auto 1fr;gap:var(--s3)}
+  .dr-trans-time,.dr-trans-file,.dr-trans-status{grid-column:auto}
+  .dr-trans-status{display:none}
+}
+
+/* ── MOBILE / SMALL VIEWPORT REDIRECT ── */
+.dr-no-mobile{display:none}
+@media (max-width: 720px){
+  body > main.dr,
+  body > footer.dr-foot{display:none}
+  .dr-no-mobile{display:flex;flex-direction:column;justify-content:center;align-items:flex-start;padding:200px 32px 80px;min-height:100vh;gap:var(--s5);max-width:640px;margin:0 auto}
+  .dr-no-mobile h1{font-family:var(--dr-disp);font-weight:400;font-size:clamp(48px,12vw,96px);line-height:.86;color:var(--dr-ink);text-transform:lowercase}
+  .dr-no-mobile h1 em{font-style:normal;color:var(--dr-moss)}
+  .dr-no-mobile p{font-family:var(--dr-mono);font-size:13px;line-height:1.7;color:var(--dr-ink-dim);max-width:48ch}
+  .dr-no-mobile a{color:var(--dr-moss);border-bottom:1px solid var(--dr-moss);padding-bottom:2px}
+}
+</style>
+</head>
+<body>
+
+<header id="hdr">
+  <div class="hi">
+    <a href="portfolio.html" class="hl"><img src="logos &amp; backgrounds/jack-logo-web.png" alt="Jackson Alexander Studio"></a>
+    <nav class="hn">
+      <div class="nw">
+        <a href="portfolio.html" class="nb">Portfolio &#9662;</a>
+        <div class="nd">
+          <a href="portfolio.html#logos"><span class="dn">01</span>Logos</a>
+          <a href="portfolio.html#illustration"><span class="dn">02</span>Illustration / Graphic</a>
+          <a href="portfolio.html#craft"><span class="dn">03</span>Fabrication</a>
+          <a href="portfolio.html#styling"><span class="dn">04</span>Creative Direction</a>
+          <a href="portfolio.html#garden"><span class="dn">05</span>Jack&#39;s Garden</a>
+          <a href="portfolio.html#production"><span class="dn">06</span>Production</a>
+        </div>
+      </div>
+      <a href="case-studies.html">Case Studies</a>
+      <a href="archive.html">Archive</a>
+      <a href="playground.html">Playground</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<!-- MOBILE / SMALL VIEWPORT REDIRECT -->
+<section class="dr-no-mobile">
+  <h1>darkroom<em>.ja</em></h1>
+  <p>This tool requires a desktop browser. The browser audio APIs it needs (tab capture, audio device access, real-time DSP) are not available on phones or tablets. Open this page on a Chromium browser (Chrome, Arc, Brave, Edge) at 1100&thinsp;px or wider.</p>
+  <a href="playground.html">← back to playground</a>
+</section>
+
+<!-- DESKTOP CANVAS -->
+<main class="dr">
+
+  <!-- MASTHEAD -->
+  <section class="dr-mast">
+    <h1 class="dr-mast-title">darkroom</h1>
+    <button class="dr-kill" id="dr-kill" type="button" aria-label="bypass all effects (A/B compare)">
+      <span class="dr-kill-dot"></span>
+      <span class="dr-kill-label">BYPASS ALL</span>
+      <span class="dr-kill-sub">A · B</span>
+    </button>
+  </section>
+
+  <!-- INPUT BAY -->
+  <section class="dr-bay" aria-label="Input source">
+    <div class="dr-bay-options">
+      <button class="dr-bay-btn" data-input="tab" type="button">
+        <span class="dr-bay-btn-corner">A</span>
+        <span class="dr-bay-btn-name">TAB</span>
+        <span class="dr-bay-btn-spec">Capture audio from any Chromium tab. YouTube, SoundCloud, Bandcamp, web players, anywhere a tab is making sound.</span>
+      </button>
+      <button class="dr-bay-btn" data-input="device" type="button">
+        <span class="dr-bay-btn-corner">B</span>
+        <span class="dr-bay-btn-name">DEVICE</span>
+        <span class="dr-bay-btn-spec">Route any audio input on your machine. Microphone, audio interface, virtual devices like Loopback.</span>
+      </button>
+      <button class="dr-bay-btn" data-input="file" type="button">
+        <span class="dr-bay-btn-corner">C</span>
+        <span class="dr-bay-btn-name">FILE</span>
+        <span class="dr-bay-btn-spec">Drop a local audio file onto the page or click to browse. WAV, MP3, FLAC, M4A, OGG.</span>
+      </button>
+      <input class="dr-file-input" type="file" accept="audio/*" id="dr-file-input">
+      <div class="dr-device-picker" id="dr-device-picker" hidden>
+        <div class="dr-device-picker-head">
+          <span class="dr-device-picker-label">SELECT INPUT DEVICE</span>
+          <button class="dr-device-picker-close" id="dr-device-picker-close" type="button" aria-label="close">×</button>
+        </div>
+        <div class="dr-device-picker-list" id="dr-device-picker-list"></div>
+        <div class="dr-device-picker-foot">virtual devices (Loopback, BlackHole) appear here when permission is granted</div>
+      </div>
+    </div>
+    <div class="dr-bay-status">
+      <span class="dr-bay-source"><b>no source</b> — pick an input to begin</span>
+      <div class="dr-bay-level">
+        <span class="dr-bay-level-bar"></span>
+        <span class="dr-bay-level-tick" style="left:75%"></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- AUDIO PLAYER — TAPE DECK (left) + WAVEFORM + METADATA (right) -->
+  <section class="dr-tape" aria-label="Audio player">
+    <div class="dr-tape-deck">
+      <svg class="dr-tape-disc" viewBox="-160 -160 320 320" role="img" aria-label="Scratchable tape deck">
+        <circle r="158" class="dr-tape-face"/>
+        <circle r="158" class="dr-tape-rim"/>
+        <circle cx="-30" cy="-145" r="2" class="dr-tape-pinhole"/>
+        <circle cx="30" cy="-145" r="2" class="dr-tape-pinhole"/>
+        <text x="-138" y="-130" class="dr-tape-corner-l">DARKROOM</text>
+        <text x="120" y="-130" class="dr-tape-corner-r" id="dr-tape-corner-time">00.00.00</text>
+        <g class="dr-tape-rotor" id="dr-tape-rotor">
+          <line x1="-128" y1="-128" x2="128" y2="128" class="dr-tape-line"/>
+          <text x="-72" y="-40" class="dr-tape-spec">96 / 24</text>
+          <text x="34" y="64" class="dr-tape-spec">3 ⊘ M</text>
+          <circle r="36" class="dr-tape-spindle"/>
+          <circle cx="-9" cy="-9" r="2.4" class="dr-tape-dot"/>
+          <circle cx="9" cy="-9" r="2.4" class="dr-tape-dot"/>
+          <circle cx="-9" cy="9" r="2.4" class="dr-tape-dot"/>
+          <circle cx="9" cy="9" r="2.4" class="dr-tape-dot"/>
+        </g>
+      </svg>
+    </div>
+    <div class="dr-tape-panel">
+      <div class="dr-tape-info">
+        <div class="dr-tape-info-cell">
+          <span class="dr-tape-meta-label">SOURCE</span>
+          <span class="dr-tape-meta-value" id="dr-tape-source">— no source —</span>
+        </div>
+        <div class="dr-tape-info-cell">
+          <span class="dr-tape-meta-label">ELAPSED</span>
+          <span class="dr-tape-meta-value" id="dr-tape-elapsed">00:00:00</span>
+        </div>
+        <div class="dr-tape-info-cell dr-tape-info-bpm">
+          <span class="dr-tape-meta-label">BPM <span class="dr-tape-bpm-conf" id="dr-tape-bpm-conf">·</span></span>
+          <span class="dr-tape-bpm-value" id="dr-tape-bpm">---</span>
+        </div>
+        <div class="dr-tape-info-cell">
+          <span class="dr-tape-meta-label">RATE</span>
+          <span class="dr-tape-meta-value" id="dr-tape-rate">1.000×</span>
+        </div>
+      </div>
+      <div class="dr-strip" aria-label="Live input waveform">
+        <canvas class="dr-strip-canvas" width="2400" height="192"></canvas>
+        <div class="dr-strip-meta">
+          <span><b>fs</b> — 48 kHz</span>
+          <span><b>buf</b> — 2048</span>
+          <span><b>ch</b> — stereo</span>
+        </div>
+      </div>
+      <div class="dr-tape-hint">grab the disc and rotate to scratch · release to resume normal playback</div>
+    </div>
+  </section>
+
+  <!-- 4-MODULE SCHEMATIC -->
+  <section class="dr-rack" aria-label="Effects rack">
+
+    <!-- TEMPO / PITCH -->
+    <article class="dr-mod" data-mod="tempo" data-bypassed="true">
+      <header class="dr-mod-head">
+        <div class="dr-mod-head-text">
+          <span class="dr-mod-name">TEMPO/PITCH</span>
+          <span class="dr-mod-spec">phase vocoder + native rate</span>
+        </div>
+        <button class="dr-mod-reset" type="button" aria-label="reset module" title="reset to defaults">↺</button>
+        <button class="dr-mod-bypass" type="button" aria-label="bypass module"></button>
+      </header>
+      <div class="dr-mod-body">
+        <div class="dr-knobs">
+          <div class="dr-knob" data-param="rate">
+            <span class="dr-knob-label">RATE</span>
+            <svg class="dr-knob-dial" viewBox="-50 -50 100 100">
+              <circle r="38" class="dr-ring-inner"/>
+              <circle r="42"/>
+              <line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/>
+            </svg>
+            <span class="dr-knob-value">1.000×</span>
+          </div>
+          <div class="dr-knob dr-knob-screw" data-param="screw">
+            <span class="dr-knob-label">SCREW</span>
+            <svg class="dr-knob-dial" viewBox="-50 -50 100 100">
+              <circle r="38" class="dr-ring-inner"/>
+              <circle r="44"/>
+              <path class="dr-arc" d="M -31.1 24.1 A 39 39 0 1 1 31.1 24.1" />
+              <line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/>
+            </svg>
+            <span class="dr-knob-value">1.000×</span>
+          </div>
+          <div class="dr-knob" data-param="pitch">
+            <span class="dr-knob-label">PITCH</span>
+            <svg class="dr-knob-dial" viewBox="-50 -50 100 100">
+              <circle r="38" class="dr-ring-inner"/>
+              <circle r="42"/>
+              <line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/>
+            </svg>
+            <span class="dr-knob-value">+0 st</span>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!--FILTER -->
+    <article class="dr-mod" data-mod="filter" data-bypassed="true">
+      <header class="dr-mod-head">
+        <div class="dr-mod-head-text">
+          <span class="dr-mod-name">FILTER</span>
+          <span class="dr-mod-spec">biquad · 12 dB/oct · LFO</span>
+        </div>
+        <button class="dr-mod-reset" type="button" aria-label="reset module" title="reset to defaults">↺</button>
+        <button class="dr-mod-bypass" type="button" aria-label="bypass module"></button>
+      </header>
+      <div class="dr-mod-body">
+        <canvas class="dr-curve" width="480" height="240"></canvas>
+        <div class="dr-mode-row">
+          <button class="dr-mode-btn" data-mode="lp" data-active="true" type="button">LP</button>
+          <button class="dr-mode-btn" data-mode="hp" type="button">HP</button>
+          <button class="dr-mode-btn" data-mode="bp" type="button">BP</button>
+        </div>
+        <div class="dr-knobs">
+          <div class="dr-knob" data-param="cut">
+            <span class="dr-knob-label">CUT</span>
+            <svg class="dr-knob-dial" viewBox="-50 -50 100 100">
+              <circle r="38" class="dr-ring-inner"/>
+              <circle r="42"/>
+              <line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/>
+            </svg>
+            <span class="dr-knob-value">20.0 kHz</span>
+          </div>
+          <div class="dr-knob" data-param="res">
+            <span class="dr-knob-label">RES</span>
+            <svg class="dr-knob-dial" viewBox="-50 -50 100 100">
+              <circle r="38" class="dr-ring-inner"/>
+              <circle r="42"/>
+              <line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/>
+            </svg>
+            <span class="dr-knob-value">0.10</span>
+          </div>
+        </div>
+
+        <!-- LFO sub-section -->
+        <div class="dr-lfo">
+          <div class="dr-lfo-head">
+            <span class="dr-lfo-label">LFO</span>
+            <button class="dr-lfo-toggle" id="dr-lfo-toggle" type="button" data-active="false" aria-label="enable LFO">OFF</button>
+          </div>
+          <canvas class="dr-lfo-vis" width="480" height="80"></canvas>
+          <div class="dr-lfo-shape-row">
+            <button class="dr-lfo-shape" data-shape="sine" data-active="true" type="button" title="sine">∿</button>
+            <button class="dr-lfo-shape" data-shape="tri" type="button" title="triangle">△</button>
+            <button class="dr-lfo-shape" data-shape="saw" type="button" title="saw">◢</button>
+            <button class="dr-lfo-shape" data-shape="sq" type="button" title="square">⊓</button>
+            <button class="dr-lfo-shape" data-shape="sh" type="button" title="sample &amp; hold">⋯</button>
+          </div>
+          <div class="dr-lfo-target-row">
+            <span class="dr-lfo-target-label">TARGET</span>
+            <button class="dr-lfo-target" data-target="cut" data-active="true" type="button">CUT</button>
+            <button class="dr-lfo-target" data-target="res" type="button">RES</button>
+            <button class="dr-lfo-target" data-target="both" type="button">BOTH</button>
+            <button class="dr-lfo-sync" id="dr-lfo-sync" type="button" data-active="false">SYNC</button>
+          </div>
+          <div class="dr-lfo-div-grid" id="dr-lfo-div-grid" hidden>
+            <button class="dr-div-btn dr-lfo-div" data-div="1/16" type="button">1/16</button>
+            <button class="dr-div-btn dr-lfo-div" data-div="1/8" type="button">1/8</button>
+            <button class="dr-div-btn dr-lfo-div" data-div="1/4" data-active="true" type="button">1/4</button>
+            <button class="dr-div-btn dr-lfo-div" data-div="1/2" type="button">1/2</button>
+            <button class="dr-div-btn dr-lfo-div" data-div="1/1" type="button">1/1</button>
+            <button class="dr-div-btn dr-lfo-div" data-div="2/1" type="button">2/1</button>
+          </div>
+          <div class="dr-knobs">
+            <div class="dr-knob" data-param="lrate">
+              <span class="dr-knob-label">RATE</span>
+              <svg class="dr-knob-dial" viewBox="-50 -50 100 100">
+                <circle r="38" class="dr-ring-inner"/>
+                <circle r="42"/>
+                <line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/>
+              </svg>
+              <span class="dr-knob-value">1.50 Hz</span>
+            </div>
+            <div class="dr-knob" data-param="ldepth">
+              <span class="dr-knob-label">DEPTH</span>
+              <svg class="dr-knob-dial" viewBox="-50 -50 100 100">
+                <circle r="38" class="dr-ring-inner"/>
+                <circle r="42"/>
+                <line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/>
+              </svg>
+              <span class="dr-knob-value">50%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- DELAY -->
+    <article class="dr-mod" data-mod="delay" data-bypassed="true">
+      <header class="dr-mod-head">
+        <div class="dr-mod-head-text">
+          <span class="dr-mod-name">DELAY</span>
+          <span class="dr-mod-spec">tempo-synced · feedback filter</span>
+        </div>
+        <button class="dr-mod-reset" type="button" aria-label="reset module" title="reset to defaults">↺</button>
+        <button class="dr-mod-bypass" type="button" aria-label="bypass module"></button>
+      </header>
+      <div class="dr-mod-body">
+        <div class="dr-tempo">
+          <span class="dr-tempo-label">BPM</span>
+          <span class="dr-tempo-value" id="dr-bpm">120.0</span>
+          <button class="dr-tap-btn" id="dr-tap" type="button">TAP</button>
+        </div>
+        <canvas class="dr-delay-vis" width="480" height="80"></canvas>
+        <div class="dr-mode-row">
+          <button class="dr-mode-btn dr-div-mod" data-mod-mode="normal" data-active="true" type="button">·</button>
+          <button class="dr-mode-btn dr-div-mod" data-mod-mode="dot" type="button">DOT</button>
+          <button class="dr-mode-btn dr-div-mod" data-mod-mode="tri" type="button">TRI</button>
+        </div>
+        <div class="dr-div-grid">
+          <button class="dr-div-btn" data-div="32" type="button">1/32</button>
+          <button class="dr-div-btn" data-div="16" type="button">1/16</button>
+          <button class="dr-div-btn" data-div="8" type="button">1/8</button>
+          <button class="dr-div-btn" data-div="4" data-active="true" type="button">1/4</button>
+          <button class="dr-div-btn" data-div="2" type="button">1/2</button>
+          <button class="dr-div-btn" data-div="1" type="button">1/1</button>
+        </div>
+        <div class="dr-knobs">
+          <div class="dr-knob" data-param="dtime">
+            <span class="dr-knob-label">TIME</span>
+            <svg class="dr-knob-dial" viewBox="-50 -50 100 100">
+              <circle r="38" class="dr-ring-inner"/>
+              <circle r="42"/>
+              <line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/>
+            </svg>
+            <span class="dr-knob-value">500 ms</span>
+          </div>
+          <div class="dr-knob" data-param="fb">
+            <span class="dr-knob-label">FB</span>
+            <svg class="dr-knob-dial" viewBox="-50 -50 100 100">
+              <circle r="38" class="dr-ring-inner"/>
+              <circle r="42"/>
+              <line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/>
+            </svg>
+            <span class="dr-knob-value">40%</span>
+          </div>
+          <div class="dr-knob" data-param="dtone">
+            <span class="dr-knob-label">TONE</span>
+            <svg class="dr-knob-dial" viewBox="-50 -50 100 100">
+              <circle r="38" class="dr-ring-inner"/>
+              <circle r="42"/>
+              <line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/>
+            </svg>
+            <span class="dr-knob-value">6.0 kHz</span>
+          </div>
+          <div class="dr-knob" data-param="dmix">
+            <span class="dr-knob-label">MIX</span>
+            <svg class="dr-knob-dial" viewBox="-50 -50 100 100">
+              <circle r="38" class="dr-ring-inner"/>
+              <circle r="42"/>
+              <line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/>
+            </svg>
+            <span class="dr-knob-value">0%</span>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!--REVERB -->
+    <article class="dr-mod" data-mod="reverb" data-bypassed="true">
+      <header class="dr-mod-head">
+        <div class="dr-mod-head-text">
+          <span class="dr-mod-name">REVERB</span>
+          <span class="dr-mod-spec">convolution · 8 IRs</span>
+        </div>
+        <button class="dr-mod-reset" type="button" aria-label="reset module" title="reset to defaults">↺</button>
+        <button class="dr-mod-bypass" type="button" aria-label="bypass module"></button>
+      </header>
+      <div class="dr-mod-body">
+        <canvas class="dr-ir" width="480" height="128"></canvas>
+        <div class="dr-ir-grid">
+          <button class="dr-ir-btn" data-ir="01" data-active="true" type="button"><b>01</b><span>wood</span></button>
+          <button class="dr-ir-btn" data-ir="02" type="button"><b>02</b><span>plate</span></button>
+          <button class="dr-ir-btn" data-ir="03" type="button"><b>03</b><span>spring</span></button>
+          <button class="dr-ir-btn" data-ir="04" type="button"><b>04</b><span>tape</span></button>
+          <button class="dr-ir-btn" data-ir="05" type="button"><b>05</b><span>hall</span></button>
+          <button class="dr-ir-btn" data-ir="06" type="button"><b>06</b><span>chamber</span></button>
+          <button class="dr-ir-btn" data-ir="07" type="button"><b>07</b><span>cathedral</span></button>
+          <button class="dr-ir-btn" data-ir="08" type="button"><b>08</b><span>cave</span></button>
+        </div>
+        <div class="dr-knobs">
+          <div class="dr-knob" data-param="size">
+            <span class="dr-knob-label">SIZE</span>
+            <svg class="dr-knob-dial" viewBox="-50 -50 100 100">
+              <circle r="38" class="dr-ring-inner"/>
+              <circle r="42"/>
+              <line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/>
+            </svg>
+            <span class="dr-knob-value">1.00</span>
+          </div>
+          <div class="dr-knob" data-param="mix">
+            <span class="dr-knob-label">MIX</span>
+            <svg class="dr-knob-dial" viewBox="-50 -50 100 100">
+              <circle r="38" class="dr-ring-inner"/>
+              <circle r="42"/>
+              <line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/>
+            </svg>
+            <span class="dr-knob-value">0%</span>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!--MASTER -->
+    <article class="dr-mod" data-mod="master">
+      <header class="dr-mod-head">
+        <div class="dr-mod-head-text">
+          <span class="dr-mod-name">MASTER</span>
+          <span class="dr-mod-spec">soft limiter · −1.0 dBFS</span>
+        </div>
+        <button class="dr-mod-reset" type="button" aria-label="reset module" title="reset to defaults">↺</button>
+      </header>
+      <div class="dr-mod-body">
+        <div class="dr-meters">
+          <div class="dr-meter">
+            <span class="dr-meter-label">PRE</span>
+            <div class="dr-meter-bar"><span style="width:0%"></span><span class="dr-meter-tick"></span></div>
+            <span class="dr-meter-value">−∞</span>
+          </div>
+          <div class="dr-meter">
+            <span class="dr-meter-label">POST</span>
+            <div class="dr-meter-bar"><span style="width:0%"></span><span class="dr-meter-tick"></span></div>
+            <span class="dr-meter-value">−∞</span>
+          </div>
+          <div class="dr-meter">
+            <span class="dr-meter-label">GR</span>
+            <div class="dr-meter-bar dr-meter-gr"><span style="width:0%"></span></div>
+            <span class="dr-meter-value">0.0</span>
+          </div>
+        </div>
+        <div class="dr-knobs">
+          <div class="dr-knob" data-param="out">
+            <span class="dr-knob-label">OUT</span>
+            <svg class="dr-knob-dial" viewBox="-50 -50 100 100">
+              <circle r="38" class="dr-ring-inner"/>
+              <circle r="42"/>
+              <line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/>
+            </svg>
+            <span class="dr-knob-value">0.0 dB</span>
+          </div>
+        </div>
+      </div>
+    </article>
+
+  </section>
+
+  <!-- TRANSPORT -->
+  <section class="dr-trans" aria-label="Transport and recording">
+    <button class="dr-trans-arm" type="button" aria-label="Arm recording">
+      <span class="dr-trans-dot"></span>
+      ARM
+    </button>
+    <button class="dr-trans-rec" type="button" disabled aria-label="Start recording">
+      <span class="dr-trans-arrow">▶</span>
+      REC
+    </button>
+    <span class="dr-trans-status">standby — arm to begin</span>
+    <span class="dr-trans-time">00:00</span>
+    <span class="dr-trans-file">no recording</span>
+  </section>
+
+</main>
+
+<footer class="dr-foot">
+  <span>client-side only · no upload · for personal use</span>
+  <div class="dr-foot-meta">
+    <span>darkroom v 1.0</span>
+    <a href="playground.html">← playground</a>
+  </div>
+</footer>
+
+<script>
+(function(){
+  'use strict';
+
+  // ─── HEADER SHRINK ───────────────────────────────────────────────
+  const hdr = document.getElementById('hdr');
+  window.addEventListener('scroll', () => {
+    hdr.classList.toggle('sc', window.scrollY > 60);
+  });
+
+  // ─── DOM REFS ────────────────────────────────────────────────────
+  const stripCanvas  = document.querySelector('.dr-strip-canvas');
+  const curveCanvas  = document.querySelector('.dr-curve');
+  const irCanvas     = document.querySelector('.dr-ir');
+  const delayCanvas  = document.querySelector('.dr-delay-vis');
+  const fileInput    = document.getElementById('dr-file-input');
+  const bayBtns      = document.querySelectorAll('.dr-bay-btn');
+  const baySource    = document.querySelector('.dr-bay-source');
+  const inputLevel   = document.querySelector('.dr-bay-level-bar');
+  const armBtn       = document.querySelector('.dr-trans-arm');
+  const recBtn       = document.querySelector('.dr-trans-rec');
+  const transStatus  = document.querySelector('.dr-trans-status');
+  const transTime    = document.querySelector('.dr-trans-time');
+  const transFile    = document.querySelector('.dr-trans-file');
+  const meterRows    = document.querySelectorAll('.dr-meters .dr-meter');
+  const preFill      = meterRows[0]?.querySelector('.dr-meter-bar > span:first-child');
+  const postFill     = meterRows[1]?.querySelector('.dr-meter-bar > span:first-child');
+  const grFill       = meterRows[2]?.querySelector('.dr-meter-bar > span:first-child');
+  const preValue     = meterRows[0]?.querySelector('.dr-meter-value');
+  const postValue    = meterRows[1]?.querySelector('.dr-meter-value');
+  const grValue      = meterRows[2]?.querySelector('.dr-meter-value');
+
+  // ─── ENGINE STATE ────────────────────────────────────────────────
+  const DR = {
+    ctx: null,
+    nodes: {},
+    state: {
+      source: null,
+      buffer: null,
+      filename: '',
+      isPlaying: false,
+      screw: 1.0, rate: 1.0, pitch: 0,
+      cut: 20000, res: 0.1, filterType: 'lowpass',
+      irSlot: '01', reverbSize: 1.0, reverbMix: 0,
+      out: 0,
+      delay: {
+        bpm: 120,
+        division: 4,        // 1/4 note default
+        modifier: 'normal', // 'normal' | 'dot' | 'tri'
+        time: 0.5,          // seconds (computed from bpm/division/modifier in sync mode)
+        sync: true,         // false → free mode (TIME knob drives directly)
+        feedback: 0.4,
+        tone: 6000,
+        mix: 0
+      },
+      lfo: {
+        enabled: false,
+        shape: 'sine',      // 'sine' | 'tri' | 'saw' | 'sq' | 'sh'
+        target: 'cut',      // 'cut' | 'res' | 'both'
+        sync: false,
+        rate: 1.5,          // Hz (free mode)
+        division: '1/4',    // sync division
+        depth: 0.5,         // 0..1 → ±2 octaves at full
+        phase: 0,           // 0..1
+        shLast: 0,          // last sampled value for sample-and-hold
+        shPhase: 1          // tracking previous phase for retrigger detection
+      },
+      bypassed: { tempo: true, filter: true, delay: true, reverb: true }
+    },
+    irs: {},
+    recorder: null,
+    recordedChunks: [],
+    armed: false,
+    recording: false,
+    recStart: 0,
+    recInterval: null
+  };
+
+  // ─── INIT (lazy, on first user gesture) ──────────────────────────
+  function ensureCtx() {
+    if (DR.ctx) return DR.ctx;
+    const Ctx = window.AudioContext || window.webkitAudioContext;
+    DR.ctx = new Ctx({ latencyHint: 'interactive' });
+    buildChain();
+    return DR.ctx;
+  }
+
+  function buildChain() {
+    const ctx = DR.ctx;
+    const n = DR.nodes;
+
+    n.inputAnalyser  = ctx.createAnalyser();
+    n.inputAnalyser.fftSize = 2048;
+    n.inputAnalyser.smoothingTimeConstant = 0.6;
+
+    n.filter = ctx.createBiquadFilter();
+    n.filter.type = DR.state.filterType;
+    n.filter.frequency.value = DR.state.cut;
+    n.filter.Q.value = DR.state.res;
+
+    // delay chain
+    n.delayLine = ctx.createDelay(4.0); // up to 4s
+    n.delayLine.delayTime.value = DR.state.delay.time;
+    n.delayTone = ctx.createBiquadFilter();
+    n.delayTone.type = 'lowpass';
+    n.delayTone.frequency.value = DR.state.delay.tone;
+    n.delayTone.Q.value = 0.5;
+    n.delayFb = ctx.createGain();
+    n.delayFb.gain.value = DR.state.delay.feedback;
+    n.delayDry = ctx.createGain(); n.delayDry.gain.value = 1;
+    n.delayWet = ctx.createGain(); n.delayWet.gain.value = DR.state.delay.mix;
+    n.delayBus = ctx.createGain(); n.delayBus.gain.value = 1;
+
+    n.reverbDry = ctx.createGain();   n.reverbDry.gain.value = 1;
+    n.reverbWet = ctx.createGain();   n.reverbWet.gain.value = 0;
+    n.convolver = ctx.createConvolver(); n.convolver.normalize = true;
+
+    n.preAnalyser = ctx.createAnalyser();
+    n.preAnalyser.fftSize = 1024;
+
+    n.limiter = ctx.createDynamicsCompressor();
+    n.limiter.threshold.value = -1;
+    n.limiter.knee.value = 0;
+    n.limiter.ratio.value = 20;
+    n.limiter.attack.value = 0.001;
+    n.limiter.release.value = 0.05;
+
+    n.master = ctx.createGain(); n.master.gain.value = 1;
+
+    n.outputAnalyser = ctx.createAnalyser();
+    n.outputAnalyser.fftSize = 2048;
+    n.outputAnalyser.smoothingTimeConstant = 0.6;
+
+    // routing: source → inputAnalyser → filter → delay(dry|line→tone→wet) → reverb(dry|conv→wet) → preAnalyser → limiter → master → outputAnalyser → destination
+    n.inputAnalyser.connect(n.filter);
+    // delay section
+    n.filter.connect(n.delayDry);
+    n.filter.connect(n.delayLine);
+    n.delayLine.connect(n.delayTone);
+    n.delayTone.connect(n.delayWet);
+    n.delayTone.connect(n.delayFb);
+    n.delayFb.connect(n.delayLine); // feedback loop
+    n.delayDry.connect(n.delayBus);
+    n.delayWet.connect(n.delayBus);
+    // reverb section (fed by delayBus)
+    n.delayBus.connect(n.reverbDry);
+    n.delayBus.connect(n.convolver);
+    n.convolver.connect(n.reverbWet);
+    n.reverbDry.connect(n.preAnalyser);
+    n.reverbWet.connect(n.preAnalyser);
+    n.preAnalyser.connect(n.limiter);
+    n.limiter.connect(n.master);
+    n.master.connect(n.outputAnalyser);
+    n.outputAnalyser.connect(ctx.destination);
+
+    // record tap
+    n.recordDest = ctx.createMediaStreamDestination();
+    n.outputAnalyser.connect(n.recordDest);
+
+    // load default IR
+    loadIR(DR.state.irSlot);
+  }
+
+  // ─── PROCEDURAL IRs (synthesized at runtime) ─────────────────────
+  const IR_PRESETS = {
+    '01': { name: 'wood',      decay: 0.4, damping: 4000,  predelay: 0.005 },
+    '02': { name: 'plate',     decay: 1.8, damping: 10000, predelay: 0.0 },
+    '03': { name: 'spring',    decay: 0.6, damping: 6000,  predelay: 0.0,   flutter: 7 },
+    '04': { name: 'tape',      decay: 2.5, damping: 4500,  predelay: 0.12,  flutter: 5 },
+    '05': { name: 'hall',      decay: 2.4, damping: 7000,  predelay: 0.04 },
+    '06': { name: 'chamber',   decay: 1.5, damping: 6000,  predelay: 0.025 },
+    '07': { name: 'cathedral', decay: 5.0, damping: 3500,  predelay: 0.08 },
+    '08': { name: 'cave',      decay: 3.8, damping: 3000,  predelay: 0.06,  flutter: 1.5 }
+  };
+
+  function synthesizeIR(slot) {
+    const ctx = DR.ctx;
+    const sr  = ctx.sampleRate;
+    const p   = IR_PRESETS[slot];
+    const length = Math.floor(sr * p.decay);
+    const buf = ctx.createBuffer(2, length, sr);
+    const predelay = Math.floor(sr * p.predelay);
+    for (let ch = 0; ch < 2; ch++) {
+      const data = buf.getChannelData(ch);
+      let lp = 0;
+      const lpAlpha = Math.exp(-2 * Math.PI * p.damping / sr);
+      for (let i = 0; i < length; i++) {
+        if (i < predelay) { data[i] = 0; continue; }
+        const t = (i - predelay) / sr;
+        const noise = Math.random() * 2 - 1;
+        lp = lp * lpAlpha + noise * (1 - lpAlpha);
+        let env = Math.exp(-t * Math.log(1000) / p.decay);
+        if (p.flutter) env *= 1 + 0.15 * Math.sin(2 * Math.PI * p.flutter * t);
+        data[i] = lp * env * 0.7;
+      }
+    }
+    return buf;
+  }
+
+  function loadIR(slot) {
+    if (!DR.ctx) return;
+    if (!DR.irs[slot]) DR.irs[slot] = synthesizeIR(slot);
+    DR.nodes.convolver.buffer = DR.irs[slot];
+    DR.state.irSlot = slot;
+  }
+
+  // ─── FILE LOADING ────────────────────────────────────────────────
+  async function loadFile(file) {
+    ensureCtx();
+    DR.state.filename = file.name;
+    setStatus(`<b>loading</b> — ${file.name}`);
+    try {
+      const ab = await file.arrayBuffer();
+      const buf = await DR.ctx.decodeAudioData(ab);
+      DR.state.buffer = buf;
+      play();
+      const dur = `${buf.duration.toFixed(1)}s`;
+      const ch = buf.numberOfChannels === 2 ? 'stereo' : 'mono';
+      setStatus(`<b>${file.name}</b> — ${dur} · ${ch} · ${(buf.sampleRate/1000).toFixed(1)} kHz`);
+    } catch (err) {
+      console.error('decode failed:', err);
+      setStatus(`<b>decode failed</b> — try wav, mp3, flac, m4a, or ogg`);
+    }
+  }
+
+  function play() {
+    if (!DR.state.buffer || !DR.ctx) return;
+    if (DR.state.source) {
+      try { DR.state.source.stop(); } catch(_){}
+      DR.state.source.disconnect();
+    }
+    const src = DR.ctx.createBufferSource();
+    src.buffer = DR.state.buffer;
+    src.loop = true;
+    src.playbackRate.value = DR.state.screw * DR.state.rate;
+    src.detune.value = DR.state.pitch * 100;
+    src.connect(DR.nodes.inputAnalyser);
+    src.start();
+    DR.state.source = src;
+    DR.state.isPlaying = true;
+  }
+
+  function updateRateDetune() {
+    if (!DR.state.source || !DR.ctx) return;
+    const t = DR.ctx.currentTime;
+    if (DR.state.sourceType === 'buffer') {
+      // file input → native playbackRate/detune (zero added latency)
+      DR.state.source.playbackRate.setValueAtTime(DR.state.screw * DR.state.rate, t);
+      DR.state.source.detune.setValueAtTime(DR.state.pitch * 100, t);
+    } else if (DR.state.sourceType === 'stream' && DR.nodes.soundTouch) {
+      // stream input → SoundTouch worklet
+      // rate (combined tempo+pitch like a turntable) ← SCREW
+      // tempo (independent speed)                    ← RATE
+      // pitchSemitones (independent pitch shift)     ← PITCH
+      DR.nodes.soundTouch.parameters.get('rate').setValueAtTime(DR.state.screw, t);
+      DR.nodes.soundTouch.parameters.get('tempo').setValueAtTime(DR.state.rate, t);
+      DR.nodes.soundTouch.parameters.get('pitchSemitones').setValueAtTime(DR.state.pitch, t);
+    }
+  }
+
+  // ─── SoundTouch worklet (ensures the time-stretch processor is registered) ──
+  async function ensureWorklet() {
+    if (DR.nodes.soundTouchReady) return true;
+    if (DR.nodes.soundTouchFailed) return false;
+    if (DR.nodes.soundTouchLoading) return DR.nodes.soundTouchLoading;
+    DR.nodes.soundTouchLoading = (async () => {
+      try {
+        await DR.ctx.audioWorklet.addModule('darkroom/lib/soundtouch-processor.js');
+        DR.nodes.soundTouchReady = true;
+        return true;
+      } catch (e) {
+        console.error('darkroom: soundtouch worklet failed to load', e);
+        DR.nodes.soundTouchFailed = true;
+        return false;
+      } finally {
+        DR.nodes.soundTouchLoading = null;
+      }
+    })();
+    return DR.nodes.soundTouchLoading;
+  }
+
+  function createSoundTouchNode() {
+    const node = new AudioWorkletNode(DR.ctx, 'soundtouch-processor', {
+      numberOfInputs: 1, numberOfOutputs: 1, outputChannelCount: [2]
+    });
+    // initialize to current state so connection doesn't reset to defaults
+    node.parameters.get('rate').value = DR.state.screw;
+    node.parameters.get('tempo').value = DR.state.rate;
+    node.parameters.get('pitchSemitones').value = DR.state.pitch;
+    return node;
+  }
+
+  function disconnectSource() {
+    if (DR.state.source) {
+      try { DR.state.source.stop?.(); } catch(_){}
+      try { DR.state.source.disconnect(); } catch(_){}
+      DR.state.source = null;
+    }
+    if (DR.nodes.soundTouch) {
+      try { DR.nodes.soundTouch.disconnect(); } catch(_){}
+      DR.nodes.soundTouch = null;
+    }
+    if (DR.state.streamRef) {
+      try { DR.state.streamRef.getTracks().forEach(t => t.stop()); } catch(_){}
+      DR.state.streamRef = null;
+    }
+    DR.state.isPlaying = false;
+    DR.state.sourceType = null;
+    document.querySelector('.dr-mod[data-mod="tempo"]')?.toggleAttribute('data-stream-dim', false);
+  }
+
+  // ─── TAB AUDIO CAPTURE (Chromium only) ───────────────────────────
+  async function loadTabAudio() {
+    ensureCtx();
+    if (DR.ctx.state === 'suspended') await DR.ctx.resume();
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) {
+      setStatus(`<b>tab capture unsupported</b> — open in Chrome, Arc, Brave, or Edge`);
+      return;
+    }
+    setStatus(`<b>waiting</b> — pick a tab in chrome's dialog and check the "share tab audio" box at the bottom`);
+    let stream;
+    try {
+      // CRITICAL audio constraints:
+      // - suppressLocalAudioPlayback: mutes the source tab so we don't hear it twice
+      // - echoCancellation/noiseSuppression/autoGainControl OFF: Chrome applies voice-tuning
+      //   DSP to captured audio by default, which wrecks music (flattens transients, pumps
+      //   levels, introduces stereo artifacts). Explicitly disable them all.
+      // - sampleRate/channelCount: hint the browser to deliver at full fidelity.
+      stream = await navigator.mediaDevices.getDisplayMedia({
+        video: true,
+        audio: {
+          suppressLocalAudioPlayback: true,
+          echoCancellation: false,
+          noiseSuppression: false,
+          autoGainControl: false,
+          sampleRate: 48000,
+          channelCount: 2
+        }
+      });
+    } catch (e) {
+      setStatus(`<b>cancelled</b> — ${e.name === 'NotAllowedError' ? 'no tab selected' : e.message}`);
+      return;
+    }
+    const audioTracks = stream.getAudioTracks();
+    const videoTracks = stream.getVideoTracks();
+    if (!audioTracks.length) {
+      setStatus(`<b>no audio track</b> — chrome captured the tab but no audio came through. did you tick "share tab audio" in the dialog?`);
+      videoTracks.forEach(t => t.stop());
+      return;
+    }
+    const audioTrack = audioTracks[0];
+    // connect using the original stream — Chrome's createMediaStreamSource ignores video tracks
+    disconnectSource();
+    const src = DR.ctx.createMediaStreamSource(stream);
+    // tempo is bypassed by default → connect direct, no worklet, zero latency
+    src.connect(DR.nodes.inputAnalyser);
+    DR.state.source = src;
+    DR.state.sourceType = 'stream';
+    DR.state.isPlaying = true;
+    DR.state.streamRef = stream;
+    // free the video tracks — we never needed them
+    videoTracks.forEach(t => t.stop());
+    audioTrack.onended = () => {
+      setStatus(`<b>tab disconnected</b> — pick a new source to continue`);
+      disconnectSource();
+    };
+    // if tempo isn't bypassed (user already engaged it), insert worklet
+    if (!DR.state.bypassed.tempo) await applyTempoBypass();
+    const label = audioTrack.label || 'tab audio';
+    const settings = audioTrack.getSettings ? audioTrack.getSettings() : {};
+    const sr = settings.sampleRate ? `${(settings.sampleRate/1000).toFixed(1)}kHz` : '?';
+    const ch = settings.channelCount ? `${settings.channelCount}ch` : '?ch';
+    setStatus(`<b>tab</b> — ${label} · ${sr} · ${ch} · live`);
+  }
+
+  // ─── DEVICE PICKER ──────────────────────────────────────────────
+  const devicePicker = document.getElementById('dr-device-picker');
+  const devicePickerList = document.getElementById('dr-device-picker-list');
+  const devicePickerClose = document.getElementById('dr-device-picker-close');
+
+  function hideDevicePicker() {
+    devicePicker.hidden = true;
+  }
+  devicePickerClose?.addEventListener('click', hideDevicePicker);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') hideDevicePicker(); });
+  document.addEventListener('pointerdown', e => {
+    if (devicePicker.hidden) return;
+    if (devicePicker.contains(e.target)) return;
+    if (e.target.closest('.dr-bay-btn[data-input="device"]')) return;
+    hideDevicePicker();
+  });
+
+  async function loadDeviceAudio() {
+    ensureCtx();
+    if (DR.ctx.state === 'suspended') await DR.ctx.resume();
+    if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
+      setStatus(`<b>device picker unsupported</b> in this browser`);
+      return;
+    }
+    // first request any-mic permission so enumerateDevices returns real labels
+    let primer;
+    try {
+      primer = await navigator.mediaDevices.getUserMedia({ audio: true });
+    } catch (e) {
+      setStatus(`<b>microphone permission denied</b> — required to list devices`);
+      return;
+    }
+    primer.getTracks().forEach(t => t.stop());
+    const devices = await navigator.mediaDevices.enumerateDevices();
+    const inputs = devices.filter(d => d.kind === 'audioinput');
+    if (!inputs.length) {
+      setStatus(`<b>no input devices found</b>`);
+      return;
+    }
+    // build picker list
+    devicePickerList.innerHTML = '';
+    inputs.forEach((d, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'dr-device-item';
+      btn.type = 'button';
+      btn.innerHTML = `
+        <span class="dr-device-item-text">
+          <span class="dr-device-item-name">${d.label || `Input ${i+1}`}</span>
+          <span class="dr-device-item-id">${d.deviceId.slice(0, 12)}…</span>
+        </span>
+      `;
+      btn.addEventListener('click', () => connectDevice(d.deviceId, d.label || `Input ${i+1}`));
+      devicePickerList.appendChild(btn);
+    });
+    devicePicker.hidden = false;
+  }
+
+  async function connectDevice(deviceId, label) {
+    let stream;
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({
+        audio: {
+          deviceId: { exact: deviceId },
+          echoCancellation: false,
+          noiseSuppression: false,
+          autoGainControl: false,
+          channelCount: 2
+        }
+      });
+    } catch (e) {
+      setStatus(`<b>device open failed</b> — ${e.message || e.name}`);
+      return;
+    }
+    disconnectSource();
+    const src = DR.ctx.createMediaStreamSource(stream);
+    // tempo bypassed by default → no worklet, zero latency on connect
+    src.connect(DR.nodes.inputAnalyser);
+    DR.state.source = src;
+    DR.state.sourceType = 'stream';
+    DR.state.isPlaying = true;
+    DR.state.streamRef = stream;
+    stream.getAudioTracks()[0].onended = () => {
+      setStatus(`<b>device disconnected</b>`);
+      disconnectSource();
+    };
+    if (!DR.state.bypassed.tempo) await applyTempoBypass();
+    setStatus(`<b>device</b> — ${label} · live`);
+    hideDevicePicker();
+  }
+
+  function setStatus(html) { if (baySource) baySource.innerHTML = html; }
+
+  // ─── KNOB INTERACTION ────────────────────────────────────────────
+  // pointermove/pointerup are attached to document on drag start and removed
+  // on drag end, so the knob can never get "stuck" if the pointer leaves the
+  // dial element mid-drag. wheel removed — it was hijacking page scroll.
+  function makeKnob(knobEl, opts) {
+    if (!knobEl) return null;
+    const dial = knobEl.querySelector('.dr-knob-dial');
+    const valueEl = knobEl.querySelector('.dr-knob-value');
+    let value = opts.default;
+
+    function visual() {
+      const t = opts.scale === 'log'
+        ? Math.log(Math.max(value, opts.min) / opts.min) / Math.log(opts.max / opts.min)
+        : (value - opts.min) / (opts.max - opts.min);
+      const angle = -135 + t * 270;
+      dial.style.transform = `rotate(${angle}deg)`;
+      valueEl.textContent = opts.format(value);
+    }
+    function setValue(v, fire = true) {
+      value = Math.max(opts.min, Math.min(opts.max, v));
+      visual();
+      if (fire && opts.onChange) opts.onChange(value);
+    }
+
+    let startY = 0, startVal = 0;
+    function onMove(e) {
+      const dy = startY - e.clientY;
+      const sensitivity = e.shiftKey ? 800 : 220;
+      if (opts.scale === 'log') {
+        const startT = Math.log(startVal / opts.min) / Math.log(opts.max / opts.min);
+        const newT = Math.max(0, Math.min(1, startT + dy / sensitivity));
+        setValue(opts.min * Math.pow(opts.max / opts.min, newT));
+      } else {
+        const range = opts.max - opts.min;
+        setValue(startVal + (dy / sensitivity) * range);
+      }
+    }
+    function onUp() {
+      document.removeEventListener('pointermove', onMove);
+      document.removeEventListener('pointerup', onUp);
+      document.removeEventListener('pointercancel', onUp);
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+    }
+
+    dial.addEventListener('pointerdown', e => {
+      if (e.button !== undefined && e.button !== 0) return; // primary button only
+      startY = e.clientY;
+      startVal = value;
+      document.addEventListener('pointermove', onMove);
+      document.addEventListener('pointerup', onUp);
+      document.addEventListener('pointercancel', onUp);
+      document.body.style.cursor = 'grabbing';
+      document.body.style.userSelect = 'none';
+      e.preventDefault();
+    });
+    dial.addEventListener('dblclick', () => setValue(opts.default));
+
+    setValue(opts.default, false);
+    return { setValue, getValue: () => value };
+  }
+
+  // ─── KNOB BINDINGS ───────────────────────────────────────────────
+  const knobs = {};
+  knobs.screw = makeKnob(document.querySelector('.dr-knob[data-param="screw"]'), {
+    min: 0.5, max: 1.5, default: 1.0,
+    format: v => v.toFixed(3) + '×',
+    onChange: v => { DR.state.screw = v; updateRateDetune(); }
+  });
+  knobs.rate = makeKnob(document.querySelector('.dr-knob[data-param="rate"]'), {
+    min: 0.85, max: 1.15, default: 1.0,
+    format: v => v.toFixed(3) + '×',
+    onChange: v => { DR.state.rate = v; updateRateDetune(); }
+  });
+  knobs.pitch = makeKnob(document.querySelector('.dr-knob[data-param="pitch"]'), {
+    min: -12, max: 12, default: 0,
+    format: v => (v >= 0 ? '+' : '') + v.toFixed(0) + ' st',
+    onChange: v => { DR.state.pitch = v; updateRateDetune(); }
+  });
+  knobs.cut = makeKnob(document.querySelector('.dr-knob[data-param="cut"]'), {
+    min: 20, max: 20000, default: 20000, scale: 'log',
+    format: v => v >= 1000 ? (v/1000).toFixed(2) + ' kHz' : v.toFixed(0) + ' Hz',
+    onChange: v => {
+      DR.state.cut = v;
+      if (DR.nodes.filter && !DR.state.bypassed.filter) DR.nodes.filter.frequency.setValueAtTime(v, DR.ctx.currentTime);
+    }
+  });
+  knobs.res = makeKnob(document.querySelector('.dr-knob[data-param="res"]'), {
+    min: 0.1, max: 18, default: 0.1,
+    format: v => v.toFixed(2),
+    onChange: v => {
+      DR.state.res = v;
+      if (DR.nodes.filter && !DR.state.bypassed.filter) DR.nodes.filter.Q.setValueAtTime(v, DR.ctx.currentTime);
+    }
+  });
+  knobs.size = makeKnob(document.querySelector('.dr-knob[data-param="size"]'), {
+    min: 0.25, max: 2.0, default: 1.0,
+    format: v => v.toFixed(2) + '×',
+    onChange: v => {
+      DR.state.reverbSize = v;
+      if (DR.nodes.reverbWet && !DR.state.bypassed.reverb)
+        DR.nodes.reverbWet.gain.setValueAtTime(DR.state.reverbMix * v, DR.ctx.currentTime);
+    }
+  });
+  knobs.mix = makeKnob(document.querySelector('.dr-knob[data-param="mix"]'), {
+    min: 0, max: 1, default: 0,
+    format: v => Math.round(v * 100) + '%',
+    onChange: v => {
+      DR.state.reverbMix = v;
+      if (DR.nodes.reverbWet && !DR.state.bypassed.reverb)
+        DR.nodes.reverbWet.gain.setValueAtTime(v * DR.state.reverbSize, DR.ctx.currentTime);
+    }
+  });
+  knobs.out = makeKnob(document.querySelector('.dr-knob[data-param="out"]'), {
+    min: -24, max: 12, default: 0,
+    format: v => (v >= 0 ? '+' : '') + v.toFixed(1) + ' dB',
+    onChange: v => {
+      DR.state.out = v;
+      if (DR.nodes.master) DR.nodes.master.gain.setValueAtTime(Math.pow(10, v/20), DR.ctx.currentTime);
+    }
+  });
+
+  // ─── FILTER LFO KNOBS + CONTROLS ────────────────────────────────
+  knobs.lrate = makeKnob(document.querySelector('.dr-knob[data-param="lrate"]'), {
+    min: 0.05, max: 20, default: 1.5, scale: 'log',
+    format: v => v < 1 ? v.toFixed(2) + ' Hz' : v.toFixed(2) + ' Hz',
+    onChange: v => { DR.state.lfo.rate = v; }
+  });
+  knobs.ldepth = makeKnob(document.querySelector('.dr-knob[data-param="ldepth"]'), {
+    min: 0, max: 1, default: 0.5,
+    format: v => Math.round(v * 100) + '%',
+    onChange: v => { DR.state.lfo.depth = v; }
+  });
+
+  // LFO on/off toggle
+  const lfoToggle = document.getElementById('dr-lfo-toggle');
+  lfoToggle?.addEventListener('click', () => {
+    DR.state.lfo.enabled = !DR.state.lfo.enabled;
+    lfoToggle.setAttribute('data-active', DR.state.lfo.enabled ? 'true' : 'false');
+    if (!DR.state.lfo.enabled) {
+      // restore base filter values
+      if (DR.nodes.filter && DR.ctx) {
+        DR.nodes.filter.frequency.setTargetAtTime(DR.state.cut, DR.ctx.currentTime, 0.02);
+        DR.nodes.filter.Q.setTargetAtTime(DR.state.res, DR.ctx.currentTime, 0.02);
+      }
+    }
+  });
+
+  // shape selector
+  document.querySelectorAll('.dr-lfo-shape').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.dr-lfo-shape').forEach(b => b.removeAttribute('data-active'));
+      btn.setAttribute('data-active', 'true');
+      DR.state.lfo.shape = btn.dataset.shape;
+    });
+  });
+
+  // target selector
+  document.querySelectorAll('.dr-lfo-target').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.dr-lfo-target').forEach(b => b.removeAttribute('data-active'));
+      btn.setAttribute('data-active', 'true');
+      DR.state.lfo.target = btn.dataset.target;
+      // restore the param we're no longer modulating
+      if (DR.nodes.filter && DR.ctx) {
+        const t = DR.ctx.currentTime;
+        if (DR.state.lfo.target === 'cut') {
+          DR.nodes.filter.Q.setTargetAtTime(DR.state.res, t, 0.02);
+        } else if (DR.state.lfo.target === 'res') {
+          DR.nodes.filter.frequency.setTargetAtTime(DR.state.cut, t, 0.02);
+        }
+      }
+    });
+  });
+
+  // sync toggle reveals the division grid
+  const lfoSync = document.getElementById('dr-lfo-sync');
+  const lfoDivGrid = document.getElementById('dr-lfo-div-grid');
+  lfoSync?.addEventListener('click', () => {
+    DR.state.lfo.sync = !DR.state.lfo.sync;
+    lfoSync.setAttribute('data-active', DR.state.lfo.sync ? 'true' : 'false');
+    if (lfoDivGrid) lfoDivGrid.hidden = !DR.state.lfo.sync;
+  });
+
+  // division buttons
+  document.querySelectorAll('.dr-lfo-div').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.dr-lfo-div').forEach(b => b.removeAttribute('data-active'));
+      btn.setAttribute('data-active', 'true');
+      DR.state.lfo.division = btn.dataset.div;
+    });
+  });
+
+  // ─── DELAY KNOBS ────────────────────────────────────────────────
+  knobs.dtime = makeKnob(document.querySelector('.dr-knob[data-param="dtime"]'), {
+    min: 1, max: 2000, default: 500, scale: 'log',
+    format: v => v < 100 ? v.toFixed(1) + ' ms' : v.toFixed(0) + ' ms',
+    onChange: v => {
+      // turning TIME directly switches to free mode
+      DR.state.delay.sync = false;
+      DR.state.delay.time = v / 1000;
+      document.querySelectorAll('.dr-div-btn').forEach(b => b.removeAttribute('data-active'));
+      if (DR.nodes.delayLine && !DR.state.bypassed.delay) {
+        DR.nodes.delayLine.delayTime.setTargetAtTime(v / 1000, DR.ctx.currentTime, 0.05);
+      }
+    }
+  });
+  knobs.fb = makeKnob(document.querySelector('.dr-knob[data-param="fb"]'), {
+    min: 0, max: 0.95, default: 0.4,
+    format: v => Math.round(v * 100) + '%',
+    onChange: v => {
+      DR.state.delay.feedback = v;
+      if (DR.nodes.delayFb && !DR.state.bypassed.delay) {
+        DR.nodes.delayFb.gain.setTargetAtTime(v, DR.ctx.currentTime, 0.02);
+      }
+    }
+  });
+  knobs.dtone = makeKnob(document.querySelector('.dr-knob[data-param="dtone"]'), {
+    min: 200, max: 20000, default: 6000, scale: 'log',
+    format: v => v >= 1000 ? (v/1000).toFixed(1) + ' kHz' : v.toFixed(0) + ' Hz',
+    onChange: v => {
+      DR.state.delay.tone = v;
+      if (DR.nodes.delayTone && !DR.state.bypassed.delay) {
+        DR.nodes.delayTone.frequency.setTargetAtTime(v, DR.ctx.currentTime, 0.02);
+      }
+    }
+  });
+  knobs.dmix = makeKnob(document.querySelector('.dr-knob[data-param="dmix"]'), {
+    min: 0, max: 1, default: 0,
+    format: v => Math.round(v * 100) + '%',
+    onChange: v => {
+      DR.state.delay.mix = v;
+      if (DR.nodes.delayWet && !DR.state.bypassed.delay) {
+        DR.nodes.delayWet.gain.setTargetAtTime(v, DR.ctx.currentTime, 0.02);
+      }
+    }
+  });
+
+  // ─── DELAY TEMPO + DIVISIONS ───────────────────────────────────
+  const bpmEl = document.getElementById('dr-bpm');
+  const tapBtn = document.getElementById('dr-tap');
+
+  function computeSyncedTime() {
+    const beatDuration = 60 / DR.state.delay.bpm;          // seconds per quarter note
+    const noteFraction = 4 / DR.state.delay.division;      // 1/4 → 1, 1/8 → 0.5, 1/16 → 0.25
+    let factor = 1;
+    if (DR.state.delay.modifier === 'dot') factor = 1.5;
+    else if (DR.state.delay.modifier === 'tri') factor = 2/3;
+    return Math.min(4.0, beatDuration * noteFraction * factor);
+  }
+  function applySyncedTime() {
+    if (!DR.state.delay.sync) return;
+    const t = computeSyncedTime();
+    DR.state.delay.time = t;
+    if (DR.nodes.delayLine && !DR.state.bypassed.delay) {
+      DR.nodes.delayLine.delayTime.setTargetAtTime(t, DR.ctx.currentTime, 0.05);
+    }
+    if (knobs.dtime) knobs.dtime.setValue(t * 1000, false);
+  }
+
+  // tap tempo
+  let tapTimes = [];
+  tapBtn.addEventListener('click', () => {
+    const now = performance.now();
+    tapTimes = tapTimes.filter(t => now - t < 2000);
+    tapTimes.push(now);
+    tapBtn.setAttribute('data-pulsing', 'true');
+    setTimeout(() => tapBtn.removeAttribute('data-pulsing'), 100);
+    if (tapTimes.length >= 2) {
+      let sum = 0;
+      for (let i = 1; i < tapTimes.length; i++) sum += tapTimes[i] - tapTimes[i-1];
+      const avg = sum / (tapTimes.length - 1);
+      const bpm = 60000 / avg;
+      if (bpm >= 40 && bpm <= 280) {
+        DR.state.delay.bpm = bpm;
+        bpmEl.textContent = bpm.toFixed(1);
+        DR.state.delay.sync = true;
+        applySyncedTime();
+      }
+    }
+  });
+
+  // division buttons
+  document.querySelectorAll('.dr-div-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.dr-div-btn').forEach(b => b.removeAttribute('data-active'));
+      btn.setAttribute('data-active', 'true');
+      DR.state.delay.division = parseInt(btn.dataset.div, 10);
+      DR.state.delay.sync = true;
+      applySyncedTime();
+    });
+  });
+
+  // modifier buttons (NORMAL · DOT · TRI)
+  document.querySelectorAll('.dr-div-mod').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.dr-div-mod').forEach(b => b.removeAttribute('data-active'));
+      btn.setAttribute('data-active', 'true');
+      DR.state.delay.modifier = btn.dataset.modMode;
+      if (DR.state.delay.sync) applySyncedTime();
+    });
+  });
+
+  // ─── FILTER CURVE — pointer-driven cutoff/resonance (FabFilter-style) ──
+  // X axis = frequency (log), Y axis = resonance (linear, top=low res, bottom=high res)
+  if (curveCanvas) {
+    function onCurveMove(e) {
+      const rect = curveCanvas.getBoundingClientRect();
+      const x = Math.max(0, Math.min(rect.width,  e.clientX - rect.left));
+      const y = Math.max(0, Math.min(rect.height, e.clientY - rect.top));
+      const cut = 20 * Math.pow(20000/20, x / rect.width);
+      // y mapped to res, but with a forgiving range so vertical motion isn't punishing
+      // top of canvas (y=0)        → res = 0.1
+      // bottom of canvas (y=height) → res = 8.0
+      const res = 0.1 + (y / rect.height) * (8.0 - 0.1);
+      knobs.cut?.setValue(cut);
+      knobs.res?.setValue(res);
+    }
+    function onCurveUp() {
+      document.removeEventListener('pointermove', onCurveMove);
+      document.removeEventListener('pointerup', onCurveUp);
+      document.removeEventListener('pointercancel', onCurveUp);
+      document.body.style.userSelect = '';
+    }
+    curveCanvas.addEventListener('pointerdown', e => {
+      if (e.button !== undefined && e.button !== 0) return;
+      ensureCtx();
+      onCurveMove(e); // immediate jump to click position
+      document.addEventListener('pointermove', onCurveMove);
+      document.addEventListener('pointerup', onCurveUp);
+      document.addEventListener('pointercancel', onCurveUp);
+      document.body.style.userSelect = 'none';
+      e.preventDefault();
+    });
+  }
+
+  // ─── FILTER MODE ─────────────────────────────────────────────────
+  document.querySelectorAll('.dr-mode-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      btn.parentElement.querySelectorAll('.dr-mode-btn').forEach(b => b.removeAttribute('data-active'));
+      btn.setAttribute('data-active', 'true');
+      const types = { lp: 'lowpass', hp: 'highpass', bp: 'bandpass' };
+      DR.state.filterType = types[btn.dataset.mode];
+      if (DR.nodes.filter) DR.nodes.filter.type = DR.state.filterType;
+    });
+  });
+
+  // ─── IR SLOTS ────────────────────────────────────────────────────
+  document.querySelectorAll('.dr-ir-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      btn.parentElement.querySelectorAll('.dr-ir-btn').forEach(b => b.removeAttribute('data-active'));
+      btn.setAttribute('data-active', 'true');
+      ensureCtx();
+      loadIR(btn.dataset.ir);
+    });
+  });
+
+  // ─── BYPASS (per module) ────────────────────────────────────────
+  document.querySelectorAll('.dr-mod-bypass').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const mod = btn.closest('.dr-mod');
+      const which = mod.dataset.mod;
+      const wasOn = mod.getAttribute('data-bypassed') !== 'true';
+      mod.setAttribute('data-bypassed', wasOn ? 'true' : 'false');
+      if (which in DR.state.bypassed) {
+        DR.state.bypassed[which] = wasOn;
+        applyBypass();
+      }
+    });
+  });
+  function applyBypass() {
+    if (!DR.ctx) return;
+    const t = DR.ctx.currentTime;
+    // tempo bypass — for streams, route around the worklet to save latency
+    applyTempoBypass();
+    if (DR.state.bypassed.filter) {
+      DR.nodes.filter.frequency.setValueAtTime(20000, t);
+      DR.nodes.filter.Q.setValueAtTime(0, t);
+    } else {
+      DR.nodes.filter.frequency.setValueAtTime(DR.state.cut, t);
+      DR.nodes.filter.Q.setValueAtTime(DR.state.res, t);
+    }
+    if (DR.nodes.delayWet) DR.nodes.delayWet.gain.setValueAtTime(
+      DR.state.bypassed.delay ? 0 : DR.state.delay.mix, t
+    );
+    if (DR.nodes.delayFb) DR.nodes.delayFb.gain.setValueAtTime(
+      DR.state.bypassed.delay ? 0 : DR.state.delay.feedback, t
+    );
+    DR.nodes.reverbWet.gain.setValueAtTime(
+      DR.state.bypassed.reverb ? 0 : DR.state.reverbMix * DR.state.reverbSize, t
+    );
+  }
+
+  // tempo bypass — for streams, swaps the worklet in/out of the chain.
+  // When bypassed, source → inputAnalyser direct (zero added latency).
+  // When active, source → soundTouch → inputAnalyser (~30ms phase vocoder).
+  async function applyTempoBypass() {
+    if (!DR.state.source || !DR.ctx) return;
+    if (DR.state.sourceType === 'buffer') {
+      const t = DR.ctx.currentTime;
+      if (DR.state.bypassed.tempo) {
+        DR.state.source.playbackRate.setValueAtTime(1, t);
+        DR.state.source.detune.setValueAtTime(0, t);
+      } else {
+        updateRateDetune();
+      }
+      return;
+    }
+    if (DR.state.sourceType !== 'stream') return;
+    if (DR.state.bypassed.tempo) {
+      try { DR.state.source.disconnect(); } catch(_){}
+      if (DR.nodes.soundTouch) { try { DR.nodes.soundTouch.disconnect(); } catch(_){} }
+      DR.state.source.connect(DR.nodes.inputAnalyser);
+    } else {
+      const ready = await ensureWorklet();
+      if (!ready) return;
+      try { DR.state.source.disconnect(); } catch(_){}
+      if (!DR.nodes.soundTouch) {
+        DR.nodes.soundTouch = createSoundTouchNode();
+      } else {
+        try { DR.nodes.soundTouch.disconnect(); } catch(_){}
+      }
+      DR.state.source.connect(DR.nodes.soundTouch);
+      DR.nodes.soundTouch.connect(DR.nodes.inputAnalyser);
+      updateRateDetune();
+    }
+  }
+
+  // ─── PER-MODULE RESET ───────────────────────────────────────────
+  const moduleKnobs = {
+    tempo: ['screw', 'rate', 'pitch'],
+    filter: ['cut', 'res', 'lrate', 'ldepth'],
+    delay: ['dtime', 'fb', 'dtone', 'dmix'],
+    reverb: ['size', 'mix'],
+    master: ['out']
+  };
+  document.querySelectorAll('.dr-mod-reset').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const mod = btn.closest('.dr-mod');
+      const which = mod.dataset.mod;
+      // reset every knob in this module to its default
+      (moduleKnobs[which] || []).forEach(name => {
+        if (knobs[name]) {
+          // re-trigger by reading default from setValue's tracked state — easiest: call setValue with the knob's stored default by snapshotting from internal state
+          // we expose it via a helper: knob has .resetToDefault method? we don't have one.
+          // workaround: each knob has a 'default' baked in via its makeKnob opts; use setValue with the original opts.default by re-binding
+          // simpler: store defaults as a separate map
+        }
+      });
+      // module-specific resets handled below
+      resetModule(which);
+    });
+  });
+
+  // explicit defaults map (mirrors what was passed to makeKnob)
+  const knobDefaults = {
+    screw: 1.0, rate: 1.0, pitch: 0,
+    cut: 20000, res: 0.1, lrate: 1.5, ldepth: 0.5,
+    size: 1.0, mix: 0,
+    dtime: 500, fb: 0.4, dtone: 6000, dmix: 0,
+    out: 0
+  };
+
+  function resetModule(which) {
+    (moduleKnobs[which] || []).forEach(name => {
+      if (knobs[name] && knobDefaults[name] !== undefined) knobs[name].setValue(knobDefaults[name]);
+    });
+    // module-extra resets
+    if (which === 'filter') {
+      document.querySelectorAll('.dr-mode-btn').forEach(b => b.removeAttribute('data-active'));
+      const lp = document.querySelector('.dr-mode-btn[data-mode="lp"]');
+      if (lp) lp.setAttribute('data-active', 'true');
+      DR.state.filterType = 'lowpass';
+      if (DR.nodes.filter) DR.nodes.filter.type = 'lowpass';
+      // also reset the LFO sub-section
+      DR.state.lfo.enabled = false;
+      DR.state.lfo.shape = 'sine';
+      DR.state.lfo.target = 'cut';
+      DR.state.lfo.sync = false;
+      DR.state.lfo.division = '1/4';
+      DR.state.lfo.phase = 0;
+      const lfoT = document.getElementById('dr-lfo-toggle');
+      if (lfoT) lfoT.setAttribute('data-active', 'false');
+      const syncT = document.getElementById('dr-lfo-sync');
+      if (syncT) syncT.setAttribute('data-active', 'false');
+      const divG = document.getElementById('dr-lfo-div-grid');
+      if (divG) divG.hidden = true;
+      document.querySelectorAll('.dr-lfo-shape').forEach(b => b.removeAttribute('data-active'));
+      const sShape = document.querySelector('.dr-lfo-shape[data-shape="sine"]');
+      if (sShape) sShape.setAttribute('data-active', 'true');
+      document.querySelectorAll('.dr-lfo-target').forEach(b => b.removeAttribute('data-active'));
+      const sTarget = document.querySelector('.dr-lfo-target[data-target="cut"]');
+      if (sTarget) sTarget.setAttribute('data-active', 'true');
+      document.querySelectorAll('.dr-lfo-div').forEach(b => b.removeAttribute('data-active'));
+      const sDiv = document.querySelector('.dr-lfo-div[data-div="1/4"]');
+      if (sDiv) sDiv.setAttribute('data-active', 'true');
+    }
+    if (which === 'delay') {
+      DR.state.delay.bpm = 120;
+      DR.state.delay.division = 4;
+      DR.state.delay.modifier = 'normal';
+      DR.state.delay.sync = true;
+      const bpmEl = document.getElementById('dr-bpm');
+      if (bpmEl) bpmEl.textContent = '120.0';
+      document.querySelectorAll('.dr-div-btn').forEach(b => b.removeAttribute('data-active'));
+      const d4 = document.querySelector('.dr-div-btn[data-div="4"]');
+      if (d4) d4.setAttribute('data-active', 'true');
+      document.querySelectorAll('.dr-div-mod').forEach(b => b.removeAttribute('data-active'));
+      const dnorm = document.querySelector('.dr-div-mod[data-mod-mode="normal"]');
+      if (dnorm) dnorm.setAttribute('data-active', 'true');
+      applySyncedTime();
+    }
+    if (which === 'reverb') {
+      document.querySelectorAll('.dr-ir-btn').forEach(b => b.removeAttribute('data-active'));
+      const slot01 = document.querySelector('.dr-ir-btn[data-ir="01"]');
+      if (slot01) slot01.setAttribute('data-active', 'true');
+      if (DR.ctx) loadIR('01');
+    }
+  }
+
+  // ─── MASTER KILLSWITCH (A/B compare — bypass all FX) ───────────
+  const killBtn = document.getElementById('dr-kill');
+  let killStash = null;
+  killBtn?.addEventListener('click', () => {
+    if (killStash) {
+      // disengage — restore prior bypass state
+      Object.assign(DR.state.bypassed, killStash);
+      ['tempo','filter','delay','reverb'].forEach(m => {
+        const el = document.querySelector(`.dr-mod[data-mod="${m}"]`);
+        if (el) el.setAttribute('data-bypassed', String(DR.state.bypassed[m]));
+      });
+      killStash = null;
+      killBtn.removeAttribute('data-active');
+    } else {
+      // engage — stash current bypass state and bypass everything
+      killStash = { ...DR.state.bypassed };
+      DR.state.bypassed.tempo = true;
+      DR.state.bypassed.filter = true;
+      DR.state.bypassed.delay = true;
+      DR.state.bypassed.reverb = true;
+      ['tempo','filter','delay','reverb'].forEach(m => {
+        const el = document.querySelector(`.dr-mod[data-mod="${m}"]`);
+        if (el) el.setAttribute('data-bypassed', 'true');
+      });
+      killBtn.setAttribute('data-active', 'true');
+    }
+    applyBypass();
+  });
+
+  // ─── INPUT BAY ───────────────────────────────────────────────────
+  bayBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const which = btn.dataset.input;
+      bayBtns.forEach(b => b.removeAttribute('data-active'));
+      btn.setAttribute('data-active', 'true');
+      if (which === 'file') {
+        ensureCtx();
+        if (DR.ctx.state === 'suspended') DR.ctx.resume();
+        hideDevicePicker();
+        fileInput.click();
+      } else if (which === 'tab') {
+        hideDevicePicker();
+        loadTabAudio();
+      } else if (which === 'device') {
+        loadDeviceAudio();
+      }
+    });
+  });
+  fileInput.addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    bayBtns.forEach(b => b.removeAttribute('data-active'));
+    document.querySelector('.dr-bay-btn[data-input="file"]').setAttribute('data-active', 'true');
+    loadFile(file);
+    fileInput.value = ''; // allow reselecting same file
+  });
+
+  // ─── DRAG-DROP ───────────────────────────────────────────────────
+  ['dragover','dragenter'].forEach(ev =>
+    document.addEventListener(ev, e => { e.preventDefault(); }));
+  document.addEventListener('drop', e => {
+    e.preventDefault();
+    const file = e.dataTransfer.files[0];
+    if (!file) return;
+    if (!file.type.startsWith('audio/') && !/\.(wav|mp3|flac|m4a|ogg|aac)$/i.test(file.name)) {
+      setStatus(`<b>not an audio file</b> — try wav, mp3, flac, m4a, or ogg`);
+      return;
+    }
+    bayBtns.forEach(b => b.removeAttribute('data-active'));
+    document.querySelector('.dr-bay-btn[data-input="file"]').setAttribute('data-active', 'true');
+    loadFile(file);
+  });
+
+  // ─── RECORDING ───────────────────────────────────────────────────
+  armBtn.addEventListener('click', () => {
+    if (DR.recording) return;
+    DR.armed = !DR.armed;
+    armBtn.setAttribute('data-armed', DR.armed ? 'true' : 'false');
+    recBtn.disabled = !DR.armed;
+    transStatus.textContent = DR.armed ? 'armed — ready to record' : 'standby — arm to begin';
+  });
+  recBtn.addEventListener('click', () => {
+    if (!DR.ctx || !DR.armed) return;
+    if (DR.recording) {
+      DR.recorder.stop();
+      return;
+    }
+    DR.recordedChunks = [];
+    const mimeCandidates = ['audio/webm;codecs=opus', 'audio/webm', 'audio/ogg;codecs=opus', 'audio/mp4'];
+    const mime = mimeCandidates.find(m => MediaRecorder.isTypeSupported(m)) || '';
+    const opts = mime ? { mimeType: mime } : {};
+    DR.recorder = new MediaRecorder(DR.nodes.recordDest.stream, opts);
+    DR.recorder.ondataavailable = e => { if (e.data.size > 0) DR.recordedChunks.push(e.data); };
+    DR.recorder.onstop = () => {
+      const blob = new Blob(DR.recordedChunks, { type: mime || 'audio/webm' });
+      const url = URL.createObjectURL(blob);
+      const ext = mime.includes('mp4') ? 'm4a' : (mime.includes('ogg') ? 'ogg' : 'webm');
+      const ts = new Date();
+      const pad = n => String(n).padStart(2, '0');
+      const stamp = `${ts.getFullYear()}-${pad(ts.getMonth()+1)}-${pad(ts.getDate())}-${pad(ts.getHours())}h${pad(ts.getMinutes())}`;
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `darkroom-${stamp}.${ext}`;
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 5000);
+      DR.recording = false;
+      recBtn.removeAttribute('data-recording');
+      clearInterval(DR.recInterval);
+      transStatus.textContent = 'saved → downloads';
+      transFile.textContent = a.download;
+      setTimeout(() => {
+        DR.armed = false;
+        armBtn.setAttribute('data-armed', 'false');
+        recBtn.disabled = true;
+        transStatus.textContent = 'standby — arm to begin';
+      }, 1800);
+    };
+    DR.recorder.start();
+    DR.recording = true;
+    recBtn.setAttribute('data-recording', 'true');
+    DR.recStart = Date.now();
+    transStatus.textContent = 'recording';
+    DR.recInterval = setInterval(() => {
+      const e = Math.floor((Date.now() - DR.recStart) / 1000);
+      transTime.textContent = `${String(Math.floor(e/60)).padStart(2,'0')}:${String(e%60).padStart(2,'0')}`;
+    }, 250);
+  });
+
+  // ─── VISUALIZATIONS ──────────────────────────────────────────────
+  function setupCanvas(c) {
+    const dpr = window.devicePixelRatio || 1;
+    const rect = c.getBoundingClientRect();
+    c.width = Math.floor(rect.width * dpr);
+    c.height = Math.floor(rect.height * dpr);
+    const cx = c.getContext('2d');
+    cx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    return { cx, w: rect.width, h: rect.height };
+  }
+
+  let stripBuf = null, curveBuf = null, preBuf = null, postBuf = null;
+
+  // ─── PEAK-HISTORY SCROLLING WAVEFORM ─────────────────────────────
+  // Each frame, sample the analyser, compute min+max amplitude over the buffer,
+  // push to a circular history, and draw history as filled vertical bars
+  // (DAW-style waveform). New audio appears on the right; history scrolls left.
+  const STRIP_HISTORY = 320;
+  const peakMin = new Float32Array(STRIP_HISTORY);
+  const peakMax = new Float32Array(STRIP_HISTORY);
+  let peakHead = 0;
+
+  function pushPeak() {
+    if (!DR.nodes.inputAnalyser || !DR.state.isPlaying) {
+      peakMin[peakHead] = 0;
+      peakMax[peakHead] = 0;
+    } else {
+      const a = DR.nodes.inputAnalyser;
+      if (!stripBuf || stripBuf.length !== a.fftSize) stripBuf = new Float32Array(a.fftSize);
+      a.getFloatTimeDomainData(stripBuf);
+      let mn = 0, mx = 0;
+      for (let i = 0; i < stripBuf.length; i++) {
+        const v = stripBuf[i];
+        if (v < mn) mn = v;
+        if (v > mx) mx = v;
+      }
+      peakMin[peakHead] = mn;
+      peakMax[peakHead] = mx;
+    }
+    peakHead = (peakHead + 1) % STRIP_HISTORY;
+  }
+
+  function drawStrip() {
+    if (!stripCanvas) return;
+    const { cx, w, h } = setupCanvas(stripCanvas);
+    cx.clearRect(0, 0, w, h);
+
+    pushPeak();
+
+    // tick grid every 1/8 — softer than before
+    cx.strokeStyle = 'oklch(0.24 0.010 145)';
+    cx.lineWidth = 1;
+    for (let i = 1; i < 8; i++) {
+      const x = (w / 8) * i;
+      cx.beginPath(); cx.moveTo(x, 0); cx.lineTo(x, h); cx.stroke();
+    }
+
+    // baseline
+    cx.strokeStyle = 'oklch(0.32 0.012 145)';
+    cx.beginPath(); cx.moveTo(0, h/2); cx.lineTo(w, h/2); cx.stroke();
+
+    // peak bars — coral, gradient + glow for FabFilter-class punch
+    const colW = w / STRIP_HISTORY;
+    const amp = h * 0.50;
+    if (DR.state.isPlaying) {
+      // glow pass — translucent coral, 2x line width, draws under the main bars
+      cx.shadowColor = 'oklch(0.52 0.14 150 / 0.55)';
+      cx.shadowBlur = 6;
+      cx.fillStyle = 'oklch(0.52 0.14 150)';
+      for (let i = 0; i < STRIP_HISTORY; i++) {
+        const idx = (peakHead + i) % STRIP_HISTORY;
+        const mn = peakMin[idx];
+        const mx = peakMax[idx];
+        const top    = h/2 - mx * amp;
+        const bottom = h/2 - mn * amp;
+        const colH = Math.max(1, bottom - top);
+        cx.fillRect(i * colW, top, Math.max(1.2, colW + 0.5), colH);
+      }
+      cx.shadowBlur = 0;
+
+      // bright crown — peak tops slightly hotter for highlight feel
+      cx.fillStyle = 'oklch(0.70 0.14 150)';
+      for (let i = 0; i < STRIP_HISTORY; i++) {
+        const idx = (peakHead + i) % STRIP_HISTORY;
+        const mx = peakMax[idx];
+        const mn = peakMin[idx];
+        if (Math.max(mx, -mn) < 0.04) continue;
+        const top    = h/2 - mx * amp;
+        const bottom = h/2 - mn * amp;
+        cx.fillRect(i * colW, top, Math.max(1.2, colW + 0.5), 1);
+        cx.fillRect(i * colW, bottom - 1, Math.max(1.2, colW + 0.5), 1);
+      }
+    } else {
+      cx.fillStyle = 'oklch(0.34 0.02 145)';
+      for (let i = 0; i < STRIP_HISTORY; i++) {
+        const idx = (peakHead + i) % STRIP_HISTORY;
+        const mn = peakMin[idx];
+        const mx = peakMax[idx];
+        const top = h/2 - mx * amp;
+        const bottom = h/2 - mn * amp;
+        const colH = Math.max(1, bottom - top);
+        cx.fillRect(i * colW, top, Math.max(1, colW + 0.5), colH);
+      }
+    }
+
+    // playhead cursor on the right edge — amber, glowing
+    if (DR.state.isPlaying) {
+      cx.shadowColor = 'oklch(0.80 0.17 75 / 0.7)';
+      cx.shadowBlur = 8;
+      cx.fillStyle = 'oklch(0.80 0.17 75 / 0.9)';
+      cx.fillRect(w - 2, 0, 2, h);
+      cx.shadowBlur = 0;
+    }
+  }
+
+  function drawCurve() {
+    if (!curveCanvas) return;
+    const { cx, w, h } = setupCanvas(curveCanvas);
+    cx.clearRect(0, 0, w, h);
+    cx.strokeStyle = 'oklch(0.24 0.009 140)';
+    cx.lineWidth = 1;
+    [0.25, 0.5, 0.75].forEach(p => {
+      const x = w * p; cx.beginPath(); cx.moveTo(x, 0); cx.lineTo(x, h); cx.stroke();
+    });
+    cx.strokeStyle = 'oklch(0.30 0.010 140)';
+    cx.beginPath(); cx.moveTo(0, h*0.5); cx.lineTo(w, h*0.5); cx.stroke();
+
+    // live spectrum behind the curve — coral, FabFilter-style warm overlay
+    if (DR.nodes.outputAnalyser && DR.state.isPlaying) {
+      const a = DR.nodes.outputAnalyser;
+      if (!curveBuf || curveBuf.length !== a.frequencyBinCount) curveBuf = new Uint8Array(a.frequencyBinCount);
+      a.getByteFrequencyData(curveBuf);
+      const grad = cx.createLinearGradient(0, 0, 0, h);
+      grad.addColorStop(0, 'oklch(0.52 0.14 150 / 0.30)');
+      grad.addColorStop(1, 'oklch(0.52 0.14 150 / 0.06)');
+      cx.fillStyle = grad;
+      cx.beginPath();
+      cx.moveTo(0, h);
+      const sr = DR.ctx.sampleRate;
+      for (let x = 0; x < w; x++) {
+        const freq = 20 * Math.pow(20000/20, x/w);
+        const bin = Math.min(curveBuf.length - 1, Math.floor((freq / (sr/2)) * curveBuf.length));
+        const m = curveBuf[bin] / 255;
+        cx.lineTo(x, h - m * h * 0.95);
+      }
+      cx.lineTo(w, h); cx.closePath(); cx.fill();
+    }
+
+    // analytical filter response — moss with subtle glow when active.
+    // when LFO is engaged, read the LIVE filter param values so the curve animates.
+    let cut, res;
+    if (DR.state.bypassed.filter) {
+      cut = 20000; res = 0.1;
+    } else if (DR.state.lfo.enabled && DR.nodes.filter) {
+      cut = DR.nodes.filter.frequency.value || DR.state.cut;
+      res = DR.nodes.filter.Q.value || DR.state.res;
+    } else {
+      cut = DR.state.cut;
+      res = DR.state.res;
+    }
+    const type = DR.state.filterType;
+    cx.strokeStyle = DR.state.bypassed.filter ? 'oklch(0.40 0.04 145)' : 'oklch(0.74 0.18 142)';
+    cx.lineWidth = 1.8;
+    if (!DR.state.bypassed.filter) {
+      cx.shadowColor = 'oklch(0.74 0.18 142 / 0.35)';
+      cx.shadowBlur = 6;
+    }
+    cx.beginPath();
+    for (let x = 0; x < w; x++) {
+      const freq = 20 * Math.pow(20000/20, x/w);
+      const f = freq / cut;
+      const Q = Math.max(0.1, res);
+      let mag = 1;
+      if (type === 'lowpass') {
+        mag = 1 / Math.sqrt((1-f*f)*(1-f*f) + (f/Q)*(f/Q));
+      } else if (type === 'highpass') {
+        mag = (f*f) / Math.sqrt((1-f*f)*(1-f*f) + (f/Q)*(f/Q));
+      } else if (type === 'bandpass') {
+        mag = (f/Q) / Math.sqrt((1-f*f)*(1-f*f) + (f/Q)*(f/Q));
+      }
+      const db = 20 * Math.log10(Math.max(0.001, mag));
+      const y = h*0.5 - (db / 24) * h * 0.45;
+      const yc = Math.max(0, Math.min(h, y));
+      if (x === 0) cx.moveTo(x, yc); else cx.lineTo(x, yc);
+    }
+    cx.stroke();
+    cx.shadowBlur = 0;
+
+    // cutoff handle — glowing moss circle
+    const cutX = w * (Math.log(cut/20) / Math.log(20000/20));
+    if (!DR.state.bypassed.filter) {
+      cx.shadowColor = 'oklch(0.74 0.18 142 / 0.6)';
+      cx.shadowBlur = 8;
+    }
+    cx.fillStyle = DR.state.bypassed.filter ? 'oklch(0.40 0.04 145)' : 'oklch(0.74 0.18 142)';
+    cx.beginPath(); cx.arc(cutX, h*0.5, 5, 0, Math.PI * 2); cx.fill();
+    cx.shadowBlur = 0;
+
+    // axis labels
+    cx.fillStyle = 'oklch(0.50 0.012 140)';
+    cx.font = '9px "Departure Mono", "Fragment Mono", monospace';
+    cx.fillText('20', 4, h - 6);
+    cx.fillText('200', w*0.25 + 4, h - 6);
+    cx.fillText('2k', w*0.5 + 4, h - 6);
+    cx.fillText('20k', w - 24, h - 6);
+  }
+
+  function drawIR() {
+    if (!irCanvas) return;
+    const { cx, w, h } = setupCanvas(irCanvas);
+    cx.clearRect(0, 0, w, h);
+    cx.strokeStyle = 'oklch(0.30 0.010 140)';
+    cx.lineWidth = 1;
+    cx.beginPath(); cx.moveTo(0, h/2); cx.lineTo(w, h/2); cx.stroke();
+    if (DR.ctx && DR.irs[DR.state.irSlot]) {
+      const buf = DR.irs[DR.state.irSlot];
+      const data = buf.getChannelData(0);
+      cx.strokeStyle = DR.state.bypassed.reverb ? 'oklch(0.40 0.04 145)' : 'oklch(0.52 0.14 150)';
+      if (!DR.state.bypassed.reverb) {
+        cx.shadowColor = 'oklch(0.52 0.14 150 / 0.45)';
+        cx.shadowBlur = 4;
+      }
+      cx.lineWidth = 1;
+      cx.beginPath();
+      const step = data.length / w;
+      for (let x = 0; x < w; x++) {
+        let max = 0;
+        const start = Math.floor(x * step);
+        const end = Math.floor((x + 1) * step);
+        for (let i = start; i < end; i++) {
+          const v = Math.abs(data[i] || 0);
+          if (v > max) max = v;
+        }
+        cx.moveTo(x, h/2 - max * h * 0.42);
+        cx.lineTo(x, h/2 + max * h * 0.42);
+      }
+      cx.stroke();
+      cx.shadowBlur = 0;
+      cx.fillStyle = 'oklch(0.54 0.014 145)';
+      cx.font = '8px "Departure Mono", "Fragment Mono", monospace';
+      cx.fillText('0 ms', 4, h - 4);
+      cx.fillText(`${(buf.duration*1000).toFixed(0)} ms`, w - 56, h - 4);
+    }
+  }
+
+  function drawDelay() {
+    if (!delayCanvas) return;
+    const { cx, w, h } = setupCanvas(delayCanvas);
+    cx.clearRect(0, 0, w, h);
+
+    const d = DR.state.delay;
+    const totalSpan = 4.0; // seconds visible across the canvas
+    const time = d.time;
+    if (time <= 0) return;
+
+    // beat grid (faint vertical lines at every quarter note based on current bpm)
+    const beat = 60 / d.bpm;
+    cx.strokeStyle = 'oklch(0.22 0.008 140)';
+    cx.lineWidth = 1;
+    for (let t = 0; t < totalSpan; t += beat) {
+      const x = (t / totalSpan) * w;
+      cx.beginPath();
+      cx.moveTo(x, 0); cx.lineTo(x, h);
+      cx.stroke();
+    }
+
+    // baseline
+    cx.strokeStyle = 'oklch(0.30 0.010 140)';
+    cx.beginPath(); cx.moveTo(0, h * 0.85); cx.lineTo(w, h * 0.85); cx.stroke();
+
+    // initial impulse (the dry signal at t=0)
+    cx.strokeStyle = 'oklch(0.66 0.012 140)';
+    cx.lineWidth = 2;
+    cx.beginPath();
+    cx.moveTo(2, h * 0.85);
+    cx.lineTo(2, h * 0.10);
+    cx.stroke();
+
+    // simulated tap sequence — each tap is at n * delayTime, height decays by feedback^n
+    const dimmed = DR.state.bypassed.delay;
+    const wetMag = dimmed ? 0 : Math.max(0.001, d.mix);
+    const tapColor = dimmed ? 'oklch(0.40 0.04 145)' : 'oklch(0.52 0.14 150)';
+    cx.strokeStyle = tapColor;
+    cx.lineWidth = 1.8;
+    if (!dimmed) {
+      cx.shadowColor = 'oklch(0.52 0.14 150 / 0.5)';
+      cx.shadowBlur = 5;
+    }
+    const fb = d.feedback;
+    let amp = wetMag;
+    let t = time;
+    let safety = 0;
+    while (t < totalSpan && amp > 0.005 && safety++ < 64) {
+      const x = (t / totalSpan) * w;
+      const tapHeight = (h * 0.74) * amp;
+      cx.beginPath();
+      cx.moveTo(x, h * 0.85);
+      cx.lineTo(x, h * 0.85 - tapHeight);
+      cx.stroke();
+      // tap head dot
+      cx.fillStyle = tapColor;
+      cx.beginPath();
+      cx.arc(x, h * 0.85 - tapHeight, 3, 0, Math.PI * 2);
+      cx.fill();
+      t += time;
+      amp *= fb;
+    }
+    cx.shadowBlur = 0;
+
+    // axis labels
+    cx.fillStyle = 'oklch(0.50 0.012 140)';
+    cx.font = '8px "Departure Mono", "Fragment Mono", monospace';
+    cx.fillText('0', 4, h - 4);
+    cx.fillText(`${(time*1000).toFixed(0)} ms`, Math.min(w - 56, (time/totalSpan)*w + 6), h - 4);
+    cx.fillText(`${totalSpan.toFixed(1)} s`, w - 36, h - 4);
+  }
+
+  // ─── AUTO BPM DETECTION ─────────────────────────────────────────
+  // Onset-based detector: extract bass-band energy from the FFT, threshold
+  // against a rolling baseline, collect inter-onset intervals, median-filter
+  // them, octave-fold into 60–180 BPM range, smooth the readout.
+  const BPM = {
+    energy: new Float32Array(128),  // ~2s of energy history at ~60Hz
+    energyIdx: 0,
+    fftBuf: null,
+    intervals: [],
+    lastOnsetMs: 0,
+    bpm: 0,                          // smoothed display value
+    locked: false,                   // do we have a stable estimate?
+    lastBpmFresh: 0
+  };
+  const tapeBpmEl     = document.getElementById('dr-tape-bpm');
+  const tapeBpmCell   = document.querySelector('.dr-tape-info-bpm');
+
+  function tickBpm() {
+    if (!DR.nodes.inputAnalyser || !DR.state.isPlaying) {
+      // decay confidence if no audio
+      if (BPM.locked && performance.now() - BPM.lastBpmFresh > 6000) {
+        BPM.locked = false;
+        if (tapeBpmCell) tapeBpmCell.setAttribute('data-locked', 'false');
+      }
+      return;
+    }
+    const a = DR.nodes.inputAnalyser;
+    if (!BPM.fftBuf || BPM.fftBuf.length !== a.frequencyBinCount) {
+      BPM.fftBuf = new Uint8Array(a.frequencyBinCount);
+    }
+    a.getByteFrequencyData(BPM.fftBuf);
+
+    // bass-band energy (60–200 Hz)
+    const sr = DR.ctx.sampleRate;
+    const nyq = sr / 2;
+    const bin60  = Math.max(1, Math.floor((60 / nyq) * BPM.fftBuf.length));
+    const bin200 = Math.min(BPM.fftBuf.length - 1, Math.floor((200 / nyq) * BPM.fftBuf.length));
+    let sum = 0;
+    for (let i = bin60; i <= bin200; i++) sum += BPM.fftBuf[i];
+    const e = sum / Math.max(1, (bin200 - bin60 + 1) * 255); // 0..1
+
+    // rolling history
+    BPM.energy[BPM.energyIdx] = e;
+    BPM.energyIdx = (BPM.energyIdx + 1) % BPM.energy.length;
+
+    // adaptive threshold (1.5× rolling mean)
+    let acc = 0;
+    for (let i = 0; i < BPM.energy.length; i++) acc += BPM.energy[i];
+    const mean = acc / BPM.energy.length;
+    const threshold = Math.max(0.04, mean * 1.5);
+
+    const now = performance.now();
+    // onset = current energy exceeds threshold AND was below it recently AND cooldown passed
+    if (e > threshold && (now - BPM.lastOnsetMs) > 220) {
+      if (BPM.lastOnsetMs > 0) {
+        const dt = now - BPM.lastOnsetMs;
+        // sanity: only accept intervals 200–1000ms (60–300 BPM raw range)
+        if (dt > 200 && dt < 1000) {
+          BPM.intervals.push(dt);
+          while (BPM.intervals.length > 16) BPM.intervals.shift();
+        }
+      }
+      BPM.lastOnsetMs = now;
+
+      if (BPM.intervals.length >= 4) {
+        // median of recent intervals
+        const sorted = [...BPM.intervals].sort((a, b) => a - b);
+        const med = sorted[Math.floor(sorted.length / 2)];
+        let raw = 60000 / med;
+        // octave-fold into 60–180 BPM
+        while (raw < 60)  raw *= 2;
+        while (raw > 180) raw /= 2;
+        // smooth toward new estimate
+        BPM.bpm = BPM.bpm === 0 ? raw : (BPM.bpm * 0.6 + raw * 0.4);
+        BPM.locked = BPM.intervals.length >= 6;
+        BPM.lastBpmFresh = now;
+      }
+    }
+
+    // update DOM
+    if (tapeBpmEl) {
+      if (BPM.bpm > 0) {
+        tapeBpmEl.textContent = BPM.bpm.toFixed(1);
+      } else {
+        tapeBpmEl.textContent = '---';
+      }
+    }
+    if (tapeBpmCell) {
+      tapeBpmCell.setAttribute('data-locked', BPM.locked ? 'true' : 'false');
+    }
+  }
+
+  // ─── LFO TICKER + VIS ────────────────────────────────────────────
+  const lfoCanvas = document.querySelector('.dr-lfo-vis');
+  let lfoLastMs = performance.now();
+
+  function lfoShapeAt(shape, p) {
+    // p in [0,1]
+    switch (shape) {
+      case 'sine': return Math.sin(p * 2 * Math.PI);
+      case 'tri':  return p < 0.5 ? 4 * p - 1 : 3 - 4 * p;
+      case 'saw':  return 2 * p - 1;
+      case 'sq':   return p < 0.5 ? 1 : -1;
+      case 'sh':   return DR.state.lfo.shLast;
+      default: return 0;
+    }
+  }
+
+  function tickLfo() {
+    const now = performance.now();
+    const dt = Math.min(0.1, (now - lfoLastMs) / 1000);
+    lfoLastMs = now;
+
+    if (!DR.state.lfo.enabled || DR.state.bypassed.filter || !DR.ctx) return;
+
+    // current rate in Hz
+    let rateHz = DR.state.lfo.rate;
+    if (DR.state.lfo.sync) {
+      const beatHz = DR.state.delay.bpm / 60;
+      const divs = { '1/16': 4, '1/8': 2, '1/4': 1, '1/2': 0.5, '1/1': 0.25, '2/1': 0.125 };
+      rateHz = beatHz * (divs[DR.state.lfo.division] || 1);
+    }
+
+    // advance phase
+    const prev = DR.state.lfo.phase;
+    DR.state.lfo.phase = (DR.state.lfo.phase + rateHz * dt) % 1;
+    // S&H: resample on phase wrap
+    if (DR.state.lfo.shape === 'sh' && DR.state.lfo.phase < prev) {
+      DR.state.lfo.shLast = Math.random() * 2 - 1;
+    }
+
+    const val = lfoShapeAt(DR.state.lfo.shape, DR.state.lfo.phase);
+    const t = DR.ctx.currentTime;
+
+    if (DR.state.lfo.target === 'cut' || DR.state.lfo.target === 'both') {
+      const octaves = val * DR.state.lfo.depth * 2; // ±2 octaves at 100% depth
+      const modCut = DR.state.cut * Math.pow(2, octaves);
+      DR.nodes.filter.frequency.setTargetAtTime(
+        Math.max(20, Math.min(20000, modCut)), t, 0.005
+      );
+    }
+    if (DR.state.lfo.target === 'res' || DR.state.lfo.target === 'both') {
+      const modRes = DR.state.res + val * DR.state.lfo.depth * 8;
+      DR.nodes.filter.Q.setTargetAtTime(
+        Math.max(0.1, Math.min(18, modRes)), t, 0.005
+      );
+    }
+  }
+
+  function drawLfo() {
+    if (!lfoCanvas) return;
+    const { cx, w, h } = setupCanvas(lfoCanvas);
+    cx.clearRect(0, 0, w, h);
+
+    // background grid
+    cx.strokeStyle = 'oklch(0.24 0.010 145)';
+    cx.lineWidth = 1;
+    cx.beginPath(); cx.moveTo(0, h/2); cx.lineTo(w, h/2); cx.stroke();
+    cx.strokeStyle = 'oklch(0.22 0.008 140)';
+    for (let i = 1; i < 4; i++) {
+      const x = (w / 4) * i;
+      cx.beginPath(); cx.moveTo(x, 0); cx.lineTo(x, h); cx.stroke();
+    }
+
+    const enabled = DR.state.lfo.enabled && !DR.state.bypassed.filter;
+    const dimmed = !enabled;
+
+    // draw two cycles of the current shape
+    cx.strokeStyle = dimmed ? 'oklch(0.40 0.04 145)' : 'oklch(0.74 0.18 142)';
+    cx.lineWidth = 1.6;
+    if (!dimmed) {
+      cx.shadowColor = 'oklch(0.74 0.18 142 / 0.45)';
+      cx.shadowBlur = 5;
+    }
+    cx.beginPath();
+    const cycles = 2;
+    for (let x = 0; x <= w; x++) {
+      const p = ((x / w) * cycles) % 1;
+      const v = lfoShapeAt(DR.state.lfo.shape === 'sh' ? 'sh' : DR.state.lfo.shape, p);
+      // for static drawing of S&H, use a deterministic stepped pattern
+      let drawV = v;
+      if (DR.state.lfo.shape === 'sh') {
+        // 8 steps across two cycles, deterministic from index
+        const step = Math.floor((x / w) * cycles * 8);
+        const seeded = Math.sin(step * 12.9898) * 43758.5453;
+        drawV = (seeded - Math.floor(seeded)) * 2 - 1;
+      }
+      const y = h/2 - drawV * h * 0.42;
+      if (x === 0) cx.moveTo(x, y); else cx.lineTo(x, y);
+    }
+    cx.stroke();
+    cx.shadowBlur = 0;
+
+    // playhead — current LFO phase (only one cycle's worth visible)
+    if (enabled) {
+      const playX = (DR.state.lfo.phase % 1) * (w / cycles);
+      cx.fillStyle = 'oklch(0.80 0.17 75 / 0.85)';
+      cx.fillRect(playX, 0, 2, h);
+      cx.fillRect(playX + (w / cycles), 0, 2, h);
+    }
+
+    // labels
+    cx.fillStyle = 'oklch(0.54 0.014 145)';
+    cx.font = '8px "Departure Mono", "Fragment Mono", monospace';
+    let rateLabel;
+    if (DR.state.lfo.sync) {
+      rateLabel = `${DR.state.lfo.division} @ ${DR.state.delay.bpm.toFixed(1)} BPM`;
+    } else {
+      rateLabel = `${DR.state.lfo.rate.toFixed(2)} Hz`;
+    }
+    cx.fillText(rateLabel, 4, h - 4);
+    cx.fillText(DR.state.lfo.shape.toUpperCase(), w - 32, h - 4);
+  }
+
+  function rmsDb(buf) {
+    let sum = 0;
+    for (let i = 0; i < buf.length; i++) sum += buf[i] * buf[i];
+    const rms = Math.sqrt(sum / buf.length);
+    return rms === 0 ? -Infinity : 20 * Math.log10(rms);
+  }
+  function dbToWidth(db) {
+    if (db === -Infinity) return 0;
+    return Math.max(0, Math.min(100, ((db + 60) / 60) * 100));
+  }
+
+  function updateMeters() {
+    if (!DR.nodes.preAnalyser || !DR.nodes.outputAnalyser) return;
+    if (!preBuf  || preBuf.length  !== DR.nodes.preAnalyser.fftSize)    preBuf  = new Float32Array(DR.nodes.preAnalyser.fftSize);
+    if (!postBuf || postBuf.length !== DR.nodes.outputAnalyser.fftSize) postBuf = new Float32Array(DR.nodes.outputAnalyser.fftSize);
+    DR.nodes.preAnalyser.getFloatTimeDomainData(preBuf);
+    DR.nodes.outputAnalyser.getFloatTimeDomainData(postBuf);
+    const preDb  = rmsDb(preBuf);
+    const postDb = rmsDb(postBuf);
+    if (preFill)   preFill.style.width   = dbToWidth(preDb)  + '%';
+    if (postFill)  postFill.style.width  = dbToWidth(postDb) + '%';
+    if (preValue)  preValue.textContent  = preDb  === -Infinity ? '−∞' : preDb.toFixed(1);
+    if (postValue) postValue.textContent = postDb === -Infinity ? '−∞' : postDb.toFixed(1);
+    const gr = -DR.nodes.limiter.reduction;
+    if (grFill)  grFill.style.width  = Math.min(100, gr * 5) + '%';
+    if (grValue) grValue.textContent = gr.toFixed(1);
+    if (inputLevel) inputLevel.style.width = dbToWidth(preDb) + '%';
+  }
+
+  // ─── TAPE DECK (TP-7 style scratch + auto-rotate) ────────────────
+  const tapeDisc      = document.querySelector('.dr-tape-disc');
+  const tapeRotor     = document.getElementById('dr-tape-rotor');
+  const tapeSourceEl  = document.getElementById('dr-tape-source');
+  const tapeElapsedEl = document.getElementById('dr-tape-elapsed');
+  const tapeRateEl    = document.getElementById('dr-tape-rate');
+  const tapeCornerEl  = document.getElementById('dr-tape-corner-time');
+
+  const TAPE = {
+    angle: 0,             // current visual angle in radians (rotor)
+    rate: 1,              // current effective rate (audio playback multiplier)
+    targetRate: 1,        // smoothed target
+    scratching: false,
+    pointerStart: 0,      // pointer angle at scratch start
+    rotorStart: 0,        // rotor angle at scratch start
+    samples: [],          // recent (time, angle) for velocity calc
+    lastTickMs: performance.now(),
+    playStartMs: 0,
+    elapsedSec: 0
+  };
+
+  // natural rotation speed at 1.0× rate: 1 turn per 12 seconds
+  const TAPE_BASE_ANGVEL = (2 * Math.PI) / 12;
+
+  function pointerAngle(e, rect) {
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    return Math.atan2(e.clientY - cy, e.clientX - cx);
+  }
+
+  function applyScratchRate(rate) {
+    if (!DR.ctx) return;
+    const t = DR.ctx.currentTime;
+    const safe = Math.max(0.05, Math.min(2.5, rate));
+    if (DR.state.sourceType === 'buffer' && DR.state.source) {
+      DR.state.source.playbackRate.setTargetAtTime(safe, t, 0.005);
+    } else if (DR.state.sourceType === 'stream' && DR.nodes.soundTouch) {
+      DR.nodes.soundTouch.parameters.get('rate').setTargetAtTime(safe, t, 0.005);
+    }
+  }
+
+  function restoreNormalRate() {
+    // restore the rate dictated by SCREW × RATE × bypass state
+    if (!DR.ctx) return;
+    const t = DR.ctx.currentTime;
+    if (DR.state.sourceType === 'buffer' && DR.state.source) {
+      const target = DR.state.bypassed.tempo ? 1 : (DR.state.screw * DR.state.rate);
+      DR.state.source.playbackRate.setTargetAtTime(target, t, 0.04);
+    } else if (DR.state.sourceType === 'stream' && DR.nodes.soundTouch) {
+      const target = DR.state.bypassed.tempo ? 1 : DR.state.screw;
+      DR.nodes.soundTouch.parameters.get('rate').setTargetAtTime(target, t, 0.04);
+    }
+  }
+
+  if (tapeDisc) {
+    tapeDisc.addEventListener('pointerdown', e => {
+      if (e.button !== undefined && e.button !== 0) return;
+      const rect = tapeDisc.getBoundingClientRect();
+      TAPE.scratching = true;
+      TAPE.pointerStart = pointerAngle(e, rect);
+      TAPE.rotorStart = TAPE.angle;
+      TAPE.samples = [{ t: performance.now(), a: TAPE.pointerStart }];
+      document.body.style.cursor = 'grabbing';
+      e.preventDefault();
+
+      function onMove(ev) {
+        const a = pointerAngle(ev, rect);
+        let delta = a - TAPE.pointerStart;
+        // unwrap so we don't snap when crossing ±π
+        while (delta > Math.PI) delta -= 2 * Math.PI;
+        while (delta < -Math.PI) delta += 2 * Math.PI;
+        TAPE.angle = TAPE.rotorStart + delta;
+
+        // velocity over recent samples
+        const now = performance.now();
+        TAPE.samples.push({ t: now, a });
+        while (TAPE.samples.length > 6) TAPE.samples.shift();
+        if (TAPE.samples.length >= 2) {
+          const first = TAPE.samples[0];
+          const last  = TAPE.samples[TAPE.samples.length - 1];
+          const dt = (last.t - first.t) / 1000;
+          let da = last.a - first.a;
+          while (da > Math.PI) da -= 2 * Math.PI;
+          while (da < -Math.PI) da += 2 * Math.PI;
+          const angVel = dt > 0 ? da / dt : 0;
+          // map angular velocity (rad/s) to playback rate.
+          // base: TAPE_BASE_ANGVEL == 1.0× rate. So rate = angVel / TAPE_BASE_ANGVEL.
+          // negative angVel → near-zero rate (web audio doesn't reverse natively in v1)
+          const mapped = Math.abs(angVel) / TAPE_BASE_ANGVEL;
+          TAPE.rate = Math.max(0.05, Math.min(2.5, mapped));
+          applyScratchRate(TAPE.rate);
+        }
+      }
+      function onUp() {
+        TAPE.scratching = false;
+        document.removeEventListener('pointermove', onMove);
+        document.removeEventListener('pointerup', onUp);
+        document.removeEventListener('pointercancel', onUp);
+        document.body.style.cursor = '';
+        restoreNormalRate();
+        // reset rate readout to the base after a short delay
+        setTimeout(() => { if (!TAPE.scratching) TAPE.rate = 1; }, 50);
+      }
+      document.addEventListener('pointermove', onMove);
+      document.addEventListener('pointerup', onUp);
+      document.addEventListener('pointercancel', onUp);
+    });
+  }
+
+  function tickTape() {
+    const now = performance.now();
+    const dt = (now - TAPE.lastTickMs) / 1000;
+    TAPE.lastTickMs = now;
+
+    // when not scratching, the disc rotates at the natural rate × current playback rate
+    if (!TAPE.scratching && DR.state.isPlaying) {
+      // effective base rate (what audio engine is playing at) — derive from state
+      let effRate = 1;
+      if (DR.state.sourceType === 'buffer' && !DR.state.bypassed.tempo) {
+        effRate = DR.state.screw * DR.state.rate;
+      } else if (DR.state.sourceType === 'stream' && !DR.state.bypassed.tempo && DR.nodes.soundTouch) {
+        effRate = DR.state.screw * DR.state.rate;
+      }
+      TAPE.rate = effRate;
+      TAPE.angle += TAPE_BASE_ANGVEL * effRate * dt;
+    }
+
+    if (tapeRotor) {
+      const deg = (TAPE.angle * 180 / Math.PI).toFixed(2);
+      tapeRotor.setAttribute('transform', `rotate(${deg})`);
+    }
+
+    // elapsed counter — counts up while playing
+    if (DR.state.isPlaying) {
+      if (TAPE.playStartMs === 0) TAPE.playStartMs = now;
+      TAPE.elapsedSec = (now - TAPE.playStartMs) / 1000;
+    } else {
+      TAPE.playStartMs = 0;
+      TAPE.elapsedSec = 0;
+    }
+
+    if (tapeElapsedEl) {
+      const e = Math.floor(TAPE.elapsedSec);
+      const h = Math.floor(e / 3600);
+      const m = Math.floor((e % 3600) / 60);
+      const s = e % 60;
+      const pad = n => String(n).padStart(2, '0');
+      tapeElapsedEl.textContent = `${pad(h)}:${pad(m)}:${pad(s)}`;
+    }
+    if (tapeCornerEl) {
+      const e = Math.floor(TAPE.elapsedSec);
+      const h = Math.floor(e / 3600);
+      const m = Math.floor((e % 3600) / 60);
+      const s = e % 60;
+      const pad = n => String(n).padStart(2, '0');
+      tapeCornerEl.textContent = `${pad(h)}.${pad(m)}.${pad(s)}`;
+    }
+    if (tapeRateEl) tapeRateEl.textContent = TAPE.rate.toFixed(3) + '×';
+
+    // source readout (mirrors bay status — keep concise)
+    if (tapeSourceEl) {
+      if (!DR.state.isPlaying) {
+        tapeSourceEl.textContent = '— no source —';
+      } else if (DR.state.sourceType === 'buffer') {
+        tapeSourceEl.textContent = DR.state.filename || 'file';
+      } else if (DR.state.sourceType === 'stream') {
+        tapeSourceEl.textContent = 'live stream';
+      }
+    }
+  }
+
+  function loop() {
+    tickLfo();
+    tickBpm();
+    drawStrip();
+    drawCurve();
+    drawDelay();
+    drawLfo();
+    updateMeters();
+    tickTape();
+    requestAnimationFrame(loop);
+  }
+  loop();
+  drawIR();
+
+  window.addEventListener('resize', () => {
+    drawStrip(); drawCurve(); drawIR(); drawDelay(); drawLfo();
+  });
+
+  // expose for debugging
+  window.DR = DR;
+})();
+</script>
+</body>
+</html>
