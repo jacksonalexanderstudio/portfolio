@@ -421,11 +421,19 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
    at 14s — half the speed of v1 so the orbit reads as a slow, deliberate
    turntable cycle rather than a frantic chase. */
 .dr-saturn-ring{fill:none;stroke-linecap:round;stroke-dasharray:3 16}
+/* Ring stroke-width, opacity, and drop-shadow glow are written directly by
+   JS each frame (see tickRingFlash in the engine). Calc()+var() proved
+   unreliable for SVG stroke-width on some browsers, so we use direct
+   property writes. Static fallback values keep the ring visible before
+   audio starts. */
 .dr-ring-outer{stroke-width:4}
 .dr-ring-inner{stroke-width:2.6}
-.dr-saturn-ring-back{stroke:var(--dr-moss);opacity:.78;animation:dr-ring-orbit 14s linear infinite}
-.dr-saturn-ring-front{stroke:var(--dr-moss);opacity:.95;animation:dr-ring-orbit 14s linear infinite}
-@keyframes dr-ring-orbit{to{stroke-dashoffset:-380}}
+/* Ring orbit is now JS-driven — strokeDashoffset is written each frame in
+   updateRingFlash, scaled by the effective playback rate (DR.state.screw ×
+   DR.state.rate, signed by REVERSE state, overridden by scratch velocity).
+   So slowing SCREW slows the ring, REVERSE flips it, scratch drags it. */
+.dr-saturn-ring-back{stroke:var(--dr-moss);opacity:.78}
+.dr-saturn-ring-front{stroke:var(--dr-moss);opacity:.95}
 .dr-saturn-moon{fill:oklch(0.92 0.02 80);opacity:.92}
 .dr-saturn-moon-glow{fill:oklch(0.92 0.02 80);opacity:.18}
 
@@ -1361,8 +1369,7 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
           <circle cx="100"  cy="80"   r="0.8" class="dr-star"/>
           <circle cx="-90"  cy="-86"  r="0.9" class="dr-star dr-star-twinkle"/>
         </g>
-        <!-- corner time + small static moon (outside rings — stay still) -->
-        <text x="120" y="-130" class="dr-tape-corner-r" id="dr-tape-corner-time">00.00.00</text>
+        <!-- small static moon (outside rings — stays still while Saturn spins) -->
         <circle cx="112" cy="98" r="3" class="dr-saturn-moon"/>
         <circle cx="112" cy="98" r="7" class="dr-saturn-moon-glow"/>
         <!-- BACK ring arcs — drawn before planet body, so when dashes chase
@@ -1377,11 +1384,13 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
             <path d="M -104 0 A 104 30 0 0 1 104 0" class="dr-saturn-ring dr-saturn-ring-back dr-ring-inner"/>
           </g>
         </g>
-        <!-- Static planet body — single brushed-aluminum sphere, matching
-             the knob-face treatment used elsewhere on the page. No bands,
-             no color, no spot — the orb's interest comes from the 3D light
-             and the orange ring orbiting it. -->
-        <g class="dr-saturn-planet">
+        <!-- Planet body — single brushed-aluminum sphere matching the knob
+             faces. Wrapped as a third .dr-tape-rotor so the whole composition
+             (rings + planet) spins together: the gradient highlight rotates
+             with the sphere, conveying rotation; on REVERSE the entire
+             composition reverses. Layering still works because back rings
+             draw before the planet and front rings draw after. -->
+        <g class="dr-tape-rotor dr-saturn-planet">
           <circle r="80" class="dr-saturn-body"/>
           <circle r="80" class="dr-saturn-rim"/>
         </g>
@@ -5672,6 +5681,111 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
     return Math.max(0, Math.min(100, ((db + 60) / 60) * 100));
   }
 
+  // ── Audio-reactive Saturn ring ──────────────────────────────────
+  // Dedicated energy follower on inputAnalyser (PRE-FX) lows+mids band
+  // (60 Hz – 4 kHz). Auto-baselined against a slow rolling average so quiet
+  // passages settle to baseline AND loud hits flare above it — kicks, bass,
+  // and snare transients produce visible pulses regardless of what the FX
+  // chain is doing. JS writes opacity + stroke-width + drop-shadow directly
+  // each frame (calc/var on SVG stroke-width was unreliable).
+  let ringEnergyAvg = 0;            // slow rolling avg of low+mid energy
+  let ringFlashSmooth = 0;          // smoothed flare value (0..1)
+  let ringFlashFftBuf = null;
+  let ringDashPhase = 0;            // accumulated stroke-dashoffset in user units
+  let ringLastTimeMs = 0;
+  // Reference: the old CSS animation cycled stroke-dashoffset 0 → -380 over 14s,
+  // i.e. ~-27.14 units/sec at 1× playback. We use the same base so the visual
+  // tempo at 1× matches what was there before, but signed/scaled by playback rate.
+  const RING_BASE_SPEED = -380 / 14;
+  const ringRefs = {
+    backOuter: null, backInner: null, frontOuter: null, frontInner: null
+  };
+  function updateRingFlash() {
+    if (!ringRefs.backOuter) {
+      // lazy-grab refs (markup may not exist on first call before SVG mounts)
+      const ringEls = document.querySelectorAll('.dr-saturn-ring');
+      if (!ringEls.length) return;
+      ringEls.forEach(el => {
+        const back = el.classList.contains('dr-saturn-ring-back');
+        const outer = el.classList.contains('dr-ring-outer');
+        const key = (back ? 'back' : 'front') + (outer ? 'Outer' : 'Inner');
+        ringRefs[key] = el;
+      });
+    }
+    const nowMs = performance.now();
+    const dt = ringLastTimeMs ? Math.min(0.1, (nowMs - ringLastTimeMs) / 1000) : 0;
+    ringLastTimeMs = nowMs;
+    let raw = 0;
+    if (DR.nodes.inputAnalyser && DR.ctx) {
+      const a = DR.nodes.inputAnalyser;
+      if (!ringFlashFftBuf || ringFlashFftBuf.length !== a.frequencyBinCount) {
+        ringFlashFftBuf = new Uint8Array(a.frequencyBinCount);
+      }
+      a.getByteFrequencyData(ringFlashFftBuf);
+      const nyq = DR.ctx.sampleRate / 2;
+      const n = ringFlashFftBuf.length;
+      const bin60   = Math.max(1, Math.floor((60   / nyq) * n));
+      const bin4000 = Math.min(n - 1, Math.floor((4000 / nyq) * n));
+      let sum = 0;
+      for (let i = bin60; i <= bin4000; i++) sum += ringFlashFftBuf[i];
+      raw = sum / (bin4000 - bin60 + 1) / 255; // 0..1 average level across the band
+    }
+    // Slow-track the rolling average so dynamic content has a moving baseline.
+    ringEnergyAvg = ringEnergyAvg * 0.94 + raw * 0.06;
+    // Flare value = how much the current sample EXCEEDS the rolling average,
+    // gain-boosted. Clamp to [0,1]. This is the transient-emphasis part.
+    const flare = Math.min(1, Math.max(0, (raw - ringEnergyAvg) * 8));
+    // Fast attack, medium release for visible pulse-then-fade per hit.
+    if (flare > ringFlashSmooth) ringFlashSmooth = flare;
+    else ringFlashSmooth *= 0.90; // ~110ms half-life
+    if (ringFlashSmooth < 0.001) ringFlashSmooth = 0;
+
+    const f = ringFlashSmooth;
+
+    // Compute effective playback rate for the ring orbit. Scratch overrides
+    // everything (uses the user's drag velocity). REVERSE flips the sign of
+    // the base rate. SCREW + RATE scale the magnitude. When nothing is playing,
+    // the ring stops.
+    let effRate = 0;
+    if (typeof TAPE !== 'undefined') {
+      if (TAPE.scratching) {
+        effRate = TAPE.rate;
+      } else if (DR.state.isPlaying) {
+        effRate = (TAPE.reverseEngaged ? -1 : 1) * (DR.state.screw || 1) * (DR.state.rate || 1);
+      }
+    }
+    ringDashPhase += effRate * RING_BASE_SPEED * dt;
+    const offset = ringDashPhase.toFixed(2);
+
+    // Strong baseline that's always clearly visible; flare ADDS on top.
+    // Outer ring: 4px → 10px stroke, 0.75 → 1.0 opacity, 0 → 16px glow
+    // Inner ring: 2.6px → 6.5px stroke, same opacity range, 0 → 12px glow
+    if (ringRefs.backOuter) {
+      ringRefs.backOuter.style.strokeWidth = (4 + 6 * f).toFixed(2);
+      ringRefs.backOuter.style.opacity = (0.72 + 0.28 * f).toFixed(3);
+      ringRefs.backOuter.style.filter = f > 0.02 ? `drop-shadow(0 0 ${(16 * f).toFixed(1)}px var(--dr-moss))` : 'none';
+      ringRefs.backOuter.style.strokeDashoffset = offset;
+    }
+    if (ringRefs.backInner) {
+      ringRefs.backInner.style.strokeWidth = (2.6 + 3.9 * f).toFixed(2);
+      ringRefs.backInner.style.opacity = (0.65 + 0.35 * f).toFixed(3);
+      ringRefs.backInner.style.filter = f > 0.02 ? `drop-shadow(0 0 ${(12 * f).toFixed(1)}px var(--dr-moss))` : 'none';
+      ringRefs.backInner.style.strokeDashoffset = offset;
+    }
+    if (ringRefs.frontOuter) {
+      ringRefs.frontOuter.style.strokeWidth = (4 + 6 * f).toFixed(2);
+      ringRefs.frontOuter.style.opacity = (0.88 + 0.12 * f).toFixed(3);
+      ringRefs.frontOuter.style.filter = f > 0.02 ? `drop-shadow(0 0 ${(20 * f).toFixed(1)}px var(--dr-moss))` : 'none';
+      ringRefs.frontOuter.style.strokeDashoffset = offset;
+    }
+    if (ringRefs.frontInner) {
+      ringRefs.frontInner.style.strokeWidth = (2.6 + 3.9 * f).toFixed(2);
+      ringRefs.frontInner.style.opacity = (0.82 + 0.18 * f).toFixed(3);
+      ringRefs.frontInner.style.filter = f > 0.02 ? `drop-shadow(0 0 ${(14 * f).toFixed(1)}px var(--dr-moss))` : 'none';
+      ringRefs.frontInner.style.strokeDashoffset = offset;
+    }
+  }
+
   function updateMeters() {
     if (!DR.nodes.preAnalyser || !DR.nodes.outputAnalyser) return;
     if (!preBuf  || preBuf.length  !== DR.nodes.preAnalyser.fftSize)    preBuf  = new Float32Array(DR.nodes.preAnalyser.fftSize);
@@ -5688,6 +5802,9 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
     if (grFill)  grFill.style.width  = Math.min(100, gr * 5) + '%';
     if (grValue) grValue.textContent = gr.toFixed(1);
     if (inputLevel) inputLevel.style.width = dbToWidth(preDb) + '%';
+
+    // Audio-reactive Saturn ring — see updateRingFlash above.
+    updateRingFlash();
   }
 
   // ─── TAPE DECK (TP-7 style scratch + auto-rotate) ────────────────
@@ -5852,6 +5969,8 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
       } else if (DR.state.sourceType === 'stream' && !DR.state.bypassed.tempo && DR.nodes.soundTouch) {
         effRate = DR.state.screw * DR.state.rate;
       }
+      // REVERSE flips the visual rotation in lockstep with the audio.
+      if (TAPE.reverseEngaged) effRate = -effRate;
       TAPE.rate = effRate;
       TAPE.angle += TAPE_BASE_ANGVEL * effRate * dt;
     }
