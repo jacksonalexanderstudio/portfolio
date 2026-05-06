@@ -394,15 +394,37 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
 /* tape disc face stays dark — becomes THE one black element on the cream panel,
    like a calculator screen embedded in a Braun product. All on-disc colors are
    hardcoded LIGHT values (the disc is its own coordinate system). */
-.dr-tape-face{fill:#050505;stroke:none}
+.dr-tape-face{fill:url(#dr-space-bg);stroke:none}
 /* Disc design lines + screws — amber accent. The disc face stays pure black;
    every stroke / screw dot on top of it lights amber for vinyl-like detail. */
-.dr-tape-rim{fill:none;stroke:var(--dr-amber);stroke-width:1;opacity:.65}
-.dr-tape-pinhole{fill:#000;stroke:var(--dr-amber);stroke-width:.6;opacity:.85}
+.dr-tape-rim{fill:none;stroke:var(--dr-amber);stroke-width:1;opacity:.32}
 .dr-tape-rotor{transform-origin:0 0;transform-box:view-box}
-.dr-tape-line{stroke:var(--dr-amber);stroke-width:.8;opacity:.65}
-.dr-tape-spindle{fill:#020202;stroke:var(--dr-amber);stroke-width:.6;opacity:.85}
-.dr-tape-dot{fill:var(--dr-amber);opacity:.9}
+/* ── DIGITAL SATURN (replaces the Braun-style record disc) ──
+   Saturn sits inside .dr-tape-rotor so the existing scratch handler — which
+   rotates the rotor by drag angular velocity — still applies. The whole
+   composition tumbles end-over-end on scratch. Stars live OUTSIDE the rotor
+   so the star field stays put while the planet spins. */
+.dr-stars circle{fill:oklch(0.95 0.01 80);opacity:.78}
+.dr-star-twinkle{animation:dr-star-twinkle 2.6s ease-in-out infinite}
+.dr-star-twinkle:nth-of-type(2n){animation-duration:3.4s;animation-delay:.4s}
+.dr-star-twinkle:nth-of-type(3n){animation-duration:4.1s;animation-delay:1.1s}
+@keyframes dr-star-twinkle{0%,100%{opacity:.32}50%{opacity:1}}
+.dr-saturn-band.b1{fill:oklch(0.78 0.06 80)}
+.dr-saturn-band.b2{fill:oklch(0.74 0.12 65)}
+.dr-saturn-band.b3{fill:oklch(0.62 0.15 50)}
+.dr-saturn-band.b4{fill:oklch(0.86 0.08 75)}
+.dr-saturn-band.b5{fill:oklch(0.60 0.16 45)}
+.dr-saturn-band.b6{fill:oklch(0.72 0.12 65)}
+.dr-saturn-band.b7{fill:oklch(0.80 0.06 80)}
+.dr-saturn-spot{fill:oklch(0.50 0.18 30);opacity:.7}
+.dr-saturn-rim{fill:none;stroke:oklch(0.16 0.04 260);stroke-width:1.5;opacity:.5}
+.dr-saturn-ring{fill:none;stroke-linecap:butt}
+.dr-ring-outer{stroke-width:7}
+.dr-ring-inner{stroke-width:4}
+.dr-saturn-ring-back{stroke:oklch(0.66 0.07 75);opacity:.85}
+.dr-saturn-ring-front{stroke:oklch(0.84 0.09 70);opacity:.95}
+.dr-saturn-moon{fill:oklch(0.92 0.02 80);opacity:.9}
+.dr-saturn-moon-glow{fill:oklch(0.92 0.02 80);opacity:.18}
 
 /* right panel: source/elapsed/rate row + waveform + hint, stacked */
 /* Wave/sample panel card — same bounded-box treatment as the tape deck so
@@ -1279,18 +1301,86 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
   <section class="dr-tape" aria-label="Sampler">
     <div class="dr-tape-deck">
       <h4 class="dr-tape-deck-title">tape</h4>
-      <svg class="dr-tape-disc" viewBox="-160 -160 320 320" role="img" aria-label="Scratchable tape deck">
+      <!-- "Tape deck" reskinned as a side-view of a digital Saturn tumbling
+           in space. The whole Saturn group sits inside .dr-tape-rotor so the
+           existing scratch handler (rotates the rotor by drag angular velocity)
+           still works unchanged — Saturn tumbles end-over-end on scratch.
+           Planet body + tilted ring with a back arc and a front arc that
+           crosses in front of the planet's lower half. Starfield is outside
+           the rotor so stars stay still while Saturn spins. -->
+      <svg class="dr-tape-disc" viewBox="-160 -160 320 320" role="img" aria-label="Scratchable saturn deck">
+        <defs>
+          <radialGradient id="dr-space-bg" cx="48%" cy="38%" r="72%">
+            <stop offset="0%"   stop-color="oklch(0.20 0.05 260)"/>
+            <stop offset="55%"  stop-color="oklch(0.10 0.04 250)"/>
+            <stop offset="100%" stop-color="oklch(0.04 0.02 240)"/>
+          </radialGradient>
+          <clipPath id="dr-saturn-body-clip"><circle r="70"/></clipPath>
+        </defs>
+        <!-- space backdrop + faint outer rim -->
         <circle r="158" class="dr-tape-face"/>
         <circle r="158" class="dr-tape-rim"/>
-        <circle cx="-30" cy="-145" r="2" class="dr-tape-pinhole"/>
-        <circle cx="30" cy="-145" r="2" class="dr-tape-pinhole"/>
+        <!-- starfield: scattered, varied sizes, every third one twinkles -->
+        <g class="dr-stars">
+          <circle cx="-130" cy="-118" r="1.0" class="dr-star"/>
+          <circle cx="-104" cy="-138" r="0.8" class="dr-star dr-star-twinkle"/>
+          <circle cx="-72"  cy="-120" r="1.4" class="dr-star"/>
+          <circle cx="-50"  cy="-140" r="0.7" class="dr-star"/>
+          <circle cx="-12"  cy="-142" r="1.0" class="dr-star dr-star-twinkle"/>
+          <circle cx="58"   cy="-138" r="0.9" class="dr-star"/>
+          <circle cx="88"   cy="-118" r="1.2" class="dr-star"/>
+          <circle cx="138"  cy="-92"  r="0.8" class="dr-star dr-star-twinkle"/>
+          <circle cx="146"  cy="-50"  r="1.1" class="dr-star"/>
+          <circle cx="142"  cy="0"    r="0.8" class="dr-star"/>
+          <circle cx="148"  cy="48"   r="1.3" class="dr-star dr-star-twinkle"/>
+          <circle cx="138"  cy="98"   r="0.9" class="dr-star"/>
+          <circle cx="108"  cy="128"  r="1.0" class="dr-star"/>
+          <circle cx="60"   cy="142"  r="0.8" class="dr-star dr-star-twinkle"/>
+          <circle cx="20"   cy="146"  r="1.2" class="dr-star"/>
+          <circle cx="-30"  cy="138"  r="0.7" class="dr-star"/>
+          <circle cx="-78"  cy="128"  r="1.1" class="dr-star dr-star-twinkle"/>
+          <circle cx="-118" cy="100"  r="0.9" class="dr-star"/>
+          <circle cx="-148" cy="62"   r="1.0" class="dr-star"/>
+          <circle cx="-152" cy="14"   r="0.8" class="dr-star dr-star-twinkle"/>
+          <circle cx="-148" cy="-38"  r="1.3" class="dr-star"/>
+          <circle cx="-138" cy="-78"  r="0.9" class="dr-star"/>
+          <circle cx="118"  cy="-72"  r="1.0" class="dr-star dr-star-twinkle"/>
+          <circle cx="-104" cy="62"   r="0.7" class="dr-star"/>
+          <circle cx="100"  cy="80"   r="0.8" class="dr-star"/>
+          <circle cx="-90"  cy="-86"  r="0.9" class="dr-star dr-star-twinkle"/>
+        </g>
+        <!-- corner time + a small static moon (both outside rotor — stay still while Saturn tumbles) -->
+        <text x="120" y="-130" class="dr-tape-corner-r" id="dr-tape-corner-time">00.00.00</text>
+        <circle cx="118" cy="116" r="3" class="dr-saturn-moon"/>
+        <circle cx="118" cy="116" r="6" class="dr-saturn-moon-glow"/>
+        <!-- Saturn rotates as one composition -->
         <g class="dr-tape-rotor" id="dr-tape-rotor">
-          <line x1="-128" y1="-128" x2="128" y2="128" class="dr-tape-line"/>
-          <circle r="36" class="dr-tape-spindle"/>
-          <circle cx="-9" cy="-9" r="2.4" class="dr-tape-dot"/>
-          <circle cx="9" cy="-9" r="2.4" class="dr-tape-dot"/>
-          <circle cx="-9" cy="9" r="2.4" class="dr-tape-dot"/>
-          <circle cx="9" cy="9" r="2.4" class="dr-tape-dot"/>
+          <!-- Ring system tilted slightly off horizontal for dynamism. Two
+               ring bands (inner + outer) with a gap, like Saturn's A/B/C rings
+               flattened to a stylized digital read of the same idea. Each band
+               has back/front halves so each crosses in front of the planet. -->
+          <g transform="rotate(-9)">
+            <!-- BACK halves (drawn before planet) -->
+            <path d="M -126 0 A 126 34 0 0 1 126 0" class="dr-saturn-ring dr-saturn-ring-back dr-ring-outer"/>
+            <path d="M -100 0 A 100 27 0 0 1 100 0" class="dr-saturn-ring dr-saturn-ring-back dr-ring-inner"/>
+          </g>
+          <!-- planet body, bands clipped to a 72-radius circle -->
+          <g clip-path="url(#dr-saturn-body-clip)">
+            <rect x="-74" y="-72" width="148" height="24" class="dr-saturn-band b1"/>
+            <rect x="-74" y="-48" width="148" height="14" class="dr-saturn-band b2"/>
+            <rect x="-74" y="-34" width="148" height="14" class="dr-saturn-band b3"/>
+            <rect x="-74" y="-20" width="148" height="26" class="dr-saturn-band b4"/>
+            <rect x="-74" y="6"   width="148" height="14" class="dr-saturn-band b5"/>
+            <rect x="-74" y="20"  width="148" height="14" class="dr-saturn-band b6"/>
+            <rect x="-74" y="34"  width="148" height="22" class="dr-saturn-band b7"/>
+            <ellipse cx="-14" cy="0" rx="14" ry="5" class="dr-saturn-spot"/>
+          </g>
+          <circle r="72" class="dr-saturn-rim"/>
+          <!-- FRONT halves (drawn after planet, cross in front) -->
+          <g transform="rotate(-9)">
+            <path d="M -126 0 A 126 34 0 0 0 126 0" class="dr-saturn-ring dr-saturn-ring-front dr-ring-outer"/>
+            <path d="M -100 0 A 100 27 0 0 0 100 0" class="dr-saturn-ring dr-saturn-ring-front dr-ring-inner"/>
+          </g>
         </g>
       </svg>
       <!-- SCREW + RATE + PITCH bank moved 2026-05-04. SCREW relocated into
