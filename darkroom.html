@@ -409,27 +409,22 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
 .dr-star-twinkle:nth-of-type(2n){animation-duration:3.4s;animation-delay:.4s}
 .dr-star-twinkle:nth-of-type(3n){animation-duration:4.1s;animation-delay:1.1s}
 @keyframes dr-star-twinkle{0%,100%{opacity:.32}50%{opacity:1}}
-/* Three-band Saturn body — cream / amber / cream — keeps the planet in the
-   site's Rams cream + Braun-amber palette and reads as the "warm orb" rather
-   than the multi-stripe Jupiter look. The single equatorial spot is signal
-   red (--dr-coral family) for a small punch of accent. */
-.dr-saturn-band.b1{fill:oklch(0.88 0.04 80)}    /* upper hemisphere — cream */
-.dr-saturn-band.b2{fill:oklch(0.78 0.13 70)}    /* equator band — Braun amber */
-.dr-saturn-band.b3{fill:oklch(0.85 0.04 80)}    /* lower hemisphere — cream */
-.dr-saturn-spot{fill:oklch(0.55 0.18 25);opacity:.78}
-.dr-saturn-rim{fill:none;stroke:oklch(0.14 0.04 260);stroke-width:1.4;opacity:.45}
-/* Rings are stylized as dashed orbits — the dashes chase along the elliptical
-   path via animated stroke-dashoffset, giving the "going across the planet,
-   behind it, then back around" turntable cycle. Dashes on the back arc get
-   occluded by the planet body when they pass through its silhouette (because
-   the back arc is drawn before the planet); dashes on the front arc are
-   always visible. Combined: a particle trail orbits Saturn, disappearing
-   behind the planet for ~⅛ of each cycle and re-emerging on the other side. */
+/* Planet body — single brushed-aluminum sphere using the same gradient
+   recipe as the knob faces. No color in the planet itself; all visual
+   interest in the orb comes from the 3D light + the orange ring around it. */
+.dr-saturn-body{fill:url(#dr-planet-face)}
+.dr-saturn-rim{fill:none;stroke:oklch(0.40 0.012 80);stroke-width:1;opacity:.55}
+/* Rings stylized as dashed orbits in the .ja accent (--dr-moss, the warm
+   Braun orange). Dashes chase along the elliptical paths via animated
+   stroke-dashoffset; back-arc dashes get occluded by the planet body when
+   crossing its silhouette (the "behind the planet" phase). Animation runs
+   at 14s — half the speed of v1 so the orbit reads as a slow, deliberate
+   turntable cycle rather than a frantic chase. */
 .dr-saturn-ring{fill:none;stroke-linecap:round;stroke-dasharray:3 16}
 .dr-ring-outer{stroke-width:4}
 .dr-ring-inner{stroke-width:2.6}
-.dr-saturn-ring-back{stroke:oklch(0.72 0.08 75);opacity:.85;animation:dr-ring-orbit 7s linear infinite}
-.dr-saturn-ring-front{stroke:oklch(0.86 0.09 70);opacity:.96;animation:dr-ring-orbit 7s linear infinite}
+.dr-saturn-ring-back{stroke:var(--dr-moss);opacity:.78;animation:dr-ring-orbit 14s linear infinite}
+.dr-saturn-ring-front{stroke:var(--dr-moss);opacity:.95;animation:dr-ring-orbit 14s linear infinite}
 @keyframes dr-ring-orbit{to{stroke-dashoffset:-380}}
 .dr-saturn-moon{fill:oklch(0.92 0.02 80);opacity:.92}
 .dr-saturn-moon-glow{fill:oklch(0.92 0.02 80);opacity:.18}
@@ -1323,7 +1318,16 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
             <stop offset="55%"  stop-color="oklch(0.10 0.04 250)"/>
             <stop offset="100%" stop-color="oklch(0.04 0.02 240)"/>
           </radialGradient>
-          <clipPath id="dr-saturn-body-clip"><circle r="80"/></clipPath>
+          <!-- Brushed-aluminum sphere — same recipe as the knob faces but
+               sized for the planet. Light from upper-left, drop-off to a
+               deeper Braun grey at the lower-right edge gives the orb 3D
+               read without any color in the planet itself. -->
+          <radialGradient id="dr-planet-face" cx="35%" cy="30%" r="78%">
+            <stop offset="0%"   stop-color="oklch(0.97 0.005 80)"/>
+            <stop offset="40%"  stop-color="oklch(0.86 0.008 80)"/>
+            <stop offset="80%"  stop-color="oklch(0.70 0.010 80)"/>
+            <stop offset="100%" stop-color="oklch(0.58 0.012 80)"/>
+          </radialGradient>
         </defs>
         <!-- space backdrop + faint outer rim -->
         <circle r="158" class="dr-tape-face"/>
@@ -1373,16 +1377,12 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
             <path d="M -104 0 A 104 30 0 0 1 104 0" class="dr-saturn-ring dr-saturn-ring-back dr-ring-inner"/>
           </g>
         </g>
-        <!-- Static planet body — three wide bands in the site palette
-             (cream / amber / cream). No 7-band gradient ramp; this reads
-             clean and matches the Rams cream + Braun amber language. -->
+        <!-- Static planet body — single brushed-aluminum sphere, matching
+             the knob-face treatment used elsewhere on the page. No bands,
+             no color, no spot — the orb's interest comes from the 3D light
+             and the orange ring orbiting it. -->
         <g class="dr-saturn-planet">
-          <g clip-path="url(#dr-saturn-body-clip)">
-            <rect x="-82" y="-80" width="164" height="50" class="dr-saturn-band b1"/>
-            <rect x="-82" y="-30" width="164" height="60" class="dr-saturn-band b2"/>
-            <rect x="-82" y="30"  width="164" height="50" class="dr-saturn-band b3"/>
-            <ellipse cx="-12" cy="-2" rx="14" ry="5" class="dr-saturn-spot"/>
-          </g>
+          <circle r="80" class="dr-saturn-body"/>
           <circle r="80" class="dr-saturn-rim"/>
         </g>
         <!-- FRONT ring arcs — drawn after planet body, cross in front of its
