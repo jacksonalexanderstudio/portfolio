@@ -935,6 +935,12 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
 .dr-knob-dial:active{cursor:grabbing}
 /* inner circle (r=38) → the actual brushed-aluminum face, fills with radial gradient */
 .dr-knob-dial .dr-ring-inner{fill:url(#knobFace);stroke:oklch(0.48 0.014 80);stroke-width:.7}
+/* Knob position ticks — five small radial marks just outside the outer rim
+   at 0%, 25%, 50%, 75%, 100% positions of the knob's 254° working range.
+   Charcoal at low opacity so they read as a quiet dial scale rather than a
+   loud feature. Coordinates baked into the SVG markup directly (every knob
+   shares the same viewBox -50..50 so the positions are universal). */
+.dr-knob-tick-mark{stroke:oklch(0.36 0.012 80);stroke-width:1.1;opacity:.6;stroke-linecap:butt}
 /* outer circle (r=42) → decorative concentric rim line, sits around the face */
 .dr-knob-dial circle:not(.dr-ring-inner){fill:none;stroke:oklch(0.58 0.014 80);stroke-width:.7;opacity:.55}
 .dr-knob-dial .dr-arc{fill:none;stroke:var(--dr-moss);stroke-width:1.8;stroke-linecap:butt}
@@ -1292,7 +1298,7 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
             <div class="dr-knob" data-param="out">
               <span class="dr-knob-label">OUT</span>
               <svg class="dr-knob-dial" viewBox="-50 -50 100 100">
-                <circle r="38" class="dr-ring-inner"/>
+                <circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g>
                 <circle r="42"/>
                 <line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/>
               </svg>
@@ -1425,7 +1431,7 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
           <div class="dr-knob" data-param="screw">
             <span class="dr-knob-label">SCREW</span>
             <svg class="dr-knob-dial" viewBox="-50 -50 100 100">
-              <circle r="38" class="dr-ring-inner"/>
+              <circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g>
               <circle r="44"/>
               <path class="dr-arc" d="M -31.1 24.1 A 39 39 0 1 1 31.1 24.1" />
               <line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/>
@@ -1522,7 +1528,7 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
         <div class="dr-knob" data-param="spadAtk">
           <span class="dr-knob-label">ATK</span>
           <svg class="dr-knob-dial" viewBox="-50 -50 100 100">
-            <circle r="38" class="dr-ring-inner"/><circle r="42"/>
+            <circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g><circle r="42"/>
             <line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/>
           </svg>
           <span class="dr-knob-value">1 ms</span>
@@ -1530,7 +1536,7 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
         <div class="dr-knob" data-param="spadDec">
           <span class="dr-knob-label">DEC</span>
           <svg class="dr-knob-dial" viewBox="-50 -50 100 100">
-            <circle r="38" class="dr-ring-inner"/><circle r="42"/>
+            <circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g><circle r="42"/>
             <line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/>
           </svg>
           <span class="dr-knob-value">1 ms</span>
@@ -1538,7 +1544,7 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
         <div class="dr-knob" data-param="spadSus">
           <span class="dr-knob-label">SUS</span>
           <svg class="dr-knob-dial" viewBox="-50 -50 100 100">
-            <circle r="38" class="dr-ring-inner"/><circle r="42"/>
+            <circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g><circle r="42"/>
             <line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/>
           </svg>
           <span class="dr-knob-value">100%</span>
@@ -1546,7 +1552,7 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
         <div class="dr-knob" data-param="spadRel">
           <span class="dr-knob-label">REL</span>
           <svg class="dr-knob-dial" viewBox="-50 -50 100 100">
-            <circle r="38" class="dr-ring-inner"/><circle r="42"/>
+            <circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g><circle r="42"/>
             <line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/>
           </svg>
           <span class="dr-knob-value">50 ms</span>
@@ -1605,7 +1611,7 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
           <div class="dr-knob" data-param="synthCut">
             <span class="dr-knob-label">CUT</span>
             <svg class="dr-knob-dial" viewBox="-50 -50 100 100">
-              <circle r="38" class="dr-ring-inner"/><circle r="42"/>
+              <circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g><circle r="42"/>
               <line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/>
             </svg>
             <span class="dr-knob-value">4.00 kHz</span>
@@ -1613,7 +1619,7 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
           <div class="dr-knob" data-param="synthRes">
             <span class="dr-knob-label">RES</span>
             <svg class="dr-knob-dial" viewBox="-50 -50 100 100">
-              <circle r="38" class="dr-ring-inner"/><circle r="42"/>
+              <circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g><circle r="42"/>
               <line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/>
             </svg>
             <span class="dr-knob-value">2.00</span>
@@ -1621,7 +1627,7 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
           <div class="dr-knob" data-param="synthAtk">
             <span class="dr-knob-label">ATK</span>
             <svg class="dr-knob-dial" viewBox="-50 -50 100 100">
-              <circle r="38" class="dr-ring-inner"/><circle r="42"/>
+              <circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g><circle r="42"/>
               <line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/>
             </svg>
             <span class="dr-knob-value">10 ms</span>
@@ -1629,7 +1635,7 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
           <div class="dr-knob" data-param="synthDec">
             <span class="dr-knob-label">DEC</span>
             <svg class="dr-knob-dial" viewBox="-50 -50 100 100">
-              <circle r="38" class="dr-ring-inner"/><circle r="42"/>
+              <circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g><circle r="42"/>
               <line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/>
             </svg>
             <span class="dr-knob-value">200 ms</span>
@@ -1637,7 +1643,7 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
           <div class="dr-knob" data-param="synthSus">
             <span class="dr-knob-label">SUS</span>
             <svg class="dr-knob-dial" viewBox="-50 -50 100 100">
-              <circle r="38" class="dr-ring-inner"/><circle r="42"/>
+              <circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g><circle r="42"/>
               <line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/>
             </svg>
             <span class="dr-knob-value">60%</span>
@@ -1645,7 +1651,7 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
           <div class="dr-knob" data-param="synthRel">
             <span class="dr-knob-label">REL</span>
             <svg class="dr-knob-dial" viewBox="-50 -50 100 100">
-              <circle r="38" class="dr-ring-inner"/><circle r="42"/>
+              <circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g><circle r="42"/>
               <line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/>
             </svg>
             <span class="dr-knob-value">300 ms</span>
@@ -1669,7 +1675,7 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
         <div class="dr-knob dr-seq-swing" data-param="seqSwing">
           <span class="dr-knob-label">SWING</span>
           <svg class="dr-knob-dial" viewBox="-50 -50 100 100">
-            <circle r="38" class="dr-ring-inner"/><circle r="42"/>
+            <circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g><circle r="42"/>
             <line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/>
           </svg>
           <span class="dr-knob-value">50%</span>
@@ -1708,7 +1714,7 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
           <div class="dr-knob" data-param="eqLow">
             <span class="dr-knob-label">LOW</span>
             <svg class="dr-knob-dial" viewBox="-50 -50 100 100">
-              <circle r="38" class="dr-ring-inner"/>
+              <circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g>
               <circle r="42"/>
               <line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/>
             </svg>
@@ -1717,7 +1723,7 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
           <div class="dr-knob" data-param="eqMid">
             <span class="dr-knob-label">MID</span>
             <svg class="dr-knob-dial" viewBox="-50 -50 100 100">
-              <circle r="38" class="dr-ring-inner"/>
+              <circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g>
               <circle r="42"/>
               <line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/>
             </svg>
@@ -1726,7 +1732,7 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
           <div class="dr-knob" data-param="eqHigh">
             <span class="dr-knob-label">HIGH</span>
             <svg class="dr-knob-dial" viewBox="-50 -50 100 100">
-              <circle r="38" class="dr-ring-inner"/>
+              <circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g>
               <circle r="42"/>
               <line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/>
             </svg>
@@ -1757,7 +1763,7 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
           <div class="dr-knob" data-param="cut">
             <span class="dr-knob-label">CUT</span>
             <svg class="dr-knob-dial" viewBox="-50 -50 100 100">
-              <circle r="38" class="dr-ring-inner"/>
+              <circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g>
               <circle r="42"/>
               <line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/>
             </svg>
@@ -1766,7 +1772,7 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
           <div class="dr-knob" data-param="res">
             <span class="dr-knob-label">RES</span>
             <svg class="dr-knob-dial" viewBox="-50 -50 100 100">
-              <circle r="38" class="dr-ring-inner"/>
+              <circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g>
               <circle r="42"/>
               <line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/>
             </svg>
@@ -1807,7 +1813,7 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
             <div class="dr-knob" data-param="lrate">
               <span class="dr-knob-label">RATE</span>
               <svg class="dr-knob-dial" viewBox="-50 -50 100 100">
-                <circle r="38" class="dr-ring-inner"/>
+                <circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g>
                 <circle r="42"/>
                 <line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/>
               </svg>
@@ -1816,7 +1822,7 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
             <div class="dr-knob" data-param="ldepth">
               <span class="dr-knob-label">DEPTH</span>
               <svg class="dr-knob-dial" viewBox="-50 -50 100 100">
-                <circle r="38" class="dr-ring-inner"/>
+                <circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g>
                 <circle r="42"/>
                 <line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/>
               </svg>
@@ -1843,7 +1849,7 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
           <div class="dr-knob" data-param="phaserRate">
             <span class="dr-knob-label">RATE</span>
             <svg class="dr-knob-dial" viewBox="-50 -50 100 100">
-              <circle r="38" class="dr-ring-inner"/>
+              <circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g>
               <circle r="42"/>
               <line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/>
             </svg>
@@ -1852,7 +1858,7 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
           <div class="dr-knob" data-param="phaserDepth">
             <span class="dr-knob-label">DEPTH</span>
             <svg class="dr-knob-dial" viewBox="-50 -50 100 100">
-              <circle r="38" class="dr-ring-inner"/>
+              <circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g>
               <circle r="42"/>
               <line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/>
             </svg>
@@ -1861,7 +1867,7 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
           <div class="dr-knob" data-param="phaserFb">
             <span class="dr-knob-label">FB</span>
             <svg class="dr-knob-dial" viewBox="-50 -50 100 100">
-              <circle r="38" class="dr-ring-inner"/>
+              <circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g>
               <circle r="42"/>
               <line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/>
             </svg>
@@ -1870,7 +1876,7 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
           <div class="dr-knob" data-param="phaserMix">
             <span class="dr-knob-label">MIX</span>
             <svg class="dr-knob-dial" viewBox="-50 -50 100 100">
-              <circle r="38" class="dr-ring-inner"/>
+              <circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g>
               <circle r="42"/>
               <line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/>
             </svg>
@@ -1916,7 +1922,7 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
           <div class="dr-knob" data-param="dtime">
             <span class="dr-knob-label">TIME</span>
             <svg class="dr-knob-dial" viewBox="-50 -50 100 100">
-              <circle r="38" class="dr-ring-inner"/>
+              <circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g>
               <circle r="42"/>
               <line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/>
             </svg>
@@ -1925,7 +1931,7 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
           <div class="dr-knob" data-param="fb">
             <span class="dr-knob-label">FB</span>
             <svg class="dr-knob-dial" viewBox="-50 -50 100 100">
-              <circle r="38" class="dr-ring-inner"/>
+              <circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g>
               <circle r="42"/>
               <line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/>
             </svg>
@@ -1934,7 +1940,7 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
           <div class="dr-knob" data-param="dtone">
             <span class="dr-knob-label">TONE</span>
             <svg class="dr-knob-dial" viewBox="-50 -50 100 100">
-              <circle r="38" class="dr-ring-inner"/>
+              <circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g>
               <circle r="42"/>
               <line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/>
             </svg>
@@ -1943,7 +1949,7 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
           <div class="dr-knob" data-param="dmix">
             <span class="dr-knob-label">MIX</span>
             <svg class="dr-knob-dial" viewBox="-50 -50 100 100">
-              <circle r="38" class="dr-ring-inner"/>
+              <circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g>
               <circle r="42"/>
               <line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/>
             </svg>
@@ -1979,7 +1985,7 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
           <div class="dr-knob" data-param="size">
             <span class="dr-knob-label">SIZE</span>
             <svg class="dr-knob-dial" viewBox="-50 -50 100 100">
-              <circle r="38" class="dr-ring-inner"/>
+              <circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g>
               <circle r="42"/>
               <line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/>
             </svg>
@@ -1988,7 +1994,7 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
           <div class="dr-knob" data-param="mix">
             <span class="dr-knob-label">MIX</span>
             <svg class="dr-knob-dial" viewBox="-50 -50 100 100">
-              <circle r="38" class="dr-ring-inner"/>
+              <circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g>
               <circle r="42"/>
               <line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/>
             </svg>
