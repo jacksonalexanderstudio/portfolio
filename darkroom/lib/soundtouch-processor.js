@@ -910,6 +910,11 @@ var SoundTouchProcessor = class extends AudioWorkletProcessor {
 		}
 		this._pipe.inputBuffer.putSamples(samples, 0, frameCount);
 		this._pipe.process();
+		// darkroom: FIFO drain reverted 2026-05-04 — drain frequency at
+		// non-1× tempo on streams was ~20 events/sec, audibly crackly. The
+		// proper fix is input-side gating (skip pushing input when output
+		// is full, let SoundTouch's overlap-add cross-fade across the gap)
+		// rather than dropping output frames. Queued.
 		const outputBuffer = this._pipe.outputBuffer;
 		const available = outputBuffer.frameCount;
 		const toExtract = Math.min(available, frameCount);
