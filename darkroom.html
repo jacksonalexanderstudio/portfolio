@@ -2617,9 +2617,45 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
     return buf;
   }
 
-  function loadIR(slot) {
+  // Real CC0 IRs from openair.hosted.york.ac.uk — trimmed, normalized, mono
+  // 16-bit @ 48kHz. Plate + spring stay procedural (gear, not rooms).
+  const REAL_IR_PATHS = {
+    '01': 'darkroom/irs/01-wood.wav',       // Falkland Palace Royal Tennis Court
+    '04': 'darkroom/irs/04-tape.wav',       // Stairway, University of York
+    '05': 'darkroom/irs/05-hall.wav',       // Jack Lyons Concert Hall
+    '06': 'darkroom/irs/06-chamber.wav',    // Hamilton Mausoleum
+    '07': 'darkroom/irs/07-cathedral.wav',  // St. Paul's Cathedral
+    '08': 'darkroom/irs/08-cave.wav'        // Maes Howe
+  };
+
+  async function fetchRealIR(slot) {
+    const url = REAL_IR_PATHS[slot];
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`fetch ${url} → ${res.status}`);
+    const arr = await res.arrayBuffer();
+    return await DR.ctx.decodeAudioData(arr);
+  }
+
+  // loadIR is async now — first hit on a real-IR slot triggers a fetch + decode
+  // (~50ms for a small WAV). Cached in DR.irs[slot] for subsequent loads. The
+  // current convolver buffer holds whatever was previously loaded until the new
+  // one resolves; with the default REVERB MIX at 0 this is silent and nothing
+  // audibly glitches. On fetch/decode failure we fall back to procedural so the
+  // slot is never empty.
+  async function loadIR(slot) {
     if (!DR.ctx) return;
-    if (!DR.irs[slot]) DR.irs[slot] = synthesizeIR(slot);
+    if (!DR.irs[slot]) {
+      if (REAL_IR_PATHS[slot]) {
+        try {
+          DR.irs[slot] = await fetchRealIR(slot);
+        } catch (err) {
+          console.warn('darkroom: real IR load failed, using procedural fallback', slot, err);
+          DR.irs[slot] = synthesizeIR(slot);
+        }
+      } else {
+        DR.irs[slot] = synthesizeIR(slot);
+      }
+    }
     DR.nodes.convolver.buffer = DR.irs[slot];
     DR.state.irSlot = slot;
   }

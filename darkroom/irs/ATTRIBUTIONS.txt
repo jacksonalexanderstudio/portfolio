@@ -1,0 +1,46 @@
+Impulse Response Attributions
+==============================
+
+The 6 real-room impulse responses in this directory are derived from the
+OpenAIR archive (https://www.openair.hosted.york.ac.uk/), maintained by the
+Audio Lab at the University of York. Each source IR is licensed under
+Creative Commons Attribution 4.0 (CC BY 4.0).
+
+License: https://creativecommons.org/licenses/by/4.0/
+
+Each file in this directory has been MODIFIED from the source as follows:
+  - downmixed to mono (where source was multichannel)
+  - resampled to 48 kHz (where source was 96 kHz or 44.1 kHz)
+  - converted to 16-bit PCM
+  - truncated to a target length appropriate for the slot's musical use
+  - cosine-tapered fade-out applied over the trailing 30–45% of the file
+  - peak-normalized to approximately −0.5 dBFS
+
+Source spaces, in slot order:
+
+  01-wood.wav       → Falkland Palace Royal Tennis Court
+                       (Source: falkland_tennis_court_omni.wav, mono 48k)
+                       https://www.openair.hosted.york.ac.uk/?page_id=476
+
+  04-tape.wav       → Stairway, University of York
+                       (Source: stairwell_ortf.wav, stereo ORTF 96k → mono mix)
+                       https://www.openair.hosted.york.ac.uk/?page_id=678
+
+  05-hall.wav       → Jack Lyons Concert Hall, University of York
+                       (Source: rir_jack_lyons_lp2_96k.wav, B-format 4ch 96k → W only)
+                       https://www.openair.hosted.york.ac.uk/?page_id=571
+
+  06-chamber.wav    → Hamilton Mausoleum
+                       (Source: hm2_000_wx_48k.wav, W omnidirectional 48k)
+                       https://www.openair.hosted.york.ac.uk/?page_id=502
+
+  07-cathedral.wav  → St. Paul's Cathedral
+                       (Source: mono_P6T1_wg_away_441.wav, mono 44.1k)
+                       https://www.openair.hosted.york.ac.uk/?page_id=1516
+
+  08-cave.wav       → Maes Howe (neolithic chambered cairn)
+                       (Source: mh3_000_wx_48k.wav, W omnidirectional 48k)
+                       https://www.openair.hosted.york.ac.uk/?page_id=602
+
+Slots 02 (plate) and 03 (spring) remain procedurally synthesized inside
+darkroom.html — they emulate gear, not rooms, and do not require IR data.
