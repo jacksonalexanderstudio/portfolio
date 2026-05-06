@@ -4364,11 +4364,24 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
     applyBypass();
   });
 
-  // ─── CLEAR ALL — reset every FX module's knobs/divisions to defaults but
-  //    PRESERVE bypass states. For when the mix is muddied and you want a
-  //    clean knob-default refresh without changing what's enabled.
+  // ─── CLEAR ALL — full reset to a fresh default state:
+  //    1. every FX module's knobs/divisions back to defaults
+  //    2. every FX module bypassed (disabled)
+  //    3. SCREW knob back to 1.000× (default playback rate)
+  //    4. RELEASE button stash cleared so its visual matches reality
   document.getElementById('dr-rack-clear')?.addEventListener('click', () => {
     FX_MODULES.forEach(m => resetModule(m));
+    FX_MODULES.forEach(m => {
+      DR.state.bypassed[m] = true;
+      const el = document.querySelector(`.dr-mod[data-mod="${m}"]`);
+      if (el) el.setAttribute('data-bypassed', 'true');
+    });
+    applyBypass();
+    killStash = null;
+    killBtn?.removeAttribute('data-active');
+    if (knobs.screw && knobDefaults.screw !== undefined) {
+      knobs.screw.setValue(knobDefaults.screw);
+    }
   });
 
   // ─── INPUT BAY ───────────────────────────────────────────────────
