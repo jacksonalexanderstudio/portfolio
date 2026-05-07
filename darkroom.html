@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=1280">
 <title>darkroom.ja — Jackson Alexander Studio</title>
-<meta name="description" content="darkroom.ja — a real-time browser-resident audio processor. Tempo, pitch, filter, convolution reverb, and recording, with no install.">
+<meta name="description" content="darkroom.ja — a real-time browser-resident audio processor. Tempo, pitch, filter, convolution reverb, with no install.">
 <link rel="canonical" href="https://jacksonalexanderstudio.com/darkroom.html">
 <meta name="robots" content="noindex">
 <link rel="icon" href="favicon.ico" type="image/x-icon">
@@ -437,6 +437,27 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
 .dr-saturn-moon{fill:oklch(0.92 0.02 80);opacity:.92}
 .dr-saturn-moon-glow{fill:oklch(0.92 0.02 80);opacity:.18}
 
+/* ── ORB VIDEO (gated by ?orb=video URL flag) ──────────────────
+   When the flag is on AND a tab capture provides a video track, the
+   captured video is composited into the planet body via foreignObject,
+   making the orb a "crystal ball" that shows the source. Layered between
+   back-arc and front-arc ring groups so rings still orbit in front and
+   behind it. Vignette + specular sell the glass-sphere read. Off by
+   default — feature flag means revert is a single param removal. */
+.dr-orb-video-fo{display:none}
+.dr-tape-disc[data-orb-video="on"] .dr-orb-video-fo{display:block}
+.dr-orb-video{width:100%;height:100%;object-fit:cover;display:block;background:#000;pointer-events:none;
+  /* Constant 1.2× zoom: crops the outer 17% of the source frame so YouTube
+     letterboxing / pillarboxing / chrome doesn't bleed into the orb. */
+  transform:scale(1.2);transform-origin:center center}
+.dr-orb-vignette{display:none;pointer-events:none;fill:url(#dr-orb-vignette-grad)}
+.dr-tape-disc[data-orb-video="on"] .dr-orb-vignette{display:block}
+.dr-orb-specular{display:none;pointer-events:none;fill:url(#dr-orb-specular-grad);mix-blend-mode:screen;opacity:.55}
+.dr-tape-disc[data-orb-video="on"] .dr-orb-specular{display:block}
+/* faint amber rim glow when content is live; dims when paused (frozen on divergence) */
+.dr-tape-disc[data-orb-video="on"] .dr-saturn-rim{stroke:var(--dr-moss);opacity:.6;stroke-width:1.4;transition:opacity .25s,stroke .25s}
+.dr-tape-disc[data-orb-video="paused"] .dr-saturn-rim{stroke:var(--dr-line-2);opacity:.5}
+
 /* right panel: source/elapsed/rate row + waveform + hint, stacked */
 /* Wave/sample panel card — same bounded-box treatment as the tape deck so
    the two cards read as a matched pair within the sampler row. */
@@ -604,13 +625,6 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
 .dr-master-wrap .dr-bay-level{position:relative;height:5px;background:var(--dr-panel);overflow:hidden;border-radius:var(--r-sm);border:1px solid var(--dr-line);margin-bottom:var(--s3)}
 .dr-master-wrap .dr-bay-level-bar{position:absolute;left:0;top:0;bottom:0;width:0%;background:linear-gradient(90deg,var(--dr-coral-dim),var(--dr-coral));transition:width .08s linear}
 .dr-master-wrap .dr-bay-level-tick{position:absolute;top:0;bottom:0;width:1px;background:var(--dr-line)}
-
-/* EXPORT — Step 6 stub. Placeholder until the real-time master capture
-   ships in phase 4. Locks page rhythm so we know where it'll land. */
-.dr-export-wrap{padding:var(--s5) 0;border-bottom:1px solid var(--dr-line)}
-.dr-export-header{display:flex;flex-direction:row;align-items:baseline;justify-content:space-between;gap:var(--s4);margin-bottom:var(--s3)}
-.dr-export-header .dr-section{margin:0}
-.dr-export-stub{font-family:var(--dr-mono);font-size:11px;letter-spacing:.04em;color:var(--dr-ink-2);text-align:center;padding:var(--s5) var(--s4);border:1px dashed var(--dr-line);border-radius:var(--r-md);background:var(--dr-panel-2);font-style:italic}
 
 /* SAMPLE PADS — 4×2 grid tucked into the sampler's right column beneath the
    waveform. Tighter than drum pads (smaller min-height, smaller fonts) since
@@ -1079,35 +1093,6 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
 
 .dr-mod[data-mod="master"] .dr-knobs{margin-top:auto}
 
-/* ── TRANSPORT ── */
-.dr-trans{display:grid;grid-template-columns:auto auto 1fr auto auto;align-items:center;gap:var(--s4);padding:var(--s4) var(--s5);margin-top:var(--s5);
-  background:
-    radial-gradient(ellipse 120vw 80vh at 22% 8%, oklch(0.97 0.010 80) 0%, oklch(0.97 0.010 80 / 0.25) 35%, oklch(0.97 0.010 80 / 0) 65%) fixed,
-    linear-gradient(180deg, oklch(0.92 0.013 80) 0%, oklch(0.90 0.014 80) 100%);
-  border:1px solid oklch(0.64 0.014 78);border-radius:var(--r-lg);
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.92),
-    inset 0 -1px 0 rgba(0,0,0,.05),
-    0 1px 1px rgba(0,0,0,.04),
-    0 8px 22px -12px rgba(0,0,0,.12);
-}
-.dr-trans-arm,.dr-trans-rec{display:flex;align-items:center;gap:var(--s2);padding:var(--s3) var(--s4);font-family:var(--dr-fx);font-weight:600;font-size:11px;letter-spacing:.16em;color:var(--dr-ink-dim);text-transform:uppercase;
-  background:linear-gradient(180deg,oklch(0.94 0.013 80),oklch(0.90 0.014 80));
-  border:1px solid oklch(0.66 0.014 78);border-radius:var(--r-sm);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.85),0 1px 1px rgba(0,0,0,.04);
-  transition:border-color .15s,color .15s,box-shadow .12s}
-.dr-trans-arm:active,.dr-trans-rec:active:not(:disabled){box-shadow:inset 0 1px 3px rgba(0,0,0,.12),inset 0 1px 0 rgba(255,255,255,.4)}
-.dr-trans-arm:hover,.dr-trans-rec:hover:not(:disabled){border-color:var(--dr-moss-dim);color:var(--dr-ink)}
-.dr-trans-arm[data-armed="true"]{border-color:var(--dr-amber);color:var(--dr-amber)}
-.dr-trans-arm[data-armed="true"] .dr-trans-dot{background:var(--dr-amber);box-shadow:0 0 12px var(--dr-amber)}
-.dr-trans-rec:disabled{opacity:.4;cursor:not-allowed}
-.dr-trans-rec[data-recording="true"]{border-color:var(--dr-amber);color:var(--dr-amber)}
-.dr-trans-dot{width:8px;height:8px;border-radius:50%;background:var(--dr-line-2);display:inline-block;flex-shrink:0;transition:background .2s,box-shadow .2s}
-.dr-trans-arrow{font-size:10px;line-height:1;color:inherit}
-.dr-trans-time{justify-self:end;font-family:var(--dr-mono);font-size:22px;color:var(--dr-ink);font-variant-numeric:tabular-nums;letter-spacing:.02em;font-weight:400}
-.dr-trans-file{justify-self:end;font-family:var(--dr-mono);font-size:10px;color:var(--dr-ink-dim);letter-spacing:.04em}
-.dr-trans-status{font-family:var(--dr-mono);font-size:10px;letter-spacing:.16em;color:var(--dr-ink-2);text-transform:uppercase}
-
 /* ── FOOTER ── */
 .dr-foot{margin-top:var(--s7);padding:var(--s5) 0;border-top:1px solid var(--dr-line);display:flex;justify-content:space-between;align-items:center;font-family:var(--dr-mono);font-size:10px;letter-spacing:.16em;color:var(--dr-ink-2);text-transform:uppercase}
 .dr-foot a{color:var(--dr-ink-dim);transition:color .2s}
@@ -1126,9 +1111,6 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
   .dr-bay{grid-template-columns:1fr;gap:var(--s4)}
   .dr-bay-head{flex-direction:row;align-items:baseline;gap:var(--s4)}
   .dr-bay-status{text-align:left;min-width:0}
-  .dr-trans{grid-template-columns:auto auto 1fr;gap:var(--s3)}
-  .dr-trans-time,.dr-trans-file,.dr-trans-status{grid-column:auto}
-  .dr-trans-status{display:none}
 }
 
 /* ── MOBILE / SMALL VIEWPORT REDIRECT ── */
@@ -1342,6 +1324,25 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
             <stop offset="80%"  stop-color="oklch(0.70 0.010 80)"/>
             <stop offset="100%" stop-color="oklch(0.58 0.012 80)"/>
           </radialGradient>
+          <!-- Orb-video vignette: transparent center, dark edges. Sells the
+               curvature read so a flat video reads as a glass sphere. -->
+          <radialGradient id="dr-orb-vignette-grad" cx="50%" cy="50%" r="50%">
+            <stop offset="0%"   stop-color="rgba(0,0,0,0)"/>
+            <stop offset="55%"  stop-color="rgba(0,0,0,0)"/>
+            <stop offset="85%"  stop-color="rgba(0,0,0,0.32)"/>
+            <stop offset="100%" stop-color="rgba(0,0,0,0.72)"/>
+          </radialGradient>
+          <!-- Specular highlight at upper-left, screen-blended on top of
+               the video to fake a soft glass reflection. -->
+          <radialGradient id="dr-orb-specular-grad" cx="32%" cy="28%" r="62%">
+            <stop offset="0%"   stop-color="rgba(255,255,255,0.95)"/>
+            <stop offset="55%"  stop-color="rgba(255,255,255,0.18)"/>
+            <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+          </radialGradient>
+          <!-- Clip the foreignObject to a circle so the video fits the orb. -->
+          <clipPath id="dr-orb-clip">
+            <circle r="80"/>
+          </clipPath>
         </defs>
         <!-- space backdrop + faint outer rim -->
         <circle r="158" class="dr-tape-face"/>
@@ -1400,6 +1401,17 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
           <circle r="80" class="dr-saturn-body"/>
           <circle r="80" class="dr-saturn-rim"/>
         </g>
+        <!-- Orb-video layer (gated by ?orb=video). Sits between the planet
+             body and the front rings so back arcs orbit behind it and front
+             arcs orbit in front. Does NOT spin with the rotor — content
+             stays legible while the rings orbit (Jackson's "crystal ball"
+             framing). The foreignObject hosts a regular HTML <video> element
+             whose srcObject is set to the captured tab's video track. -->
+        <foreignObject class="dr-orb-video-fo" id="dr-orb-video-fo" x="-80" y="-80" width="160" height="160" clip-path="url(#dr-orb-clip)">
+          <video class="dr-orb-video" id="dr-orb-video" muted playsinline autoplay></video>
+        </foreignObject>
+        <circle r="80" class="dr-orb-vignette"/>
+        <ellipse cx="-30" cy="-34" rx="40" ry="26" class="dr-orb-specular"/>
         <!-- FRONT ring arcs — drawn after planet body, cross in front of its
              lower half. Same dash-chase animation as the back arcs, in sync. -->
         <g class="dr-tape-rotor dr-tape-rings-front" id="dr-tape-rotor-front">
@@ -2027,35 +2039,6 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
        of the page. See .dr-toprow above (master-wrap is now nested inside it
        as the left-side narrow column, sampler-wrap as the wide right side). -->
 
-  <!-- EXPORT — Step 6: print the song. Stub for phase 4 of the sampler reframe.
-       Real-time master capture → WAV (lossless, fastest to ship) + MP3 via
-       lamejs (~80KB lib). Empty placeholder for now so the page rhythm is locked. -->
-  <section class="dr-export-wrap" aria-label="Export">
-    <div class="dr-export-header">
-      <h3 class="dr-section">export</h3>
-    </div>
-    <div class="dr-export-stub">
-      record the master bus to wav or mp3 — coming soon
-    </div>
-  </section>
-
-  <!-- TRANSPORT — Step 4 (now Step 7). ARM/REC captures the processed signal.
-       PLAY/STOP for the master clock lives in the sequencer header (where the
-       thing it controls actually is). When the looper ships and multiple
-       sections ride the clock, we'll revisit (likely promote to masthead). -->
-  <section class="dr-trans" aria-label="Transport and recording">
-    <button class="dr-trans-arm" type="button" aria-label="Arm recording">
-      <span class="dr-trans-dot"></span>
-      ARM
-    </button>
-    <button class="dr-trans-rec" type="button" disabled aria-label="Start recording">
-      <span class="dr-trans-arrow">▶</span>
-      REC
-    </button>
-    <span class="dr-trans-status">standby — arm to begin</span>
-    <span class="dr-trans-time">00:00</span>
-    <span class="dr-trans-file">no recording</span>
-  </section>
 
 </main>
 
@@ -2087,11 +2070,6 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
   const bayBtns      = document.querySelectorAll('.dr-bay-btn');
   const baySource    = document.querySelector('.dr-bay-source');
   const inputLevel   = document.querySelector('.dr-bay-level-bar');
-  const armBtn       = document.querySelector('.dr-trans-arm');
-  const recBtn       = document.querySelector('.dr-trans-rec');
-  const transStatus  = document.querySelector('.dr-trans-status');
-  const transTime    = document.querySelector('.dr-trans-time');
-  const transFile    = document.querySelector('.dr-trans-file');
   const meterRows    = document.querySelectorAll('.dr-meters .dr-meter');
   const preFill      = meterRows[0]?.querySelector('.dr-meter-bar > span:first-child');
   const postFill     = meterRows[1]?.querySelector('.dr-meter-bar > span:first-child');
@@ -2225,12 +2203,7 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
         ]
       }
     },
-    irs: {},
-    recordedSamples: null, // { L: Float32Array[], R: Float32Array[], totalFrames: number }
-    armed: false,
-    recording: false,
-    recStart: 0,
-    recInterval: null
+    irs: {}
   };
 
   // ─── INIT (lazy, on first user gesture) ──────────────────────────
@@ -2422,10 +2395,6 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
     n.limiter.connect(n.master);
     n.master.connect(n.outputAnalyser);
     n.outputAnalyser.connect(ctx.destination);
-
-    // record tap
-    n.recordDest = ctx.createMediaStreamDestination();
-    n.outputAnalyser.connect(n.recordDest);
 
     // scratch worklet feeds inputAnalyser
     n.scratchOut.connect(n.inputAnalyser);
@@ -2813,6 +2782,14 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
       try { DR.state.source.stop(); } catch(_){}
       DR.state.source.disconnect();
     }
+    // If switching from a tab/device stream → file, also kill any lingering
+    // stream tracks AND unmount the orb video. play() doesn't go through
+    // disconnectSource(), so we have to do this explicitly.
+    if (DR.state.streamRef) {
+      try { DR.state.streamRef.getTracks().forEach(t => t.stop()); } catch(_){}
+      DR.state.streamRef = null;
+    }
+    if (typeof unmountOrbVideo === 'function') unmountOrbVideo();
     const src = DR.ctx.createBufferSource();
     src.buffer = DR.state.buffer;
     src.loop = true;
@@ -2928,96 +2905,6 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
     return DR.nodes.beatRepeatLoading;
   }
 
-  // ─── RECORDER worklet (PCM capture → WAV download) ──────────────
-  // Lazy-loaded on first ARM. Worklet sits as a parallel tap off the master
-  // output (post-limiter, post-OUT-gain). Posts batches of stereo Float32
-  // samples to the main thread; on stop we encode them as 16-bit PCM WAV
-  // and trigger a download. SP-404 model — no offline render.
-  async function ensureRecorder() {
-    if (DR.nodes.recorderReady) return true;
-    if (DR.nodes.recorderFailed) return false;
-    if (DR.nodes.recorderLoading) return DR.nodes.recorderLoading;
-    DR.nodes.recorderLoading = (async () => {
-      try {
-        await DR.ctx.audioWorklet.addModule('darkroom/lib/recorder-processor.js?v=1');
-        const node = new AudioWorkletNode(DR.ctx, 'recorder-processor', {
-          numberOfInputs: 1, numberOfOutputs: 1, outputChannelCount: [2]
-        });
-        // Parallel tap from outputAnalyser (post-master, post-limiter). Don't
-        // route the worklet's silent output back into the destination — the
-        // tap is a sink, not a passthrough.
-        DR.nodes.outputAnalyser.connect(node);
-        DR.nodes.recorder = node;
-        node.port.onmessage = (e) => {
-          if (e.data && e.data.samples && DR.recordedSamples) {
-            DR.recordedSamples.L.push(e.data.samples[0]);
-            DR.recordedSamples.R.push(e.data.samples[1]);
-            DR.recordedSamples.totalFrames += e.data.samples[0].length;
-          } else if (e.data && e.data.type === 'stopped') {
-            // Worklet finished flushing — main thread can now encode.
-            if (typeof DR.onRecorderStopped === 'function') DR.onRecorderStopped();
-          }
-        };
-        DR.nodes.recorderReady = true;
-        return true;
-      } catch (err) {
-        console.error('darkroom: recorder worklet failed to load', err);
-        DR.nodes.recorderFailed = true;
-        return false;
-      } finally {
-        DR.nodes.recorderLoading = null;
-      }
-    })();
-    return DR.nodes.recorderLoading;
-  }
-
-  // Concatenate an array of Float32Array chunks into a single Float32Array.
-  function concatFloat32(chunks, totalLen) {
-    const out = new Float32Array(totalLen);
-    let pos = 0;
-    for (let i = 0; i < chunks.length; i++) {
-      out.set(chunks[i], pos);
-      pos += chunks[i].length;
-    }
-    return out;
-  }
-
-  // Encode interleaved 16-bit PCM WAV from two Float32Array channels.
-  // Standard RIFF/WAVE header, little-endian, 16-bit signed samples.
-  function encodeWAV(left, right, sampleRate) {
-    const channels = 2;
-    const bitsPerSample = 16;
-    const blockAlign = channels * (bitsPerSample / 8);
-    const byteRate = sampleRate * blockAlign;
-    const dataSize = left.length * blockAlign;
-    const buffer = new ArrayBuffer(44 + dataSize);
-    const view = new DataView(buffer);
-    let off = 0;
-    const writeStr = s => { for (let i = 0; i < s.length; i++) view.setUint8(off++, s.charCodeAt(i)); };
-    const writeU32 = v => { view.setUint32(off, v, true); off += 4; };
-    const writeU16 = v => { view.setUint16(off, v, true); off += 2; };
-    writeStr('RIFF');
-    writeU32(36 + dataSize);
-    writeStr('WAVE');
-    writeStr('fmt ');
-    writeU32(16);          // fmt chunk size (PCM)
-    writeU16(1);           // format = PCM
-    writeU16(channels);
-    writeU32(sampleRate);
-    writeU32(byteRate);
-    writeU16(blockAlign);
-    writeU16(bitsPerSample);
-    writeStr('data');
-    writeU32(dataSize);
-    for (let i = 0; i < left.length; i++) {
-      const l = Math.max(-1, Math.min(1, left[i]));
-      const r = Math.max(-1, Math.min(1, right[i]));
-      view.setInt16(off, l < 0 ? l * 0x8000 : l * 0x7FFF, true); off += 2;
-      view.setInt16(off, r < 0 ? r * 0x8000 : r * 0x7FFF, true); off += 2;
-    }
-    return new Blob([buffer], { type: 'audio/wav' });
-  }
-
   // Division → samples per chunk. 'off' → 0 (worklet stays in pass-through).
   // Any note value scales by BPM × screw × rate, matching DELAY/LFO musical sync.
   function computeBeatRepeatChunk() {
@@ -3079,6 +2966,7 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
       try { DR.state.streamRef.getTracks().forEach(t => t.stop()); } catch(_){}
       DR.state.streamRef = null;
     }
+    if (ORB_VIDEO_ENABLED) unmountOrbVideo();
     DR.state.isPlaying = false;
     DR.state.sourceType = null;
   }
@@ -3133,8 +3021,14 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
     DR.state.sourceType = 'stream';
     DR.state.isPlaying = true;
     DR.state.streamRef = stream;
-    // free the video tracks — we never needed them
-    videoTracks.forEach(t => t.stop());
+    // Orb-video gated by ?orb=video flag. When on, mount the captured video
+    // track to the foreignObject's <video>. When off, free the video tracks
+    // (preserves the original behavior — we never needed them otherwise).
+    if (ORB_VIDEO_ENABLED && videoTracks.length) {
+      mountOrbVideo(videoTracks[0]);
+    } else {
+      videoTracks.forEach(t => t.stop());
+    }
     audioTrack.onended = () => {
       setStatus(`<b>tab disconnected</b> — pick a new source to continue`);
       disconnectSource();
@@ -3357,6 +3251,7 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
       DR.state.bypassed.tempo = allDefault;
       applyTempoBypass();
     }
+    updateOrbVideo?.();
   }
   knobs.screw = makeKnob(document.querySelector('.dr-knob[data-param="screw"]'), {
     min: 0.5, max: 1.5, default: 1.0,
@@ -4476,77 +4371,6 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
     bayBtns.forEach(b => b.removeAttribute('data-active'));
     document.querySelector('.dr-bay-btn[data-input="file"]').setAttribute('data-active', 'true');
     loadFile(file);
-  });
-
-  // ─── RECORDING ───────────────────────────────────────────────────
-  armBtn.addEventListener('click', () => {
-    if (DR.recording) return;
-    DR.armed = !DR.armed;
-    armBtn.setAttribute('data-armed', DR.armed ? 'true' : 'false');
-    recBtn.disabled = !DR.armed;
-    transStatus.textContent = DR.armed ? 'armed — ready to record' : 'standby — arm to begin';
-  });
-  // REC click — toggles recording. Captures stereo Float32 PCM via the
-  // recorder worklet (parallel tap off outputAnalyser), accumulates batches
-  // on the main thread, encodes a 16-bit PCM WAV on stop, and triggers a
-  // download. ~23 MB/min memory at 48kHz stereo Float32; reasonable for
-  // single-take performances.
-  recBtn.addEventListener('click', async () => {
-    if (!DR.ctx || !DR.armed) return;
-    if (DR.recording) {
-      // STOP — flag immediate UI change, ask worklet to flush, encode on its 'stopped' ack.
-      DR.recording = false;
-      recBtn.removeAttribute('data-recording');
-      clearInterval(DR.recInterval);
-      transStatus.textContent = 'encoding';
-      DR.onRecorderStopped = () => {
-        DR.onRecorderStopped = null;
-        const samples = DR.recordedSamples;
-        if (!samples || samples.totalFrames === 0) {
-          transStatus.textContent = 'no audio captured';
-          return;
-        }
-        const left  = concatFloat32(samples.L, samples.totalFrames);
-        const right = concatFloat32(samples.R, samples.totalFrames);
-        const blob = encodeWAV(left, right, DR.ctx.sampleRate);
-        const url = URL.createObjectURL(blob);
-        const ts = new Date();
-        const pad = n => String(n).padStart(2, '0');
-        const stamp = `${ts.getFullYear()}-${pad(ts.getMonth()+1)}-${pad(ts.getDate())}-${pad(ts.getHours())}h${pad(ts.getMinutes())}`;
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `darkroom-${stamp}.wav`;
-        a.click();
-        setTimeout(() => URL.revokeObjectURL(url), 5000);
-        transStatus.textContent = 'saved → downloads';
-        transFile.textContent = a.download;
-        DR.recordedSamples = null;
-        setTimeout(() => {
-          DR.armed = false;
-          armBtn.setAttribute('data-armed', 'false');
-          recBtn.disabled = true;
-          transStatus.textContent = 'standby — arm to begin';
-        }, 1800);
-      };
-      DR.nodes.recorder.port.postMessage({ type: 'stop' });
-      return;
-    }
-    // START
-    const ok = await ensureRecorder();
-    if (!ok) {
-      transStatus.textContent = 'recorder unavailable';
-      return;
-    }
-    DR.recordedSamples = { L: [], R: [], totalFrames: 0 };
-    DR.nodes.recorder.port.postMessage({ type: 'start' });
-    DR.recording = true;
-    recBtn.setAttribute('data-recording', 'true');
-    DR.recStart = Date.now();
-    transStatus.textContent = 'recording';
-    DR.recInterval = setInterval(() => {
-      const e = Math.floor((Date.now() - DR.recStart) / 1000);
-      transTime.textContent = `${String(Math.floor(e/60)).padStart(2,'0')}:${String(e%60).padStart(2,'0')}`;
-    }, 250);
   });
 
   // ─── VISUALIZATIONS ──────────────────────────────────────────────
@@ -5845,6 +5669,70 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
     updateRingFlash();
   }
 
+  // ─── ORB VIDEO (gated by ?orb=video URL flag) ────────────────────
+  // Routes the captured tab's video track into the planet body of the
+  // Saturn deck so the orb shows the source as a "crystal ball." Pure
+  // visual feature — never touches the audio chain. When off (default),
+  // the orb is the brushed-aluminum sphere as before.
+  //
+  // Freeze-on-divergence: video plays only when audio is at native rate
+  // (SCREW = 1, no REVERSE, no scratch in progress). The moment the
+  // user diverges from default the video pauses on its last frame, so
+  // the orb stops "lying" — what you see is locked to the moment you
+  // stopped hearing the source as-is. Returning to defaults resumes it.
+  //
+  // Revert path: remove "?orb=video" from the URL → flag is false →
+  // mountOrbVideo never fires, video tracks get stopped as before, and
+  // the foreignObject stays display:none. Zero-friction kill switch.
+  const ORB_VIDEO_ENABLED = (() => {
+    try { return new URLSearchParams(location.search).get('orb') === 'video'; }
+    catch (_) { return false; }
+  })();
+
+  function isAudioPure() {
+    return Math.abs(DR.state.screw - 1.0) < 0.001
+        && !TAPE.reverseEngaged
+        && !TAPE.scratching;
+  }
+
+  function mountOrbVideo(track) {
+    if (!ORB_VIDEO_ENABLED || !track) return;
+    const videoEl = document.getElementById('dr-orb-video');
+    const disc    = document.querySelector('.dr-tape-disc');
+    if (!videoEl || !disc) return;
+    try {
+      videoEl.srcObject = new MediaStream([track]);
+      const playPromise = videoEl.play();
+      if (playPromise && typeof playPromise.catch === 'function') playPromise.catch(()=>{});
+      disc.setAttribute('data-orb-video', 'on');
+      track.addEventListener('ended', unmountOrbVideo, { once: true });
+    } catch (e) { /* fall through — orb stays as the planet body */ }
+  }
+
+  function unmountOrbVideo() {
+    const videoEl = document.getElementById('dr-orb-video');
+    const disc    = document.querySelector('.dr-tape-disc');
+    if (videoEl) { try { videoEl.pause(); videoEl.srcObject = null; } catch(_){} }
+    if (disc)    disc.removeAttribute('data-orb-video');
+  }
+
+  function updateOrbVideo() {
+    if (!ORB_VIDEO_ENABLED) return;
+    const videoEl = document.getElementById('dr-orb-video');
+    const disc    = document.querySelector('.dr-tape-disc');
+    if (!videoEl || !disc || !videoEl.srcObject) return;
+    if (isAudioPure()) {
+      if (videoEl.paused) {
+        const p = videoEl.play();
+        if (p && typeof p.catch === 'function') p.catch(()=>{});
+      }
+      disc.setAttribute('data-orb-video', 'on');
+    } else {
+      if (!videoEl.paused) videoEl.pause();
+      disc.setAttribute('data-orb-video', 'paused');
+    }
+  }
+
   // ─── TAPE DECK (TP-7 style scratch + auto-rotate) ────────────────
   const tapeDisc      = document.querySelector('.dr-tape-disc');
   // Two rotor groups (back rings + front rings) flank the static planet body.
@@ -5917,6 +5805,7 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
     TAPE.reverseEngaged = on;
     const btn = document.getElementById('dr-tape-reverse');
     if (btn) btn.setAttribute('data-active', on ? 'true' : 'false');
+    updateOrbVideo();
     ensureScratch().then(ok => {
       if (!ok || !DR.ctx) return;
       const t = DR.ctx.currentTime;
@@ -5943,6 +5832,7 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
       TAPE.samples = [{ t: performance.now(), a: TAPE.pointerStart }];
       document.body.style.cursor = 'grabbing';
       e.preventDefault();
+      updateOrbVideo();
 
       // Lazy-load the scratch worklet on first scratch and engage it once ready.
       ensureCtx();
@@ -5984,6 +5874,7 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
         document.removeEventListener('pointercancel', onUp);
         document.body.style.cursor = '';
         endScratch();
+        updateOrbVideo();
         // reset rate readout to the base after a short delay
         setTimeout(() => { if (!TAPE.scratching) TAPE.rate = 1; }, 100);
       }
@@ -6141,8 +6032,7 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
     { wrapSel: '.dr-instr-wrap',   headSel: 'h3.dr-section',     storageKey: 'instr'   },
     { wrapSel: '.dr-seq-wrap',     headSel: '.dr-seq-header',    storageKey: 'seq'     },
     { wrapSel: '.dr-rack-wrap',    headSel: '.dr-rack-header',   storageKey: 'rack'    },
-    { wrapSel: '.dr-master-wrap',  headSel: '.dr-master-header', storageKey: 'master'  },
-    { wrapSel: '.dr-export-wrap',  headSel: '.dr-export-header', storageKey: 'export'  }
+    { wrapSel: '.dr-master-wrap',  headSel: '.dr-master-header', storageKey: 'master'  }
   ];
   const COLLAPSE_STORAGE = 'darkroom:collapsed';
   function loadCollapseState() {

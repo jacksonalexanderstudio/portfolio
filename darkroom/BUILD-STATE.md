@@ -1,12 +1,12 @@
 # darkroom — Build State
 
-Snapshot for a fresh Claude session to resume cleanly. **Last updated 2026-05-06** after a long session covering Phase 5 export, real CC0 IRs, the Saturn tape-deck redesign, knob position ticks, the LFO module extraction, plus a handful of bug fixes.
+Snapshot for a fresh Claude session to resume cleanly. **Last updated 2026-05-07** — recording / WAV-export feature was completely removed for legal reasons (capturing copyrighted source audio is the obvious risk; darkroom is now strictly a real-time processor with no path that writes audio to disk). Prior 2026-05-06 update covered Phase 5 export (now removed), real CC0 IRs, the Saturn tape-deck redesign, knob position ticks, and the LFO module extraction.
 
 ## TL;DR
 
 - **Working file:** `darkroom.html` at the repo root.
 - **Frozen reference:** `darkroom-dark.html` — old dark/forest aesthetic snapshot, untouched.
-- **Worklets:** `darkroom/lib/soundtouch-processor.js` (stream tempo/pitch), `darkroom/lib/beat-repeat-processor.js` (freeze loops, OB-4 model), `darkroom/lib/scratch-processor.js` (turntable scratch), `darkroom/lib/sampler-buffer-processor.js` (60s rolling tap for sample-finding), `darkroom/lib/recorder-processor.js` (Phase 5 PCM capture).
+- **Worklets:** `darkroom/lib/soundtouch-processor.js` (stream tempo/pitch), `darkroom/lib/beat-repeat-processor.js` (freeze loops, OB-4 model), `darkroom/lib/scratch-processor.js` (turntable scratch), `darkroom/lib/sampler-buffer-processor.js` (60s rolling tap for sample-finding). The recorder worklet was deleted 2026-05-07 along with all WAV-export plumbing.
 - **Real CC0 IRs:** `darkroom/irs/01-wood.wav` … `08-cave.wav` (1.1 MB total, mono 16-bit @ 48kHz, trimmed + normalized). Plate (02) and spring (03) stay procedural — they're gear, not rooms. Attribution at `darkroom/irs/ATTRIBUTIONS.txt`.
 - **Local dev:** `python3 -m http.server 8765` from the worktree root → Chrome → `http://localhost:8765/darkroom.html`. Localhost is required for `getDisplayMedia`.
 - **Worktree:** `/Users/jacksonalexander/Desktop/CLAUDE/.claude/worktrees/elastic-swartz-30b73e`. Branch `claude/elastic-swartz-30b73e`. **Pushed to `main` regularly this session** — Jackson approves each push.
@@ -38,8 +38,7 @@ Switching to PLAY calls `DR.clock.stop()` to prevent ghost playback from a hidde
 6. **Instrument rack** (CREATE-only) — 2-col: 8 drum pads (left) + synth (right).
 7. **Drum sequencer** (CREATE-only) — 8 rows × 16 steps. Header has PLAY/STOP + SWING + CLEAR.
 8. **FX rack** (`.dr-rack`) — CSS Grid **6 columns** at desktop (6 → 3 → 2 → 1 responsive). **6 modules: EQ → FILTER → PHASER → LFO → DELAY → REVERB.** Each module is a pill-shaped tactile card (rounded `--r-xl`, cream gradient face, 1px border, soft drop shadow). Active state (un-bypassed) uses matte-black brushed look. Bypass dot stays moss.
-9. **Export** stub.
-10. **Transport** — ARM → REC → STOP downloads a 16-bit PCM WAV. See "Phase 5" below.
+9. *(no transport / export — removed 2026-05-07)*
 
 Hero section titles (`.dr-section`) are globally hidden via `display: none`.
 
@@ -58,8 +57,6 @@ scratchIn → [scratch worklet OR bridge] → scratchOut → samplerBuffer → i
         → eqLow → eqMid → eqHigh → filter → phaser → beatRepeat
         → delay (dry|line→tone→wet) → reverb (dry|conv→wet)
         → preAnalyser → limiter (-1 dBFS, 20:1) → master → outputAnalyser → destination
-                                                                              ↓
-                                                                          recorder (parallel tap, when ARMED + RECORDING)
 ```
 
 **Order changed 2026-05-06:** EQ now sits BEFORE FILTER (mix-engineer convention — tonal shaping before color processors).
@@ -81,13 +78,9 @@ scratchIn → [scratch worklet OR bridge] → scratchOut → samplerBuffer → i
 - **Ring orbit speed = playback rate** — `ringDashPhase` accumulates each frame at `effRate × RING_BASE_SPEED × dt`. `effRate` honors scratch velocity, REVERSE state (signed), and SCREW × RATE. SCREW down → ring slows; SCREW up → ring speeds up; REVERSE → ring orbit reverses; scratch → ring tracks drag velocity.
 - **`tickTape` rotation** — also negates `effRate` when `TAPE.reverseEngaged` (the whole composition reverses tumble direction in lockstep with audio).
 
-## Phase 5 — Export (shipped 2026-05-06)
+## Recording (REMOVED 2026-05-07)
 
-ARM → REC → STOP → downloads `darkroom-{timestamp}.wav` (16-bit PCM, 48kHz stereo). Path:
-- New worklet `darkroom/lib/recorder-processor.js`. Sits as a parallel tap off `outputAnalyser` (post-master, post-limiter). On `{type:'start'}` accumulates batches of 8192 frames; posts each as transferable `Float32Array` pair.
-- Main thread accumulator in `DR.recordedSamples = { L, R, totalFrames }`.
-- On STOP: posts `{type:'stop'}` to worklet; worklet flushes any partial batch and acks `{type:'stopped'}`. Main thread then concats the chunks, encodes 16-bit PCM WAV header + interleaved samples, blobs + downloads.
-- Memory: ~23 MB/min at 48k stereo Float32. Fine for single-take performances.
+Phase 5 export (ARM/REC/STOP → 16-bit PCM WAV download) was completely ripped out for legal reasons. Capturing copyrighted source material is the obvious risk. Removal touched: `dr-trans` HTML section + CSS, `armBtn`/`recBtn`/`transStatus`/`transTime`/`transFile` DOM refs, `DR.recordedSamples`/`DR.recording`/`DR.armed`/`DR.recStart`/`DR.recInterval`/`DR.onRecorderStopped` state, the `n.recordDest` MediaStreamDestination tap, `ensureRecorder()` / `concatFloat32()` / `encodeWAV()` functions, ARM and REC click handlers, the meta description's "and recording" phrase, and the `darkroom/lib/recorder-processor.js` worklet file. Net effect: no path on the page writes audio to disk. Sampler ring buffer + waveform are local visualization only and were left in place.
 
 ## State (DR.state shape — key parts)
 
@@ -174,7 +167,6 @@ When resuming, search for these to find load-bearing code:
 - `─── MASTER CLOCK — Chris Wilson lookahead scheduler ───` → `DR.clock`
 - `─── SCRATCH worklet (lazy) ───` → `ensureScratch`
 - `─── BEAT REPEAT worklet ───` → `ensureBeatRepeat`. Sends explicit `{rearm: true}` port message on user actions; chunk-value drift alone never triggers recapture.
-- `─── RECORDER worklet ───` → `ensureRecorder` + `encodeWAV` + `concatFloat32` + REC handler.
 - `─── BYPASS (per module) ───` → `applyBypass` + `applyTempoBypass`. LFO bypass restores filter base values to stop in-flight `setTargetAtTime` ramps.
 - `─── COLLAPSE / EXPAND (per module) ───` → chevron + header click handlers (chevrons hidden in FX rack now)
 - `─── SECTION COLLAPSE ───` → section-level collapse (chevrons hidden in PLAY mode)
@@ -220,7 +212,6 @@ When resuming, search for these to find load-bearing code:
 
 ### Polish / cleanup (not blocking)
 - **Remove diagnostic `console.log('[beat-repeat] capture', ...)` from the trigger handler.** Was added during the freeze-fix debugging; serves no end-user purpose now.
-- **The orphan `n.recordDest` MediaStreamDestination** is unused since the WAV path replaced MediaRecorder. Drop the node.
 - **Decisions still on the table:**
   - **Single-typeface vs Jackson's stated two-font rule.** BUILD-STATE describes the system as DM Sans-only across all roles. Jackson's persistent memory says "Two fonts minimum per project — hard rule. Apply by default, propose pairing up front." Conflict still unresolved.
   - **"RELEASE" verb.** In audio, "release" usually means envelope release time. For an A/B-compare killswitch, "BYPASS" might read more directly. Subtitle "tap to release" compounds the overload.
