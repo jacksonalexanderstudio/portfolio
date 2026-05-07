@@ -807,7 +807,7 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
 /* ── RACK — separate pill-shaped modules in a 5-up grid. No outer chassis;
    each module is its own elevated pill with rounded corners + soft shadow,
    spaced apart with proper gap. */
-.dr-rack{position:relative;display:grid;grid-template-columns:repeat(5,1fr);gap:var(--s4);
+.dr-rack{position:relative;display:grid;grid-template-columns:repeat(6,1fr);gap:var(--s4);
   background:transparent;border:0;border-radius:0;overflow:visible;box-shadow:none}
 /* 5 modules now (BEAT REPEAT relocated to sampler tool row). 5 → 3 → 2 → 1
    — skipping 4 since it'd leave one orphan in row 2. */
@@ -1780,56 +1780,6 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
           </div>
         </div>
 
-        <!-- LFO sub-section -->
-        <div class="dr-lfo">
-          <div class="dr-lfo-head">
-            <span class="dr-lfo-label">LFO</span>
-            <button class="dr-lfo-toggle" id="dr-lfo-toggle" type="button" data-active="false" aria-label="enable LFO">OFF</button>
-          </div>
-          <canvas class="dr-lfo-vis" width="480" height="80"></canvas>
-          <div class="dr-lfo-shape-row">
-            <button class="dr-lfo-shape" data-shape="sine" data-active="true" type="button" title="sine">∿</button>
-            <button class="dr-lfo-shape" data-shape="tri" type="button" title="triangle">△</button>
-            <button class="dr-lfo-shape" data-shape="saw" type="button" title="saw">◢</button>
-            <button class="dr-lfo-shape" data-shape="sq" type="button" title="square">⊓</button>
-            <button class="dr-lfo-shape" data-shape="sh" type="button" title="sample &amp; hold">⋯</button>
-          </div>
-          <div class="dr-lfo-target-row">
-            <span class="dr-lfo-target-label">TARGET</span>
-            <button class="dr-lfo-target" data-target="cut" data-active="true" type="button">CUT</button>
-            <button class="dr-lfo-target" data-target="res" type="button">RES</button>
-            <button class="dr-lfo-target" data-target="both" type="button">BOTH</button>
-            <button class="dr-lfo-sync" id="dr-lfo-sync" type="button" data-active="false">SYNC</button>
-          </div>
-          <div class="dr-lfo-div-grid" id="dr-lfo-div-grid" hidden>
-            <button class="dr-div-btn dr-lfo-div" data-div="1/16" type="button">1/16</button>
-            <button class="dr-div-btn dr-lfo-div" data-div="1/8" type="button">1/8</button>
-            <button class="dr-div-btn dr-lfo-div" data-div="1/4" data-active="true" type="button">1/4</button>
-            <button class="dr-div-btn dr-lfo-div" data-div="1/2" type="button">1/2</button>
-            <button class="dr-div-btn dr-lfo-div" data-div="1/1" type="button">1/1</button>
-            <button class="dr-div-btn dr-lfo-div" data-div="2/1" type="button">2/1</button>
-          </div>
-          <div class="dr-knobs">
-            <div class="dr-knob" data-param="lrate">
-              <span class="dr-knob-label">RATE</span>
-              <svg class="dr-knob-dial" viewBox="-50 -50 100 100">
-                <circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g>
-                <circle r="42"/>
-                <line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/>
-              </svg>
-              <span class="dr-knob-value">1.50 Hz</span>
-            </div>
-            <div class="dr-knob" data-param="ldepth">
-              <span class="dr-knob-label">DEPTH</span>
-              <svg class="dr-knob-dial" viewBox="-50 -50 100 100">
-                <circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g>
-                <circle r="42"/>
-                <line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/>
-              </svg>
-              <span class="dr-knob-value">50%</span>
-            </div>
-          </div>
-        </div>
       </div>
     </article>
 
@@ -1875,6 +1825,68 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
           </div>
           <div class="dr-knob" data-param="phaserMix">
             <span class="dr-knob-label">MIX</span>
+            <svg class="dr-knob-dial" viewBox="-50 -50 100 100">
+              <circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g>
+              <circle r="42"/>
+              <line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/>
+            </svg>
+            <span class="dr-knob-value">50%</span>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- LFO — extracted from FILTER as its own module. Now a control-rate
+         modulation source with its own bypass; defaults to targeting filter
+         CUT/RES/BOTH (back-compat with old behavior). When LFO bypass is on,
+         no modulation runs. When LFO is on but filter is bypassed, filter-
+         target modulations are silently skipped (otherwise the LFO would
+         force the filter back into action by writing setTargetAtTime). -->
+    <article class="dr-mod" data-mod="lfo" data-bypassed="true" data-collapsed="true">
+      <header class="dr-mod-head">
+        <button class="dr-mod-bypass" type="button" aria-label="bypass module"></button>
+        <div class="dr-mod-head-text">
+          <span class="dr-mod-name">LFO</span>
+        </div>
+        <button class="dr-mod-reset" type="button" aria-label="reset module" title="reset to defaults">↺</button>
+        <button class="dr-mod-collapse" type="button" aria-label="collapse module" title="collapse / expand">▾</button>
+      </header>
+      <div class="dr-mod-body">
+        <canvas class="dr-lfo-vis" width="480" height="80"></canvas>
+        <div class="dr-lfo-shape-row">
+          <button class="dr-lfo-shape" data-shape="sine" data-active="true" type="button" title="sine">∿</button>
+          <button class="dr-lfo-shape" data-shape="tri" type="button" title="triangle">△</button>
+          <button class="dr-lfo-shape" data-shape="saw" type="button" title="saw">◢</button>
+          <button class="dr-lfo-shape" data-shape="sq" type="button" title="square">⊓</button>
+          <button class="dr-lfo-shape" data-shape="sh" type="button" title="sample &amp; hold">⋯</button>
+        </div>
+        <div class="dr-lfo-target-row">
+          <span class="dr-lfo-target-label">TARGET</span>
+          <button class="dr-lfo-target" data-target="cut" data-active="true" type="button">CUT</button>
+          <button class="dr-lfo-target" data-target="res" type="button">RES</button>
+          <button class="dr-lfo-target" data-target="both" type="button">BOTH</button>
+          <button class="dr-lfo-sync" id="dr-lfo-sync" type="button" data-active="false">SYNC</button>
+        </div>
+        <div class="dr-lfo-div-grid" id="dr-lfo-div-grid" hidden>
+          <button class="dr-div-btn dr-lfo-div" data-div="1/16" type="button">1/16</button>
+          <button class="dr-div-btn dr-lfo-div" data-div="1/8" type="button">1/8</button>
+          <button class="dr-div-btn dr-lfo-div" data-div="1/4" data-active="true" type="button">1/4</button>
+          <button class="dr-div-btn dr-lfo-div" data-div="1/2" type="button">1/2</button>
+          <button class="dr-div-btn dr-lfo-div" data-div="1/1" type="button">1/1</button>
+          <button class="dr-div-btn dr-lfo-div" data-div="2/1" type="button">2/1</button>
+        </div>
+        <div class="dr-knobs">
+          <div class="dr-knob" data-param="lrate">
+            <span class="dr-knob-label">RATE</span>
+            <svg class="dr-knob-dial" viewBox="-50 -50 100 100">
+              <circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g>
+              <circle r="42"/>
+              <line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/>
+            </svg>
+            <span class="dr-knob-value">1.50 Hz</span>
+          </div>
+          <div class="dr-knob" data-param="ldepth">
+            <span class="dr-knob-label">DEPTH</span>
             <svg class="dr-knob-dial" viewBox="-50 -50 100 100">
               <circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g>
               <circle r="42"/>
@@ -2152,7 +2164,7 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
         lastDivision: null,
         lastBypassed: null
       },
-      bypassed: { tempo: true, filter: true, eq: true, phaser: true, beatrepeat: false, delay: true, reverb: true },
+      bypassed: { tempo: true, filter: true, eq: true, phaser: true, lfo: true, beatrepeat: false, delay: true, reverb: true },
       samplePads: {
         // 8 sample pads — each holds a chop captured from the sampler. ASSIGN
         // (when sampler is frozen with a valid region) copies the marker
@@ -3504,19 +3516,10 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
     onChange: v => { DR.state.lfo.depth = v; }
   });
 
-  // LFO on/off toggle
-  const lfoToggle = document.getElementById('dr-lfo-toggle');
-  lfoToggle?.addEventListener('click', () => {
-    DR.state.lfo.enabled = !DR.state.lfo.enabled;
-    lfoToggle.setAttribute('data-active', DR.state.lfo.enabled ? 'true' : 'false');
-    if (!DR.state.lfo.enabled) {
-      // restore base filter values
-      if (DR.nodes.filter && DR.ctx) {
-        DR.nodes.filter.frequency.setTargetAtTime(DR.state.cut, DR.ctx.currentTime, 0.02);
-        DR.nodes.filter.Q.setTargetAtTime(DR.state.res, DR.ctx.currentTime, 0.02);
-      }
-    }
-  });
+  // LFO on/off toggle removed — the LFO is its own FX module now and uses
+  // the standard module bypass dot. When LFO bypass flips on (i.e., LFO
+  // disengages), applyBypass restores filter base values so the modulated
+  // freq/Q values stop hanging.
 
   // shape selector
   document.querySelectorAll('.dr-lfo-shape').forEach(btn => {
@@ -3918,6 +3921,13 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
       DR.nodes.phaserWet.gain.setValueAtTime(off ? 0 : DR.state.phaser.mix, t);
       DR.nodes.phaserFb.gain.setValueAtTime(off ? 0 : DR.state.phaser.feedback, t);
     }
+    // LFO — when bypassed, snap filter back to its base (un-modulated) values so
+    // any in-flight setTargetAtTime ramps from tickLfo don't keep drifting after
+    // the modulator's been muted.
+    if (DR.state.bypassed.lfo && DR.nodes.filter && !DR.state.bypassed.filter) {
+      DR.nodes.filter.frequency.setTargetAtTime(DR.state.cut, t, 0.02);
+      DR.nodes.filter.Q.setTargetAtTime(DR.state.res, t, 0.02);
+    }
     // BEAT REPEAT — insert effect. Bypass forces samplesPerChunk=0 (pass-through);
     // un-bypassed + division !== 'off' captures and loops at sample rate. Lazily
     // loads the worklet on first activation.
@@ -3980,9 +3990,10 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
   // ─── PER-MODULE RESET ───────────────────────────────────────────
   const moduleKnobs = {
     tempo: ['screw', 'rate', 'pitch'],
-    filter: ['cut', 'res', 'lrate', 'ldepth'],
+    filter: ['cut', 'res'],
     eq: ['eqLow', 'eqMid', 'eqHigh'],
     phaser: ['phaserRate', 'phaserDepth', 'phaserFb', 'phaserMix'],
+    lfo: ['lrate', 'ldepth'],
     beatrepeat: [],
     delay: ['dtime', 'fb', 'dtone', 'dmix'],
     reverb: ['size', 'mix'],
@@ -4029,15 +4040,14 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
       if (lp) lp.setAttribute('data-active', 'true');
       DR.state.filterType = 'lowpass';
       if (DR.nodes.filter) DR.nodes.filter.type = 'lowpass';
-      // also reset the LFO sub-section
-      DR.state.lfo.enabled = false;
+    }
+    if (which === 'lfo') {
+      // LFO is its own module now — full reset of shape, target, sync, division, phase.
       DR.state.lfo.shape = 'sine';
       DR.state.lfo.target = 'cut';
       DR.state.lfo.sync = false;
       DR.state.lfo.division = '1/4';
       DR.state.lfo.phase = 0;
-      const lfoT = document.getElementById('dr-lfo-toggle');
-      if (lfoT) lfoT.setAttribute('data-active', 'false');
       const syncT = document.getElementById('dr-lfo-sync');
       if (syncT) syncT.setAttribute('data-active', 'false');
       const divG = document.getElementById('dr-lfo-div-grid');
@@ -4369,7 +4379,7 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
   // tempo intentionally NOT in FX_MODULES — SCREW/RATE/PITCH live in the sampler
   // now and use auto-bypass at defaults rather than a manual bypass. RELEASE +
   // CLEAR ALL operate on the FX rack only.
-  const FX_MODULES = ['filter','eq','phaser','beatrepeat','delay','reverb'];
+  const FX_MODULES = ['filter','eq','phaser','lfo','beatrepeat','delay','reverb'];
   const killBtn = document.getElementById('dr-kill');
   let killStash = null;
   killBtn?.addEventListener('click', () => {
@@ -5094,7 +5104,7 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
     let cut, res;
     if (DR.state.bypassed.filter) {
       cut = 20000; res = 0.1;
-    } else if (DR.state.lfo.enabled && DR.nodes.filter) {
+    } else if (!DR.state.bypassed.lfo && DR.nodes.filter) {
       cut = DR.nodes.filter.frequency.value || DR.state.cut;
       res = DR.nodes.filter.Q.value || DR.state.res;
     } else {
@@ -5587,7 +5597,10 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
     const dt = Math.min(0.1, (now - lfoLastMs) / 1000);
     lfoLastMs = now;
 
-    if (!DR.state.lfo.enabled || DR.state.bypassed.filter || !DR.ctx) return;
+    // LFO has its own bypass now (since it's its own module). When bypassed,
+    // no modulation. The legacy `enabled` flag is still used internally for
+    // back-compat but the module bypass is the user-facing toggle.
+    if (DR.state.bypassed.lfo || !DR.ctx) return;
 
     // current rate in Hz — sync mode applies the same tempo scaling as DELAY so the
     // LFO follows SCREW/RATE through the audio's musical timeline.
@@ -5610,14 +5623,19 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
     const val = lfoShapeAt(DR.state.lfo.shape, DR.state.lfo.phase);
     const t = DR.ctx.currentTime;
 
-    if (DR.state.lfo.target === 'cut' || DR.state.lfo.target === 'both') {
+    // Filter modulation — gated on filter not being bypassed. Otherwise the
+    // LFO's setTargetAtTime writes would override applyBypass's parked values
+    // and effectively force filter back on. When filter is bypassed, the LFO
+    // silently skips filter targets.
+    const filterOn = !DR.state.bypassed.filter && DR.nodes.filter;
+    if (filterOn && (DR.state.lfo.target === 'cut' || DR.state.lfo.target === 'both')) {
       const octaves = val * DR.state.lfo.depth * 2; // ±2 octaves at 100% depth
       const modCut = DR.state.cut * Math.pow(2, octaves);
       DR.nodes.filter.frequency.setTargetAtTime(
         Math.max(20, Math.min(20000, modCut)), t, 0.005
       );
     }
-    if (DR.state.lfo.target === 'res' || DR.state.lfo.target === 'both') {
+    if (filterOn && (DR.state.lfo.target === 'res' || DR.state.lfo.target === 'both')) {
       const modRes = DR.state.res + val * DR.state.lfo.depth * 8;
       DR.nodes.filter.Q.setTargetAtTime(
         Math.max(0.1, Math.min(18, modRes)), t, 0.005
@@ -5640,7 +5658,7 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
       cx.beginPath(); cx.moveTo(x, 0); cx.lineTo(x, h); cx.stroke();
     }
 
-    const enabled = DR.state.lfo.enabled && !DR.state.bypassed.filter;
+    const enabled = !DR.state.bypassed.lfo;
     const dimmed = !enabled;
 
     // draw two cycles of the current shape
