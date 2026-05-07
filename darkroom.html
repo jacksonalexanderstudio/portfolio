@@ -3451,7 +3451,12 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
       DR.state.beatRepeat.division = btn.dataset.div;
       const led = document.getElementById('dr-br-trigger');
       if (led) led.setAttribute('data-active', btn.dataset.div !== 'off' ? 'true' : 'false');
-      if (btn.dataset.div !== 'off' && !DR.state.bypassed.beatrepeat) {
+      // Clicking a non-OFF division IS the user's intent to engage beat-repeat.
+      // Auto-un-bypass if it was previously bypassed (e.g. by CLEAR ALL or
+      // RELEASE) — there's no PLAY-mode UI to un-bypass beat-repeat directly,
+      // so a division click that did nothing would feel broken.
+      if (btn.dataset.div !== 'off') {
+        DR.state.bypassed.beatrepeat = false;
         ensureCtx();
         ensureBeatRepeat().then(ok => { if (ok) applyBeatRepeatGrid(); });
       } else {
