@@ -2809,6 +2809,9 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
     src.connect(DR.nodes.sourceGain);
     src.start();
     DR.state.source = src;
+    DR.state.sourceType = 'buffer'; // critical — without this, updateRateDetune
+                                    // and applyTempoBypass skip the file branch
+                                    // and SCREW/RATE/PITCH knobs don't affect file playback
     DR.state.isPlaying = true;
   }
 
