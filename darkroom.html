@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=1280">
-<title>darkroom.ja — Jackson Alexander Studio</title>
-<meta name="description" content="darkroom.ja — a real-time browser-resident audio processor. Tempo, pitch, filter, convolution reverb, with no install.">
+<title>darkroom — Jackson Alexander Studio</title>
+<meta name="description" content="darkroom — a real-time browser-resident audio processor. Tempo, pitch, filter, convolution reverb, with no install.">
 <link rel="canonical" href="https://jacksonalexanderstudio.com/darkroom.html">
 <meta name="robots" content="noindex">
 <link rel="icon" href="favicon.ico" type="image/x-icon">
@@ -114,8 +114,10 @@ canvas{display:block}
 /* TE-minimal masthead — thin strip, tiny wordmark left, build/version meta right.
    Like an OP-1 case label, not a magazine cover. */
 .dr-mast{display:flex;align-items:baseline;justify-content:space-between;gap:var(--s4);padding:var(--s3) 0 var(--s5);border-bottom:1px solid var(--dr-line)}
-.dr-mast-title{font-family:var(--dr-disp);font-weight:600;font-size:36px;line-height:1;letter-spacing:.02em;color:var(--dr-ink);text-transform:lowercase;margin:0}
+.dr-mast-title{font-family:var(--dr-disp);font-weight:600;font-size:36px;line-height:1;letter-spacing:.02em;color:var(--dr-moss);text-transform:lowercase;margin:0}
 .dr-mast-title em{font-style:normal;color:var(--dr-moss)}
+.dr-mast-left{display:flex;flex-direction:column;gap:10px;align-items:flex-start;min-width:0}
+.dr-mast-blurb{font-family:var(--dr-mono);font-size:12px;line-height:1.55;letter-spacing:.02em;color:var(--dr-ink-dim);margin:0;max-width:62ch}
 .dr-mast-meta{display:flex;align-items:center;gap:var(--s4);font-family:var(--dr-mono);font-size:9px;letter-spacing:.22em;color:var(--dr-ink-2);text-transform:uppercase;margin:0}
 .dr-mast-version{color:var(--dr-moss);font-weight:400}
 
@@ -389,7 +391,7 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
 .dr-tape-reverse[data-active="true"]{background:var(--dr-panel-3);border-color:var(--dr-amber)}
 .dr-tape-reverse[data-active="true"] .dr-tape-reverse-dot{background:var(--dr-amber);box-shadow:0 0 14px var(--dr-amber)}
 .dr-tape-reverse[data-active="true"] .dr-tape-reverse-label{color:var(--dr-amber)}
-.dr-tape-disc{width:280px;height:280px;cursor:grab;user-select:none;touch-action:none;display:block;filter:drop-shadow(0 8px 16px rgba(0,0,0,.12))}
+.dr-tape-disc{width:280px;height:280px;cursor:grab;user-select:none;touch-action:none;display:block;overflow:visible;filter:drop-shadow(0 8px 16px rgba(0,0,0,.12))}
 .dr-tape-disc:active{cursor:grabbing}
 /* tape disc face stays dark — becomes THE one black element on the cream panel,
    like a calculator screen embedded in a Braun product. All on-disc colors are
@@ -433,26 +435,17 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
    So slowing SCREW slows the ring, REVERSE flips it, scratch drags it. */
 .dr-saturn-ring-back{stroke:var(--dr-moss);opacity:.78}
 .dr-saturn-ring-front{stroke:var(--dr-moss);opacity:.95}
-/* TEMP: rings off for visual comparison. Remove this rule to bring them back. */
-.dr-saturn-ring{display:none}
 .dr-saturn-moon{fill:oklch(0.92 0.02 80);opacity:.92}
 .dr-saturn-moon-glow{fill:oklch(0.92 0.02 80);opacity:.18}
 
-/* ── ORB VIDEO ─────────────────────────────────────────────────
-   The orb shows a YouTube placeholder iframe by default (so the page has
-   visual life before any source is connected) and swaps to the captured
-   tab's <video> when a TAB source mounts. Two separate foreignObjects:
-   the placeholder is taller (3:2) so YouTube's title bar lives outside
-   the visible disk; the live-capture is wider (3:1) for top-biased crop
-   of YouTube's info bar. Vignette + specular + moss rim always on. */
+/* ── ORB PLACEHOLDER ─────────────────────────────────────────────
+   YouTube placeholder iframe lives inside the orb's foreignObject and
+   plays continuously for the duration of the user's session. No swap
+   to live tab capture — the placeholder is the orb's permanent visual.
+   Audio sources still route through the engine for processing; only
+   the visual content of the orb is locked to the placeholder. */
 .dr-orb-placeholder-fo{display:block}
-.dr-tape-disc[data-orb-video="on"] .dr-orb-placeholder-fo{display:none}
 .dr-orb-placeholder{width:100%;height:100%;border:0;display:block;pointer-events:none;background:#000}
-
-.dr-orb-video-fo{display:none}
-.dr-tape-disc[data-orb-video="on"] .dr-orb-video-fo{display:block}
-.dr-orb-video{width:100%;height:100%;object-fit:cover;object-position:50% 0%;
-  display:block;background:#000;pointer-events:none}
 
 .dr-orb-vignette{display:block;pointer-events:none;fill:url(#dr-orb-vignette-grad)}
 .dr-orb-specular{display:block;pointer-events:none;fill:url(#dr-orb-specular-grad);mix-blend-mode:screen;opacity:.55}
@@ -1182,18 +1175,13 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
 <!-- DESKTOP CANVAS -->
 <main class="dr">
 
-  <!-- MASTHEAD -->
+  <!-- MASTHEAD — wordmark + brief instructions for new visitors. The mode
+       toggle (PLAY / darkroom.studio) was removed 2026-05-07; the mode JS
+       below still runs but its querySelectorAll returns empty so it no-ops. -->
   <section class="dr-mast">
-    <h1 class="dr-mast-title">darkroom<em>.ja</em></h1>
-    <div class="dr-mast-meta">
-      <!-- Mode toggle — PLAY (default, audio manipulation focus) | CREATE (full
-           production toolkit: pads + sequencers + synth). Body gets data-mode
-           which CSS uses to hide create-only sections in play mode. State
-           persists in localStorage. -->
-      <div class="dr-mode-toggle" id="dr-mode-toggle" role="group" aria-label="page mode">
-        <button class="dr-mode-pill" data-mode="play"   type="button" aria-pressed="true">PLAY</button>
-        <button class="dr-mode-pill dr-mode-pill-studio" data-mode="create" type="button" aria-pressed="false">darkroom<em>.studio</em><sup class="dr-mode-beta">beta</sup></button>
-      </div>
+    <div class="dr-mast-left">
+      <h1 class="dr-mast-title">darkroom</h1>
+      <p class="dr-mast-blurb">share a chrome tab, plug in a device, or load a file — then shape the signal in real time with the modules below. nothing is recorded; everything runs live in the browser.</p>
     </div>
   </section>
 
@@ -1399,33 +1387,19 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
           <circle r="80" class="dr-saturn-body"/>
         </g>
         <!-- ════════════════════════════════════════════════════════════
-             VIDEO MODULE
-             Swappable layer that lives on top of the sphere. Default
-             content is the YouTube placeholder iframe; replaced by the
-             captured tab's <video> when a TAB source mounts. Removing
-             this whole module would leave the orb as just the brushed-
-             aluminum sphere — the soul stays intact.
+             VIDEO MODULE — placeholder iframe only. Lives inside the
+             orb permanently; never swaps to live tab capture. The
+             YouTube embed plays muted + looped + autoplay for the
+             duration of the session. foreignObject 480×320 (3:2) — the
+             SVG has overflow:visible so Chrome doesn't clip iframe at
+             the SVG box. Title bar at top of player and watermark at
+             bottom-right both fall outside the visible disk r=80.
              ════════════════════════════════════════════════════════════ -->
-        <!-- Placeholder iframe (YouTube embed). Lives in its OWN foreignObject
-             sized 480×320 (3:2) — taller than the live-capture foreignObject
-             so YouTube's title bar (top of the embedded player) and watermark
-             (bottom-right) both fall OUTSIDE the visible disk. The SVG
-             clip-path circle r=80 at origin clips visible content to the orb;
-             the foreignObject's overflow beyond the SVG viewBox is clipped
-             harmlessly. Visible by default; hidden when data-orb-video="on"
-             swaps to the live <video>. -->
         <foreignObject class="dr-orb-placeholder-fo" x="-240" y="-160" width="480" height="320" clip-path="url(#dr-orb-clip)">
           <iframe class="dr-orb-placeholder" id="dr-orb-placeholder"
             width="480" height="320"
             src="https://www.youtube.com/embed/jgm58cbu0kw?start=1200&autoplay=1&mute=1&loop=1&playlist=jgm58cbu0kw&controls=0&rel=0&modestbranding=1&showinfo=0&iv_load_policy=3&playsinline=1&disablekb=1&fs=0"
             allow="autoplay; encrypted-media" frameborder="0"></iframe>
-        </foreignObject>
-        <!-- Live-capture foreignObject — 480×160 (3:1), wider than the orb,
-             so object-fit:cover on a 16:9 captured tab overflows vertically
-             and we top-bias via object-position to crop YouTube's info bar.
-             Hidden by default; shown when data-orb-video="on". -->
-        <foreignObject class="dr-orb-video-fo" id="dr-orb-video-fo" x="-240" y="-80" width="480" height="160" clip-path="url(#dr-orb-clip)">
-          <video class="dr-orb-video" id="dr-orb-video" muted playsinline autoplay></video>
         </foreignObject>
         <circle r="80" class="dr-orb-vignette"/>
         <ellipse cx="-30" cy="-34" rx="40" ry="26" class="dr-orb-specular"/>
@@ -3038,14 +3012,10 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
     DR.state.sourceType = 'stream';
     DR.state.isPlaying = true;
     DR.state.streamRef = stream;
-    // Mount the captured video track into the orb (crystal-ball view of the
-    // source). If the tab share didn't include video, free nothing — there's
-    // nothing to free — and the orb falls back to the brushed-aluminum sphere.
-    if (videoTracks.length) {
-      mountOrbVideo(videoTracks[0]);
-    } else {
-      videoTracks.forEach(t => t.stop());
-    }
+    // Orb is locked to the YouTube placeholder for the duration of the
+    // session — we don't swap in the captured tab's video. Discard any
+    // video tracks that came along with the audio share.
+    videoTracks.forEach(t => t.stop());
     audioTrack.onended = () => {
       setStatus(`<b>tab disconnected</b> — pick a new source to continue`);
       disconnectSource();
