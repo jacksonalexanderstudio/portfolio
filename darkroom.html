@@ -437,13 +437,14 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
 .dr-saturn-moon{fill:oklch(0.92 0.02 80);opacity:.92}
 .dr-saturn-moon-glow{fill:oklch(0.92 0.02 80);opacity:.18}
 
-/* ── ORB VIDEO (gated by ?orb=video URL flag) ──────────────────
-   When the flag is on AND a tab capture provides a video track, the
-   captured video is composited into the planet body via foreignObject,
-   making the orb a "crystal ball" that shows the source. Layered between
-   back-arc and front-arc ring groups so rings still orbit in front and
-   behind it. Vignette + specular sell the glass-sphere read. Off by
-   default — feature flag means revert is a single param removal. */
+/* ── ORB VIDEO ─────────────────────────────────────────────────
+   When a tab capture provides a video track, the captured video is
+   composited into the planet body via foreignObject, making the orb a
+   "crystal ball" that shows the source. Layered between back-arc and
+   front-arc ring groups so rings still orbit in front and behind it.
+   Vignette + specular sell the glass-sphere read. Always on for tab
+   captures; foreignObject stays display:none for FILE/DEVICE sources
+   (no video) and the brushed-aluminum sphere shows through. */
 .dr-orb-video-fo{display:none}
 .dr-tape-disc[data-orb-video="on"] .dr-orb-video-fo{display:block}
 .dr-orb-video{width:100%;height:100%;object-fit:cover;display:block;background:#000;pointer-events:none;
@@ -1401,12 +1402,12 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
           <circle r="80" class="dr-saturn-body"/>
           <circle r="80" class="dr-saturn-rim"/>
         </g>
-        <!-- Orb-video layer (gated by ?orb=video). Sits between the planet
-             body and the front rings so back arcs orbit behind it and front
-             arcs orbit in front. Does NOT spin with the rotor — content
-             stays legible while the rings orbit (Jackson's "crystal ball"
-             framing). The foreignObject hosts a regular HTML <video> element
-             whose srcObject is set to the captured tab's video track. -->
+        <!-- Orb-video layer. Sits between the planet body and the front
+             rings so back arcs orbit behind it and front arcs orbit in
+             front. Does NOT spin with the rotor — content stays legible
+             while the rings orbit ("crystal ball" framing). The
+             foreignObject hosts a regular HTML <video> element whose
+             srcObject is set to the captured tab's video track. -->
         <foreignObject class="dr-orb-video-fo" id="dr-orb-video-fo" x="-80" y="-80" width="160" height="160" clip-path="url(#dr-orb-clip)">
           <video class="dr-orb-video" id="dr-orb-video" muted playsinline autoplay></video>
         </foreignObject>
@@ -2966,7 +2967,7 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
       try { DR.state.streamRef.getTracks().forEach(t => t.stop()); } catch(_){}
       DR.state.streamRef = null;
     }
-    if (ORB_VIDEO_ENABLED) unmountOrbVideo();
+    unmountOrbVideo();
     DR.state.isPlaying = false;
     DR.state.sourceType = null;
   }
@@ -3021,10 +3022,10 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
     DR.state.sourceType = 'stream';
     DR.state.isPlaying = true;
     DR.state.streamRef = stream;
-    // Orb-video gated by ?orb=video flag. When on, mount the captured video
-    // track to the foreignObject's <video>. When off, free the video tracks
-    // (preserves the original behavior — we never needed them otherwise).
-    if (ORB_VIDEO_ENABLED && videoTracks.length) {
+    // Mount the captured video track into the orb (crystal-ball view of the
+    // source). If the tab share didn't include video, free nothing — there's
+    // nothing to free — and the orb falls back to the brushed-aluminum sphere.
+    if (videoTracks.length) {
       mountOrbVideo(videoTracks[0]);
     } else {
       videoTracks.forEach(t => t.stop());
@@ -5669,26 +5670,18 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
     updateRingFlash();
   }
 
-  // ─── ORB VIDEO (gated by ?orb=video URL flag) ────────────────────
+  // ─── ORB VIDEO ────────────────────────────────────────────────────
   // Routes the captured tab's video track into the planet body of the
   // Saturn deck so the orb shows the source as a "crystal ball." Pure
-  // visual feature — never touches the audio chain. When off (default),
-  // the orb is the brushed-aluminum sphere as before.
+  // visual feature — never touches the audio chain. Always on for tab
+  // captures; falls back to the brushed-aluminum sphere for FILE/DEVICE
+  // sources (no video track) or when no source is connected.
   //
   // Freeze-on-divergence: video plays only when audio is at native rate
   // (SCREW = 1, no REVERSE, no scratch in progress). The moment the
   // user diverges from default the video pauses on its last frame, so
   // the orb stops "lying" — what you see is locked to the moment you
   // stopped hearing the source as-is. Returning to defaults resumes it.
-  //
-  // Revert path: remove "?orb=video" from the URL → flag is false →
-  // mountOrbVideo never fires, video tracks get stopped as before, and
-  // the foreignObject stays display:none. Zero-friction kill switch.
-  const ORB_VIDEO_ENABLED = (() => {
-    try { return new URLSearchParams(location.search).get('orb') === 'video'; }
-    catch (_) { return false; }
-  })();
-
   function isAudioPure() {
     return Math.abs(DR.state.screw - 1.0) < 0.001
         && !TAPE.reverseEngaged
@@ -5696,7 +5689,7 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
   }
 
   function mountOrbVideo(track) {
-    if (!ORB_VIDEO_ENABLED || !track) return;
+    if (!track) return;
     const videoEl = document.getElementById('dr-orb-video');
     const disc    = document.querySelector('.dr-tape-disc');
     if (!videoEl || !disc) return;
@@ -5717,7 +5710,6 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
   }
 
   function updateOrbVideo() {
-    if (!ORB_VIDEO_ENABLED) return;
     const videoEl = document.getElementById('dr-orb-video');
     const disc    = document.querySelector('.dr-tape-disc');
     if (!videoEl || !disc || !videoEl.srcObject) return;
