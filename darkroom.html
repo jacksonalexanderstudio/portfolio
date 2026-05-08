@@ -413,7 +413,6 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
    recipe as the knob faces. No color in the planet itself; all visual
    interest in the orb comes from the 3D light + the orange ring around it. */
 .dr-saturn-body{fill:url(#dr-planet-face)}
-.dr-saturn-rim{fill:none;stroke:oklch(0.40 0.012 80);stroke-width:1;opacity:.55}
 /* Rings stylized as dashed orbits in the .ja accent (--dr-moss, the warm
    Braun orange). Dashes chase along the elliptical paths via animated
    stroke-dashoffset; back-arc dashes get occluded by the planet body when
@@ -434,30 +433,29 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
    So slowing SCREW slows the ring, REVERSE flips it, scratch drags it. */
 .dr-saturn-ring-back{stroke:var(--dr-moss);opacity:.78}
 .dr-saturn-ring-front{stroke:var(--dr-moss);opacity:.95}
+/* TEMP: rings off for visual comparison. Remove this rule to bring them back. */
+.dr-saturn-ring{display:none}
 .dr-saturn-moon{fill:oklch(0.92 0.02 80);opacity:.92}
 .dr-saturn-moon-glow{fill:oklch(0.92 0.02 80);opacity:.18}
 
 /* ── ORB VIDEO ─────────────────────────────────────────────────
-   When a tab capture provides a video track, the captured video is
-   composited into the planet body via foreignObject, making the orb a
-   "crystal ball" that shows the source. Layered between back-arc and
-   front-arc ring groups so rings still orbit in front and behind it.
-   Vignette + specular sell the glass-sphere read. Always on for tab
-   captures; foreignObject stays display:none for FILE/DEVICE sources
-   (no video) and the brushed-aluminum sphere shows through. */
+   The orb shows a YouTube placeholder iframe by default (so the page has
+   visual life before any source is connected) and swaps to the captured
+   tab's <video> when a TAB source mounts. Two separate foreignObjects:
+   the placeholder is taller (3:2) so YouTube's title bar lives outside
+   the visible disk; the live-capture is wider (3:1) for top-biased crop
+   of YouTube's info bar. Vignette + specular + moss rim always on. */
+.dr-orb-placeholder-fo{display:block}
+.dr-tape-disc[data-orb-video="on"] .dr-orb-placeholder-fo{display:none}
+.dr-orb-placeholder{width:100%;height:100%;border:0;display:block;pointer-events:none;background:#000}
+
 .dr-orb-video-fo{display:none}
 .dr-tape-disc[data-orb-video="on"] .dr-orb-video-fo{display:block}
-.dr-orb-video{width:100%;height:100%;object-fit:cover;display:block;background:#000;pointer-events:none;
-  /* Constant 1.2× zoom: crops the outer 17% of the source frame so YouTube
-     letterboxing / pillarboxing / chrome doesn't bleed into the orb. */
-  transform:scale(1.2);transform-origin:center center}
-.dr-orb-vignette{display:none;pointer-events:none;fill:url(#dr-orb-vignette-grad)}
-.dr-tape-disc[data-orb-video="on"] .dr-orb-vignette{display:block}
-.dr-orb-specular{display:none;pointer-events:none;fill:url(#dr-orb-specular-grad);mix-blend-mode:screen;opacity:.55}
-.dr-tape-disc[data-orb-video="on"] .dr-orb-specular{display:block}
-/* faint amber rim glow when content is live; dims when paused (frozen on divergence) */
-.dr-tape-disc[data-orb-video="on"] .dr-saturn-rim{stroke:var(--dr-moss);opacity:.6;stroke-width:1.4;transition:opacity .25s,stroke .25s}
-.dr-tape-disc[data-orb-video="paused"] .dr-saturn-rim{stroke:var(--dr-line-2);opacity:.5}
+.dr-orb-video{width:100%;height:100%;object-fit:cover;object-position:50% 0%;
+  display:block;background:#000;pointer-events:none}
+
+.dr-orb-vignette{display:block;pointer-events:none;fill:url(#dr-orb-vignette-grad)}
+.dr-orb-specular{display:block;pointer-events:none;fill:url(#dr-orb-specular-grad);mix-blend-mode:screen;opacity:.55}
 
 /* right panel: source/elapsed/rate row + waveform + hint, stacked */
 /* Wave/sample panel card — same bounded-box treatment as the tape deck so
@@ -1392,23 +1390,41 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
             <path d="M -104 0 A 104 30 0 0 1 104 0" class="dr-saturn-ring dr-saturn-ring-back dr-ring-inner"/>
           </g>
         </g>
-        <!-- Planet body — single brushed-aluminum sphere matching the knob
-             faces. Wrapped as a third .dr-tape-rotor so the whole composition
-             (rings + planet) spins together: the gradient highlight rotates
-             with the sphere, conveying rotation; on REVERSE the entire
-             composition reverses. Layering still works because back rings
-             draw before the planet and front rings draw after. -->
+
+        <!-- ════════════════════════════════════════════════════════════
+             ORB SPHERE — the soul of the page. Brushed-aluminum body sits
+             behind the video module; if the video fails to load it shows
+             through as a fallback. -->
         <g class="dr-tape-rotor dr-saturn-planet">
           <circle r="80" class="dr-saturn-body"/>
-          <circle r="80" class="dr-saturn-rim"/>
         </g>
-        <!-- Orb-video layer. Sits between the planet body and the front
-             rings so back arcs orbit behind it and front arcs orbit in
-             front. Does NOT spin with the rotor — content stays legible
-             while the rings orbit ("crystal ball" framing). The
-             foreignObject hosts a regular HTML <video> element whose
-             srcObject is set to the captured tab's video track. -->
-        <foreignObject class="dr-orb-video-fo" id="dr-orb-video-fo" x="-80" y="-80" width="160" height="160" clip-path="url(#dr-orb-clip)">
+        <!-- ════════════════════════════════════════════════════════════
+             VIDEO MODULE
+             Swappable layer that lives on top of the sphere. Default
+             content is the YouTube placeholder iframe; replaced by the
+             captured tab's <video> when a TAB source mounts. Removing
+             this whole module would leave the orb as just the brushed-
+             aluminum sphere — the soul stays intact.
+             ════════════════════════════════════════════════════════════ -->
+        <!-- Placeholder iframe (YouTube embed). Lives in its OWN foreignObject
+             sized 480×320 (3:2) — taller than the live-capture foreignObject
+             so YouTube's title bar (top of the embedded player) and watermark
+             (bottom-right) both fall OUTSIDE the visible disk. The SVG
+             clip-path circle r=80 at origin clips visible content to the orb;
+             the foreignObject's overflow beyond the SVG viewBox is clipped
+             harmlessly. Visible by default; hidden when data-orb-video="on"
+             swaps to the live <video>. -->
+        <foreignObject class="dr-orb-placeholder-fo" x="-240" y="-160" width="480" height="320" clip-path="url(#dr-orb-clip)">
+          <iframe class="dr-orb-placeholder" id="dr-orb-placeholder"
+            width="480" height="320"
+            src="https://www.youtube.com/embed/jgm58cbu0kw?start=1200&autoplay=1&mute=1&loop=1&playlist=jgm58cbu0kw&controls=0&rel=0&modestbranding=1&showinfo=0&iv_load_policy=3&playsinline=1&disablekb=1&fs=0"
+            allow="autoplay; encrypted-media" frameborder="0"></iframe>
+        </foreignObject>
+        <!-- Live-capture foreignObject — 480×160 (3:1), wider than the orb,
+             so object-fit:cover on a 16:9 captured tab overflows vertically
+             and we top-bias via object-position to crop YouTube's info bar.
+             Hidden by default; shown when data-orb-video="on". -->
+        <foreignObject class="dr-orb-video-fo" id="dr-orb-video-fo" x="-240" y="-80" width="480" height="160" clip-path="url(#dr-orb-clip)">
           <video class="dr-orb-video" id="dr-orb-video" muted playsinline autoplay></video>
         </foreignObject>
         <circle r="80" class="dr-orb-vignette"/>
@@ -3252,7 +3268,6 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
       DR.state.bypassed.tempo = allDefault;
       applyTempoBypass();
     }
-    updateOrbVideo?.();
   }
   knobs.screw = makeKnob(document.querySelector('.dr-knob[data-param="screw"]'), {
     min: 0.5, max: 1.5, default: 1.0,
@@ -5593,6 +5608,21 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
       for (let i = bin60; i <= bin4000; i++) sum += ringFlashFftBuf[i];
       raw = sum / (bin4000 - bin60 + 1) / 255; // 0..1 average level across the band
     }
+    // Idle pulse — when no audio source is playing, inject a soft periodic
+    // pulse (sine² envelope) so the rings show the artifact is alive even on
+    // first page load before the user has connected anything. The pulse is
+    // subdued (peak ~0.5 flare after smoothing), one every ~5.5s.
+    if (!DR.state.isPlaying) {
+      const t = nowMs / 1000;
+      const period = 5.5, pulseLen = 0.8;
+      const phase = t % period;
+      if (phase < pulseLen) {
+        const x = phase / pulseLen;
+        raw = Math.sin(Math.PI * x) ** 2 * 0.07;
+      } else {
+        raw = 0;
+      }
+    }
     // Slow-track the rolling average so dynamic content has a moving baseline.
     ringEnergyAvg = ringEnergyAvg * 0.94 + raw * 0.06;
     // Flare value = how much the current sample EXCEEDS the rolling average,
@@ -5615,6 +5645,10 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
         effRate = TAPE.rate;
       } else if (DR.state.isPlaying) {
         effRate = (TAPE.reverseEngaged ? -1 : 1) * (DR.state.screw || 1) * (DR.state.rate || 1);
+      } else {
+        // Idle drift — subdued constant orbit on page load / between sources,
+        // so the rings hint at what they do even before audio is connected.
+        effRate = 0.18;
       }
     }
     ringDashPhase += effRate * RING_BASE_SPEED * dt;
@@ -5665,9 +5699,6 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
     if (grFill)  grFill.style.width  = Math.min(100, gr * 5) + '%';
     if (grValue) grValue.textContent = gr.toFixed(1);
     if (inputLevel) inputLevel.style.width = dbToWidth(preDb) + '%';
-
-    // Audio-reactive Saturn ring — see updateRingFlash above.
-    updateRingFlash();
   }
 
   // ─── ORB VIDEO ────────────────────────────────────────────────────
@@ -5677,17 +5708,13 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
   // captures; falls back to the brushed-aluminum sphere for FILE/DEVICE
   // sources (no video track) or when no source is connected.
   //
-  // Freeze-on-divergence: video plays only when audio is at native rate
-  // (SCREW = 1, no REVERSE, no scratch in progress). The moment the
-  // user diverges from default the video pauses on its last frame, so
-  // the orb stops "lying" — what you see is locked to the moment you
-  // stopped hearing the source as-is. Returning to defaults resumes it.
-  function isAudioPure() {
-    return Math.abs(DR.state.screw - 1.0) < 0.001
-        && !TAPE.reverseEngaged
-        && !TAPE.scratching;
-  }
-
+  // The video keeps playing forward at the source's native rate, even
+  // when the audio chain diverges (SCREW ≠ 1, REVERSE engaged, scratch
+  // in progress). Audio and video can't follow each other — the source
+  // tab streams video at realtime — so we accept the decoupling. The
+  // "honest freeze-on-divergence" behavior was tried and removed: SCREW
+  // is the most-used knob and pausing the video every time you touched
+  // it killed the effect's appeal.
   function mountOrbVideo(track) {
     if (!track) return;
     const videoEl = document.getElementById('dr-orb-video');
@@ -5707,22 +5734,6 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
     const disc    = document.querySelector('.dr-tape-disc');
     if (videoEl) { try { videoEl.pause(); videoEl.srcObject = null; } catch(_){} }
     if (disc)    disc.removeAttribute('data-orb-video');
-  }
-
-  function updateOrbVideo() {
-    const videoEl = document.getElementById('dr-orb-video');
-    const disc    = document.querySelector('.dr-tape-disc');
-    if (!videoEl || !disc || !videoEl.srcObject) return;
-    if (isAudioPure()) {
-      if (videoEl.paused) {
-        const p = videoEl.play();
-        if (p && typeof p.catch === 'function') p.catch(()=>{});
-      }
-      disc.setAttribute('data-orb-video', 'on');
-    } else {
-      if (!videoEl.paused) videoEl.pause();
-      disc.setAttribute('data-orb-video', 'paused');
-    }
   }
 
   // ─── TAPE DECK (TP-7 style scratch + auto-rotate) ────────────────
@@ -5797,7 +5808,6 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
     TAPE.reverseEngaged = on;
     const btn = document.getElementById('dr-tape-reverse');
     if (btn) btn.setAttribute('data-active', on ? 'true' : 'false');
-    updateOrbVideo();
     ensureScratch().then(ok => {
       if (!ok || !DR.ctx) return;
       const t = DR.ctx.currentTime;
@@ -5824,7 +5834,6 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
       TAPE.samples = [{ t: performance.now(), a: TAPE.pointerStart }];
       document.body.style.cursor = 'grabbing';
       e.preventDefault();
-      updateOrbVideo();
 
       // Lazy-load the scratch worklet on first scratch and engage it once ready.
       ensureCtx();
@@ -5866,7 +5875,6 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
         document.removeEventListener('pointercancel', onUp);
         document.body.style.cursor = '';
         endScratch();
-        updateOrbVideo();
         // reset rate readout to the base after a short delay
         setTimeout(() => { if (!TAPE.scratching) TAPE.rate = 1; }, 100);
       }
@@ -5954,6 +5962,9 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
     drawDelay();
     drawLfo();
     updateMeters();
+    // Run the Saturn ring updater every frame, including before any audio
+    // context exists — gives us idle drift + idle pulse on page load.
+    updateRingFlash();
     tickTape();
     requestAnimationFrame(loop);
   }
