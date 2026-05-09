@@ -1006,16 +1006,23 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
 /* inner circle (r=38) → the actual brushed-aluminum face, fills with radial gradient */
 .dr-knob-dial .dr-ring-inner{fill:url(#knobFace);stroke:oklch(0.48 0.014 80);stroke-width:.7}
 
-/* ── ACTIVE MODULE accents ──────────────────────────────────────
-   When a module is engaged (not bypassed), two small visual cues
-   fire to mark it as "live" without being flashy:
-     1. Visualizer canvas borders turn moss (frames the active vis)
-     2. Knob value readouts shift to moss text
-   Both transition for a smooth toggle on/off. */
-.dr-mod canvas{transition:border-color .25s}
-.dr-mod:not([data-bypassed="true"]) canvas{border-color:var(--dr-moss)}
-.dr-knob-value{transition:color .25s}
-.dr-mod:not([data-bypassed="true"]) .dr-knob-value{color:var(--dr-moss)}
+/* ── ACTIVE MODULE skin ─────────────────────────────────────────
+   Only the container surface flips to metallic matte black with a
+   soft sheen at the top-left. Every control inside (knobs, buttons,
+   pills, sliders, labels, values) stays exactly as designed — they
+   keep their cream/aluminum/ink look on the new dark backdrop. */
+.dr-mod{transition:background .25s,box-shadow .25s,border-color .25s}
+.dr-mod:not([data-bypassed="true"]){
+  background:
+    radial-gradient(ellipse 75% 90% at 28% 14%, oklch(0.42 0.006 260) 0%, oklch(0.22 0.005 255) 45%, transparent 75%),
+    linear-gradient(180deg, oklch(0.18 0.005 260) 0%, oklch(0.10 0.004 250) 100%);
+  border-color:oklch(0.22 0.005 250);
+  box-shadow:
+    inset 0 1px 0 oklch(0.55 0.008 260 / 0.45),
+    inset 0 -1px 0 rgba(0,0,0,.4),
+    0 1px 1px rgba(0,0,0,.3),
+    0 6px 18px -10px rgba(0,0,0,.4);
+}
 /* Knob position ticks — five small radial marks just outside the outer rim
    at 0%, 25%, 50%, 75%, 100% positions of the knob's 254° working range.
    Charcoal at low opacity so they read as a quiet dial scale rather than a
