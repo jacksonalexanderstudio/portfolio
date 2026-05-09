@@ -116,8 +116,35 @@ canvas{display:block}
 .dr-mast{display:flex;align-items:baseline;justify-content:space-between;gap:var(--s4);padding:var(--s3) 0 var(--s5);border-bottom:1px solid var(--dr-line)}
 .dr-mast-title{font-family:var(--dr-disp);font-weight:600;font-size:36px;line-height:1;letter-spacing:.02em;color:var(--dr-moss);text-transform:lowercase;margin:0}
 .dr-mast-title em{font-style:normal;color:var(--dr-moss)}
-.dr-mast-left{display:flex;flex-direction:column;gap:10px;align-items:flex-start;min-width:0}
+.dr-mast-left{display:flex;flex-direction:column;gap:10px;align-items:flex-start;min-width:0;flex:1}
 .dr-mast-blurb{font-family:var(--dr-mono);font-size:12px;line-height:1.55;letter-spacing:.02em;color:var(--dr-ink-dim);margin:0;max-width:62ch}
+
+/* Compact master pod inlined into the masthead's right side. Source label
+   on top, OUT knob + slim POST meter on the bottom. Replaces the old
+   280px master sidebar in the top row. Bordered card matches the rest
+   of the instrument's surface language (same panel gradient + line +
+   radius as .dr-mod). */
+/* Compact master pod — single horizontal row. MASTER title (large) on
+   the left, POST meter middle, OUT knob right; all vertically center-
+   aligned on one axis. Value readouts hidden — meter bar fill + knob
+   position carry the info. */
+.dr-mast-master{display:flex;flex-direction:row;align-items:center;gap:var(--s5);flex-shrink:0;
+  padding:var(--s3) var(--s4);
+  background:linear-gradient(180deg,var(--dr-panel-3) 0%,var(--dr-panel-2) 100%);
+  border:1px solid var(--dr-line);
+  border-radius:var(--r-lg);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.85),0 1px 1px rgba(0,0,0,.04),0 4px 14px -8px rgba(0,0,0,.10)}
+.dr-mast-master-title{font-family:var(--dr-disp);font-weight:600;font-size:14px;letter-spacing:.18em;color:var(--dr-ink);text-transform:uppercase}
+.dr-mast-meter{display:flex;align-items:center;gap:var(--s2);min-width:0}
+.dr-mast-meter .dr-meter-label{font-family:var(--dr-fx);font-weight:700;font-size:9px;letter-spacing:.18em;color:var(--dr-ink-2);text-transform:uppercase}
+.dr-mast-meter .dr-meter-bar{position:relative;height:5px;width:120px;background:var(--dr-panel);border:1px solid var(--dr-line);border-radius:var(--r-sm);overflow:hidden}
+.dr-mast-meter .dr-meter-bar > span{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,var(--dr-moss-dim),var(--dr-moss));transition:width .06s linear}
+.dr-mast-meter .dr-meter-bar .dr-meter-tick{position:absolute;top:0;bottom:0;width:1px;background:var(--dr-line);left:75%}
+.dr-mast-meter .dr-meter-value{display:none}
+.dr-mast-knob{display:flex;flex-direction:column;align-items:center;gap:2px}
+.dr-mast-knob .dr-knob-dial{width:36px;height:36px}
+.dr-mast-knob .dr-knob-label{font-family:var(--dr-fx);font-weight:700;font-size:9px;letter-spacing:.20em;color:var(--dr-moss);text-transform:uppercase}
+.dr-mast-knob .dr-knob-value{display:none}
 .dr-mast-meta{display:flex;align-items:center;gap:var(--s4);font-family:var(--dr-mono);font-size:9px;letter-spacing:.22em;color:var(--dr-ink-2);text-transform:uppercase;margin:0}
 .dr-mast-version{color:var(--dr-moss);font-weight:400}
 
@@ -347,8 +374,11 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
 .dr-strip-meta{position:absolute;top:var(--s3);left:var(--s3);display:flex;gap:var(--s4);font-family:var(--dr-mono);font-size:9px;letter-spacing:.16em;color:var(--dr-ink-2);text-transform:uppercase;pointer-events:none}
 .dr-strip-meta span b{color:var(--dr-ink-dim);font-weight:400}
 
-/* ── AUDIO PLAYER — TAPE DECK + WAVEFORM PANEL ── */
-.dr-tape{display:grid;grid-template-columns:auto 1fr;gap:var(--s5);align-items:stretch;padding:var(--s5) var(--s5);
+/* ── AUDIO PLAYER — TAPE DECK + SCREW MODULE + WAVEFORM PANEL ──
+   3-column grid added 2026-05-08: tape deck (Saturn orb) | screw
+   module (large SCREW knob + REVERSE, the foundation control of the
+   whole project) | waveform panel. */
+.dr-tape{display:grid;grid-template-columns:auto auto 1fr;gap:var(--s5);align-items:stretch;padding:var(--s5) var(--s5);
   background:
     radial-gradient(ellipse 120vw 80vh at 22% 8%, oklch(0.97 0.010 80) 0%, oklch(0.97 0.010 80 / 0.25) 35%, oklch(0.97 0.010 80 / 0) 65%) fixed,
     linear-gradient(180deg, oklch(0.92 0.013 80) 0%, oklch(0.90 0.014 80) 100%);
@@ -366,6 +396,26 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
 /* Tape deck card — bounded box matching the FX module visual vocabulary,
    with an "tape" title row at the top. The disc + REVERSE sit centered
    inside this card, no longer floating loose in the sampler row. */
+/* SCREW + REVERSE column — two separate bordered cards stacked
+   vertically in a 3:1 ratio so SCREW (the foundation control) dominates
+   and REVERSE sits as a smaller sibling beneath. The wrapper takes the
+   middle column of .dr-tape (between the tape deck and the wave panel)
+   and stretches to match the row's height via grid align-items:stretch. */
+.dr-tape-controls{display:grid;grid-template-rows:3fr 1fr;gap:var(--s3);min-width:160px;flex-shrink:0}
+.dr-tape-screw,
+.dr-tape-reverse-mod{display:flex;align-items:center;justify-content:center;padding:var(--s4);
+  background:linear-gradient(180deg, oklch(0.94 0.013 80) 0%, oklch(0.91 0.014 80) 100%);
+  border:1px solid oklch(0.62 0.014 78);border-radius:var(--r-xl);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.92),
+    inset 0 -1px 0 rgba(0,0,0,.04),
+    0 1px 1px rgba(0,0,0,.04),
+    0 6px 18px -10px rgba(0,0,0,.12)}
+.dr-tape-screw .dr-knob{display:flex;flex-direction:column;align-items:center;gap:var(--s2)}
+.dr-tape-screw .dr-knob-label{font-family:var(--dr-fx);font-weight:700;font-size:11px;letter-spacing:.22em;color:var(--dr-moss);text-transform:uppercase}
+.dr-tape-screw .dr-knob-dial{width:72px;height:72px}
+.dr-tape-screw .dr-knob-value{font-family:var(--dr-mono);font-size:13px;color:var(--dr-ink);font-variant-numeric:tabular-nums;letter-spacing:.02em;min-width:64px;text-align:center}
+
 .dr-tape-deck{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;flex-shrink:0;gap:var(--s4);padding:var(--s5) var(--s5) var(--s5);
   background:linear-gradient(180deg, oklch(0.94 0.013 80) 0%, oklch(0.91 0.014 80) 100%);
   border:1px solid oklch(0.62 0.014 78);border-radius:var(--r-xl);
@@ -469,20 +519,19 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
     inset 0 -1px 0 rgba(0,0,0,.04),
     0 1px 1px rgba(0,0,0,.04),
     0 6px 18px -10px rgba(0,0,0,.12)}
-/* Meta strip — 3 logical groups: SOURCE on left, SCREW+REVERSE in true
-   center (anchored by equal 1fr columns on either side), ELAPSED/BPM/RATE
-   clustered on the right. */
-.dr-tape-info{display:grid;grid-template-columns:1fr auto 1fr;gap:var(--s5);align-items:center;padding-bottom:var(--s3);border-bottom:1px solid var(--dr-line)}
-.dr-tape-info-center{display:flex;flex-direction:row;align-items:center;justify-content:center;gap:var(--s4)}
-.dr-tape-info-right{display:flex;flex-direction:row;align-items:center;justify-content:flex-end;gap:var(--s5);padding-right:var(--s3)}
+/* Meta strip — 4 equal-width type packages (SOURCE / ELAPSED / BPM /
+   RATE) on a grid, with the TAP button as the auto-sized fifth column
+   on the right. Equal columns give visually even spacing between the
+   four cells; TAP stretches to match the row height. */
+.dr-tape-info{display:grid;grid-template-columns:repeat(4, 1fr) auto;gap:var(--s4);align-items:stretch;padding-top:var(--s2);padding-bottom:var(--s3);border-bottom:1px solid var(--dr-line)}
 /* Fixed min-widths on the right-cluster meta values so any content change
    (BPM detection settling, RATE updates, ELAPSED ticking past a minute)
    can't cause the right column to fluctuate width — which previously
    cascaded sub-pixel layout shifts through the `1fr auto 1fr` grid and
    visually jiggled the SCREW knob in the auto-width center column. */
-.dr-tape-info-right .dr-tape-info-cell{min-width:80px}
-.dr-tape-info-right .dr-tape-meta-value,
-.dr-tape-info-right .dr-tape-bpm-value{min-width:80px;display:inline-block;text-align:right}
+/* All meta cells are flush-left; minimum widths keep value columns
+   from squashing if their content shortens. */
+.dr-tape-info > .dr-tape-info-cell + .dr-tape-info-cell{min-width:80px}
 /* SCREW knob — horizontal layout (label · dial · value) inline with the
    meta strip. Dial sized to match the rest of the UI's primary knobs
    (64px default — same as MASTER OUT). The meta-strip row grows taller
@@ -494,18 +543,25 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
    don't cause sub-pixel width fluctuation that propagates through the
    centered flex layout and visually jiggles the dial during drag. */
 .dr-tape-info-center .dr-knob-value{font-family:var(--dr-mono);font-size:12px;color:var(--dr-ink);font-variant-numeric:tabular-nums;letter-spacing:.02em;line-height:1;min-width:54px;text-align:center;display:inline-block}
-.dr-tape-info-cell{display:flex;flex-direction:column;gap:4px;min-width:0}
-.dr-tape-info-cell:nth-child(1) .dr-tape-meta-value{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.dr-tape-info-cell:nth-child(2),.dr-tape-info-cell:nth-child(3),.dr-tape-info-cell:nth-child(4){text-align:right}
-.dr-tape-info-bpm{justify-self:end}
-.dr-tape-bpm-value{font-family:var(--dr-disp);font-size:24px;line-height:1;color:var(--dr-moss);letter-spacing:.02em;font-variant-numeric:tabular-nums}
+.dr-tape-info-cell{display:flex;flex-direction:column;gap:4px;min-width:0;align-items:flex-start;text-align:left}
+.dr-tape-info-cell:first-child{flex:1;min-width:0}
+.dr-tape-info-cell:first-child .dr-tape-meta-value{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
+/* TAP button anchors at the far right of the meta strip; stretches to
+   the row's height (= label + value stack) so it reads as the same
+   typographic unit, with internal padding sized off the type rather
+   than tighter button defaults. */
+.dr-tape-info > .dr-tape-tap{margin-left:auto;align-self:stretch;display:flex;align-items:center;padding:0 var(--s4)}
+/* BPM value uses the same typographic treatment as ELAPSED / RATE / SOURCE
+   (font-mono, 11px, ink) so the meta strip reads as one cohesive readout
+   instead of BPM hijacking attention with different font + size + color.
+   Sized down 2026-05-08 for a Vignelli-restrained read. */
+.dr-tape-bpm-value{font-family:var(--dr-mono);font-size:11px;color:var(--dr-ink);font-variant-numeric:tabular-nums;letter-spacing:.02em;line-height:1.1}
 .dr-tape-info-bpm[data-locked="false"] .dr-tape-bpm-value{color:var(--dr-ink-dim);opacity:.55}
-.dr-tape-bpm-row{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
-.dr-tape-tap{align-self:flex-end}
+.dr-tape-bpm-row{display:flex;flex-direction:row;align-items:center;gap:var(--s2);justify-content:flex-end}
 .dr-tape-bpm-conf{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--dr-line-2);vertical-align:middle;margin-left:4px;font-size:0;transition:background .3s,box-shadow .3s}
 .dr-tape-info-bpm[data-locked="true"] .dr-tape-bpm-conf{background:var(--dr-moss);box-shadow:0 0 8px var(--dr-moss-glow)}
-.dr-tape-meta-label{font-family:var(--dr-fx);font-weight:700;font-size:10px;letter-spacing:.20em;color:var(--dr-ink-2);text-transform:uppercase}
-.dr-tape-meta-value{font-family:var(--dr-mono);font-size:18px;color:var(--dr-ink);font-variant-numeric:tabular-nums;letter-spacing:.02em;line-height:1.1}
+.dr-tape-meta-label{font-family:var(--dr-fx);font-weight:700;font-size:9px;letter-spacing:.20em;color:var(--dr-ink-2);text-transform:uppercase}
+.dr-tape-meta-value{font-family:var(--dr-mono);font-size:11px;color:var(--dr-ink);font-variant-numeric:tabular-nums;letter-spacing:.02em;line-height:1.1}
 
 /* the waveform strip nested inside the tape panel — short min-height so the
    sample-pad grid below can claim vertical space without forcing the section
@@ -572,7 +628,6 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
 .dr-globalbar .dr-kill .dr-kill-label{font-size:10px}
 
 .dr-toprow{display:flex;flex-direction:row;align-items:flex-start;gap:var(--s5);padding:var(--s5) 0;border-bottom:1px solid var(--dr-line)}
-.dr-toprow > .dr-master-wrap{width:280px;flex-shrink:0;padding:0;border-bottom:0}
 .dr-toprow > .dr-sampler-wrap{flex:1;min-width:0;padding:0;border-bottom:0}
 /* In the narrow 280px master column, the heading + RELEASE + CLEAR ALL +
    collapse chevron all on one row don't fit. Stack the master-header
@@ -950,6 +1005,17 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
 .dr-knob-dial:active{cursor:grabbing}
 /* inner circle (r=38) → the actual brushed-aluminum face, fills with radial gradient */
 .dr-knob-dial .dr-ring-inner{fill:url(#knobFace);stroke:oklch(0.48 0.014 80);stroke-width:.7}
+
+/* ── ACTIVE MODULE accents ──────────────────────────────────────
+   When a module is engaged (not bypassed), two small visual cues
+   fire to mark it as "live" without being flashy:
+     1. Visualizer canvas borders turn moss (frames the active vis)
+     2. Knob value readouts shift to moss text
+   Both transition for a smooth toggle on/off. */
+.dr-mod canvas{transition:border-color .25s}
+.dr-mod:not([data-bypassed="true"]) canvas{border-color:var(--dr-moss)}
+.dr-knob-value{transition:color .25s}
+.dr-mod:not([data-bypassed="true"]) .dr-knob-value{color:var(--dr-moss)}
 /* Knob position ticks — five small radial marks just outside the outer rim
    at 0%, 25%, 50%, 75%, 100% positions of the knob's 254° working range.
    Charcoal at low opacity so they read as a quiet dial scale rather than a
@@ -1010,6 +1076,76 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
 .dr-flanger-vis,
 .dr-ambient-vis,
 .dr-revdelay-vis{width:100%;height:64px;background:var(--dr-panel);border:1px solid var(--dr-line);border-radius:var(--r-md);display:block;box-shadow:inset 0 2px 6px rgba(0,0,0,.08)}
+
+/* ── BITCRUSH 5-segment LED ladder ─────────────────────────────────
+   One pip per bit-level. Lit pips count UP to the current value (lower
+   bits = harsher, more pips lit). Active pips glow moss; dim pips sit
+   as small dots. */
+.dr-bc-leds{display:flex;justify-content:space-between;align-items:center;gap:6px;
+  padding:8px 12px;background:var(--dr-panel);border:1px solid var(--dr-line);border-radius:var(--r-md);
+  box-shadow:inset 0 2px 6px rgba(0,0,0,.08)}
+.dr-bc-led{flex:1;height:8px;border-radius:2px;background:var(--dr-line);opacity:.4;
+  transition:background .12s,opacity .12s,box-shadow .12s}
+.dr-bc-led[data-on="true"]{background:var(--dr-moss);opacity:1;box-shadow:0 0 8px var(--dr-moss-glow)}
+
+/* ── SATURATE TYPE pills (TUBE/TAPE/FUZZ/DIODE) ────────────────────
+   Mirrors the FILTER LP/HP/BP mode-button styling. */
+.dr-sat-types{display:flex;gap:var(--s2);justify-content:space-between;padding:0}
+.dr-sat-type{flex:1;padding:6px 4px;font-family:var(--dr-fx);font-weight:700;font-size:9px;letter-spacing:.18em;color:var(--dr-ink-dim);text-transform:uppercase;
+  background:var(--dr-panel-2);border:1px solid var(--dr-line);border-radius:var(--r-sm);
+  transition:color .12s,border-color .12s,box-shadow .12s,background .12s;cursor:pointer}
+.dr-sat-type:hover{color:var(--dr-ink);border-color:var(--dr-line-2)}
+.dr-sat-type[data-active="true"]{color:var(--dr-moss);border-color:var(--dr-moss);background:var(--dr-panel-3);box-shadow:0 0 12px -4px var(--dr-moss-glow)}
+
+/* ── CHORUS / FLANGER LFO shape pills (SIN / TRI / SQR) ────────────
+   Same visual language as FILTER mode pills. */
+.dr-lfo-shapes{display:flex;gap:var(--s2);justify-content:space-between;padding:0}
+.dr-lfo-shape-btn{flex:1;padding:6px 4px;font-family:var(--dr-fx);font-weight:700;font-size:9px;letter-spacing:.18em;color:var(--dr-ink-dim);text-transform:uppercase;
+  background:var(--dr-panel-2);border:1px solid var(--dr-line);border-radius:var(--r-sm);
+  transition:color .12s,border-color .12s,box-shadow .12s,background .12s;cursor:pointer}
+.dr-lfo-shape-btn:hover{color:var(--dr-ink);border-color:var(--dr-line-2)}
+.dr-lfo-shape-btn[data-active="true"]{color:var(--dr-moss);border-color:var(--dr-moss);background:var(--dr-panel-3);box-shadow:0 0 12px -4px var(--dr-moss-glow)}
+
+/* ── AMBIENT controls — interval pills (row 1) + FREEZE button (row 2).
+   Stacked because 4 pills + FREEZE in one row overflows narrow columns.
+   FREEZE is amber (warning-style — locks the buffer). */
+.dr-amb-controls{display:flex;flex-direction:column;gap:var(--s2);align-items:stretch}
+.dr-amb-intervals{display:flex;gap:var(--s2)}
+.dr-amb-int{flex:1;padding:6px 4px;font-family:var(--dr-fx);font-weight:700;font-size:9px;letter-spacing:.16em;color:var(--dr-ink-dim);text-transform:uppercase;
+  background:var(--dr-panel-2);border:1px solid var(--dr-line);border-radius:var(--r-sm);
+  transition:color .12s,border-color .12s,box-shadow .12s,background .12s;cursor:pointer}
+.dr-amb-int:hover{color:var(--dr-ink);border-color:var(--dr-line-2)}
+.dr-amb-int[data-active="true"]{color:var(--dr-moss);border-color:var(--dr-moss);background:var(--dr-panel-3);box-shadow:0 0 12px -4px var(--dr-moss-glow)}
+.dr-amb-freeze{padding:6px 12px;font-family:var(--dr-fx);font-weight:700;font-size:9px;letter-spacing:.18em;color:var(--dr-ink-dim);text-transform:uppercase;
+  background:var(--dr-panel-2);border:1px solid var(--dr-line);border-radius:var(--r-sm);
+  transition:color .12s,border-color .12s,box-shadow .12s,background .12s;cursor:pointer}
+.dr-amb-freeze:hover{color:var(--dr-ink);border-color:var(--dr-line-2)}
+.dr-amb-freeze[data-active="true"]{color:var(--dr-amber);border-color:var(--dr-amber);background:var(--dr-panel-3);box-shadow:0 0 12px -4px var(--dr-amber)}
+
+/* ── Tempo SYNC controls (CHORUS / FLANGER / REV DLY) ─────────────
+   SYNC toggle pill on its own row; division grid (1/16..1/1) appears
+   when SYNC is active, hidden otherwise. Reuses the same visual
+   language as the other pill rows above. */
+.dr-fxsync{display:flex;flex-direction:column;gap:var(--s2);align-items:stretch}
+.dr-fxsync-toggle{padding:6px 4px;font-family:var(--dr-fx);font-weight:700;font-size:9px;letter-spacing:.18em;color:var(--dr-ink-dim);text-transform:uppercase;
+  background:var(--dr-panel-2);border:1px solid var(--dr-line);border-radius:var(--r-sm);
+  transition:color .12s,border-color .12s,box-shadow .12s,background .12s;cursor:pointer}
+.dr-fxsync-toggle:hover{color:var(--dr-ink);border-color:var(--dr-line-2)}
+.dr-fxsync-toggle[data-active="true"]{color:var(--dr-moss);border-color:var(--dr-moss);background:var(--dr-panel-3);box-shadow:0 0 12px -4px var(--dr-moss-glow)}
+.dr-fxsync-divs{display:flex;gap:var(--s2)}
+.dr-fxsync-div{flex:1;padding:5px 2px;font-family:var(--dr-mono);font-size:9px;letter-spacing:.04em;color:var(--dr-ink-dim);
+  background:var(--dr-panel);border:1px solid var(--dr-line);border-radius:var(--r-sm);
+  transition:color .12s,border-color .12s,background .12s,box-shadow .12s;cursor:pointer;font-variant-numeric:tabular-nums}
+.dr-fxsync-div:hover{color:var(--dr-ink);border-color:var(--dr-line-2)}
+.dr-fxsync-div[data-active="true"]{color:var(--dr-moss);border-color:var(--dr-moss);background:var(--dr-panel-3);box-shadow:0 0 8px -2px var(--dr-moss-glow)}
+
+/* ── REV DLY trigger button — full-width pill, fires a chunk on click ── */
+.dr-rd-controls{display:flex}
+.dr-rd-trigger{flex:1;padding:8px 12px;font-family:var(--dr-fx);font-weight:700;font-size:10px;letter-spacing:.20em;color:var(--dr-ink-dim);text-transform:uppercase;
+  background:var(--dr-panel-2);border:1px solid var(--dr-line);border-radius:var(--r-sm);
+  transition:color .12s,border-color .12s,box-shadow .08s,background .12s,transform .04s;cursor:pointer}
+.dr-rd-trigger:hover{color:var(--dr-moss);border-color:var(--dr-moss-dim)}
+.dr-rd-trigger:active{transform:scale(.98);background:var(--dr-panel-3);box-shadow:0 0 14px -2px var(--dr-moss-glow);color:var(--dr-moss);border-color:var(--dr-moss)}
 
 /* AMBIENT / REVDELAY — 3 knobs each, same flex layout as REVERB. */
 .dr-mod[data-mod="ambient"] .dr-knobs,
@@ -1213,13 +1349,34 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
 <!-- DESKTOP CANVAS -->
 <main class="dr">
 
-  <!-- MASTHEAD — wordmark + brief instructions for new visitors. The mode
-       toggle (PLAY / darkroom.studio) was removed 2026-05-07; the mode JS
-       below still runs but its querySelectorAll returns empty so it no-ops. -->
+  <!-- MASTHEAD — wordmark + brief instructions on the left, compact master
+       pod on the right. Master moved here 2026-05-08 from its old top-row
+       sidebar (which ate 280px for source label + 3 meters + OUT knob).
+       The compact form keeps the 3 useful pieces — source label, OUT knob,
+       POST meter — and frees the sampler row to use the full width. The
+       removed master section's PRE / GR meters' JS writes no-op safely
+       since the references are null-guarded. -->
   <section class="dr-mast">
     <div class="dr-mast-left">
       <h1 class="dr-mast-title">darkroom</h1>
       <p class="dr-mast-blurb">share a chrome tab, plug in a device, or load a file — then shape the signal in real time with the modules below. nothing is recorded; everything runs live in the browser.</p>
+    </div>
+    <div class="dr-mast-master" aria-label="Master output">
+      <span class="dr-mast-master-title">MASTER</span>
+      <div class="dr-meter dr-mast-meter">
+        <span class="dr-meter-label">POST</span>
+        <div class="dr-meter-bar"><span style="width:0%"></span><span class="dr-meter-tick"></span></div>
+        <span class="dr-meter-value">−∞</span>
+      </div>
+      <div class="dr-knob dr-mast-knob" data-param="out">
+        <span class="dr-knob-label">OUT</span>
+        <svg class="dr-knob-dial" viewBox="-50 -50 100 100">
+          <circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g>
+          <circle r="42"/>
+          <line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/>
+        </svg>
+        <span class="dr-knob-value">0.0 dB</span>
+      </div>
     </div>
   </section>
 
@@ -1270,51 +1427,6 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
        panel) align at the same top edge — RELEASE/CLEAR ALL no longer
        push master down. -->
   <div class="dr-toprow">
-    <section class="dr-master-wrap" aria-label="Master output">
-      <article class="dr-mod" data-mod="master">
-        <header class="dr-mod-head">
-          <div class="dr-mod-head-text">
-            <span class="dr-mod-name">MASTER</span>
-          </div>
-          <button class="dr-mod-reset" type="button" aria-label="reset module" title="reset to defaults">↺</button>
-        </header>
-        <div class="dr-mod-body">
-          <span class="dr-bay-source"><b>no source</b> — pick an input</span>
-          <div class="dr-bay-level">
-            <span class="dr-bay-level-bar"></span>
-            <span class="dr-bay-level-tick" style="left:75%"></span>
-          </div>
-          <div class="dr-meters">
-            <div class="dr-meter">
-              <span class="dr-meter-label">PRE</span>
-              <div class="dr-meter-bar"><span style="width:0%"></span><span class="dr-meter-tick"></span></div>
-              <span class="dr-meter-value">−∞</span>
-            </div>
-            <div class="dr-meter">
-              <span class="dr-meter-label">POST</span>
-              <div class="dr-meter-bar"><span style="width:0%"></span><span class="dr-meter-tick"></span></div>
-              <span class="dr-meter-value">−∞</span>
-            </div>
-            <div class="dr-meter">
-              <span class="dr-meter-label">GR</span>
-              <div class="dr-meter-bar dr-meter-gr"><span style="width:0%"></span></div>
-              <span class="dr-meter-value">0.0</span>
-            </div>
-          </div>
-          <div class="dr-knobs">
-            <div class="dr-knob" data-param="out">
-              <span class="dr-knob-label">OUT</span>
-              <svg class="dr-knob-dial" viewBox="-50 -50 100 100">
-                <circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g>
-                <circle r="42"/>
-                <line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/>
-              </svg>
-              <span class="dr-knob-value">0.0 dB</span>
-            </div>
-          </div>
-        </div>
-      </article>
-    </section>
 
   <!-- SAMPLER — Step 2 of the workflow: find your sample, scratch it, screw it,
        reverse it. Will absorb the looper in a later phase. The disc + REVERSE +
@@ -1464,48 +1576,50 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
            contribute "always at default" so SCREW alone toggles the
            worklet on streams). -->
     </div>
+    <!-- SCREW + REVERSE column. Two separate bordered cards stacked
+         vertically in a 3:1 height ratio so SCREW (the foundation control)
+         dominates and REVERSE sits as a smaller sibling beneath. Both
+         extracted from the meta strip 2026-05-08. -->
+    <div class="dr-tape-controls">
+      <div class="dr-tape-screw" aria-label="Screw">
+        <div class="dr-knob" data-param="screw">
+          <span class="dr-knob-label">SCREW</span>
+          <svg class="dr-knob-dial" viewBox="-50 -50 100 100">
+            <circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g>
+            <circle r="44"/>
+            <path class="dr-arc" d="M -31.1 24.1 A 39 39 0 1 1 31.1 24.1" />
+            <line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/>
+          </svg>
+          <span class="dr-knob-value">1.000×</span>
+        </div>
+      </div>
+      <div class="dr-tape-reverse-mod" aria-label="Reverse">
+        <button class="dr-tape-reverse" id="dr-tape-reverse" type="button" aria-label="reverse playback" data-active="false">
+          <span class="dr-tape-reverse-dot"></span>
+          <span class="dr-tape-reverse-label">REVERSE</span>
+        </button>
+      </div>
+    </div>
+
     <div class="dr-tape-panel">
       <div class="dr-tape-info">
         <div class="dr-tape-info-cell">
           <span class="dr-tape-meta-label">SOURCE</span>
           <span class="dr-tape-meta-value" id="dr-tape-source">— no source —</span>
         </div>
-        <!-- Center cluster: SCREW + REVERSE sit truly centered between SOURCE
-             (left) and the right metric cluster, anchored by 1fr-auto-1fr
-             grid columns on .dr-tape-info. -->
-        <div class="dr-tape-info-center">
-          <div class="dr-knob" data-param="screw">
-            <span class="dr-knob-label">SCREW</span>
-            <svg class="dr-knob-dial" viewBox="-50 -50 100 100">
-              <circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g>
-              <circle r="44"/>
-              <path class="dr-arc" d="M -31.1 24.1 A 39 39 0 1 1 31.1 24.1" />
-              <line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/>
-            </svg>
-            <span class="dr-knob-value">1.000×</span>
-          </div>
-          <button class="dr-tape-reverse" id="dr-tape-reverse" type="button" aria-label="reverse playback" data-active="false">
-            <span class="dr-tape-reverse-dot"></span>
-            <span class="dr-tape-reverse-label">REVERSE</span>
-          </button>
+        <div class="dr-tape-info-cell">
+          <span class="dr-tape-meta-label">ELAPSED</span>
+          <span class="dr-tape-meta-value" id="dr-tape-elapsed">00:00:00</span>
         </div>
-        <div class="dr-tape-info-right">
-          <div class="dr-tape-info-cell">
-            <span class="dr-tape-meta-label">ELAPSED</span>
-            <span class="dr-tape-meta-value" id="dr-tape-elapsed">00:00:00</span>
-          </div>
-          <div class="dr-tape-info-cell dr-tape-info-bpm">
-            <span class="dr-tape-meta-label">BPM <span class="dr-tape-bpm-conf" id="dr-tape-bpm-conf">·</span></span>
-            <span class="dr-tape-bpm-row">
-              <span class="dr-tape-bpm-value" id="dr-tape-bpm">120.0</span>
-              <button class="dr-tap-btn dr-tape-tap" id="dr-tape-tap" type="button" aria-label="tap tempo">TAP</button>
-            </span>
-          </div>
-          <div class="dr-tape-info-cell">
-            <span class="dr-tape-meta-label">RATE</span>
-            <span class="dr-tape-meta-value" id="dr-tape-rate">1.000×</span>
-          </div>
+        <div class="dr-tape-info-cell dr-tape-info-bpm">
+          <span class="dr-tape-meta-label">BPM <span class="dr-tape-bpm-conf" id="dr-tape-bpm-conf">·</span></span>
+          <span class="dr-tape-bpm-value" id="dr-tape-bpm">120.0</span>
         </div>
+        <div class="dr-tape-info-cell">
+          <span class="dr-tape-meta-label">RATE</span>
+          <span class="dr-tape-meta-value" id="dr-tape-rate">1.000×</span>
+        </div>
+        <button class="dr-tap-btn dr-tape-tap" id="dr-tape-tap" type="button" aria-label="tap tempo">TAP</button>
       </div>
       <!-- Sample-finding waveform: 60s rolling buffer captured by the
            sampler-buffer-processor worklet, downsampled to ~1024 peak columns,
@@ -2079,6 +2193,15 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
       </header>
       <div class="dr-mod-body">
         <canvas class="dr-bitcrush-vis" width="480" height="80"></canvas>
+        <!-- 5-segment LED ladder. One pip per bit-level (1..5). Brighter
+             when fewer bits = harsher. Updates from the bcBits knob. -->
+        <div class="dr-bc-leds" id="dr-bc-leds" aria-hidden="true">
+          <span class="dr-bc-led" data-level="1"></span>
+          <span class="dr-bc-led" data-level="2"></span>
+          <span class="dr-bc-led" data-level="3"></span>
+          <span class="dr-bc-led" data-level="4"></span>
+          <span class="dr-bc-led" data-level="5"></span>
+        </div>
         <div class="dr-knobs">
           <div class="dr-knob" data-param="bcBits">
             <span class="dr-knob-label">BITS</span>
@@ -2086,7 +2209,15 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
               <circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g>
               <circle r="42"/><line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/>
             </svg>
-            <span class="dr-knob-value">8 bit</span>
+            <span class="dr-knob-value">5 bit</span>
+          </div>
+          <div class="dr-knob" data-param="bcRate">
+            <span class="dr-knob-label">RATE</span>
+            <svg class="dr-knob-dial" viewBox="-50 -50 100 100">
+              <circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g>
+              <circle r="42"/><line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/>
+            </svg>
+            <span class="dr-knob-value">1.00×</span>
           </div>
           <div class="dr-knob" data-param="bcMix">
             <span class="dr-knob-label">MIX</span>
@@ -2110,6 +2241,13 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
       </header>
       <div class="dr-mod-body">
         <canvas class="dr-sat-vis" width="480" height="80"></canvas>
+        <!-- TYPE selector — each picks a different waveshaper curve. -->
+        <div class="dr-sat-types" role="group" aria-label="Saturation type">
+          <button class="dr-sat-type" data-type="tube"  data-active="true"  type="button">TUBE</button>
+          <button class="dr-sat-type" data-type="tape"  data-active="false" type="button">TAPE</button>
+          <button class="dr-sat-type" data-type="fuzz"  data-active="false" type="button">FUZZ</button>
+          <button class="dr-sat-type" data-type="diode" data-active="false" type="button">DIODE</button>
+        </div>
         <div class="dr-knobs">
           <div class="dr-knob" data-param="satDrive">
             <span class="dr-knob-label">DRIVE</span>
@@ -2141,6 +2279,24 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
       </header>
       <div class="dr-mod-body">
         <canvas class="dr-chorus-vis" width="480" height="80"></canvas>
+        <!-- LFO shape — selects the modulation oscillator's wave type. -->
+        <div class="dr-lfo-shapes" role="group" aria-label="LFO shape">
+          <button class="dr-lfo-shape-btn" data-target="chorus" data-shape="sine"     data-active="true"  type="button">SIN</button>
+          <button class="dr-lfo-shape-btn" data-target="chorus" data-shape="triangle" data-active="false" type="button">TRI</button>
+          <button class="dr-lfo-shape-btn" data-target="chorus" data-shape="square"   data-active="false" type="button">SQR</button>
+        </div>
+        <!-- Tempo sync: when SYNC is on, RATE is derived from the master
+             BPM × the selected division; the RATE knob is overridden. -->
+        <div class="dr-fxsync">
+          <button class="dr-fxsync-toggle" data-target="chorus" data-active="false" type="button">SYNC</button>
+          <div class="dr-fxsync-divs" data-target="chorus" hidden>
+            <button class="dr-fxsync-div" data-target="chorus" data-div="1/16" type="button">1/16</button>
+            <button class="dr-fxsync-div" data-target="chorus" data-div="1/8"  type="button">1/8</button>
+            <button class="dr-fxsync-div" data-target="chorus" data-div="1/4"  data-active="true" type="button">1/4</button>
+            <button class="dr-fxsync-div" data-target="chorus" data-div="1/2"  type="button">1/2</button>
+            <button class="dr-fxsync-div" data-target="chorus" data-div="1/1"  type="button">1/1</button>
+          </div>
+        </div>
         <div class="dr-knobs">
           <div class="dr-knob" data-param="chRate">
             <span class="dr-knob-label">RATE</span>
@@ -2190,6 +2346,18 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
       </header>
       <div class="dr-mod-body">
         <canvas class="dr-ambient-vis" width="480" height="80"></canvas>
+        <!-- Interval selector — picks the pitch transposition set used by
+             grain voices. FREEZE locks the capture buffer; grains keep
+             replaying the held content forever (drone mode). -->
+        <div class="dr-amb-controls">
+          <div class="dr-amb-intervals" role="group" aria-label="Pitch intervals">
+            <button class="dr-amb-int" data-int="octave" data-active="true"  type="button">OCT</button>
+            <button class="dr-amb-int" data-int="fifth"  data-active="false" type="button">5TH</button>
+            <button class="dr-amb-int" data-int="fourth" data-active="false" type="button">4TH</button>
+            <button class="dr-amb-int" data-int="minor7" data-active="false" type="button">m7</button>
+          </div>
+          <button class="dr-amb-freeze" id="dr-amb-freeze" data-active="false" type="button">FREEZE</button>
+        </div>
         <div class="dr-knobs">
           <div class="dr-knob" data-param="ambBloom">
             <span class="dr-knob-label">BLOOM</span>
@@ -2230,6 +2398,22 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
       </header>
       <div class="dr-mod-body">
         <canvas class="dr-revdelay-vis" width="480" height="80"></canvas>
+        <!-- TRIGGER fires a chunk on demand (in addition to the scheduled
+             auto-fire). Useful for one-shot punctuation while bypass keeps
+             the constant cycle quiet. -->
+        <div class="dr-rd-controls">
+          <button class="dr-rd-trigger" id="dr-rd-trigger" type="button" aria-label="Fire reversed chunk">▶ TRIGGER</button>
+        </div>
+        <div class="dr-fxsync">
+          <button class="dr-fxsync-toggle" data-target="revdelay" data-active="false" type="button">SYNC</button>
+          <div class="dr-fxsync-divs" data-target="revdelay" hidden>
+            <button class="dr-fxsync-div" data-target="revdelay" data-div="1/16" type="button">1/16</button>
+            <button class="dr-fxsync-div" data-target="revdelay" data-div="1/8"  type="button">1/8</button>
+            <button class="dr-fxsync-div" data-target="revdelay" data-div="1/4"  data-active="true" type="button">1/4</button>
+            <button class="dr-fxsync-div" data-target="revdelay" data-div="1/2"  type="button">1/2</button>
+            <button class="dr-fxsync-div" data-target="revdelay" data-div="1/1"  type="button">1/1</button>
+          </div>
+        </div>
         <div class="dr-knobs">
           <div class="dr-knob" data-param="rdTime">
             <span class="dr-knob-label">TIME</span>
@@ -2269,6 +2453,21 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
       </header>
       <div class="dr-mod-body">
         <canvas class="dr-flanger-vis" width="480" height="80"></canvas>
+        <div class="dr-lfo-shapes" role="group" aria-label="LFO shape">
+          <button class="dr-lfo-shape-btn" data-target="flanger" data-shape="sine"     data-active="true"  type="button">SIN</button>
+          <button class="dr-lfo-shape-btn" data-target="flanger" data-shape="triangle" data-active="false" type="button">TRI</button>
+          <button class="dr-lfo-shape-btn" data-target="flanger" data-shape="square"   data-active="false" type="button">SQR</button>
+        </div>
+        <div class="dr-fxsync">
+          <button class="dr-fxsync-toggle" data-target="flanger" data-active="false" type="button">SYNC</button>
+          <div class="dr-fxsync-divs" data-target="flanger" hidden>
+            <button class="dr-fxsync-div" data-target="flanger" data-div="1/16" type="button">1/16</button>
+            <button class="dr-fxsync-div" data-target="flanger" data-div="1/8"  type="button">1/8</button>
+            <button class="dr-fxsync-div" data-target="flanger" data-div="1/4"  data-active="true" type="button">1/4</button>
+            <button class="dr-fxsync-div" data-target="flanger" data-div="1/2"  type="button">1/2</button>
+            <button class="dr-fxsync-div" data-target="flanger" data-div="1/1"  type="button">1/1</button>
+          </div>
+        </div>
         <div class="dr-knobs">
           <div class="dr-knob" data-param="flRate">
             <span class="dr-knob-label">RATE</span>
@@ -2391,12 +2590,17 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
   const baySource    = document.querySelector('.dr-bay-source');
   const inputLevel   = document.querySelector('.dr-bay-level-bar');
   const meterRows    = document.querySelectorAll('.dr-meters .dr-meter');
-  const preFill      = meterRows[0]?.querySelector('.dr-meter-bar > span:first-child');
-  const postFill     = meterRows[1]?.querySelector('.dr-meter-bar > span:first-child');
-  const grFill       = meterRows[2]?.querySelector('.dr-meter-bar > span:first-child');
-  const preValue     = meterRows[0]?.querySelector('.dr-meter-value');
-  const postValue    = meterRows[1]?.querySelector('.dr-meter-value');
-  const grValue      = meterRows[2]?.querySelector('.dr-meter-value');
+  // PRE/GR meters were removed when the master pod was compacted into the
+  // masthead 2026-05-08; the only remaining meter is POST (now lives in
+  // .dr-mast-meter). preFill/grFill are kept null so the existing
+  // updateMeters writes no-op safely without needing per-meter conditional rewrite.
+  const postMeter    = document.querySelector('.dr-mast-meter');
+  const preFill      = null;
+  const postFill     = postMeter?.querySelector('.dr-meter-bar > span:first-child');
+  const grFill       = null;
+  const preValue     = null;
+  const postValue    = postMeter?.querySelector('.dr-meter-value');
+  const grValue      = null;
 
   // ─── ENGINE STATE ────────────────────────────────────────────────
   const DR = {
@@ -2465,12 +2669,12 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
       bypassed: { tempo: true, filter: true, eq: true, phaser: true, lfo: true, beatrepeat: false, delay: true, reverb: true, bitcrush: true, saturation: true, chorus: true, flanger: true, ambient: true, revdelay: true },
       // Second-row FX modules added 2026-05-08. Each follows the same dry/wet
       // bypass pattern as PHASER. Knob defaults documented in knobDefaults.
-      bitcrush:   { bits: 5,   mix: 0 },           // bits 1-5; lower = harsher quantization
-      saturation: { drive: 0,  mix: 0 },           // tanh waveshaper drive 0-1
-      chorus:     { rate: 1.5, depth: 0.5, feedback: 0.2, mix: 0 },  // ~15ms delay + LFO
-      flanger:    { rate: 0.5, depth: 0.7, feedback: 0.6, mix: 0 },  // ~3ms delay + LFO + heavy fb
-      ambient:    { bloom: 0.5, depth: 0.5, mix: 0 },  // OB-4 soundscape: bloom=grain length+density, depth=pitch spread
-      revdelay:   { time: 0.5, feedback: 0.4, mix: 0 }, // capture chunk, reverse, play; FB scales feedback into capture
+      bitcrush:   { bits: 5,   rate: 1.0, mix: 0 }, // bits 1-5 (depth) + rate 0.05-1.0 (sample-rate decimation)
+      saturation: { drive: 0,  mix: 0, type: 'tube' }, // tube|tape|fuzz|diode → different waveshaper curves
+      chorus:     { rate: 1.5, depth: 0.5, feedback: 0.2, mix: 0, shape: 'sine', sync: false, division: '1/4' },
+      flanger:    { rate: 0.5, depth: 0.7, feedback: 0.6, mix: 0, shape: 'sine', sync: false, division: '1/4' },
+      ambient:    { bloom: 0.5, depth: 0.5, mix: 0, intervals: 'octave', frozen: false },
+      revdelay:   { time: 0.5, feedback: 0.4, mix: 0, sync: false, division: '1/4' },
       samplePads: {
         // 8 sample pads — each holds a chop captured from the sampler. ASSIGN
         // (when sampler is frozen with a valid region) copies the marker
@@ -2563,17 +2767,58 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
     return curve;
   }
 
-  // ── SATURATION curve generator (tanh-style soft clip) ─────────────
-  // drive=0 is identity; higher drive bends the transfer curve harder,
-  // adding even-order harmonics and gluing transients.
-  function makeSaturationCurve(drive) {
-    const k = Math.max(0, Math.min(1, drive)) * 50;
+  // ── SATURATION curves — 4 distinct flavors ──────────────────────
+  // TUBE: asymmetric tanh — more even harmonics, warm bias.
+  // TAPE: smooth symmetric tanh — gentle compression, glue.
+  // FUZZ: hard cubic clip — square-wave-ish at high drive.
+  // DIODE: half-wave asymmetric clip — radio / broken-speaker character.
+  // Active curve picked by makeSaturationCurve() reading state.type.
+  function satCurveTube(drive) {
+    const k = Math.max(0, Math.min(1, drive)) * 30;
     const curve = new Float32Array(2048);
     for (let i = 0; i < 2048; i++) {
       const x = (i / 2047) * 2 - 1;
-      curve[i] = (1 + k) * x / (1 + k * Math.abs(x));
+      curve[i] = x >= 0 ? Math.tanh(x * (1 + k)) : Math.tanh(x * (1 + k * 0.55));
     }
     return curve;
+  }
+  function satCurveTape(drive) {
+    const k = Math.max(0, Math.min(1, drive)) * 8;
+    const curve = new Float32Array(2048);
+    for (let i = 0; i < 2048; i++) {
+      const x = (i / 2047) * 2 - 1;
+      curve[i] = Math.tanh(x * (1 + k));
+    }
+    return curve;
+  }
+  function satCurveFuzz(drive) {
+    const k = 1 + Math.max(0, Math.min(1, drive)) * 6;
+    const curve = new Float32Array(2048);
+    for (let i = 0; i < 2048; i++) {
+      const x = (i / 2047) * 2 - 1;
+      const y = x * k;
+      curve[i] = Math.max(-1, Math.min(1, y - (y * y * y) / 3));
+    }
+    return curve;
+  }
+  function satCurveDiode(drive) {
+    const k = Math.max(0, Math.min(1, drive)) * 18;
+    const curve = new Float32Array(2048);
+    for (let i = 0; i < 2048; i++) {
+      const x = (i / 2047) * 2 - 1;
+      const driven = x * (1 + k);
+      curve[i] = driven >= 0 ? Math.min(1, driven) : Math.max(-0.4, driven * 0.5);
+    }
+    return curve;
+  }
+  function makeSaturationCurve(drive) {
+    const type = (DR.state.saturation && DR.state.saturation.type) || 'tube';
+    switch (type) {
+      case 'tape':  return satCurveTape(drive);
+      case 'fuzz':  return satCurveFuzz(drive);
+      case 'diode': return satCurveDiode(drive);
+      default:      return satCurveTube(drive);
+    }
   }
 
   function buildChain() {
@@ -2689,11 +2934,18 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
     n.bitcrush    = ctx.createWaveShaper();
     n.bitcrush.curve = makeBitcrushCurve(DR.state.bitcrush.bits);
     n.bitcrush.oversample = 'none';
+    // Initial wet path: bitcrushIn → bitcrush(waveshaper) → bitcrushWet.
+    // The rate decimator worklet is lazily loaded and spliced between
+    // bitcrushIn and bitcrush by ensureBitcrushRate(). Until then RATE
+    // knob is a no-op (state stored, applied once worklet loads).
     n.bitcrushIn.connect(n.bitcrush);
     n.bitcrushIn.connect(n.bitcrushDry);
     n.bitcrush.connect(n.bitcrushWet);
     n.bitcrushDry.connect(n.bitcrushOut);
     n.bitcrushWet.connect(n.bitcrushOut);
+    // Kick off the rate worklet load immediately so it's spliced in
+    // before the user touches RATE. Non-blocking — chain works without it.
+    ensureBitcrushRate();
 
     // ── SATURATION — tanh-style soft-clip waveshaper. DRIVE controls how hard
     //    the curve bends; MIX blends wet against dry. 4x oversampling reduces
@@ -2774,10 +3026,9 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
     n.ambientDry      = ctx.createGain(); n.ambientDry.gain.value = 1;
     n.ambientWet      = ctx.createGain(); n.ambientWet.gain.value = 0;
     n.ambientGrainBus = ctx.createGain(); n.ambientGrainBus.gain.value = 1;
-    n.ambientAnalyser = ctx.createAnalyser();
-    n.ambientAnalyser.fftSize = 4096;
-    n.ambientAnalyser.smoothingTimeConstant = 0;
-    n.ambientIn.connect(n.ambientAnalyser);   // tap (dead-end)
+    // Capture is via the capture-processor worklet (set up in
+    // startAmbientEngine). ambientIn feeds the worklet for sample-accurate
+    // ring-buffer writes — replaces the previous polling AnalyserNode.
     n.ambientIn.connect(n.ambientDry);
     n.ambientGrainBus.connect(n.ambientWet);
     n.ambientDry.connect(n.ambientOut);
@@ -2793,14 +3044,12 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
     n.revdelayWet       = ctx.createGain(); n.revdelayWet.gain.value = 0;
     n.revdelayBus       = ctx.createGain(); n.revdelayBus.gain.value = 1;
     n.revdelayFb        = ctx.createGain(); n.revdelayFb.gain.value = 0;
-    n.revdelayAnalyser  = ctx.createAnalyser();
-    n.revdelayAnalyser.fftSize = 4096;
-    n.revdelayAnalyser.smoothingTimeConstant = 0;
-    n.revdelayIn.connect(n.revdelayAnalyser);
+    // Capture is via the capture-processor worklet (set up in
+    // startRevdelayEngine). revdelayIn AND revdelayFb both feed the
+    // worklet so wet output gets re-captured for the FB loop.
     n.revdelayIn.connect(n.revdelayDry);
     n.revdelayBus.connect(n.revdelayWet);
     n.revdelayBus.connect(n.revdelayFb);
-    n.revdelayFb.connect(n.revdelayAnalyser); // feedback re-captured
     n.revdelayDry.connect(n.revdelayOut);
     n.revdelayWet.connect(n.revdelayOut);
 
@@ -2899,64 +3148,81 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
   }
 
   // ─── AMBIENT — granular soundscape engine ──────────────────────
-  // Polls ambientAnalyser every ~50ms into a 6-second circular buffer,
-  // schedules grains every (BLOOM-derived interval). Each grain pulls a
+  // Sample-accurate capture via the capture-processor worklet feeds a
+  // 6-second circular buffer; scheduler fires grains every (BLOOM-derived
+  // interval). Each grain pulls a
   // random slice of the buffer at random pitch (DEPTH), windowed via an
   // attack/release gain envelope so they overlap into continuous pads.
   const AMBIENT_BUF_SECONDS = 6;
-  const AMBIENT_PITCHES = [0.5, 1.0, 2.0]; // -1oct, root, +1oct
+  // Each interval set is a list of playbackRate multipliers for grain voices.
+  // Selected via the OCT/5TH/4TH/m7 pills under the AMBIENT vis.
+  const AMBIENT_INTERVAL_SETS = {
+    octave: [0.5, 1.0, 2.0],                // -1oct, root, +1oct
+    fifth:  [0.667, 1.0, 1.5],              // -P5, root, +P5
+    fourth: [0.75, 1.0, 1.333],             // -P4, root, +P4
+    minor7: [0.5, 1.0, 1.7818]              // -1oct, root, +m7
+  };
   const ambient = {
     buf: null, bufFrames: 0, writePos: 0, totalWritten: 0,
     pollBuf: null, pollInterval: null, grainTimeout: null
   };
-  function startAmbientEngine() {
-    if (!DR.ctx || !DR.nodes.ambientAnalyser) return;
+  async function startAmbientEngine() {
+    if (!DR.ctx) return;
     const sr = DR.ctx.sampleRate;
     ambient.bufFrames = Math.floor(AMBIENT_BUF_SECONDS * sr);
     ambient.buf = new Float32Array(ambient.bufFrames);
-    ambient.pollBuf = new Float32Array(DR.nodes.ambientAnalyser.fftSize);
-    // capture loop — polls analyser, appends to ring (overlapping reads OK
-    // for granular use; clicks hidden by grain envelopes)
-    ambient.pollInterval = setInterval(() => {
-      if (DR.state.bypassed.ambient) return;
-      DR.nodes.ambientAnalyser.getFloatTimeDomainData(ambient.pollBuf);
-      // write the most recent ~50ms slice (analyser is FIFO with full fftSize
-      // of context — we take a chunk of the END to approximate continuous capture)
-      const sliceLen = Math.min(ambient.pollBuf.length, Math.floor(sr * 0.05));
-      const start = ambient.pollBuf.length - sliceLen;
-      let w = ambient.writePos;
-      for (let i = 0; i < sliceLen; i++) {
-        ambient.buf[w++] = ambient.pollBuf[start + i];
-        if (w >= ambient.bufFrames) w = 0;
-      }
-      ambient.writePos = w;
-      ambient.totalWritten += sliceLen;
-    }, 50);
+    // Worklet-based capture — sample-accurate, no polling drift. Replaces
+    // the earlier setInterval+AnalyserNode polling that produced crackle.
+    try {
+      await DR.ctx.audioWorklet.addModule('darkroom/lib/capture-processor.js');
+      const node = new AudioWorkletNode(DR.ctx, 'capture-processor', {
+        numberOfInputs: 1, numberOfOutputs: 1, outputChannelCount: [1]
+      });
+      node.port.onmessage = ev => {
+        if (DR.state.bypassed.ambient || DR.state.ambient.frozen) return;
+        const batch = ev.data;
+        let w = ambient.writePos;
+        for (let i = 0; i < batch.length; i++) {
+          ambient.buf[w++] = batch[i];
+          if (w >= ambient.bufFrames) w = 0;
+        }
+        ambient.writePos = w;
+        ambient.totalWritten += batch.length;
+      };
+      // Tap from ambientIn (sink — output not connected anywhere).
+      DR.nodes.ambientIn.connect(node);
+      DR.nodes.ambientCapture = node;
+    } catch (err) {
+      console.error('darkroom: capture worklet failed for ambient', err);
+    }
     scheduleAmbientGrain();
   }
   function scheduleAmbientGrain() {
     if (!DR.ctx) return;
     fireAmbientGrain();
-    // Next grain interval depends on BLOOM. Higher BLOOM = denser = shorter interval.
+    // Higher BLOOM = MORE grains = denser pad. 50ms (dense) → 200ms (sparse).
     const bloom = DR.state.ambient.bloom;
-    const interval = 60 + (1 - bloom) * 240; // 60ms (dense) → 300ms (sparse)
+    const interval = 50 + (1 - bloom) * 150;
     ambient.grainTimeout = setTimeout(scheduleAmbientGrain, interval);
   }
   function fireAmbientGrain() {
-    if (DR.state.bypassed.ambient || !DR.ctx || !ambient.buf || ambient.totalWritten < 1024) return;
+    if (DR.state.bypassed.ambient || !DR.ctx || !ambient.buf || ambient.totalWritten < 4096) return;
     const ctx = DR.ctx;
     const sr = ctx.sampleRate;
     const bloom = DR.state.ambient.bloom;
     const depth = DR.state.ambient.depth;
-    // grain length: 300ms (low BLOOM) → 1800ms (high BLOOM)
-    const grainSec = 0.3 + bloom * 1.5;
-    const grainFrames = Math.min(ambient.bufFrames, Math.floor(grainSec * sr));
-    // pull a slice from the buffer ending some random offset behind writePos
-    const maxOffset = Math.min(ambient.bufFrames - grainFrames - 1024, Math.floor(sr * 4));
-    const offset = Math.floor(Math.random() * Math.max(1, maxOffset)) + grainFrames;
+    // Grain length: 1.0s (low BLOOM) → 3.0s (high BLOOM). Long grains
+    // overlap heavily with neighboring grains to wash into a continuous pad.
+    const grainSec = 1.0 + bloom * 2.0;
+    const grainFrames = Math.min(ambient.bufFrames - 2048, Math.floor(grainSec * sr));
+    // Read offset: bias toward recent material (last 1-2 seconds behind
+    // the write head). Random across that window — tighter than the
+    // previous full-buffer scatter so consecutive grains stay coherent.
+    const minOffset = grainFrames + 1024;
+    const maxOffset = Math.min(ambient.bufFrames - 1024, minOffset + Math.floor(sr * 1.5));
+    const offset = minOffset + Math.floor(Math.random() * Math.max(1, maxOffset - minOffset));
     let readStart = ambient.writePos - offset;
     if (readStart < 0) readStart += ambient.bufFrames;
-    // copy slice into a fresh AudioBuffer (handles wraparound)
     const ab = ctx.createBuffer(1, grainFrames, sr);
     const data = ab.getChannelData(0);
     for (let i = 0; i < grainFrames; i++) {
@@ -2964,23 +3230,43 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
       if (r >= ambient.bufFrames) r -= ambient.bufFrames;
       data[i] = ambient.buf[r];
     }
-    // pick one of the three pitch transpositions, with a small random detune
-    // scaled by DEPTH. higher depth = wider pitch spread.
-    const basePitch = AMBIENT_PITCHES[Math.floor(Math.random() * AMBIENT_PITCHES.length)];
-    const detuneCents = (Math.random() - 0.5) * 1200 * depth; // ±600 cents at full depth
-    // create voice
+    // Pitch: root-biased. With probability (1 - depth) play unison; with
+    // probability depth pick a non-root from the interval set. So at
+    // DEPTH=0 every grain is unison (clean pad); at DEPTH=1 the full
+    // interval set is sampled (richer harmony). Detune is tiny — ±50
+    // cents max at full depth — for chorus-like thickness, not chaos.
+    const intervals = AMBIENT_INTERVAL_SETS[DR.state.ambient.intervals] || AMBIENT_INTERVAL_SETS.octave;
+    const nonRoots = intervals.filter(p => p !== 1.0);
+    const basePitch = (Math.random() > depth || nonRoots.length === 0)
+      ? 1.0
+      : nonRoots[Math.floor(Math.random() * nonRoots.length)];
+    const detuneCents = (Math.random() - 0.5) * 100 * depth;
     const src = ctx.createBufferSource();
     src.buffer = ab;
     src.playbackRate.value = basePitch;
     if (src.detune) src.detune.value = detuneCents;
     const env = ctx.createGain();
     const t = ctx.currentTime;
-    const playSec = grainSec / basePitch; // actual playback duration after pitch
-    const attackSec = Math.min(0.15, playSec * 0.3);
-    const releaseSec = Math.min(0.25, playSec * 0.4);
-    env.gain.setValueAtTime(0, t);
-    env.gain.linearRampToValueAtTime(0.45, t + attackSec);
-    env.gain.linearRampToValueAtTime(0, t + playSec);
+    const playSec = grainSec / basePitch;
+    // Hann (cosine²) window — much smoother than linear ramp. No audible
+    // attack thump at grain start, no click on release. Peak gain scaled
+    // inversely to expected overlap so sparse and dense settings land at
+    // similar perceived loudness (otherwise high BLOOM stacks 30+ grains
+    // and clips). Floor of 3 keeps sparse grains from being too quiet.
+    const interval = 50 + (1 - bloom) * 150;
+    const overlap = Math.max(3, (grainSec * 1000) / interval);
+    const peakGain = Math.min(0.25, 0.55 / overlap);
+    const winLen = 256;
+    const win = new Float32Array(winLen);
+    for (let i = 0; i < winLen; i++) {
+      win[i] = peakGain * 0.5 * (1 - Math.cos(2 * Math.PI * i / (winLen - 1)));
+    }
+    try { env.gain.setValueCurveAtTime(win, t, playSec); } catch(_) {
+      // Fallback if setValueCurveAtTime rejects (e.g. zero duration)
+      env.gain.setValueAtTime(0, t);
+      env.gain.linearRampToValueAtTime(peakGain, t + Math.min(0.3, playSec * 0.3));
+      env.gain.linearRampToValueAtTime(0, t + playSec);
+    }
     src.connect(env);
     env.connect(DR.nodes.ambientGrainBus);
     src.start(t);
@@ -2989,34 +3275,48 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
   }
 
   // ─── REVERSE DELAY engine ──────────────────────────────────────
-  // Polls revdelayAnalyser into a circular buffer, every TIME ms grabs the
-  // last TIME seconds, reverses, plays once via revdelayBus. Feedback loop
-  // happens in audio graph (revdelayBus → revdelayFb → revdelayAnalyser),
-  // so wet output gets re-captured at FB level.
+  // Sample-accurate capture via the capture-processor worklet feeds a
+  // 4-second circular buffer; every TIME ms grabs the last TIME seconds,
+  // reverses, plays once via revdelayBus. Feedback loop is in the audio
+  // graph (revdelayBus → revdelayFb → captureNode), so wet output gets
+  // re-captured at FB level for evolving reversed-of-reversed textures.
   const REVDELAY_BUF_SECONDS = 4;
   const revdelay = {
     buf: null, bufFrames: 0, writePos: 0, totalWritten: 0,
     pollBuf: null, pollInterval: null, chunkTimeout: null
   };
-  function startRevdelayEngine() {
-    if (!DR.ctx || !DR.nodes.revdelayAnalyser) return;
+  async function startRevdelayEngine() {
+    if (!DR.ctx) return;
     const sr = DR.ctx.sampleRate;
     revdelay.bufFrames = Math.floor(REVDELAY_BUF_SECONDS * sr);
     revdelay.buf = new Float32Array(revdelay.bufFrames);
-    revdelay.pollBuf = new Float32Array(DR.nodes.revdelayAnalyser.fftSize);
-    revdelay.pollInterval = setInterval(() => {
-      if (DR.state.bypassed.revdelay) return;
-      DR.nodes.revdelayAnalyser.getFloatTimeDomainData(revdelay.pollBuf);
-      const sliceLen = Math.min(revdelay.pollBuf.length, Math.floor(sr * 0.05));
-      const start = revdelay.pollBuf.length - sliceLen;
-      let w = revdelay.writePos;
-      for (let i = 0; i < sliceLen; i++) {
-        revdelay.buf[w++] = revdelay.pollBuf[start + i];
-        if (w >= revdelay.bufFrames) w = 0;
-      }
-      revdelay.writePos = w;
-      revdelay.totalWritten += sliceLen;
-    }, 50);
+    // Worklet-based capture replaces the polling approach. Sample-accurate
+    // capture is critical for reverse delay — every micro-discontinuity
+    // in the captured ring becomes an audible click on reversed playback.
+    try {
+      await DR.ctx.audioWorklet.addModule('darkroom/lib/capture-processor.js');
+      const node = new AudioWorkletNode(DR.ctx, 'capture-processor', {
+        numberOfInputs: 1, numberOfOutputs: 1, outputChannelCount: [1]
+      });
+      node.port.onmessage = ev => {
+        if (DR.state.bypassed.revdelay) return;
+        const batch = ev.data;
+        let w = revdelay.writePos;
+        for (let i = 0; i < batch.length; i++) {
+          revdelay.buf[w++] = batch[i];
+          if (w >= revdelay.bufFrames) w = 0;
+        }
+        revdelay.writePos = w;
+        revdelay.totalWritten += batch.length;
+      };
+      // Tap from revdelayIn (sink) — but ALSO pick up the feedback loop
+      // (revdelayBus → revdelayFb → here) so the wet signal re-captures.
+      DR.nodes.revdelayIn.connect(node);
+      DR.nodes.revdelayFb.connect(node);
+      DR.nodes.revdelayCapture = node;
+    } catch (err) {
+      console.error('darkroom: capture worklet failed for revdelay', err);
+    }
     scheduleRevdelayChunk();
   }
   function scheduleRevdelayChunk() {
@@ -3328,6 +3628,42 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
       }
     })();
     return DR.nodes.scratchLoading;
+  }
+
+  // ─── BITCRUSH RATE worklet (lazy) ───────────────────────────────
+  // Sample-and-hold downsampler. Splices in between bitcrushIn and the
+  // bitcrush waveshaper so RATE acts BEFORE bit-depth quantization (the
+  // sample-and-hold artifacts are themselves crushed by low BITS = compounding
+  // glitch character). Until the worklet loads, the rate knob just stores
+  // its value; once ready, the current value is applied immediately.
+  async function ensureBitcrushRate() {
+    if (DR.nodes.bitcrushRateReady) return true;
+    if (DR.nodes.bitcrushRateFailed) return false;
+    if (DR.nodes.bitcrushRateLoading) return DR.nodes.bitcrushRateLoading;
+    if (!DR.ctx) return false;
+    DR.nodes.bitcrushRateLoading = (async () => {
+      try {
+        await DR.ctx.audioWorklet.addModule('darkroom/lib/bitcrush-processor.js');
+        const node = new AudioWorkletNode(DR.ctx, 'bitcrush-processor', {
+          numberOfInputs: 1, numberOfOutputs: 1, outputChannelCount: [2]
+        });
+        node.parameters.get('rate').setValueAtTime(DR.state.bitcrush.rate, DR.ctx.currentTime);
+        // Splice: was bitcrushIn → bitcrush. Now bitcrushIn → node → bitcrush.
+        try { DR.nodes.bitcrushIn.disconnect(DR.nodes.bitcrush); } catch(_){}
+        DR.nodes.bitcrushIn.connect(node);
+        node.connect(DR.nodes.bitcrush);
+        DR.nodes.bitcrushRate = node;
+        DR.nodes.bitcrushRateReady = true;
+        return true;
+      } catch (err) {
+        console.error('darkroom: bitcrush-rate worklet failed to load', err);
+        DR.nodes.bitcrushRateFailed = true;
+        return false;
+      } finally {
+        DR.nodes.bitcrushRateLoading = null;
+      }
+    })();
+    return DR.nodes.bitcrushRateLoading;
   }
 
   // ─── PROCEDURAL IRs (synthesized at runtime) ─────────────────────
@@ -4006,6 +4342,20 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
     onChange: v => {
       DR.state.bitcrush.bits = Math.round(v);
       if (DR.nodes.bitcrush) DR.nodes.bitcrush.curve = makeBitcrushCurve(DR.state.bitcrush.bits);
+      refreshBitcrushLeds();
+    }
+  });
+  knobs.bcRate = makeKnob(document.querySelector('.dr-knob[data-param="bcRate"]'), {
+    // RATE drives the sample-rate decimator worklet. 1.0 = passthrough,
+    // lower = harsher aliasing. Log scale spreads the audible action
+    // (which lives in the lower 30% of the range).
+    min: 0.05, max: 1.0, default: 1.0, scale: 'log',
+    format: v => v.toFixed(2) + '×',
+    onChange: v => {
+      DR.state.bitcrush.rate = v;
+      if (DR.nodes.bitcrushRate) {
+        DR.nodes.bitcrushRate.parameters.get('rate').setValueAtTime(v, DR.ctx.currentTime);
+      }
     }
   });
   knobs.bcMix = makeKnob(document.querySelector('.dr-knob[data-param="bcMix"]'), {
@@ -4175,6 +4525,165 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
       }
     }
   });
+
+  // ─── Row-2 module discrete controls (added 2026-05-08) ───────────
+  // BITCRUSH LED ladder — pip count = current bit value (1..5). Pips light
+  // from left up to the current value so lower bits = MORE pips lit (more
+  // crush). Updates when the bcBits knob changes via the helper below.
+  function refreshBitcrushLeds() {
+    const bits = DR.state.bitcrush.bits;
+    document.querySelectorAll('.dr-bc-led').forEach(led => {
+      const lvl = parseInt(led.dataset.level, 10);
+      // INVERT: at bits=1 all 5 lit, at bits=5 only 1 lit. Lower bits = more crush = brighter ladder.
+      const litCount = 6 - bits;
+      led.setAttribute('data-on', lvl <= litCount ? 'true' : 'false');
+    });
+  }
+  // Hook into the existing bcBits onChange by patching the knob's setValue.
+  if (knobs.bcBits) {
+    const _origBcSet = knobs.bcBits.setValue;
+    knobs.bcBits.setValue = function (v) { _origBcSet.call(this, v); refreshBitcrushLeds(); };
+  }
+  refreshBitcrushLeds();
+
+  // SATURATE TYPE pills — pick a waveshaper curve flavor. Re-derive the
+  // current curve immediately so the change is audible without touching DRIVE.
+  document.querySelectorAll('.dr-sat-type').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.dr-sat-type').forEach(b => b.setAttribute('data-active', 'false'));
+      btn.setAttribute('data-active', 'true');
+      DR.state.saturation.type = btn.dataset.type;
+      if (DR.nodes.saturation) DR.nodes.saturation.curve = makeSaturationCurve(DR.state.saturation.drive);
+    });
+  });
+
+  // CHORUS / FLANGER LFO shape pills — set the OscillatorNode type
+  // directly. Native Web Audio types: sine | triangle | square (sawtooth
+  // also works but reads less musical for chorus/flanger).
+  document.querySelectorAll('.dr-lfo-shape-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = btn.dataset.target;       // 'chorus' | 'flanger'
+      const shape  = btn.dataset.shape;
+      document.querySelectorAll('.dr-lfo-shape-btn[data-target="' + target + '"]')
+        .forEach(b => b.setAttribute('data-active', 'false'));
+      btn.setAttribute('data-active', 'true');
+      DR.state[target].shape = shape;
+      const lfo = target === 'chorus' ? DR.nodes.chorusLfo : DR.nodes.flangerLfo;
+      if (lfo) lfo.type = shape;
+    });
+  });
+
+  // AMBIENT interval selector — switch the pitch transposition set used
+  // by grain voices. Takes effect on next grain fire (~60-300ms).
+  document.querySelectorAll('.dr-amb-int').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.dr-amb-int').forEach(b => b.setAttribute('data-active', 'false'));
+      btn.setAttribute('data-active', 'true');
+      DR.state.ambient.intervals = btn.dataset.int;
+    });
+  });
+
+  // AMBIENT FREEZE — locks the capture buffer. Grains keep replaying the
+  // current content forever. Toggle off to resume polling.
+  const ambFreezeBtn = document.getElementById('dr-amb-freeze');
+  if (ambFreezeBtn) {
+    ambFreezeBtn.addEventListener('click', () => {
+      const next = !DR.state.ambient.frozen;
+      DR.state.ambient.frozen = next;
+      ambFreezeBtn.setAttribute('data-active', next ? 'true' : 'false');
+    });
+  }
+
+  // REV DLY TRIGGER — manually fires a reversed chunk on demand. Useful
+  // for one-shot punctuation while bypass keeps the auto-cycle quiet.
+  // Engages the module briefly if bypassed so the chunk is audible.
+  const rdTriggerBtn = document.getElementById('dr-rd-trigger');
+  if (rdTriggerBtn) {
+    rdTriggerBtn.addEventListener('click', () => {
+      // Temporarily un-bypass so the wet path is open, fire, restore.
+      const wasBypassed = DR.state.bypassed.revdelay;
+      if (wasBypassed && DR.ctx) {
+        const t = DR.ctx.currentTime;
+        DR.nodes.revdelayDry.gain.setValueAtTime(1 - DR.state.revdelay.mix, t);
+        DR.nodes.revdelayWet.gain.setValueAtTime(DR.state.revdelay.mix, t);
+      }
+      DR.state.bypassed.revdelay = false;
+      fireRevdelayChunk();
+      if (wasBypassed) {
+        // restore bypass after the chunk finishes
+        setTimeout(() => {
+          DR.state.bypassed.revdelay = true;
+          if (DR.ctx) {
+            const t = DR.ctx.currentTime;
+            DR.nodes.revdelayDry.gain.setValueAtTime(1, t);
+            DR.nodes.revdelayWet.gain.setValueAtTime(0, t);
+          }
+        }, DR.state.revdelay.time * 1000 + 100);
+      }
+    });
+  }
+
+  // ─── Tempo SYNC for CHORUS / FLANGER / REV DLY ──────────────────
+  // Each module has a SYNC toggle + 5-button division grid (1/16..1/1).
+  // When sync is on, the rate (chorus/flanger LFO Hz) or time (revdelay
+  // chunk seconds) is computed from DR.state.delay.bpm × division and
+  // applied via tickFxSync() in the main rAF loop. RATE/TIME knobs are
+  // overridden in sync mode (their state values stay; engine ignores them).
+  const FXSYNC_DIVISIONS = {        // multiplier of one beat (60/bpm seconds)
+    '1/16': 0.25,
+    '1/8':  0.5,
+    '1/4':  1.0,
+    '1/2':  2.0,
+    '1/1':  4.0
+  };
+  function applyFxsyncToggle(target, on) {
+    DR.state[target].sync = on;
+    document.querySelectorAll('.dr-fxsync-toggle[data-target="' + target + '"]')
+      .forEach(b => b.setAttribute('data-active', on ? 'true' : 'false'));
+    const grid = document.querySelector('.dr-fxsync-divs[data-target="' + target + '"]');
+    if (grid) grid.hidden = !on;
+    // Apply immediately — tick loop will keep it in sync as BPM drifts.
+    if (on) tickFxSync();
+  }
+  document.querySelectorAll('.dr-fxsync-toggle').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = btn.dataset.target;
+      applyFxsyncToggle(target, !DR.state[target].sync);
+    });
+  });
+  document.querySelectorAll('.dr-fxsync-div').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = btn.dataset.target;
+      const div = btn.dataset.div;
+      DR.state[target].division = div;
+      document.querySelectorAll('.dr-fxsync-div[data-target="' + target + '"]')
+        .forEach(b => b.setAttribute('data-active', 'false'));
+      btn.setAttribute('data-active', 'true');
+      if (DR.state[target].sync) tickFxSync();
+    });
+  });
+
+  // Polled in the main rAF loop. Recomputes synced rates when on; cheap
+  // (just multiplications). Bails early if nothing is in sync mode.
+  function tickFxSync() {
+    if (!DR.ctx) return;
+    const bpm = DR.state.delay.bpm || 120;
+    const t = DR.ctx.currentTime;
+    // CHORUS / FLANGER → LFO frequency (Hz)
+    ['chorus', 'flanger'].forEach(target => {
+      if (!DR.state[target].sync) return;
+      const beats = FXSYNC_DIVISIONS[DR.state[target].division] || 1;
+      const rate = (bpm / 60) / beats;
+      DR.state[target].rate = rate;
+      const lfo = target === 'chorus' ? DR.nodes.chorusLfo : DR.nodes.flangerLfo;
+      if (lfo) lfo.frequency.setTargetAtTime(rate, t, 0.02);
+    });
+    // REV DLY → chunk time (seconds)
+    if (DR.state.revdelay.sync) {
+      const beats = FXSYNC_DIVISIONS[DR.state.revdelay.division] || 1;
+      DR.state.revdelay.time = (60 / bpm) * beats;
+    }
+  }
 
   // ─── BEAT REPEAT — division selector (no knobs, single discrete control) ──
   // Clicking a division immediately captures and freezes that chunk. Loading
@@ -4578,17 +5087,21 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
   });
 
   // ─── BYPASS (per module) ────────────────────────────────────────
+  // Single helper for the bypass dot AND the head click. Skips no-op for
+  // mods that aren't in the bypassed registry (master pod) so clicking
+  // its head doesn't dim it visually.
+  function toggleModBypass(mod) {
+    const which = mod.dataset.mod;
+    if (!(which in DR.state.bypassed)) return;
+    const wasOn = mod.getAttribute('data-bypassed') !== 'true';
+    mod.setAttribute('data-bypassed', wasOn ? 'true' : 'false');
+    DR.state.bypassed[which] = wasOn;
+    applyBypass();
+  }
   document.querySelectorAll('.dr-mod-bypass').forEach(btn => {
     btn.addEventListener('click', e => {
       e.stopPropagation();
-      const mod = btn.closest('.dr-mod');
-      const which = mod.dataset.mod;
-      const wasOn = mod.getAttribute('data-bypassed') !== 'true';
-      mod.setAttribute('data-bypassed', wasOn ? 'true' : 'false');
-      if (which in DR.state.bypassed) {
-        DR.state.bypassed[which] = wasOn;
-        applyBypass();
-      }
+      toggleModBypass(btn.closest('.dr-mod'));
     });
   });
 
@@ -4607,14 +5120,15 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
   document.querySelectorAll('.dr-mod[data-collapsed]').forEach(mod => {
     const head = mod.querySelector('.dr-mod-head');
     if (!head) return;
-    // Whole header is a toggle target — clicking the name or spec area expands or
-    // collapses the module. Buttons (reset, bypass, chevron) stopPropagation so
-    // their behaviors aren't hijacked.
+    // Whole header is a bypass toggle (clicking the title or anywhere off
+    // the buttons engages/disengages the FX). Collapse is handled by the
+    // chevron only — and that chevron is hidden in the FX rack, so collapse
+    // is effectively unused there. Buttons stopPropagation so their own
+    // behaviors aren't hijacked by this handler.
     head.style.cursor = 'pointer';
     head.addEventListener('click', e => {
       if (e.target.closest('button')) return;
-      const collapsed = mod.getAttribute('data-collapsed') === 'true';
-      mod.setAttribute('data-collapsed', collapsed ? 'false' : 'true');
+      toggleModBypass(mod);
     });
   });
   function applyBypass() {
@@ -4760,7 +5274,7 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
     beatrepeat: [],
     delay: ['dtime', 'fb', 'dtone', 'dmix'],
     reverb: ['size', 'mix'],
-    bitcrush: ['bcBits', 'bcMix'],
+    bitcrush: ['bcBits', 'bcRate', 'bcMix'],
     saturation: ['satDrive', 'satMix'],
     chorus: ['chRate', 'chDepth', 'chFb', 'chMix'],
     flanger: ['flRate', 'flDepth', 'flFb', 'flMix'],
@@ -4795,7 +5309,7 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
     phaserRate: 0.5, phaserDepth: 0.6, phaserFb: 0.3, phaserMix: 0.5,
     size: 1.0, mix: 0,
     dtime: 500, fb: 0.4, dtone: 6000, dmix: 0,
-    bcBits: 5, bcMix: 0,
+    bcBits: 5, bcRate: 1.0, bcMix: 0,
     satDrive: 0, satMix: 0,
     chRate: 1.5, chDepth: 0.5, chFb: 0.2, chMix: 0,
     flRate: 0.5, flDepth: 0.7, flFb: 0.6, flMix: 0,
@@ -7077,6 +7591,7 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
     drawFlangerVis();
     drawAmbientVis();
     drawRevdelayVis();
+    tickFxSync();
     drawSynthVis();
     drawDelay();
     drawLfo();
