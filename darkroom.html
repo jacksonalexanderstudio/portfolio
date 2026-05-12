@@ -976,7 +976,16 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
    together on the left with only the gap between them */
 .dr-mod-head .dr-mod-reset{margin-left:auto}
 .dr-mod-head-text{display:flex;flex-direction:column;gap:var(--s2);min-width:0}
-.dr-mod-name{font-family:var(--dr-disp);font-weight:500;font-size:15px;letter-spacing:.04em;color:var(--dr-ink);text-transform:uppercase;line-height:1.05}
+/* FX hero titles switch to Departure Mono — the mechanical mono asset
+   already preloaded for the project. Sits against DM Sans (utility /
+   meter readouts) the way a hardware front-panel label sits against
+   a digital display, satisfying the two-fonts-minimum rule that the
+   page was previously violating. Departure is a single weight (400)
+   and reads slightly smaller per em than DM Sans, so size bumps a
+   hair (15→14, tighter tracking since the glyphs already have
+   built-in slab spacing). System mono fallback covers the swap
+   window. */
+.dr-mod-name{font-family:'Departure Mono',ui-monospace,'SF Mono','Menlo',monospace;font-weight:400;font-size:14px;letter-spacing:.02em;color:var(--dr-ink);text-transform:uppercase;line-height:1.05}
 .dr-mod-spec{font-family:var(--dr-mono);font-size:9px;letter-spacing:.12em;color:var(--dr-ink-2);text-transform:uppercase;line-height:1.4}
 .dr-mod-bypass{width:14px;height:14px;border:1px solid var(--dr-line-2);border-radius:50%;flex-shrink:0;transition:background .2s,border-color .2s,box-shadow .2s;margin-top:1px;margin-right:var(--s2)}
 /* COLLAPSE CHEVRON — sits to the right of bypass dot. Toggles data-collapsed on the
