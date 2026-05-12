@@ -104,6 +104,13 @@ h2.arc-section-title:not(:first-child){margin-top:64px}
 .pg-placeholder-title{font-family:'Fragment Mono','Courier New',monospace;font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:#fff}
 @keyframes pg-placeholder-pulse{0%,100%{opacity:1;transform:scaleX(1)}50%{opacity:.5;transform:scaleX(1.7)}}
 
+/* darkroom tile preview: the project's wordmark logo on a pure black
+   field. The source PNG is black-on-transparent so we use
+   filter:invert(1) to flip it to white-on-black — same logo, inverted
+   for the "after dark" reading. No new asset needed. */
+.pg-darkroom-preview{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#000;padding:18% 14%}
+.pg-darkroom-preview img{display:block;max-width:100%;max-height:100%;width:auto;height:auto;filter:invert(1)}
+
 /* Live preview: animated specimen title rendered inline in the tile (no mp4 needed). */
 .pg-title-preview{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#0c0c0c;font-family:'Pixelify Sans','DM Sans',sans-serif;font-weight:700;color:#fff;letter-spacing:0;text-transform:uppercase;font-size:clamp(28px,5vw,48px);line-height:1;padding:24px;text-align:center}
 .pg-letter{display:inline-block;text-align:center;vertical-align:baseline;transition:transform .3s cubic-bezier(.4,0,.2,1),opacity .18s ease;will-change:transform,opacity}
@@ -186,11 +193,14 @@ h2.arc-section-title:not(:first-child){margin-top:64px}
     <div class="arc-label" onclick="var s=document.getElementById('arc-sidebar');s.classList.toggle('nav-collapsed');this.querySelector('.arc-label-toggle').textContent=s.classList.contains('nav-collapsed')?'+':'−'">Playground <span class="arc-label-toggle">&minus;</span></div>
     <div class="arc-nav-list">
       <a class="arc-nav-item active" data-filter="all"><span class="arc-nav-num">01</span><span class="arc-nav-label">All</span></a>
-      <a class="arc-nav-item" data-filter="visualizers"><span class="arc-nav-num">02</span><span class="arc-nav-label">Visualizers</span></a>
-      <a class="arc-nav-item" data-filter="type"><span class="arc-nav-num">03</span><span class="arc-nav-label">Type / Specimens</span></a>
+      <a class="arc-nav-item" data-filter="audio-midi"><span class="arc-nav-num">02</span><span class="arc-nav-label">Audio / MIDI</span></a>
+      <a class="arc-nav-item" data-filter="visualizers"><span class="arc-nav-num">03</span><span class="arc-nav-label">Visualizers</span></a>
+      <a class="arc-nav-item" data-filter="type"><span class="arc-nav-num">04</span><span class="arc-nav-label">Type / Specimens</span></a>
     </div>
   </aside>
   <div class="archive-main">
+    <h2 class="arc-section-title" id="section-am">Audio / MIDI</h2>
+    <div class="archive-grid" id="pg-grid-am"></div>
     <h2 class="arc-section-title" id="section-vz">Visualizers</h2>
     <div class="archive-grid" id="pg-grid-vz"></div>
     <h2 class="arc-section-title" id="section-tp">Type / Specimens</h2>
@@ -315,6 +325,14 @@ h2.arc-section-title:not(:first-child){margin-top:64px}
   // To add a new experiment: push an entry into the array below with category, id, title, year, video, poster, href.
   var items = [
     {
+      category: 'audio-midi',
+      id: '003',
+      title: 'darkroom.ja',
+      year: '2026',
+      livePreview: 'darkroom-logo',
+      href: 'darkroom.html'
+    },
+    {
       category: 'visualizers',
       id: '001',
       title: 'Visualizer 001',
@@ -329,17 +347,11 @@ h2.arc-section-title:not(:first-child){margin-top:64px}
       year: '2026',
       livePreview: 'specimen',
       href: 'font-test.html'
-    },
-    {
-      category: 'visualizers',
-      id: '003',
-      title: 'darkroom.ja',
-      year: '2026',
-      poster: 'playground/darkroom-poster.jpg',
-      href: 'darkroom.html'
     }
   ];
 
+  var gridAM = document.getElementById('pg-grid-am');
+  var sectionAM = document.getElementById('section-am');
   var gridVZ = document.getElementById('pg-grid-vz');
   var sectionVZ = document.getElementById('section-vz');
   var gridTP = document.getElementById('pg-grid-tp');
@@ -357,6 +369,12 @@ h2.arc-section-title:not(:first-child){margin-top:64px}
     if (item.livePreview === 'specimen') {
       media = '<div class="pg-title-preview" data-preview="specimen">' +
                 buildSpecimenLetters('SPECIMEN.JA') +
+              '</div>';
+    } else if (item.livePreview === 'darkroom-logo') {
+      // Black tile + inverted wordmark. Uses the same logo PNG that
+      // ships in the darkroom masthead so the asset stays singular.
+      media = '<div class="pg-darkroom-preview">' +
+                '<img src="darkroom/assets/darkroom-logo.png" alt="darkroom" loading="lazy">' +
               '</div>';
     } else if (item.livePreview === 'placeholder') {
       var label = (item.title || '').replace(/\s+\d+$/, '').toUpperCase();
@@ -390,7 +408,8 @@ h2.arc-section-title:not(:first-child){margin-top:64px}
   var hasLivePreview = false;
   items.forEach(function(item) {
     var el = renderItem(item);
-    if (item.category === 'visualizers') gridVZ.appendChild(el);
+    if (item.category === 'audio-midi') gridAM.appendChild(el);
+    else if (item.category === 'visualizers') gridVZ.appendChild(el);
     else if (item.category === 'type') gridTP.appendChild(el);
     allEls.push(el);
     if (item.livePreview === 'specimen') hasLivePreview = true;
@@ -403,6 +422,10 @@ h2.arc-section-title:not(:first-child){margin-top:64px}
   }
 
   // Hide empty sections
+  if (gridAM.children.length === 0) {
+    sectionAM.style.display = 'none';
+    gridAM.style.display = 'none';
+  }
   if (gridVZ.children.length === 0) {
     sectionVZ.style.display = 'none';
     gridVZ.style.display = 'none';
@@ -422,6 +445,7 @@ h2.arc-section-title:not(:first-child){margin-top:64px}
   function applyFilter(filter) {
     if (filter === 'all') {
       allEls.forEach(function(el) { el.style.display = ''; });
+      if (gridAM.children.length > 0) { sectionAM.style.display = ''; gridAM.style.display = ''; }
       if (gridVZ.children.length > 0) { sectionVZ.style.display = ''; gridVZ.style.display = ''; }
       if (gridTP.children.length > 0) { sectionTP.style.display = ''; gridTP.style.display = ''; }
     } else {
@@ -429,6 +453,8 @@ h2.arc-section-title:not(:first-child){margin-top:64px}
         el.style.display = el.getAttribute('data-category') === filter ? '' : 'none';
       });
       // Show only the matching section
+      sectionAM.style.display = filter === 'audio-midi' ? '' : 'none';
+      gridAM.style.display = filter === 'audio-midi' ? '' : 'none';
       sectionVZ.style.display = filter === 'visualizers' ? '' : 'none';
       gridVZ.style.display = filter === 'visualizers' ? '' : 'none';
       sectionTP.style.display = filter === 'type' ? '' : 'none';
