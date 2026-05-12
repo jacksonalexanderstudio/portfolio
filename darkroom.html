@@ -5233,6 +5233,20 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
     if (!param) return;
     const knob = knobs[param];
     if (!knob || !knob.setNormalized) return;
+    // Auto-engage the parent FX module on inbound CC. Without this, a
+    // mapped knob's audio change is silently masked while the module
+    // sits bypassed — the user had to click both the LEARN pill AND
+    // the bypass dot to actually hear their twist. Now twisting a
+    // mapped CC un-bypasses the host module in the same gesture; if
+    // the user wants the FX off again they just click the bypass dot
+    // back. Skip mods that aren't in the bypassed registry (e.g. the
+    // master out knob lives outside any FX module).
+    const knobEl = document.querySelector(`.dr-knob[data-param="${param}"]`);
+    const hostMod = knobEl && knobEl.closest('.dr-mod');
+    if (hostMod && hostMod.getAttribute('data-bypassed') === 'true' &&
+        (hostMod.dataset.mod in DR.state.bypassed)) {
+      toggleModBypass(hostMod);
+    }
     knob.setNormalized(value / 127);
   }
   function midiEnterLearn(paramName) {
