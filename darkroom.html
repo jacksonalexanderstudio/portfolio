@@ -1445,7 +1445,8 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
       <span class="dr-kill-label">RELEASE</span>
       <span class="dr-kill-sub">tap to release</span>
     </button>
-    <button class="dr-rack-clear" id="dr-rack-clear" type="button" aria-label="reset all effect knobs to defaults">CLEAR ALL</button>
+    <button class="dr-rack-clear" id="dr-rack-clear" type="button" aria-label="reset all effect knobs to defaults">CLEAR FX</button>
+    <button class="dr-rack-clear" id="dr-midi-clear" type="button" aria-label="clear all MIDI bindings">CLEAR MIDI</button>
   </div>
 
   <!-- TOP ROW — master pod (skinny utility column, left) sits beside the
@@ -5351,6 +5352,21 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
     }
   });
 
+  // CLEAR MIDI — wipes every CC binding from state + localStorage and
+  // refreshes every LEARN pill back to its "MIDI" idle label.
+  const midiClearBtn = document.getElementById('dr-midi-clear');
+  if (midiClearBtn) {
+    midiClearBtn.addEventListener('click', () => {
+      MIDI.bindings = {};
+      midiSave();
+      midiRefreshAllButtons();
+      if (MIDI.learnTarget) {
+        midiExitLearn();
+        midiSetStatus('connected', MIDI.access ? MIDI.access.inputs.size : 0);
+      }
+    });
+  }
+
   // ─── COLLAPSE / EXPAND (per module) ──────────────────────────────
   // Two independent toggles: chevron always toggles; clicking the collapsed-state
   // header (anywhere off the buttons) expands. Bypass is unaffected — collapse is
@@ -6148,7 +6164,7 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
       const cols = SAMPLER_PEAK_COLS;
       const colW = w / cols;
       const amp = h * 0.48;
-      cx.fillStyle = 'oklch(0.50 0.012 80)';
+      cx.fillStyle = 'oklch(0.64 0.18 35)'; // --dr-moss (the site orange)
       for (let c = 0; c < cols; c++) {
         const mn = DR.sampler.peakMin[c];
         const mx = DR.sampler.peakMax[c];
