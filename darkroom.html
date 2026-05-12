@@ -118,6 +118,7 @@ canvas{display:block}
 .dr-mast-title em{font-style:normal;color:var(--dr-moss)}
 .dr-mast-left{display:flex;flex-direction:column;gap:10px;align-items:flex-start;min-width:0;flex:1}
 .dr-mast-blurb{font-family:var(--dr-mono);font-size:12px;line-height:1.55;letter-spacing:.02em;color:var(--dr-ink-dim);margin:0;max-width:62ch}
+.dr-mast-logo{display:block;max-width:240px;width:100%;height:auto;margin:0}
 
 /* Compact master pod inlined into the masthead's right side. Source label
    on top, OUT knob + slim POST meter on the bottom. Replaces the old
@@ -1384,7 +1385,12 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
        since the references are null-guarded. -->
   <section class="dr-mast">
     <div class="dr-mast-left">
-      <h1 class="dr-mast-title">darkroom</h1>
+      <!-- Logo replaces the text wordmark 2026-05-12. Falls back to the
+           ".dr-mast-title" h1 if the image fails to load (e.g. file not
+           yet saved or 404) — onerror swap keeps the page identified. -->
+      <img class="dr-mast-logo" src="darkroom/assets/darkroom-logo.png" alt="darkroom"
+        onerror="this.style.display='none';var f=document.getElementById('dr-mast-title-fallback');if(f)f.style.display='block'"/>
+      <h1 class="dr-mast-title" id="dr-mast-title-fallback" style="display:none">darkroom</h1>
       <p class="dr-mast-blurb">share a chrome tab, plug in a device, or load a file — then shape the signal in real time with the modules below. nothing is recorded; everything runs live in the browser.</p>
     </div>
     <div class="dr-mast-master" aria-label="Master output">
