@@ -985,7 +985,7 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
    hair (15→14, tighter tracking since the glyphs already have
    built-in slab spacing). System mono fallback covers the swap
    window. */
-.dr-mod-name{font-family:'Departure Mono',ui-monospace,'SF Mono','Menlo',monospace;font-weight:400;font-size:14px;letter-spacing:.02em;color:var(--dr-ink);text-transform:uppercase;line-height:1.05}
+.dr-mod-name{font-family:'Departure Mono',ui-monospace,'SF Mono','Menlo',monospace;font-weight:400;font-size:12px;letter-spacing:.02em;color:var(--dr-ink);text-transform:uppercase;line-height:1.05}
 .dr-mod-spec{font-family:var(--dr-mono);font-size:9px;letter-spacing:.12em;color:var(--dr-ink-2);text-transform:uppercase;line-height:1.4}
 .dr-mod-bypass{width:14px;height:14px;border:1px solid var(--dr-line-2);border-radius:50%;flex-shrink:0;transition:background .2s,border-color .2s,box-shadow .2s;margin-top:1px;margin-right:var(--s2)}
 /* COLLAPSE CHEVRON — sits to the right of bypass dot. Toggles data-collapsed on the
@@ -5342,6 +5342,16 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
         midiExitLearn();
         midiSetStatus('connected', MIDI.access ? MIDI.access.inputs.size : 0);
         return;
+      }
+      // Auto-engage the parent FX module the moment a LEARN pill is
+      // clicked. The user clearly intends to control this FX with a
+      // controller — there's no reason to require a second click on
+      // the bypass dot. Skips mods outside the bypassed registry
+      // (master OUT knob lives in the masthead, not an FX module).
+      const hostMod = el.closest('.dr-mod');
+      if (hostMod && hostMod.getAttribute('data-bypassed') === 'true' &&
+          (hostMod.dataset.mod in DR.state.bypassed)) {
+        toggleModBypass(hostMod);
       }
       const enter = () => midiEnterLearn(paramName);
       if (!MIDI.enabled) midiEnable().then(ok => { if (ok) enter(); });
