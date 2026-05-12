@@ -82,7 +82,11 @@ h2.arc-section-title{font:300 11px/1 var(--sf);letter-spacing:.14em;text-transfo
 h2.arc-section-title:not(:first-child){margin-top:64px}
 
 /* ── GRID ── */
-.archive-main{padding:52px 52px 100px}
+/* flex:1 + min-width:0 so the main column always claims the remaining
+   horizontal space next to the 322px sidebar, regardless of how many
+   tiles a given section holds. Without this, single-item sections
+   collapsed the column to the tile's intrinsic width. */
+.archive-main{flex:1;min-width:0;padding:52px 52px 100px}
 .archive-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:28px;align-items:start}
 .pg-item{position:relative;overflow:hidden;background:#0c0c0c;cursor:pointer;border-radius:0;transition:transform .4s ease,border-radius .4s ease;aspect-ratio:1/1}
 .pg-item:hover{transform:translateY(-4px);border-radius:14px}
