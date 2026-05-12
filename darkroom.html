@@ -145,6 +145,25 @@ canvas{display:block}
 .dr-mast-knob .dr-knob-dial{width:36px;height:36px}
 .dr-mast-knob .dr-knob-label{font-family:var(--dr-fx);font-weight:700;font-size:9px;letter-spacing:.20em;color:var(--dr-moss);text-transform:uppercase}
 .dr-mast-knob .dr-knob-value{display:none}
+
+/* Knob being learned — pulsing amber outline so the user knows which knob
+   the next incoming CC will bind to. */
+.dr-knob-midi-learning .dr-knob-dial{filter:drop-shadow(0 0 6px var(--dr-amber));animation:dr-knob-learn-pulse 1s ease-in-out infinite}
+@keyframes dr-knob-learn-pulse{0%,100%{filter:drop-shadow(0 0 4px var(--dr-amber))}50%{filter:drop-shadow(0 0 12px var(--dr-amber))}}
+
+/* Per-knob LEARN pill — fixed-size affordance under each knob's value
+   text so all pills align to a uniform grid across rows regardless of
+   their label content (MIDI / CC 1 / CC 100 all render in the same box).
+   Text reads "MIDI" when unbound, "CC X" when a controller CC is mapped.
+   Active (bound) = black fill, orange text. Right-click clears binding. */
+.dr-knob-midi-learn{margin-top:4px;width:42px;height:14px;padding:0;
+  display:inline-flex;align-items:center;justify-content:center;
+  font-family:var(--dr-fx);font-weight:600;font-size:7px;letter-spacing:.16em;color:var(--dr-ink-2);text-transform:uppercase;
+  background:transparent;border:1px solid var(--dr-line);border-radius:9999px;cursor:pointer;line-height:1;
+  transition:color .12s,border-color .12s,background .12s}
+.dr-knob-midi-learn:hover{color:var(--dr-ink);border-color:var(--dr-line-2)}
+.dr-knob-midi-learn[data-bound="true"]{color:oklch(0.98 0.003 80);border-color:var(--dr-moss);background:var(--dr-moss)}
+.dr-knob-midi-learning .dr-knob-midi-learn{color:var(--dr-amber);border-color:var(--dr-amber);background:var(--dr-panel-3)}
 .dr-mast-meta{display:flex;align-items:center;gap:var(--s4);font-family:var(--dr-mono);font-size:9px;letter-spacing:.22em;color:var(--dr-ink-2);text-transform:uppercase;margin:0}
 .dr-mast-version{color:var(--dr-moss);font-weight:400}
 
@@ -4190,8 +4209,17 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
     });
     dial.addEventListener('dblclick', () => setValue(opts.default));
 
+    // Normalized 0..1 input — used by the MIDI bridge so a CC value (0..127
+    // mapped to 0..1) drives the knob through its native scale (log or linear)
+    // without the MIDI code needing to know the knob's min/max.
+    function setNormalized(t) {
+      t = Math.max(0, Math.min(1, t));
+      if (opts.scale === 'log') setValue(opts.min * Math.pow(opts.max / opts.min, t));
+      else setValue(opts.min + t * (opts.max - opts.min));
+    }
+
     setValue(opts.default, false);
-    return { setValue, getValue: () => value };
+    return { setValue, getValue: () => value, setNormalized };
   }
 
   // ─── KNOB BINDINGS ───────────────────────────────────────────────
@@ -5110,6 +5138,217 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
       e.stopPropagation();
       toggleModBypass(btn.closest('.dr-mod'));
     });
+  });
+
+  // ─── MIDI bridge (Web MIDI API) ──────────────────────────────────
+  // Plug a MIDI controller, shift-click any knob, then twist a CC on the
+  // controller — that CC is bound to the knob. Bindings persist via
+  // localStorage. Escape exits learn mode. CC value 0-127 maps to the
+  // knob's full range (log or linear) via setNormalized(). Only listens
+  // to CC messages (status 0xB0-0xBF); pitch bend, notes, etc. ignored.
+  const MIDI = {
+    enabled: false,
+    access: null,
+    bindings: {},          // { ccNumber: paramName }
+    learnTarget: null,     // paramName waiting for next CC
+    bulkMap: false,        // true while sequentially mapping every knob
+    bulkQueue: [],         // ordered list of paramNames remaining
+    bulkTotal: 0,
+    bulkDone: 0
+  };
+  try { MIDI.bindings = JSON.parse(localStorage.getItem('darkroom:midi') || '{}'); } catch(_) {}
+  function midiSave() {
+    try { localStorage.setItem('darkroom:midi', JSON.stringify(MIDI.bindings)); } catch(_) {}
+  }
+
+  const midiPill   = document.getElementById('dr-midi-pill');
+  const midiStatus = document.getElementById('dr-midi-status');
+
+  function midiSetStatus(state, detail) {
+    if (!midiPill) return;
+    midiPill.setAttribute('data-state', state);
+    let label = 'MIDI';
+    if (state === 'connected')   label = `MIDI · ${detail || 0}`;
+    else if (state === 'no-devices') label = 'MIDI · none';
+    else if (state === 'denied') label = 'MIDI denied';
+    else if (state === 'unsupported') label = 'MIDI n/a';
+    else if (state === 'learn')  label = `LEARN · ${detail || ''}`;
+    else if (state === 'bulk')   label = `MAP ${MIDI.bulkDone}/${MIDI.bulkTotal} · ${detail || ''}`;
+    if (midiStatus) midiStatus.textContent = label;
+  }
+  midiSetStatus('idle');
+
+  async function midiEnable() {
+    if (MIDI.enabled) return true;
+    if (!navigator.requestMIDIAccess) { midiSetStatus('unsupported'); return false; }
+    try {
+      const access = await navigator.requestMIDIAccess();
+      MIDI.access = access;
+      MIDI.enabled = true;
+      access.onstatechange = () => midiAttachInputs();
+      midiAttachInputs();
+      return true;
+    } catch (err) {
+      midiSetStatus('denied');
+      return false;
+    }
+  }
+  function midiAttachInputs() {
+    if (!MIDI.access) return;
+    for (const input of MIDI.access.inputs.values()) {
+      input.onmidimessage = midiHandle;
+    }
+    const count = MIDI.access.inputs.size;
+    midiSetStatus(count > 0 ? 'connected' : 'no-devices', count);
+  }
+  function midiHandle(ev) {
+    const [status, data1, data2] = ev.data;
+    if ((status & 0xF0) !== 0xB0) return; // CC only
+    const cc = data1;
+    const value = data2;
+    if (MIDI.learnTarget) {
+      // Bind this CC to the learn-target knob. If the same CC was previously
+      // bound to a different knob, that mapping is replaced; if the target
+      // knob already had a different CC, drop the old one so each knob has
+      // at most one CC bound to it.
+      const target = MIDI.learnTarget;
+      Object.keys(MIDI.bindings).forEach(k => {
+        if (MIDI.bindings[k] === target) delete MIDI.bindings[k];
+      });
+      MIDI.bindings[cc] = target;
+      midiSave();
+      if (typeof midiRefreshAllButtons === 'function') midiRefreshAllButtons();
+      midiExitLearn();
+      midiSetStatus('connected', MIDI.access.inputs.size);
+      return;
+    }
+    const param = MIDI.bindings[cc];
+    if (!param) return;
+    const knob = knobs[param];
+    if (!knob || !knob.setNormalized) return;
+    knob.setNormalized(value / 127);
+  }
+  function midiEnterLearn(paramName) {
+    midiExitLearn(true);
+    MIDI.learnTarget = paramName;
+    const el = document.querySelector(`.dr-knob[data-param="${paramName}"]`);
+    if (el) {
+      el.classList.add('dr-knob-midi-learning');
+      // Scroll the learning knob into view during bulk-map so the user
+      // can see which one's next, especially when modules are off-screen.
+      try { el.scrollIntoView({ block: 'center', behavior: 'smooth' }); } catch(_) {}
+    }
+    if (MIDI.bulkMap) midiSetStatus('bulk', paramName);
+    else midiSetStatus('learn', paramName);
+  }
+  function midiExitLearn(keepBulk) {
+    document.querySelectorAll('.dr-knob-midi-learning').forEach(el => el.classList.remove('dr-knob-midi-learning'));
+    MIDI.learnTarget = null;
+    if (!keepBulk) {
+      MIDI.bulkMap = false;
+      MIDI.bulkQueue = [];
+      MIDI.bulkTotal = 0;
+      MIDI.bulkDone = 0;
+    }
+  }
+
+  // ── Bulk-map mode ─────────────────────────────────────────────
+  // Walks every knob on the page in DOM order, learning one at a time.
+  // Each incoming CC binds to the current knob then auto-advances to the
+  // next. Tab / Space skips a knob without binding. Escape exits.
+  function midiStartBulkMap() {
+    if (!MIDI.enabled) return;
+    const els = [...document.querySelectorAll('.dr-knob[data-param]')];
+    const params = els.map(el => el.dataset.param).filter(Boolean);
+    if (!params.length) return;
+    MIDI.bulkQueue = params;
+    MIDI.bulkTotal = params.length;
+    MIDI.bulkDone = 0;
+    MIDI.bulkMap = true;
+    midiAdvanceBulk();
+  }
+  function midiAdvanceBulk() {
+    if (!MIDI.bulkMap) return;
+    if (!MIDI.bulkQueue.length) {
+      midiExitLearn();
+      midiSetStatus('connected', MIDI.access ? MIDI.access.inputs.size : 0);
+      return;
+    }
+    const next = MIDI.bulkQueue.shift();
+    midiEnterLearn(next);
+  }
+
+  // Per-knob LEARN pill. Inject a small button under every knob so users
+  // can pick which one to map without a hidden shortcut. Click enables
+  // MIDI on first use, then puts that knob in learn mode. Button text
+  // updates to show the bound CC number once a CC binds.
+  function midiButtonLabel(paramName) {
+    for (const cc in MIDI.bindings) {
+      if (MIDI.bindings[cc] === paramName) return 'CC ' + cc;
+    }
+    return 'MIDI';
+  }
+  function midiRefreshAllButtons() {
+    document.querySelectorAll('.dr-knob-midi-learn').forEach(btn => {
+      const paramName = btn.dataset.param;
+      btn.textContent = midiButtonLabel(paramName);
+      const bound = btn.textContent.startsWith('CC');
+      btn.setAttribute('data-bound', bound ? 'true' : 'false');
+    });
+  }
+  document.querySelectorAll('.dr-knob[data-param]').forEach(el => {
+    const paramName = el.dataset.param;
+    const btn = document.createElement('button');
+    btn.className = 'dr-knob-midi-learn';
+    btn.type = 'button';
+    btn.dataset.param = paramName;
+    btn.textContent = midiButtonLabel(paramName);
+    btn.setAttribute('data-bound', btn.textContent.startsWith('CC') ? 'true' : 'false');
+    btn.title = 'MIDI learn — click then turn a controller knob to bind';
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      if (MIDI.learnTarget === paramName) {
+        // Clicking the active learn-target's own button cancels learn.
+        midiExitLearn();
+        midiSetStatus('connected', MIDI.access ? MIDI.access.inputs.size : 0);
+        return;
+      }
+      const enter = () => midiEnterLearn(paramName);
+      if (!MIDI.enabled) midiEnable().then(ok => { if (ok) enter(); });
+      else enter();
+    });
+    el.appendChild(btn);
+  });
+  // Right-click any LEARN button → clear that knob's binding.
+  document.querySelectorAll('.dr-knob-midi-learn').forEach(btn => {
+    btn.addEventListener('contextmenu', e => {
+      e.preventDefault();
+      const paramName = btn.dataset.param;
+      let changed = false;
+      Object.keys(MIDI.bindings).forEach(cc => {
+        if (MIDI.bindings[cc] === paramName) { delete MIDI.bindings[cc]; changed = true; }
+      });
+      if (changed) { midiSave(); midiRefreshAllButtons(); }
+    });
+  });
+
+  // MIDI pill: click once to enable Web MIDI. Click again while learning
+  // to cancel. Bulk-map removed in favor of per-knob LEARN buttons.
+  if (midiPill) {
+    midiPill.addEventListener('click', () => {
+      if (MIDI.learnTarget) {
+        midiExitLearn();
+        midiSetStatus('connected', MIDI.access ? MIDI.access.inputs.size : 0);
+        return;
+      }
+      if (!MIDI.enabled) midiEnable();
+    });
+  }
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && MIDI.learnTarget) {
+      midiExitLearn();
+      midiSetStatus('connected', MIDI.access ? MIDI.access.inputs.size : 0);
+    }
   });
 
   // ─── COLLAPSE / EXPAND (per module) ──────────────────────────────
