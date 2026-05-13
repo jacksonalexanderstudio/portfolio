@@ -1,0 +1,1580 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>darkroom — DJ station prototype</title>
+<!--
+  ============================================================
+  DARKROOM — DJ STATION VISUAL PROTOTYPE
+  ============================================================
+  Static HTML/CSS mock to show the proposed DJM-style layout
+  for the two-deck mixer feature. No audio, no JS interaction.
+  Saturn rotors auto-spin via CSS keyframes only.
+
+  The styling vocabulary (palette, fonts, knob/module markup,
+  Saturn SVG composition) mirrors darkroom.html as of 2026-05-06
+  so this prototype reads as the same instrument.
+
+  Layout:
+    masthead
+    global action bar (RELEASE, CLEAR ALL)
+    DJ STATION
+      [DECK A column]  [MIXER column]  [DECK B column]
+        - Saturn         - A channel    - Saturn
+        - waveform         strip          - waveform
+        - BEAT REPEAT    - B channel    - BEAT REPEAT
+                           strip
+                         - crossfader
+                         - master pod
+    MASTER FX RACK (existing 6 modules + per-module ASSIGN chip)
+  ============================================================
+-->
+<style>
+@font-face{
+  font-family:'DM Sans';
+  src:local('DM Sans');
+  font-weight:300 700;font-display:swap;
+}
+/* Departure Mono — same asset the live darkroom uses for FX hero titles.
+   Relative path resolves to /darkroom/fonts/ from /darkroom/prototypes/. */
+@font-face{
+  font-family:'Departure Mono';
+  src:url('../fonts/DepartureMono-Regular.woff2') format('woff2');
+  font-weight:400;font-style:normal;font-display:swap;
+}
+
+:root{
+  --dr-panel:    oklch(0.83 0.013 80);
+  --dr-panel-2:  oklch(0.90 0.014 80);
+  --dr-panel-3:  oklch(0.96 0.014 80);
+  --dr-panel-4:  oklch(0.76 0.016 78);
+  --dr-line:     oklch(0.62 0.014 75);
+  --dr-line-2:   oklch(0.50 0.016 75);
+
+  --dr-ink:      oklch(0.18 0.008 80);
+  --dr-ink-dim:  oklch(0.42 0.010 80);
+  --dr-ink-2:    oklch(0.58 0.012 80);
+
+  --dr-moss:       oklch(0.64 0.18 35);
+  --dr-moss-dim:   oklch(0.50 0.14 35);
+  --dr-moss-glow:  oklch(0.64 0.18 35 / 0.30);
+
+  /* Legacy "coral" vars now alias to moss so existing active-state
+     references (beat pills, action pill engaged, etc.) match the
+     site's moss accent. Originally near-black; the May 2026 palette
+     pass on darkroom.html moved every accent surface to moss. */
+  --dr-coral:      oklch(0.64 0.18 35);
+  --dr-coral-dim:  oklch(0.50 0.14 35);
+  --dr-amber:      oklch(0.52 0.18 25);
+
+  --dr-alu-hi:   oklch(0.97 0.005 80);
+  --dr-alu-mid:  oklch(0.86 0.008 80);
+  --dr-alu-lo:   oklch(0.62 0.012 80);
+
+  --dr-mono:     'DM Sans',system-ui,sans-serif;
+  --dr-disp:     'DM Sans',system-ui,sans-serif;
+  --dr-fx:       'DM Sans',system-ui,sans-serif;
+  --dr-sf:       'DM Sans',sans-serif;
+
+  --s1:4px;--s2:8px;--s3:12px;--s4:16px;--s5:24px;--s6:32px;--s7:48px;--s8:64px;
+  --r-sm:4px;--r-md:8px;--r-lg:12px;--r-xl:16px;
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;background:var(--dr-panel)}
+body{
+  margin:0;background:linear-gradient(180deg,oklch(0.86 0.012 78) 0%,oklch(0.83 0.013 80) 50%,oklch(0.80 0.014 76) 100%);
+  background-attachment:fixed;
+  color:var(--dr-ink);font-family:var(--dr-mono);line-height:1.5;
+  overflow-x:hidden;min-height:100vh;
+}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+
+.dr{padding:64px 52px 80px;max-width:1440px;margin:0 auto;display:flex;flex-direction:column;gap:0}
+
+/* ── MASTHEAD ── Mirrors darkroom.html post-2026-05-12: logo image
+   on the left over a short blurb, master pod inlined on the right
+   as a compact single-row card. */
+.dr-mast{display:flex;align-items:baseline;justify-content:space-between;gap:var(--s4);padding-bottom:var(--s5);border-bottom:1px solid var(--dr-line);margin-bottom:var(--s6)}
+.dr-mast-left{display:flex;flex-direction:column;gap:10px;align-items:flex-start;min-width:0;flex:1}
+.dr-mast-logo{display:block;max-width:240px;width:100%;height:auto;margin:0}
+.dr-mast-title{font-family:var(--dr-disp);font-weight:600;font-size:36px;line-height:1;letter-spacing:.02em;color:var(--dr-moss);text-transform:lowercase;margin:0}
+.dr-mast-blurb{font-family:var(--dr-mono);font-size:12px;line-height:1.55;letter-spacing:.02em;color:var(--dr-ink-dim);margin:0;max-width:62ch}
+.dr-mast-prototype{font-family:var(--dr-mono);font-size:8px;letter-spacing:.10em;color:var(--dr-amber);text-transform:lowercase;font-weight:400;margin-left:6px;vertical-align:super;line-height:1}
+
+/* Master pod inlined into the masthead's right side. Single horizontal
+   row: MASTER label · POST meter · OUT knob. Matches darkroom.html. */
+.dr-mast-master{display:flex;flex-direction:row;align-items:center;gap:var(--s5);flex-shrink:0;
+  padding:var(--s3) var(--s4);
+  background:linear-gradient(180deg,var(--dr-panel-3) 0%,var(--dr-panel-2) 100%);
+  border:1px solid var(--dr-line);
+  border-radius:var(--r-lg);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.85),0 1px 1px rgba(0,0,0,.04),0 4px 14px -8px rgba(0,0,0,.10)}
+.dr-mast-master-title{font-family:var(--dr-disp);font-weight:600;font-size:14px;letter-spacing:.18em;color:var(--dr-ink);text-transform:uppercase}
+.dr-mast-meter{display:flex;align-items:center;gap:var(--s2);min-width:0}
+.dr-mast-meter-bar{position:relative;height:5px;width:120px;background:var(--dr-panel);border:1px solid var(--dr-line);border-radius:var(--r-sm);overflow:hidden}
+.dr-mast-meter-bar > span{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,var(--dr-moss-dim),var(--dr-moss));transition:width .06s linear}
+.dr-mast-meter-bar .dr-meter-tick{position:absolute;top:0;bottom:0;width:1px;background:var(--dr-line);left:75%}
+.dr-mast-knob{display:flex;flex-direction:column;align-items:center;gap:2px}
+.dr-mast-knob .dr-knob-dial{width:36px;height:36px}
+.dr-mast-knob .dr-knob-label{font-family:var(--dr-fx);font-weight:700;font-size:9px;letter-spacing:.20em;color:var(--dr-moss);text-transform:uppercase}
+
+/* ── GLOBAL ACTION BAR ── */
+.dr-globals{display:flex;justify-content:flex-start;align-items:center;gap:var(--s3);margin-bottom:var(--s5)}
+.dr-globals-pill{font-family:var(--dr-fx);font-weight:600;font-size:10px;letter-spacing:.20em;color:var(--dr-ink-dim);text-transform:uppercase;
+  padding:9px 18px;background:var(--dr-panel-2);border:1px solid var(--dr-line);border-radius:var(--r-md);
+  display:inline-flex;align-items:center;gap:var(--s2)}
+.dr-globals-pill[data-active="true"]{background:var(--dr-coral);color:var(--dr-panel-3);border-color:var(--dr-coral)}
+.dr-globals-pill .dot{width:6px;height:6px;border-radius:50%;background:var(--dr-line-2)}
+.dr-globals-pill[data-active="true"] .dot{background:var(--dr-amber);box-shadow:0 0 6px var(--dr-amber)}
+
+/* MASTER PILL — global, sits at the head of the action bar */
+.dr-globals-master{
+  display:inline-flex;align-items:center;gap:var(--s3);
+  padding:5px 14px 5px 8px;background:var(--dr-panel-2);
+  border:1px solid var(--dr-line-2);border-radius:var(--r-md);
+  box-shadow:0 1px 0 oklch(1 0 0 / .55) inset, 0 2px 6px rgba(0,0,0,.05);
+}
+.dr-globals-master-knob{display:flex;align-items:center;gap:var(--s2)}
+.dr-globals-master-knob .dr-knob-dial{width:34px;height:34px}
+.dr-globals-master-knob .dr-knob-label{font-family:var(--dr-fx);font-weight:700;font-size:9px;letter-spacing:.20em;color:var(--dr-moss);text-transform:uppercase}
+.dr-globals-master-val{font-family:var(--dr-mono);font-size:10px;letter-spacing:.04em;color:var(--dr-ink);font-variant-numeric:tabular-nums}
+.dr-globals-master-meters{display:flex;gap:3px;align-items:center}
+.dr-globals-master-meters .dr-meter{height:28px;width:6px;padding:1px}
+.dr-globals-master-meters .lr{font-family:var(--dr-mono);font-size:7px;letter-spacing:.16em;color:var(--dr-ink-2);text-transform:uppercase;display:flex;flex-direction:column;line-height:1;gap:11px;margin-left:2px}
+
+/* ── DJ STATION (3-col grid) ── */
+.dr-station{display:grid;grid-template-columns:1fr 320px 1fr;gap:var(--s4);align-items:start;margin-bottom:var(--s5)}
+
+/* ── DECK COLUMN ── */
+.dr-deck{
+  background:var(--dr-panel-2);
+  border:1px solid oklch(0.62 0.014 78);
+  border-radius:var(--r-xl);
+  padding:var(--s4);
+  display:flex;flex-direction:column;gap:var(--s4);
+  box-shadow:0 1px 0 oklch(1 0 0 / .55) inset, 0 8px 24px rgba(0,0,0,.06);
+}
+.dr-deck-head{display:flex;justify-content:space-between;align-items:baseline;padding-bottom:var(--s3);border-bottom:1px solid var(--dr-line)}
+.dr-deck-label{font-family:var(--dr-disp);font-weight:600;font-size:14px;letter-spacing:.16em;color:var(--dr-ink);text-transform:uppercase}
+.dr-deck-label strong{color:var(--dr-moss);font-weight:600}
+.dr-deck-source{font-family:var(--dr-mono);font-size:10px;letter-spacing:.04em;color:var(--dr-ink-dim)}
+.dr-deck-source em{font-style:normal;color:var(--dr-ink);text-transform:none}
+
+/* source picker (per-deck mini) */
+.dr-deck-srcrow{display:flex;gap:var(--s2);margin-bottom:var(--s2)}
+.dr-deck-srcpill{flex:1;text-align:center;padding:8px 0;font-family:var(--dr-fx);font-weight:600;font-size:9px;letter-spacing:.18em;color:var(--dr-ink-dim);text-transform:uppercase;
+  border:1px solid var(--dr-line);border-radius:var(--r-md);background:var(--dr-panel);
+  transition:color .15s,border-color .15s,background .15s}
+.dr-deck-srcpill[data-active="true"]{background:var(--dr-panel-3);color:var(--dr-ink);border-color:var(--dr-line-2)}
+
+/* Saturn disc — adopted from darkroom.html, sized for two-deck layout */
+.dr-deck-disc-wrap{display:flex;justify-content:center;padding:var(--s2) 0}
+.dr-tape-disc{width:240px;height:240px;display:block;filter:drop-shadow(0 8px 16px rgba(0,0,0,.12))}
+.dr-tape-face{fill:url(#dr-space-bg);stroke:none}
+.dr-tape-rim{fill:none;stroke:var(--dr-amber);stroke-width:1;opacity:.32}
+.dr-tape-rotor{transform-origin:0 0;transform-box:view-box;animation:dr-rotor-spin 18s linear infinite}
+.dr-deck[data-deck="b"] .dr-tape-rotor{animation-duration:22s;animation-direction:reverse}
+@keyframes dr-rotor-spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.dr-stars circle{fill:oklch(0.95 0.01 80);opacity:.78}
+.dr-star-twinkle{animation:dr-star-twinkle 2.6s ease-in-out infinite}
+.dr-star-twinkle:nth-of-type(2n){animation-duration:3.4s;animation-delay:.4s}
+.dr-star-twinkle:nth-of-type(3n){animation-duration:4.1s;animation-delay:1.1s}
+@keyframes dr-star-twinkle{0%,100%{opacity:.32}50%{opacity:1}}
+.dr-saturn-body{fill:url(#dr-planet-face)}
+.dr-saturn-rim{fill:none;stroke:oklch(0.40 0.012 80);stroke-width:1;opacity:.55}
+.dr-saturn-ring{fill:none;stroke-linecap:round;stroke-dasharray:3 16}
+.dr-ring-outer{stroke-width:4}
+.dr-ring-inner-arc{stroke-width:2.6}
+.dr-saturn-ring-back{stroke:var(--dr-moss);opacity:.78}
+.dr-saturn-ring-front{stroke:var(--dr-moss);opacity:.95}
+.dr-saturn-moon{fill:oklch(0.92 0.02 80);opacity:.92}
+.dr-saturn-moon-glow{fill:oklch(0.92 0.02 80);opacity:.18}
+
+/* Deck meta strip — 4 equal cells with TAP at the far right, matching
+   the live darkroom meta refit (May 2026). SCREW + REVERSE are pulled
+   out into a dedicated .dr-deck-controls row below the meta so the
+   meta itself is purely informational. */
+.dr-deck-meta{
+  display:grid;grid-template-columns:repeat(4,1fr) auto;align-items:stretch;gap:var(--s4);
+  padding:var(--s3) var(--s4);
+  background:var(--dr-panel-3);
+  border:1px solid var(--dr-line);border-radius:var(--r-md);
+}
+.dr-deck-meta-cell{display:flex;flex-direction:column;gap:4px;min-width:0;align-items:flex-start;text-align:left}
+.dr-deck-meta-cell:first-child{min-width:0;flex:1}
+.dr-deck-meta-cell:first-child .dr-deck-meta-value{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
+.dr-deck-meta-label{font-family:var(--dr-fx);font-weight:700;font-size:9px;letter-spacing:.20em;color:var(--dr-ink-2);text-transform:uppercase;line-height:1}
+.dr-deck-meta-value{font-family:var(--dr-mono);font-size:11px;color:var(--dr-ink);font-variant-numeric:tabular-nums;letter-spacing:.02em;line-height:1.1}
+.dr-deck-meta-bpm-value{font-family:var(--dr-mono);font-size:11px;color:var(--dr-ink);font-variant-numeric:tabular-nums;letter-spacing:.02em;line-height:1.1}
+/* TAP button sits in its own auto-sized cell at the far right of the
+   meta strip, vertically stretched to the strip's height. */
+.dr-deck-meta > .dr-deck-tap{margin-left:auto;align-self:stretch;display:flex;align-items:center;padding:0 var(--s4)}
+.dr-deck-tap{font-family:var(--dr-fx);font-weight:600;font-size:10px;letter-spacing:.20em;color:var(--dr-ink-dim);text-transform:uppercase;
+  background:linear-gradient(180deg,oklch(0.94 0.013 80),oklch(0.90 0.014 80));
+  border:1px solid oklch(0.66 0.014 78);border-radius:var(--r-sm);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.85),0 1px 1px rgba(0,0,0,.04);cursor:pointer}
+.dr-deck-tap:hover{color:var(--dr-ink);border-color:var(--dr-line-2)}
+
+/* SCREW + REVERSE row — pulled out of the meta into a dedicated
+   controls strip between meta and waveform. Hardware-tape-deck
+   spatial logic: the speed/direction controls sit closer to the
+   audio they affect. */
+.dr-deck-controls{display:flex;align-items:center;gap:var(--s4);padding:var(--s2) 0}
+.dr-deck-screw{display:flex;flex-direction:row;align-items:center;gap:var(--s2)}
+.dr-deck-screw .dr-knob-label{font-size:9px;letter-spacing:.20em;color:var(--dr-moss);font-weight:700;order:0}
+.dr-deck-screw .dr-knob-dial{width:48px;height:48px;order:1}
+.dr-deck-screw .dr-knob-value{font-size:9px;min-width:42px;order:2}
+.dr-reverse{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border:1px solid var(--dr-line);border-radius:var(--r-md);background:var(--dr-panel-2);cursor:pointer}
+.dr-reverse-dot{width:6px;height:6px;border-radius:50%;background:var(--dr-line-2)}
+.dr-reverse-label{font-family:var(--dr-fx);font-weight:700;font-size:9px;letter-spacing:.18em;color:var(--dr-ink-dim);text-transform:uppercase}
+.dr-reverse[data-active="true"] .dr-reverse-dot{background:var(--dr-amber);box-shadow:0 0 6px var(--dr-amber)}
+.dr-reverse[data-active="true"] .dr-reverse-label{color:var(--dr-ink)}
+
+/* deck waveform */
+.dr-deck-wave{
+  position:relative;height:84px;
+  background:var(--dr-panel);
+  border:1px solid oklch(0.64 0.014 78);
+  border-radius:var(--r-md);
+  overflow:hidden;
+}
+.dr-deck-wave-canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+/* Playhead pip uses moss now (darkroom shifted away from amber accent
+   on the waveform when the global orange waveform commit landed). */
+.dr-deck-wave-pip{position:absolute;top:6px;bottom:6px;right:8px;width:1px;background:var(--dr-moss);opacity:.85}
+
+/* BEAT REPEAT row */
+.dr-beat-row{display:flex;align-items:center;gap:var(--s2);flex-wrap:wrap}
+.dr-beat-label{font-family:var(--dr-fx);font-weight:700;font-size:10px;letter-spacing:.18em;color:var(--dr-ink-dim);text-transform:uppercase;display:inline-flex;align-items:center;gap:6px}
+.dr-beat-led{width:7px;height:7px;border-radius:50%;background:var(--dr-line-2)}
+.dr-beat-led[data-active="true"]{background:var(--dr-amber);box-shadow:0 0 8px var(--dr-amber)}
+.dr-beat-pill{
+  font-family:var(--dr-mono);font-size:10px;letter-spacing:.04em;color:var(--dr-ink-dim);
+  padding:5px 9px;border:1px solid var(--dr-line);border-radius:var(--r-sm);background:var(--dr-panel-2);
+  font-variant-numeric:tabular-nums;
+}
+.dr-beat-pill[data-active="true"]{background:var(--dr-coral);color:var(--dr-panel-3);border-color:var(--dr-coral)}
+
+/* ── CENTER MIXER COLUMN ── */
+.dr-mixer{
+  background:var(--dr-panel-2);
+  border:1px solid oklch(0.62 0.014 78);
+  border-radius:var(--r-xl);
+  padding:var(--s4);
+  display:flex;flex-direction:column;gap:var(--s4);
+  box-shadow:0 1px 0 oklch(1 0 0 / .55) inset, 0 8px 24px rgba(0,0,0,.06);
+}
+.dr-mixer-head{display:flex;justify-content:space-between;align-items:baseline;padding-bottom:var(--s3);border-bottom:1px solid var(--dr-line)}
+.dr-mixer-title{font-family:var(--dr-disp);font-weight:600;font-size:14px;letter-spacing:.16em;color:var(--dr-ink);text-transform:uppercase}
+.dr-mixer-spec{font-family:var(--dr-mono);font-size:9px;letter-spacing:.18em;color:var(--dr-ink-2);text-transform:uppercase}
+
+/* channel strips, two side-by-side inside mixer */
+.dr-mixer-strips{display:grid;grid-template-columns:1fr 1fr;gap:var(--s3)}
+.dr-strip{
+  display:flex;flex-direction:column;align-items:center;gap:var(--s3);
+  padding:var(--s3) var(--s2) var(--s4);
+  background:var(--dr-panel);
+  border:1px solid var(--dr-line);
+  border-radius:var(--r-md);
+}
+.dr-strip-label{font-family:var(--dr-disp);font-weight:700;font-size:11px;letter-spacing:.20em;color:var(--dr-moss);text-transform:uppercase}
+.dr-strip-eq{display:flex;flex-direction:column;align-items:center;gap:6px;width:100%}
+.dr-strip-eq-knob{display:flex;flex-direction:column;align-items:center;gap:2px}
+.dr-strip-eq-knob .dr-knob-dial{width:38px;height:38px}
+.dr-strip-eq-knob .dr-knob-label{font-size:8px;letter-spacing:.20em;color:var(--dr-ink-2);font-weight:700}
+.dr-strip-eq-knob .dr-knob-value{font-size:8px;min-width:0;color:var(--dr-ink-dim)}
+
+/* divider between EQ and filter section */
+.dr-strip-div{width:100%;border-top:1px dashed var(--dr-line)}
+
+/* filter knob (HP/LP color) */
+.dr-strip-filter{display:flex;flex-direction:column;align-items:center;gap:2px}
+.dr-strip-filter .dr-knob-dial{width:48px;height:48px}
+.dr-strip-filter .dr-knob-label{font-size:8px;letter-spacing:.20em;color:var(--dr-moss);font-weight:700}
+.dr-strip-filter .dr-knob-value{font-size:8px;min-width:0;color:var(--dr-ink-dim)}
+.dr-strip-filter-detent{font-family:var(--dr-mono);font-size:8px;letter-spacing:.04em;color:var(--dr-ink-2)}
+
+/* level fader + meter */
+.dr-strip-level{display:grid;grid-template-columns:auto auto;gap:var(--s2);align-items:end}
+.dr-fader{
+  position:relative;width:24px;height:140px;
+  background:var(--dr-panel-2);
+  border:1px solid var(--dr-line);
+  border-radius:var(--r-md);
+  display:flex;align-items:flex-end;justify-content:center;
+}
+.dr-fader-track{position:absolute;inset:6px 11px;background:linear-gradient(180deg,var(--dr-line) 0,var(--dr-line-2) 100%);border-radius:1px}
+.dr-fader-handle{
+  position:absolute;left:2px;right:2px;height:20px;
+  background:linear-gradient(180deg,var(--dr-alu-hi) 0%,var(--dr-alu-mid) 50%,var(--dr-alu-lo) 100%);
+  border:1px solid var(--dr-line-2);border-radius:3px;
+  box-shadow:0 1px 2px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.5);
+}
+.dr-fader-handle::after{content:'';position:absolute;left:3px;right:3px;top:9px;height:1px;background:var(--dr-ink);opacity:.55}
+.dr-meter{
+  width:8px;height:140px;display:flex;flex-direction:column-reverse;gap:1px;padding:2px;
+  background:var(--dr-panel);border:1px solid var(--dr-line);border-radius:var(--r-sm);
+}
+.dr-meter-seg{flex:1;background:var(--dr-line);opacity:.35;border-radius:1px}
+.dr-meter-seg.lit{background:var(--dr-moss);opacity:1;box-shadow:0 0 4px var(--dr-moss-glow)}
+.dr-meter-seg.lit.amber{background:var(--dr-amber);box-shadow:0 0 4px var(--dr-amber)}
+.dr-meter-seg.lit.coral{background:var(--dr-coral);box-shadow:0 0 4px rgba(0,0,0,.3)}
+
+.dr-strip-tag{font-family:var(--dr-mono);font-size:8px;letter-spacing:.18em;color:var(--dr-ink-2);text-transform:uppercase}
+
+/* CUE button — disabled-look in prototype */
+.dr-strip-cue{
+  font-family:var(--dr-fx);font-weight:600;font-size:9px;letter-spacing:.20em;color:var(--dr-ink-2);text-transform:uppercase;
+  padding:6px 10px;border:1px solid var(--dr-line);border-radius:var(--r-sm);background:var(--dr-panel-2);opacity:.55;
+}
+
+/* crossfader */
+.dr-mixer-xf{
+  display:flex;flex-direction:column;align-items:center;gap:var(--s2);
+  padding:var(--s3) var(--s3) var(--s4);
+  background:var(--dr-panel);
+  border:1px solid var(--dr-line);
+  border-radius:var(--r-md);
+}
+.dr-mixer-xf-label{font-family:var(--dr-fx);font-weight:700;font-size:10px;letter-spacing:.20em;color:var(--dr-ink-dim);text-transform:uppercase;display:flex;justify-content:space-between;width:100%}
+.dr-mixer-xf-label .a{color:var(--dr-moss)}
+.dr-mixer-xf-label .b{color:var(--dr-moss)}
+.dr-xf-track{position:relative;width:100%;height:34px;display:flex;align-items:center}
+.dr-xf-rail{position:absolute;left:6px;right:6px;top:50%;height:6px;transform:translateY(-50%);
+  background:linear-gradient(90deg,var(--dr-moss) 0%,var(--dr-line) 50%,var(--dr-moss) 100%);
+  opacity:.55;border-radius:2px}
+.dr-xf-handle{
+  position:absolute;width:24px;height:34px;
+  background:linear-gradient(180deg,var(--dr-alu-hi) 0%,var(--dr-alu-mid) 50%,var(--dr-alu-lo) 100%);
+  border:1px solid var(--dr-line-2);border-radius:4px;
+  box-shadow:0 1px 2px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.5);
+}
+.dr-xf-handle::after{content:'';position:absolute;left:3px;right:3px;top:50%;height:1px;background:var(--dr-ink);opacity:.55;transform:translateY(-50%)}
+.dr-xf-curve-row{display:flex;justify-content:space-between;width:100%;font-family:var(--dr-mono);font-size:8px;letter-spacing:.16em;color:var(--dr-ink-2);text-transform:uppercase;margin-top:2px}
+.dr-xf-curve-row span[data-on="true"]{color:var(--dr-moss);font-weight:700}
+
+/* ── MASTER FX RACK ── */
+.dr-rack-wrap{padding:var(--s5) 0;border-top:1px solid var(--dr-line)}
+.dr-rack-header{display:flex;flex-direction:row;align-items:baseline;justify-content:space-between;gap:var(--s4);margin-bottom:var(--s3)}
+.dr-rack-title{font-family:var(--dr-disp);font-weight:600;font-size:12px;letter-spacing:.20em;color:var(--dr-ink);text-transform:uppercase;margin:0}
+.dr-rack-spec{font-family:var(--dr-mono);font-size:9px;letter-spacing:.18em;color:var(--dr-ink-2);text-transform:uppercase}
+/* 12-module rack: 4 cols on wide screens, 3 cols mid, 2 cols narrow.
+   Matches the live darkroom's full FX inventory (May 2026 pass) so the
+   DJ station and the playground use the same FX vocabulary. */
+.dr-rack{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s4)}
+@media (max-width:1280px){.dr-rack{grid-template-columns:repeat(3,1fr)}}
+@media (max-width:900px){.dr-rack{grid-template-columns:repeat(2,1fr)}}
+
+/* Personality elements ported from darkroom.html for the 6 new modules
+   (BITCRUSH, SATURATE, CHORUS, FLANGER, AMBIENT, REV DLY). Visual only —
+   no JS hookups in the prototype. */
+.dr-bitcrush-vis,
+.dr-sat-vis,
+.dr-chorus-vis,
+.dr-flanger-vis,
+.dr-ambient-vis,
+.dr-revdelay-vis{width:100%;height:64px;background:var(--dr-panel);border:1px solid var(--dr-line);border-radius:var(--r-md);display:block;box-shadow:inset 0 2px 6px rgba(0,0,0,.08)}
+
+/* BITCRUSH 5-segment LED ladder. */
+.dr-bc-leds{display:flex;justify-content:space-between;align-items:center;gap:6px;
+  padding:8px 12px;background:var(--dr-panel);border:1px solid var(--dr-line);border-radius:var(--r-md);
+  box-shadow:inset 0 2px 6px rgba(0,0,0,.08)}
+.dr-bc-led{flex:1;height:8px;border-radius:2px;background:var(--dr-line);opacity:.4;transition:background .12s,opacity .12s,box-shadow .12s}
+.dr-bc-led[data-on="true"]{background:var(--dr-moss);opacity:1;box-shadow:0 0 8px var(--dr-moss-glow)}
+
+/* SATURATE TYPE pills (TUBE/TAPE/FUZZ/DIODE). */
+.dr-sat-types{display:flex;gap:var(--s2);justify-content:space-between;padding:0}
+.dr-sat-type{flex:1;padding:6px 4px;font-family:var(--dr-fx);font-weight:700;font-size:9px;letter-spacing:.18em;color:var(--dr-ink-dim);text-transform:uppercase;
+  background:var(--dr-panel-2);border:1px solid var(--dr-line);border-radius:var(--r-sm);
+  transition:color .12s,border-color .12s,box-shadow .12s,background .12s;cursor:pointer}
+.dr-sat-type:hover{color:var(--dr-ink);border-color:var(--dr-line-2)}
+.dr-sat-type[data-active="true"]{color:var(--dr-moss);border-color:var(--dr-moss);background:var(--dr-panel-3);box-shadow:0 0 12px -4px var(--dr-moss-glow)}
+
+/* CHORUS / FLANGER LFO shape pills (SIN / TRI / SQR). */
+.dr-lfo-shapes{display:flex;gap:var(--s2);justify-content:space-between;padding:0}
+.dr-lfo-shape-btn{flex:1;padding:6px 4px;font-family:var(--dr-fx);font-weight:700;font-size:9px;letter-spacing:.18em;color:var(--dr-ink-dim);text-transform:uppercase;
+  background:var(--dr-panel-2);border:1px solid var(--dr-line);border-radius:var(--r-sm);
+  transition:color .12s,border-color .12s,box-shadow .12s,background .12s;cursor:pointer}
+.dr-lfo-shape-btn:hover{color:var(--dr-ink);border-color:var(--dr-line-2)}
+.dr-lfo-shape-btn[data-active="true"]{color:var(--dr-moss);border-color:var(--dr-moss);background:var(--dr-panel-3);box-shadow:0 0 12px -4px var(--dr-moss-glow)}
+
+/* AMBIENT controls — interval pills + FREEZE. */
+.dr-amb-controls{display:flex;flex-direction:column;gap:var(--s2);align-items:stretch}
+.dr-amb-intervals{display:flex;gap:var(--s2)}
+.dr-amb-int{flex:1;padding:6px 4px;font-family:var(--dr-fx);font-weight:700;font-size:9px;letter-spacing:.16em;color:var(--dr-ink-dim);text-transform:uppercase;
+  background:var(--dr-panel-2);border:1px solid var(--dr-line);border-radius:var(--r-sm);
+  transition:color .12s,border-color .12s,box-shadow .12s,background .12s;cursor:pointer}
+.dr-amb-int:hover{color:var(--dr-ink);border-color:var(--dr-line-2)}
+.dr-amb-int[data-active="true"]{color:var(--dr-moss);border-color:var(--dr-moss);background:var(--dr-panel-3);box-shadow:0 0 12px -4px var(--dr-moss-glow)}
+.dr-amb-freeze{padding:6px 12px;font-family:var(--dr-fx);font-weight:700;font-size:9px;letter-spacing:.18em;color:var(--dr-ink-dim);text-transform:uppercase;
+  background:var(--dr-panel-2);border:1px solid var(--dr-line);border-radius:var(--r-sm);
+  transition:color .12s,border-color .12s,box-shadow .12s,background .12s;cursor:pointer}
+.dr-amb-freeze:hover{color:var(--dr-ink);border-color:var(--dr-line-2)}
+.dr-amb-freeze[data-active="true"]{color:var(--dr-amber);border-color:var(--dr-amber);background:var(--dr-panel-3);box-shadow:0 0 12px -4px var(--dr-amber)}
+
+/* Tempo SYNC controls (CHORUS / FLANGER / REV DLY). */
+.dr-fxsync{display:flex;flex-direction:column;gap:var(--s2);align-items:stretch}
+.dr-fxsync-toggle{padding:6px 4px;font-family:var(--dr-fx);font-weight:700;font-size:9px;letter-spacing:.18em;color:var(--dr-ink-dim);text-transform:uppercase;
+  background:var(--dr-panel-2);border:1px solid var(--dr-line);border-radius:var(--r-sm);
+  transition:color .12s,border-color .12s,box-shadow .12s,background .12s;cursor:pointer}
+.dr-fxsync-toggle:hover{color:var(--dr-ink);border-color:var(--dr-line-2)}
+.dr-fxsync-toggle[data-active="true"]{color:var(--dr-moss);border-color:var(--dr-moss);background:var(--dr-panel-3);box-shadow:0 0 12px -4px var(--dr-moss-glow)}
+.dr-fxsync-divs{display:flex;gap:var(--s2)}
+.dr-fxsync-div{flex:1;padding:5px 2px;font-family:var(--dr-mono);font-size:9px;letter-spacing:.04em;color:var(--dr-ink-dim);
+  background:var(--dr-panel);border:1px solid var(--dr-line);border-radius:var(--r-sm);
+  transition:color .12s,border-color .12s,background .12s,box-shadow .12s;cursor:pointer;font-variant-numeric:tabular-nums}
+.dr-fxsync-div:hover{color:var(--dr-ink);border-color:var(--dr-line-2)}
+.dr-fxsync-div[data-active="true"]{color:var(--dr-moss);border-color:var(--dr-moss);background:var(--dr-panel-3);box-shadow:0 0 8px -2px var(--dr-moss-glow)}
+
+/* REV DLY trigger pill. */
+.dr-rd-controls{display:flex}
+.dr-rd-trigger{flex:1;padding:8px 12px;font-family:var(--dr-fx);font-weight:700;font-size:10px;letter-spacing:.20em;color:var(--dr-ink-dim);text-transform:uppercase;
+  background:var(--dr-panel-2);border:1px solid var(--dr-line);border-radius:var(--r-sm);
+  transition:color .12s,border-color .12s,box-shadow .08s,background .12s,transform .04s;cursor:pointer}
+.dr-rd-trigger:hover{color:var(--dr-moss);border-color:var(--dr-moss-dim)}
+.dr-rd-trigger:active{transform:scale(.98);background:var(--dr-panel-3);box-shadow:0 0 14px -2px var(--dr-moss-glow);color:var(--dr-moss);border-color:var(--dr-moss)}
+
+/* AMBIENT / REVDELAY knob layout — bigger dials, 3 across with wrap. */
+.dr-mod[data-mod="ambient"] .dr-knobs,
+.dr-mod[data-mod="revdelay"] .dr-knobs{flex-wrap:wrap;gap:var(--s3);justify-content:space-around;padding:var(--s2) 0 0}
+.dr-mod[data-mod="ambient"] .dr-knob-dial,
+.dr-mod[data-mod="revdelay"] .dr-knob-dial{width:56px;height:56px}
+.dr-mod[data-mod="ambient"] .dr-knob-value,
+.dr-mod[data-mod="revdelay"] .dr-knob-value{font-size:9px;min-width:48px}
+.dr-mod[data-mod="ambient"] .dr-knob-label,
+.dr-mod[data-mod="revdelay"] .dr-knob-label{font-size:9px;letter-spacing:.18em}
+
+/* CHORUS / FLANGER knob layout — 2×2 grid because there are 4 knobs. */
+.dr-mod[data-mod="chorus"] .dr-knobs,
+.dr-mod[data-mod="flanger"] .dr-knobs{display:grid;grid-template-columns:1fr 1fr;grid-auto-rows:auto;gap:var(--s3) var(--s2);padding:var(--s2) 0 0;justify-items:center}
+.dr-mod[data-mod="chorus"] .dr-knob,
+.dr-mod[data-mod="flanger"] .dr-knob{width:100%;align-items:center}
+.dr-mod[data-mod="chorus"] .dr-knob-dial,
+.dr-mod[data-mod="flanger"] .dr-knob-dial{width:56px;height:56px}
+.dr-mod[data-mod="chorus"] .dr-knob-value,
+.dr-mod[data-mod="flanger"] .dr-knob-value{font-size:9px;min-width:48px}
+.dr-mod[data-mod="chorus"] .dr-knob-label,
+.dr-mod[data-mod="flanger"] .dr-knob-label{font-size:9px;letter-spacing:.18em}
+
+.dr-mod{
+  position:relative;
+  background:linear-gradient(180deg,var(--dr-panel-3) 0%,var(--dr-panel-2) 100%);
+  border:1px solid var(--dr-line);
+  border-radius:var(--r-xl);
+  padding:var(--s4) var(--s3) var(--s3);
+  display:flex;flex-direction:column;gap:var(--s3);
+  min-height:180px;
+  box-shadow:0 1px 0 oklch(1 0 0 / .55) inset, 0 4px 12px rgba(0,0,0,.06);
+}
+.dr-mod-head{display:flex;align-items:flex-start;gap:var(--s2);padding-bottom:var(--s3);border-bottom:1px solid var(--dr-line)}
+.dr-mod-bypass{width:14px;height:14px;border:1px solid var(--dr-line-2);border-radius:50%;flex-shrink:0;margin-top:1px}
+.dr-mod[data-bypassed="false"] .dr-mod-bypass{background:var(--dr-moss);border-color:var(--dr-moss);box-shadow:0 0 8px -2px var(--dr-moss)}
+/* FX hero titles use Departure Mono (loaded above) — same treatment
+   as the live darkroom rack. 12px / .02em is the size-tuning the
+   site landed on after the local-preview check. */
+.dr-mod-name{font-family:'Departure Mono',ui-monospace,'SF Mono','Menlo',monospace;font-weight:400;font-size:12px;letter-spacing:.02em;color:var(--dr-ink);text-transform:uppercase;line-height:1.05}
+
+/* Active module skin — the matte-black radial-gradient shell that
+   wraps any .dr-mod whose bypass dot is lit. Controls inside keep
+   their cream/aluminum look on the dark backdrop. Ported verbatim
+   from darkroom.html. */
+.dr-mod{transition:background .25s,box-shadow .25s,border-color .25s}
+.dr-mod:not([data-bypassed="true"]){
+  background:
+    radial-gradient(ellipse 75% 90% at 28% 14%, oklch(0.42 0.006 260) 0%, oklch(0.22 0.005 255) 45%, transparent 75%),
+    linear-gradient(180deg, oklch(0.18 0.005 260) 0%, oklch(0.10 0.004 250) 100%);
+  border-color:oklch(0.22 0.005 250);
+  box-shadow:
+    inset 0 1px 0 oklch(0.55 0.008 260 / 0.45),
+    inset 0 -1px 0 rgba(0,0,0,.4),
+    0 1px 1px rgba(0,0,0,.3),
+    0 6px 18px -10px rgba(0,0,0,.4);
+}
+.dr-mod:not([data-bypassed="true"]) .dr-mod-name{color:oklch(0.96 0.014 80)}
+.dr-mod-head-text{display:flex;flex-direction:column;gap:var(--s2);min-width:0;flex:1}
+
+/* NEW — FX assign chip [A | B | M] */
+.dr-mod-assign{
+  display:inline-flex;align-self:flex-start;gap:0;border:1px solid var(--dr-line);border-radius:var(--r-sm);overflow:hidden;
+  background:var(--dr-panel);font-family:var(--dr-fx);font-weight:700;font-size:9px;letter-spacing:.16em;
+}
+.dr-mod-assign button{
+  padding:4px 7px;color:var(--dr-ink-2);background:transparent;border:none;border-right:1px solid var(--dr-line);
+  text-transform:uppercase;line-height:1;
+}
+.dr-mod-assign button:last-child{border-right:none}
+.dr-mod-assign button[data-on="true"]{background:var(--dr-moss);color:var(--dr-panel-3)}
+
+.dr-mod-body{flex:1;display:flex;flex-direction:column;gap:var(--s3)}
+.dr-mod-mini{height:36px;background:var(--dr-panel);border:1px solid var(--dr-line);border-radius:var(--r-sm);position:relative;overflow:hidden}
+.dr-mod-mini canvas, .dr-mod-mini svg{position:absolute;inset:0;width:100%;height:100%}
+
+.dr-knobs{display:flex;align-items:flex-end;justify-content:space-around;gap:var(--s2);padding:var(--s2) 0}
+.dr-knob{display:flex;flex-direction:column;align-items:center;gap:6px;user-select:none}
+.dr-knob-label{font-family:var(--dr-fx);font-weight:600;font-size:9px;letter-spacing:.16em;color:var(--dr-ink-dim);text-transform:uppercase}
+.dr-knob-dial{width:44px;height:44px;display:block;filter:drop-shadow(0 2px 3px rgba(0,0,0,.18))}
+.dr-knob-dial .dr-ring-inner{fill:url(#knobFace);stroke:oklch(0.48 0.014 80);stroke-width:.7}
+.dr-knob-tick-mark{stroke:oklch(0.36 0.012 80);stroke-width:1.1;opacity:.6;stroke-linecap:butt}
+.dr-knob-dial circle:not(.dr-ring-inner){fill:none;stroke:oklch(0.58 0.014 80);stroke-width:.7;opacity:.55}
+.dr-knob-dial .dr-arc{fill:none;stroke:var(--dr-moss);stroke-width:1.8;stroke-linecap:butt}
+.dr-knob-dial .dr-tick{stroke:oklch(0.18 0.008 80);stroke-width:2.2;stroke-linecap:square}
+.dr-knob-value{font-family:var(--dr-mono);font-size:9px;letter-spacing:.04em;color:var(--dr-ink-dim);min-width:0;text-align:center;font-variant-numeric:tabular-nums}
+
+/* MIDI LEARN pill — same uniform-size affordance as darkroom.html.
+   Prototype uses a ::after pseudo on every .dr-knob so the rack
+   reads as "controller-mappable" at a glance without editing every
+   knob's markup. Live darkroom uses a real <button> here; the
+   prototype is visual-only. Exception: the masthead OUT knob and
+   the deck SCREW knob both opt out by setting --no-midi:1. */
+.dr-knob{position:relative}
+.dr-knob::after{
+  content:'MIDI';
+  margin-top:4px;width:42px;height:14px;
+  display:inline-flex;align-items:center;justify-content:center;
+  font-family:var(--dr-fx);font-weight:600;font-size:7px;letter-spacing:.16em;color:var(--dr-ink-2);text-transform:uppercase;
+  background:transparent;border:1px solid var(--dr-line);border-radius:9999px;line-height:1;
+}
+.dr-mast-knob::after,.dr-globals-master-knob::after{display:none}
+
+/* ── FOOTER NOTE ── */
+.dr-foot{margin-top:var(--s7);padding:var(--s5) 0;border-top:1px solid var(--dr-line);display:flex;justify-content:space-between;align-items:center;font-family:var(--dr-mono);font-size:10px;letter-spacing:.16em;color:var(--dr-ink-2);text-transform:uppercase}
+.dr-foot a{color:var(--dr-ink-dim)}
+.dr-foot em{font-style:normal;color:var(--dr-amber)}
+
+@media (max-width:980px){
+  .dr-station{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- shared knob gradient defs -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <radialGradient id="knobFace" cx="35%" cy="30%" r="75%">
+      <stop offset="0%" stop-color="oklch(0.97 0.005 80)"/>
+      <stop offset="40%" stop-color="oklch(0.88 0.008 80)"/>
+      <stop offset="80%" stop-color="oklch(0.74 0.010 80)"/>
+      <stop offset="100%" stop-color="oklch(0.66 0.012 80)"/>
+    </radialGradient>
+  </defs>
+</svg>
+
+<main class="dr">
+
+  <!-- ── MASTHEAD ──
+       Synced 2026-05-12 to mirror darkroom.html: logo image on the
+       left over a short blurb, master pod inlined on the right as a
+       compact card (MASTER · meter · OUT knob). Falls back to the
+       text wordmark if the image asset 404s. -->
+  <section class="dr-mast">
+    <div class="dr-mast-left">
+      <img class="dr-mast-logo" src="../assets/darkroom-logo.png" alt="darkroom"
+        onerror="this.style.display='none';var f=document.getElementById('dr-mast-title-fallback');if(f)f.style.display='block'"/>
+      <h1 class="dr-mast-title" id="dr-mast-title-fallback" style="display:none">darkroom</h1>
+      <p class="dr-mast-blurb">DJ station prototype — two decks, one master bus, one cue bus. <span class="dr-mast-prototype">v0.3-pre</span></p>
+    </div>
+    <div class="dr-mast-master" aria-label="Master output">
+      <span class="dr-mast-master-title">MASTER</span>
+      <span class="dr-mast-meter" title="Post-master output meter">
+        <span class="dr-mast-meter-bar"><span style="width:62%"></span><span class="dr-meter-tick"></span></span>
+      </span>
+      <span class="dr-mast-knob">
+        <svg class="dr-knob-dial" viewBox="-50 -50 100 100">
+          <circle r="38" class="dr-ring-inner"/>
+          <g class="dr-knob-ticks">
+            <line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/>
+            <line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/>
+            <line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/>
+            <line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/>
+            <line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/>
+          </g>
+          <circle r="44"/>
+          <path class="dr-arc" d="M -31.1 24.1 A 39 39 0 1 1 31.1 24.1"/>
+          <g transform="rotate(60)"><line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/></g>
+        </svg>
+        <span class="dr-knob-label">OUT</span>
+      </span>
+    </div>
+  </section>
+
+  <!-- ── GLOBAL ACTION BAR ──
+       CLEAR ALL split into CLEAR FX / CLEAR MIDI per the May 2026 pass. -->
+  <div class="dr-globals">
+    <span class="dr-globals-pill" data-active="false"><span class="dot"></span>RELEASE</span>
+    <span class="dr-globals-pill">CLEAR FX</span>
+    <span class="dr-globals-pill">CLEAR MIDI</span>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       DJ STATION
+       ══════════════════════════════════════════════════════════ -->
+  <section class="dr-station">
+
+    <!-- ─── DECK A ─── -->
+    <div class="dr-deck" data-deck="a">
+      <header class="dr-deck-head">
+        <span class="dr-deck-label">DECK <strong>A</strong></span>
+        <span class="dr-deck-source">tab · <em>youtube — boards of canada</em></span>
+      </header>
+
+      <!-- mini source picker -->
+      <div class="dr-deck-srcrow">
+        <button class="dr-deck-srcpill" data-active="true">tab</button>
+        <button class="dr-deck-srcpill">device</button>
+        <button class="dr-deck-srcpill">file</button>
+      </div>
+
+      <!-- Saturn artifact -->
+      <div class="dr-deck-disc-wrap">
+        <svg class="dr-tape-disc" viewBox="-160 -160 320 320" role="img" aria-label="Deck A — scratchable saturn">
+          <defs>
+            <radialGradient id="dr-space-bg" cx="48%" cy="38%" r="72%">
+              <stop offset="0%" stop-color="oklch(0.20 0.05 260)"/>
+              <stop offset="55%" stop-color="oklch(0.10 0.04 250)"/>
+              <stop offset="100%" stop-color="oklch(0.04 0.02 240)"/>
+            </radialGradient>
+            <radialGradient id="dr-planet-face" cx="35%" cy="30%" r="78%">
+              <stop offset="0%" stop-color="oklch(0.97 0.005 80)"/>
+              <stop offset="40%" stop-color="oklch(0.86 0.008 80)"/>
+              <stop offset="80%" stop-color="oklch(0.70 0.010 80)"/>
+              <stop offset="100%" stop-color="oklch(0.58 0.012 80)"/>
+            </radialGradient>
+          </defs>
+          <circle r="158" class="dr-tape-face"/>
+          <circle r="158" class="dr-tape-rim"/>
+          <g class="dr-stars">
+            <circle cx="-130" cy="-118" r="1.0" class="dr-star"/>
+            <circle cx="-104" cy="-138" r="0.8" class="dr-star dr-star-twinkle"/>
+            <circle cx="-72"  cy="-120" r="1.4" class="dr-star"/>
+            <circle cx="-50"  cy="-140" r="0.7" class="dr-star"/>
+            <circle cx="-12"  cy="-142" r="1.0" class="dr-star dr-star-twinkle"/>
+            <circle cx="58"   cy="-138" r="0.9" class="dr-star"/>
+            <circle cx="88"   cy="-118" r="1.2" class="dr-star"/>
+            <circle cx="138"  cy="-92"  r="0.8" class="dr-star dr-star-twinkle"/>
+            <circle cx="146"  cy="-50"  r="1.1" class="dr-star"/>
+            <circle cx="142"  cy="0"    r="0.8" class="dr-star"/>
+            <circle cx="148"  cy="48"   r="1.3" class="dr-star dr-star-twinkle"/>
+            <circle cx="138"  cy="98"   r="0.9" class="dr-star"/>
+            <circle cx="108"  cy="128"  r="1.0" class="dr-star"/>
+            <circle cx="60"   cy="142"  r="0.8" class="dr-star dr-star-twinkle"/>
+            <circle cx="20"   cy="146"  r="1.2" class="dr-star"/>
+            <circle cx="-30"  cy="138"  r="0.7" class="dr-star"/>
+            <circle cx="-78"  cy="128"  r="1.1" class="dr-star dr-star-twinkle"/>
+            <circle cx="-118" cy="100"  r="0.9" class="dr-star"/>
+            <circle cx="-148" cy="62"   r="1.0" class="dr-star"/>
+            <circle cx="-152" cy="14"   r="0.8" class="dr-star dr-star-twinkle"/>
+            <circle cx="-148" cy="-38"  r="1.3" class="dr-star"/>
+            <circle cx="-138" cy="-78"  r="0.9" class="dr-star"/>
+            <circle cx="118"  cy="-72"  r="1.0" class="dr-star dr-star-twinkle"/>
+            <circle cx="-104" cy="62"   r="0.7" class="dr-star"/>
+            <circle cx="100"  cy="80"   r="0.8" class="dr-star"/>
+            <circle cx="-90"  cy="-86"  r="0.9" class="dr-star dr-star-twinkle"/>
+          </g>
+          <circle cx="112" cy="98" r="3" class="dr-saturn-moon"/>
+          <circle cx="112" cy="98" r="7" class="dr-saturn-moon-glow"/>
+          <g class="dr-tape-rotor">
+            <g transform="rotate(-9)">
+              <path d="M -132 0 A 132 38 0 0 1 132 0" class="dr-saturn-ring dr-saturn-ring-back dr-ring-outer"/>
+              <path d="M -104 0 A 104 30 0 0 1 104 0" class="dr-saturn-ring dr-saturn-ring-back dr-ring-inner-arc"/>
+            </g>
+          </g>
+          <g class="dr-tape-rotor">
+            <circle r="80" class="dr-saturn-body"/>
+            <circle r="80" class="dr-saturn-rim"/>
+          </g>
+          <g class="dr-tape-rotor">
+            <g transform="rotate(-9)">
+              <path d="M -132 0 A 132 38 0 0 0 132 0" class="dr-saturn-ring dr-saturn-ring-front dr-ring-outer"/>
+              <path d="M -104 0 A 104 30 0 0 0 104 0" class="dr-saturn-ring dr-saturn-ring-front dr-ring-inner-arc"/>
+            </g>
+          </g>
+        </svg>
+      </div>
+
+      <!-- 4-cell meta strip + TAP at far right (matches live darkroom).
+           SCREW + REVERSE pull out into a dedicated controls row below. -->
+      <div class="dr-deck-meta">
+        <div class="dr-deck-meta-cell">
+          <span class="dr-deck-meta-label">SOURCE</span>
+          <span class="dr-deck-meta-value">tab capture</span>
+        </div>
+        <div class="dr-deck-meta-cell">
+          <span class="dr-deck-meta-label">ELAPSED</span>
+          <span class="dr-deck-meta-value">02:47</span>
+        </div>
+        <div class="dr-deck-meta-cell">
+          <span class="dr-deck-meta-label">BPM</span>
+          <span class="dr-deck-meta-bpm-value">128.0</span>
+        </div>
+        <div class="dr-deck-meta-cell">
+          <span class="dr-deck-meta-label">RATE</span>
+          <span class="dr-deck-meta-value">1.000×</span>
+        </div>
+        <button class="dr-deck-tap" type="button" aria-label="tap tempo">TAP</button>
+      </div>
+
+      <!-- SCREW + REVERSE controls row, sits just below the meta strip.
+           Pulled out of the meta so the strip is purely informational. -->
+      <div class="dr-deck-controls">
+        <div class="dr-knob dr-deck-screw">
+          <span class="dr-knob-label">SCREW</span>
+          <svg class="dr-knob-dial" viewBox="-50 -50 100 100">
+            <circle r="38" class="dr-ring-inner"/>
+            <g class="dr-knob-ticks">
+              <line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/>
+              <line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/>
+              <line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/>
+              <line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/>
+              <line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/>
+            </g>
+            <circle r="44"/>
+            <path class="dr-arc" d="M -31.1 24.1 A 39 39 0 1 1 31.1 24.1"/>
+            <g transform="rotate(-22)"><line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/></g>
+          </svg>
+          <span class="dr-knob-value">0.92×</span>
+        </div>
+        <button class="dr-reverse" type="button" data-active="false">
+          <span class="dr-reverse-dot"></span>
+          <span class="dr-reverse-label">REV</span>
+        </button>
+      </div>
+
+      <!-- waveform -->
+      <div class="dr-deck-wave">
+        <canvas class="dr-deck-wave-canvas" data-mock="wave-a"></canvas>
+        <div class="dr-deck-wave-pip"></div>
+      </div>
+
+      <!-- BEAT REPEAT row -->
+      <div class="dr-beat-row">
+        <span class="dr-beat-label"><span class="dr-beat-led" data-active="true"></span>BEAT REPEAT</span>
+        <button class="dr-beat-pill">OFF</button>
+        <button class="dr-beat-pill">1/32</button>
+        <button class="dr-beat-pill">1/16</button>
+        <button class="dr-beat-pill" data-active="true">1/8</button>
+        <button class="dr-beat-pill">1/4</button>
+        <button class="dr-beat-pill">1/2</button>
+        <button class="dr-beat-pill">1/1</button>
+      </div>
+    </div>
+
+    <!-- ─── CENTER MIXER ─── -->
+    <div class="dr-mixer">
+      <header class="dr-mixer-head">
+        <span class="dr-mixer-title">MIXER</span>
+        <span class="dr-mixer-spec">2-ch · xfade</span>
+      </header>
+
+      <div class="dr-mixer-strips">
+        <!-- channel A strip -->
+        <div class="dr-strip">
+          <span class="dr-strip-label">CH · A</span>
+
+          <div class="dr-strip-eq">
+            <div class="dr-strip-eq-knob">
+              <span class="dr-knob-label">HI</span>
+              <svg class="dr-knob-dial" viewBox="-50 -50 100 100">
+                <circle r="38" class="dr-ring-inner"/>
+                <g class="dr-knob-ticks">
+                  <line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/>
+                  <line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/>
+                  <line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/>
+                  <line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/>
+                  <line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/>
+                </g>
+                <circle r="42"/>
+                <g transform="rotate(15)"><line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/></g>
+              </svg>
+              <span class="dr-knob-value">+1.5</span>
+            </div>
+            <div class="dr-strip-eq-knob">
+              <span class="dr-knob-label">MID</span>
+              <svg class="dr-knob-dial" viewBox="-50 -50 100 100">
+                <circle r="38" class="dr-ring-inner"/>
+                <g class="dr-knob-ticks">
+                  <line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/>
+                  <line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/>
+                  <line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/>
+                  <line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/>
+                  <line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/>
+                </g>
+                <circle r="42"/>
+                <line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/>
+              </svg>
+              <span class="dr-knob-value">0.0</span>
+            </div>
+            <div class="dr-strip-eq-knob">
+              <span class="dr-knob-label">LO</span>
+              <svg class="dr-knob-dial" viewBox="-50 -50 100 100">
+                <circle r="38" class="dr-ring-inner"/>
+                <g class="dr-knob-ticks">
+                  <line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/>
+                  <line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/>
+                  <line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/>
+                  <line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/>
+                  <line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/>
+                </g>
+                <circle r="42"/>
+                <g transform="rotate(-32)"><line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/></g>
+              </svg>
+              <span class="dr-knob-value">-2.8</span>
+            </div>
+          </div>
+
+          <div class="dr-strip-div"></div>
+
+          <!-- color filter (HP/LP, center detent at 0) -->
+          <div class="dr-strip-filter">
+            <span class="dr-knob-label">FLT</span>
+            <svg class="dr-knob-dial" viewBox="-50 -50 100 100">
+              <circle r="38" class="dr-ring-inner"/>
+              <g class="dr-knob-ticks">
+                <line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/>
+                <line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/>
+                <line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/>
+                <line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/>
+                <line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/>
+              </g>
+              <circle r="42"/>
+              <line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/>
+            </svg>
+            <span class="dr-strip-filter-detent">– · 0 · +</span>
+          </div>
+
+          <!-- level fader + meter -->
+          <div class="dr-strip-level">
+            <div class="dr-fader">
+              <div class="dr-fader-track"></div>
+              <div class="dr-fader-handle" style="bottom:24%"></div>
+            </div>
+            <div class="dr-meter">
+              <div class="dr-meter-seg lit coral"></div>
+              <div class="dr-meter-seg lit amber"></div>
+              <div class="dr-meter-seg lit"></div>
+              <div class="dr-meter-seg lit"></div>
+              <div class="dr-meter-seg lit"></div>
+              <div class="dr-meter-seg lit"></div>
+              <div class="dr-meter-seg lit"></div>
+              <div class="dr-meter-seg"></div>
+              <div class="dr-meter-seg"></div>
+              <div class="dr-meter-seg"></div>
+              <div class="dr-meter-seg"></div>
+              <div class="dr-meter-seg"></div>
+            </div>
+          </div>
+          <span class="dr-strip-tag">level · −7 dB</span>
+          <button class="dr-strip-cue">CUE</button>
+        </div>
+
+        <!-- channel B strip (mirror) -->
+        <div class="dr-strip">
+          <span class="dr-strip-label">CH · B</span>
+
+          <div class="dr-strip-eq">
+            <div class="dr-strip-eq-knob">
+              <span class="dr-knob-label">HI</span>
+              <svg class="dr-knob-dial" viewBox="-50 -50 100 100">
+                <circle r="38" class="dr-ring-inner"/>
+                <g class="dr-knob-ticks">
+                  <line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/>
+                  <line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/>
+                  <line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/>
+                  <line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/>
+                  <line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/>
+                </g>
+                <circle r="42"/>
+                <line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/>
+              </svg>
+              <span class="dr-knob-value">0.0</span>
+            </div>
+            <div class="dr-strip-eq-knob">
+              <span class="dr-knob-label">MID</span>
+              <svg class="dr-knob-dial" viewBox="-50 -50 100 100">
+                <circle r="38" class="dr-ring-inner"/>
+                <g class="dr-knob-ticks">
+                  <line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/>
+                  <line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/>
+                  <line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/>
+                  <line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/>
+                  <line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/>
+                </g>
+                <circle r="42"/>
+                <g transform="rotate(20)"><line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/></g>
+              </svg>
+              <span class="dr-knob-value">+2.0</span>
+            </div>
+            <div class="dr-strip-eq-knob">
+              <span class="dr-knob-label">LO</span>
+              <svg class="dr-knob-dial" viewBox="-50 -50 100 100">
+                <circle r="38" class="dr-ring-inner"/>
+                <g class="dr-knob-ticks">
+                  <line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/>
+                  <line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/>
+                  <line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/>
+                  <line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/>
+                  <line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/>
+                </g>
+                <circle r="42"/>
+                <g transform="rotate(45)"><line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/></g>
+              </svg>
+              <span class="dr-knob-value">+4.5</span>
+            </div>
+          </div>
+
+          <div class="dr-strip-div"></div>
+
+          <div class="dr-strip-filter">
+            <span class="dr-knob-label">FLT</span>
+            <svg class="dr-knob-dial" viewBox="-50 -50 100 100">
+              <circle r="38" class="dr-ring-inner"/>
+              <g class="dr-knob-ticks">
+                <line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/>
+                <line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/>
+                <line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/>
+                <line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/>
+                <line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/>
+              </g>
+              <circle r="42"/>
+              <g transform="rotate(-50)"><line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/></g>
+            </svg>
+            <span class="dr-strip-filter-detent">– · 0 · +</span>
+          </div>
+
+          <div class="dr-strip-level">
+            <div class="dr-fader">
+              <div class="dr-fader-track"></div>
+              <div class="dr-fader-handle" style="bottom:62%"></div>
+            </div>
+            <div class="dr-meter">
+              <div class="dr-meter-seg"></div>
+              <div class="dr-meter-seg lit amber"></div>
+              <div class="dr-meter-seg lit"></div>
+              <div class="dr-meter-seg lit"></div>
+              <div class="dr-meter-seg lit"></div>
+              <div class="dr-meter-seg lit"></div>
+              <div class="dr-meter-seg lit"></div>
+              <div class="dr-meter-seg lit"></div>
+              <div class="dr-meter-seg lit"></div>
+              <div class="dr-meter-seg lit"></div>
+              <div class="dr-meter-seg"></div>
+              <div class="dr-meter-seg"></div>
+            </div>
+          </div>
+          <span class="dr-strip-tag">level · −2 dB</span>
+          <button class="dr-strip-cue">CUE</button>
+        </div>
+      </div>
+
+      <!-- crossfader -->
+      <div class="dr-mixer-xf">
+        <div class="dr-mixer-xf-label"><span class="a">A</span><span>XFADER</span><span class="b">B</span></div>
+        <div class="dr-xf-track">
+          <div class="dr-xf-rail"></div>
+          <div class="dr-xf-handle" style="left:54%"></div>
+        </div>
+        <div class="dr-xf-curve-row">
+          <span data-on="false">slow</span>
+          <span data-on="true">linear</span>
+          <span data-on="false">sharp</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ─── DECK B ─── -->
+    <div class="dr-deck" data-deck="b">
+      <header class="dr-deck-head">
+        <span class="dr-deck-label">DECK <strong>B</strong></span>
+        <span class="dr-deck-source">tab · <em>youtube — clams casino</em></span>
+      </header>
+
+      <div class="dr-deck-srcrow">
+        <button class="dr-deck-srcpill" data-active="true">tab</button>
+        <button class="dr-deck-srcpill">device</button>
+        <button class="dr-deck-srcpill">file</button>
+      </div>
+
+      <div class="dr-deck-disc-wrap">
+        <svg class="dr-tape-disc" viewBox="-160 -160 320 320" role="img" aria-label="Deck B — scratchable saturn">
+          <circle r="158" class="dr-tape-face"/>
+          <circle r="158" class="dr-tape-rim"/>
+          <g class="dr-stars">
+            <circle cx="-130" cy="-118" r="1.0" class="dr-star"/>
+            <circle cx="-104" cy="-138" r="0.8" class="dr-star dr-star-twinkle"/>
+            <circle cx="-72"  cy="-120" r="1.4" class="dr-star"/>
+            <circle cx="-50"  cy="-140" r="0.7" class="dr-star"/>
+            <circle cx="-12"  cy="-142" r="1.0" class="dr-star dr-star-twinkle"/>
+            <circle cx="58"   cy="-138" r="0.9" class="dr-star"/>
+            <circle cx="88"   cy="-118" r="1.2" class="dr-star"/>
+            <circle cx="138"  cy="-92"  r="0.8" class="dr-star dr-star-twinkle"/>
+            <circle cx="146"  cy="-50"  r="1.1" class="dr-star"/>
+            <circle cx="142"  cy="0"    r="0.8" class="dr-star"/>
+            <circle cx="148"  cy="48"   r="1.3" class="dr-star dr-star-twinkle"/>
+            <circle cx="138"  cy="98"   r="0.9" class="dr-star"/>
+            <circle cx="108"  cy="128"  r="1.0" class="dr-star"/>
+            <circle cx="60"   cy="142"  r="0.8" class="dr-star dr-star-twinkle"/>
+            <circle cx="20"   cy="146"  r="1.2" class="dr-star"/>
+            <circle cx="-30"  cy="138"  r="0.7" class="dr-star"/>
+            <circle cx="-78"  cy="128"  r="1.1" class="dr-star dr-star-twinkle"/>
+            <circle cx="-118" cy="100"  r="0.9" class="dr-star"/>
+            <circle cx="-148" cy="62"   r="1.0" class="dr-star"/>
+            <circle cx="-152" cy="14"   r="0.8" class="dr-star dr-star-twinkle"/>
+            <circle cx="-148" cy="-38"  r="1.3" class="dr-star"/>
+            <circle cx="-138" cy="-78"  r="0.9" class="dr-star"/>
+            <circle cx="118"  cy="-72"  r="1.0" class="dr-star dr-star-twinkle"/>
+            <circle cx="-104" cy="62"   r="0.7" class="dr-star"/>
+            <circle cx="100"  cy="80"   r="0.8" class="dr-star"/>
+            <circle cx="-90"  cy="-86"  r="0.9" class="dr-star dr-star-twinkle"/>
+          </g>
+          <circle cx="112" cy="98" r="3" class="dr-saturn-moon"/>
+          <circle cx="112" cy="98" r="7" class="dr-saturn-moon-glow"/>
+          <g class="dr-tape-rotor">
+            <g transform="rotate(-9)">
+              <path d="M -132 0 A 132 38 0 0 1 132 0" class="dr-saturn-ring dr-saturn-ring-back dr-ring-outer"/>
+              <path d="M -104 0 A 104 30 0 0 1 104 0" class="dr-saturn-ring dr-saturn-ring-back dr-ring-inner-arc"/>
+            </g>
+          </g>
+          <g class="dr-tape-rotor">
+            <circle r="80" class="dr-saturn-body"/>
+            <circle r="80" class="dr-saturn-rim"/>
+          </g>
+          <g class="dr-tape-rotor">
+            <g transform="rotate(-9)">
+              <path d="M -132 0 A 132 38 0 0 0 132 0" class="dr-saturn-ring dr-saturn-ring-front dr-ring-outer"/>
+              <path d="M -104 0 A 104 30 0 0 0 104 0" class="dr-saturn-ring dr-saturn-ring-front dr-ring-inner-arc"/>
+            </g>
+          </g>
+        </svg>
+      </div>
+
+      <div class="dr-deck-meta">
+        <div class="dr-deck-meta-cell">
+          <span class="dr-deck-meta-label">SOURCE</span>
+          <span class="dr-deck-meta-value">tab capture</span>
+        </div>
+        <div class="dr-deck-meta-cell">
+          <span class="dr-deck-meta-label">ELAPSED</span>
+          <span class="dr-deck-meta-value">01:14</span>
+        </div>
+        <div class="dr-deck-meta-cell">
+          <span class="dr-deck-meta-label">BPM</span>
+          <span class="dr-deck-meta-bpm-value">128.0</span>
+        </div>
+        <div class="dr-deck-meta-cell">
+          <span class="dr-deck-meta-label">RATE</span>
+          <span class="dr-deck-meta-value">1.000×</span>
+        </div>
+        <button class="dr-deck-tap" type="button" aria-label="tap tempo">TAP</button>
+      </div>
+
+      <div class="dr-deck-controls">
+        <div class="dr-knob dr-deck-screw">
+          <span class="dr-knob-label">SCREW</span>
+          <svg class="dr-knob-dial" viewBox="-50 -50 100 100">
+            <circle r="38" class="dr-ring-inner"/>
+            <g class="dr-knob-ticks">
+              <line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/>
+              <line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/>
+              <line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/>
+              <line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/>
+              <line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/>
+            </g>
+            <circle r="44"/>
+            <path class="dr-arc" d="M -31.1 24.1 A 39 39 0 1 1 31.1 24.1"/>
+            <line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/>
+          </svg>
+          <span class="dr-knob-value">1.000×</span>
+        </div>
+        <button class="dr-reverse" type="button" data-active="false">
+          <span class="dr-reverse-dot"></span>
+          <span class="dr-reverse-label">REV</span>
+        </button>
+      </div>
+
+      <div class="dr-deck-wave">
+        <canvas class="dr-deck-wave-canvas" data-mock="wave-b"></canvas>
+        <div class="dr-deck-wave-pip"></div>
+      </div>
+
+      <div class="dr-beat-row">
+        <span class="dr-beat-label"><span class="dr-beat-led"></span>BEAT REPEAT</span>
+        <button class="dr-beat-pill" data-active="true">OFF</button>
+        <button class="dr-beat-pill">1/32</button>
+        <button class="dr-beat-pill">1/16</button>
+        <button class="dr-beat-pill">1/8</button>
+        <button class="dr-beat-pill">1/4</button>
+        <button class="dr-beat-pill">1/2</button>
+        <button class="dr-beat-pill">1/1</button>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════
+       MASTER FX RACK — 6 modules with [A | B | M] assign chip
+       ══════════════════════════════════════════════════════════ -->
+  <section class="dr-rack-wrap">
+    <header class="dr-rack-header">
+      <h2 class="dr-rack-title">MASTER FX</h2>
+      <span class="dr-rack-spec">assign per module — A · B · master</span>
+    </header>
+
+    <div class="dr-rack">
+      <!-- EQ -->
+      <article class="dr-mod" data-bypassed="true">
+        <header class="dr-mod-head">
+          <button class="dr-mod-bypass" type="button" aria-label="bypass"></button>
+          <div class="dr-mod-head-text">
+            <span class="dr-mod-name">EQ</span>
+            <span class="dr-mod-assign">
+              <button data-on="false">A</button>
+              <button data-on="false">B</button>
+              <button data-on="true">M</button>
+            </span>
+          </div>
+        </header>
+        <div class="dr-mod-body">
+          <div class="dr-mod-mini" aria-label="EQ curve mini"></div>
+          <div class="dr-knobs">
+            <div class="dr-knob"><span class="dr-knob-label">LOW</span>
+              <svg class="dr-knob-dial" viewBox="-50 -50 100 100"><circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g><circle r="42"/><line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/></svg>
+              <span class="dr-knob-value">+0.0</span></div>
+            <div class="dr-knob"><span class="dr-knob-label">MID</span>
+              <svg class="dr-knob-dial" viewBox="-50 -50 100 100"><circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g><circle r="42"/><line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/></svg>
+              <span class="dr-knob-value">+0.0</span></div>
+            <div class="dr-knob"><span class="dr-knob-label">HIGH</span>
+              <svg class="dr-knob-dial" viewBox="-50 -50 100 100"><circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g><circle r="42"/><line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/></svg>
+              <span class="dr-knob-value">+0.0</span></div>
+          </div>
+        </div>
+      </article>
+
+      <!-- FILTER -->
+      <article class="dr-mod" data-bypassed="true">
+        <header class="dr-mod-head">
+          <button class="dr-mod-bypass" type="button" aria-label="bypass"></button>
+          <div class="dr-mod-head-text">
+            <span class="dr-mod-name">FILTER</span>
+            <span class="dr-mod-assign">
+              <button data-on="false">A</button>
+              <button data-on="false">B</button>
+              <button data-on="true">M</button>
+            </span>
+          </div>
+        </header>
+        <div class="dr-mod-body">
+          <div class="dr-mod-mini"></div>
+          <div class="dr-knobs">
+            <div class="dr-knob"><span class="dr-knob-label">CUT</span>
+              <svg class="dr-knob-dial" viewBox="-50 -50 100 100"><circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g><circle r="42"/><line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/></svg>
+              <span class="dr-knob-value">2.4k</span></div>
+            <div class="dr-knob"><span class="dr-knob-label">RES</span>
+              <svg class="dr-knob-dial" viewBox="-50 -50 100 100"><circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g><circle r="42"/><line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/></svg>
+              <span class="dr-knob-value">0.7</span></div>
+          </div>
+        </div>
+      </article>
+
+      <!-- PHASER — assigned to A -->
+      <article class="dr-mod" data-bypassed="false">
+        <header class="dr-mod-head">
+          <button class="dr-mod-bypass" type="button" aria-label="bypass"></button>
+          <div class="dr-mod-head-text">
+            <span class="dr-mod-name">PHASER</span>
+            <span class="dr-mod-assign">
+              <button data-on="true">A</button>
+              <button data-on="false">B</button>
+              <button data-on="false">M</button>
+            </span>
+          </div>
+        </header>
+        <div class="dr-mod-body">
+          <div class="dr-mod-mini"></div>
+          <div class="dr-knobs">
+            <div class="dr-knob"><span class="dr-knob-label">RATE</span>
+              <svg class="dr-knob-dial" viewBox="-50 -50 100 100"><circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g><circle r="42"/><g transform="rotate(40)"><line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/></g></svg>
+              <span class="dr-knob-value">0.42</span></div>
+            <div class="dr-knob"><span class="dr-knob-label">DEPTH</span>
+              <svg class="dr-knob-dial" viewBox="-50 -50 100 100"><circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g><circle r="42"/><g transform="rotate(70)"><line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/></g></svg>
+              <span class="dr-knob-value">0.65</span></div>
+            <div class="dr-knob"><span class="dr-knob-label">FB</span>
+              <svg class="dr-knob-dial" viewBox="-50 -50 100 100"><circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g><circle r="42"/><g transform="rotate(20)"><line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/></g></svg>
+              <span class="dr-knob-value">0.30</span></div>
+            <div class="dr-knob"><span class="dr-knob-label">MIX</span>
+              <svg class="dr-knob-dial" viewBox="-50 -50 100 100"><circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g><circle r="42"/><g transform="rotate(35)"><line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/></g></svg>
+              <span class="dr-knob-value">0.55</span></div>
+          </div>
+        </div>
+      </article>
+
+      <!-- LFO -->
+      <article class="dr-mod" data-bypassed="true">
+        <header class="dr-mod-head">
+          <button class="dr-mod-bypass" type="button" aria-label="bypass"></button>
+          <div class="dr-mod-head-text">
+            <span class="dr-mod-name">LFO</span>
+            <span class="dr-mod-assign">
+              <button data-on="false">A</button>
+              <button data-on="false">B</button>
+              <button data-on="true">M</button>
+            </span>
+          </div>
+        </header>
+        <div class="dr-mod-body">
+          <div class="dr-mod-mini"></div>
+          <div class="dr-knobs">
+            <div class="dr-knob"><span class="dr-knob-label">RATE</span>
+              <svg class="dr-knob-dial" viewBox="-50 -50 100 100"><circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g><circle r="42"/><line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/></svg>
+              <span class="dr-knob-value">1/4</span></div>
+            <div class="dr-knob"><span class="dr-knob-label">DEPTH</span>
+              <svg class="dr-knob-dial" viewBox="-50 -50 100 100"><circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g><circle r="42"/><line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/></svg>
+              <span class="dr-knob-value">0.40</span></div>
+          </div>
+        </div>
+      </article>
+
+      <!-- DELAY — assigned to B -->
+      <article class="dr-mod" data-bypassed="false">
+        <header class="dr-mod-head">
+          <button class="dr-mod-bypass" type="button" aria-label="bypass"></button>
+          <div class="dr-mod-head-text">
+            <span class="dr-mod-name">DELAY</span>
+            <span class="dr-mod-assign">
+              <button data-on="false">A</button>
+              <button data-on="true">B</button>
+              <button data-on="false">M</button>
+            </span>
+          </div>
+        </header>
+        <div class="dr-mod-body">
+          <div class="dr-mod-mini"></div>
+          <div class="dr-knobs">
+            <div class="dr-knob"><span class="dr-knob-label">TIME</span>
+              <svg class="dr-knob-dial" viewBox="-50 -50 100 100"><circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g><circle r="42"/><g transform="rotate(-30)"><line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/></g></svg>
+              <span class="dr-knob-value">3/16</span></div>
+            <div class="dr-knob"><span class="dr-knob-label">FB</span>
+              <svg class="dr-knob-dial" viewBox="-50 -50 100 100"><circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g><circle r="42"/><g transform="rotate(28)"><line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/></g></svg>
+              <span class="dr-knob-value">0.48</span></div>
+            <div class="dr-knob"><span class="dr-knob-label">TONE</span>
+              <svg class="dr-knob-dial" viewBox="-50 -50 100 100"><circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g><circle r="42"/><line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/></svg>
+              <span class="dr-knob-value">2.8k</span></div>
+            <div class="dr-knob"><span class="dr-knob-label">MIX</span>
+              <svg class="dr-knob-dial" viewBox="-50 -50 100 100"><circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g><circle r="42"/><g transform="rotate(15)"><line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/></g></svg>
+              <span class="dr-knob-value">0.32</span></div>
+          </div>
+        </div>
+      </article>
+
+      <!-- REVERB — master -->
+      <article class="dr-mod" data-bypassed="false">
+        <header class="dr-mod-head">
+          <button class="dr-mod-bypass" type="button" aria-label="bypass"></button>
+          <div class="dr-mod-head-text">
+            <span class="dr-mod-name">REVERB</span>
+            <span class="dr-mod-assign">
+              <button data-on="false">A</button>
+              <button data-on="false">B</button>
+              <button data-on="true">M</button>
+            </span>
+          </div>
+        </header>
+        <div class="dr-mod-body">
+          <div class="dr-mod-mini"></div>
+          <div class="dr-knobs">
+            <div class="dr-knob"><span class="dr-knob-label">SIZE</span>
+              <svg class="dr-knob-dial" viewBox="-50 -50 100 100"><circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g><circle r="42"/><g transform="rotate(50)"><line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/></g></svg>
+              <span class="dr-knob-value">CHAMBER</span></div>
+            <div class="dr-knob"><span class="dr-knob-label">DECAY</span>
+              <svg class="dr-knob-dial" viewBox="-50 -50 100 100"><circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g><circle r="42"/><g transform="rotate(45)"><line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/></g></svg>
+              <span class="dr-knob-value">2.4s</span></div>
+            <div class="dr-knob"><span class="dr-knob-label">MIX</span>
+              <svg class="dr-knob-dial" viewBox="-50 -50 100 100"><circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g><circle r="42"/><g transform="rotate(-10)"><line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/></g></svg>
+              <span class="dr-knob-value">0.22</span></div>
+          </div>
+        </div>
+      </article>
+
+      <!-- ============================================================
+           6 NEW FX MODULES — ported from darkroom.html (May 2026 pass)
+           so the DJ station and the playground share the same vocabulary.
+           Visual-only: assign chips, personality elements, knob values
+           are static stand-ins matching the live site's defaults.
+           ============================================================ -->
+
+      <!-- BITCRUSH -->
+      <article class="dr-mod" data-mod="bitcrush" data-bypassed="true">
+        <header class="dr-mod-head">
+          <button class="dr-mod-bypass" type="button" aria-label="bypass"></button>
+          <div class="dr-mod-head-text">
+            <span class="dr-mod-name">BITCRUSH</span>
+            <span class="dr-mod-assign">
+              <button data-on="false">A</button>
+              <button data-on="false">B</button>
+              <button data-on="true">M</button>
+            </span>
+          </div>
+        </header>
+        <div class="dr-mod-body">
+          <canvas class="dr-bitcrush-vis" width="480" height="80"></canvas>
+          <div class="dr-bc-leds" aria-hidden="true">
+            <span class="dr-bc-led" data-on="true"></span>
+            <span class="dr-bc-led" data-on="true"></span>
+            <span class="dr-bc-led" data-on="true"></span>
+            <span class="dr-bc-led"></span>
+            <span class="dr-bc-led"></span>
+          </div>
+          <div class="dr-knobs">
+            <div class="dr-knob"><span class="dr-knob-label">BITS</span>
+              <svg class="dr-knob-dial" viewBox="-50 -50 100 100"><circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g><circle r="42"/><g transform="rotate(-30)"><line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/></g></svg>
+              <span class="dr-knob-value">5 bit</span></div>
+            <div class="dr-knob"><span class="dr-knob-label">RATE</span>
+              <svg class="dr-knob-dial" viewBox="-50 -50 100 100"><circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g><circle r="42"/><line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/></svg>
+              <span class="dr-knob-value">1.00×</span></div>
+            <div class="dr-knob"><span class="dr-knob-label">MIX</span>
+              <svg class="dr-knob-dial" viewBox="-50 -50 100 100"><circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g><circle r="42"/><g transform="rotate(-127)"><line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/></g></svg>
+              <span class="dr-knob-value">0%</span></div>
+          </div>
+        </div>
+      </article>
+
+      <!-- SATURATE -->
+      <article class="dr-mod" data-mod="saturation" data-bypassed="true">
+        <header class="dr-mod-head">
+          <button class="dr-mod-bypass" type="button" aria-label="bypass"></button>
+          <div class="dr-mod-head-text">
+            <span class="dr-mod-name">SATURATE</span>
+            <span class="dr-mod-assign">
+              <button data-on="false">A</button>
+              <button data-on="false">B</button>
+              <button data-on="true">M</button>
+            </span>
+          </div>
+        </header>
+        <div class="dr-mod-body">
+          <canvas class="dr-sat-vis" width="480" height="80"></canvas>
+          <div class="dr-sat-types" role="group" aria-label="Saturation type">
+            <button class="dr-sat-type" data-active="true"  type="button">TUBE</button>
+            <button class="dr-sat-type" data-active="false" type="button">TAPE</button>
+            <button class="dr-sat-type" data-active="false" type="button">FUZZ</button>
+            <button class="dr-sat-type" data-active="false" type="button">DIODE</button>
+          </div>
+          <div class="dr-knobs">
+            <div class="dr-knob"><span class="dr-knob-label">DRIVE</span>
+              <svg class="dr-knob-dial" viewBox="-50 -50 100 100"><circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g><circle r="42"/><g transform="rotate(-127)"><line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/></g></svg>
+              <span class="dr-knob-value">0%</span></div>
+            <div class="dr-knob"><span class="dr-knob-label">MIX</span>
+              <svg class="dr-knob-dial" viewBox="-50 -50 100 100"><circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g><circle r="42"/><g transform="rotate(-127)"><line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/></g></svg>
+              <span class="dr-knob-value">0%</span></div>
+          </div>
+        </div>
+      </article>
+
+      <!-- CHORUS -->
+      <article class="dr-mod" data-mod="chorus" data-bypassed="true">
+        <header class="dr-mod-head">
+          <button class="dr-mod-bypass" type="button" aria-label="bypass"></button>
+          <div class="dr-mod-head-text">
+            <span class="dr-mod-name">CHORUS</span>
+            <span class="dr-mod-assign">
+              <button data-on="false">A</button>
+              <button data-on="false">B</button>
+              <button data-on="true">M</button>
+            </span>
+          </div>
+        </header>
+        <div class="dr-mod-body">
+          <canvas class="dr-chorus-vis" width="480" height="80"></canvas>
+          <div class="dr-lfo-shapes" role="group" aria-label="LFO shape">
+            <button class="dr-lfo-shape-btn" data-active="true"  type="button">SIN</button>
+            <button class="dr-lfo-shape-btn" data-active="false" type="button">TRI</button>
+            <button class="dr-lfo-shape-btn" data-active="false" type="button">SQR</button>
+          </div>
+          <div class="dr-fxsync">
+            <button class="dr-fxsync-toggle" data-active="false" type="button">SYNC</button>
+          </div>
+          <div class="dr-knobs">
+            <div class="dr-knob"><span class="dr-knob-label">RATE</span>
+              <svg class="dr-knob-dial" viewBox="-50 -50 100 100"><circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g><circle r="42"/><g transform="rotate(-65)"><line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/></g></svg>
+              <span class="dr-knob-value">1.50 Hz</span></div>
+            <div class="dr-knob"><span class="dr-knob-label">DEPTH</span>
+              <svg class="dr-knob-dial" viewBox="-50 -50 100 100"><circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g><circle r="42"/><line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/></svg>
+              <span class="dr-knob-value">50%</span></div>
+            <div class="dr-knob"><span class="dr-knob-label">FB</span>
+              <svg class="dr-knob-dial" viewBox="-50 -50 100 100"><circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g><circle r="42"/><g transform="rotate(-85)"><line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/></g></svg>
+              <span class="dr-knob-value">20%</span></div>
+            <div class="dr-knob"><span class="dr-knob-label">MIX</span>
+              <svg class="dr-knob-dial" viewBox="-50 -50 100 100"><circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g><circle r="42"/><g transform="rotate(-127)"><line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/></g></svg>
+              <span class="dr-knob-value">0%</span></div>
+          </div>
+        </div>
+      </article>
+
+      <!-- FLANGER -->
+      <article class="dr-mod" data-mod="flanger" data-bypassed="true">
+        <header class="dr-mod-head">
+          <button class="dr-mod-bypass" type="button" aria-label="bypass"></button>
+          <div class="dr-mod-head-text">
+            <span class="dr-mod-name">FLANGER</span>
+            <span class="dr-mod-assign">
+              <button data-on="false">A</button>
+              <button data-on="false">B</button>
+              <button data-on="true">M</button>
+            </span>
+          </div>
+        </header>
+        <div class="dr-mod-body">
+          <canvas class="dr-flanger-vis" width="480" height="80"></canvas>
+          <div class="dr-lfo-shapes" role="group" aria-label="LFO shape">
+            <button class="dr-lfo-shape-btn" data-active="true"  type="button">SIN</button>
+            <button class="dr-lfo-shape-btn" data-active="false" type="button">TRI</button>
+            <button class="dr-lfo-shape-btn" data-active="false" type="button">SQR</button>
+          </div>
+          <div class="dr-fxsync">
+            <button class="dr-fxsync-toggle" data-active="false" type="button">SYNC</button>
+          </div>
+          <div class="dr-knobs">
+            <div class="dr-knob"><span class="dr-knob-label">RATE</span>
+              <svg class="dr-knob-dial" viewBox="-50 -50 100 100"><circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g><circle r="42"/><g transform="rotate(-100)"><line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/></g></svg>
+              <span class="dr-knob-value">0.50 Hz</span></div>
+            <div class="dr-knob"><span class="dr-knob-label">DEPTH</span>
+              <svg class="dr-knob-dial" viewBox="-50 -50 100 100"><circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g><circle r="42"/><g transform="rotate(53)"><line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/></g></svg>
+              <span class="dr-knob-value">70%</span></div>
+            <div class="dr-knob"><span class="dr-knob-label">FB</span>
+              <svg class="dr-knob-dial" viewBox="-50 -50 100 100"><circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g><circle r="42"/><g transform="rotate(28)"><line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/></g></svg>
+              <span class="dr-knob-value">60%</span></div>
+            <div class="dr-knob"><span class="dr-knob-label">MIX</span>
+              <svg class="dr-knob-dial" viewBox="-50 -50 100 100"><circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g><circle r="42"/><g transform="rotate(-127)"><line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/></g></svg>
+              <span class="dr-knob-value">0%</span></div>
+          </div>
+        </div>
+      </article>
+
+      <!-- AMBIENT -->
+      <article class="dr-mod" data-mod="ambient" data-bypassed="true">
+        <header class="dr-mod-head">
+          <button class="dr-mod-bypass" type="button" aria-label="bypass"></button>
+          <div class="dr-mod-head-text">
+            <span class="dr-mod-name">AMBIENT</span>
+            <span class="dr-mod-assign">
+              <button data-on="false">A</button>
+              <button data-on="false">B</button>
+              <button data-on="true">M</button>
+            </span>
+          </div>
+        </header>
+        <div class="dr-mod-body">
+          <canvas class="dr-ambient-vis" width="480" height="80"></canvas>
+          <div class="dr-amb-controls">
+            <div class="dr-amb-intervals" role="group" aria-label="Pitch intervals">
+              <button class="dr-amb-int" data-active="true"  type="button">OCT</button>
+              <button class="dr-amb-int" data-active="false" type="button">5TH</button>
+              <button class="dr-amb-int" data-active="false" type="button">4TH</button>
+              <button class="dr-amb-int" data-active="false" type="button">m7</button>
+            </div>
+            <button class="dr-amb-freeze" data-active="false" type="button">FREEZE</button>
+          </div>
+          <div class="dr-knobs">
+            <div class="dr-knob"><span class="dr-knob-label">BLOOM</span>
+              <svg class="dr-knob-dial" viewBox="-50 -50 100 100"><circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g><circle r="42"/><line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/></svg>
+              <span class="dr-knob-value">50%</span></div>
+            <div class="dr-knob"><span class="dr-knob-label">DEPTH</span>
+              <svg class="dr-knob-dial" viewBox="-50 -50 100 100"><circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g><circle r="42"/><line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/></svg>
+              <span class="dr-knob-value">50%</span></div>
+            <div class="dr-knob"><span class="dr-knob-label">MIX</span>
+              <svg class="dr-knob-dial" viewBox="-50 -50 100 100"><circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g><circle r="42"/><g transform="rotate(-127)"><line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/></g></svg>
+              <span class="dr-knob-value">0%</span></div>
+          </div>
+        </div>
+      </article>
+
+      <!-- REV DLY -->
+      <article class="dr-mod" data-mod="revdelay" data-bypassed="true">
+        <header class="dr-mod-head">
+          <button class="dr-mod-bypass" type="button" aria-label="bypass"></button>
+          <div class="dr-mod-head-text">
+            <span class="dr-mod-name">REV DLY</span>
+            <span class="dr-mod-assign">
+              <button data-on="false">A</button>
+              <button data-on="false">B</button>
+              <button data-on="true">M</button>
+            </span>
+          </div>
+        </header>
+        <div class="dr-mod-body">
+          <canvas class="dr-revdelay-vis" width="480" height="80"></canvas>
+          <div class="dr-rd-controls">
+            <button class="dr-rd-trigger" type="button" aria-label="Fire reversed chunk">▶ TRIGGER</button>
+          </div>
+          <div class="dr-fxsync">
+            <button class="dr-fxsync-toggle" data-active="false" type="button">SYNC</button>
+          </div>
+          <div class="dr-knobs">
+            <div class="dr-knob"><span class="dr-knob-label">TIME</span>
+              <svg class="dr-knob-dial" viewBox="-50 -50 100 100"><circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g><circle r="42"/><line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/></svg>
+              <span class="dr-knob-value">500 ms</span></div>
+            <div class="dr-knob"><span class="dr-knob-label">FB</span>
+              <svg class="dr-knob-dial" viewBox="-50 -50 100 100"><circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g><circle r="42"/><g transform="rotate(-30)"><line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/></g></svg>
+              <span class="dr-knob-value">40%</span></div>
+            <div class="dr-knob"><span class="dr-knob-label">MIX</span>
+              <svg class="dr-knob-dial" viewBox="-50 -50 100 100"><circle r="38" class="dr-ring-inner"/><g class="dr-knob-ticks"><line class="dr-knob-tick-mark" x1="-35.94" y1="27.08" x2="-39.13" y2="29.49"/><line class="dr-knob-tick-mark" x1="-40.27" y1="-20.08" x2="-43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="0" y1="-45" x2="0" y2="-49"/><line class="dr-knob-tick-mark" x1="40.27" y1="-20.08" x2="43.85" y2="-21.86"/><line class="dr-knob-tick-mark" x1="35.94" y1="27.08" x2="39.13" y2="29.49"/></g><circle r="42"/><g transform="rotate(-127)"><line class="dr-tick" x1="0" y1="-18" x2="0" y2="-36"/></g></svg>
+              <span class="dr-knob-value">0%</span></div>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <footer class="dr-foot">
+    <span><em>prototype</em> · two-deck DJ station · DOM mock, no audio</span>
+    <span>darkroom.ja · v0.2-pre</span>
+  </footer>
+
+</main>
+
+<!-- minimal JS — paint static waveform mocks into the canvases -->
+<script>
+(function(){
+  // Solid moss orange — matches the live darkroom waveform fill exactly.
+  // oklch(0.64 0.18 35) is the --dr-moss value used in darkroom.html for
+  // the sampler/strip canvas. No more peak/mid gradient — flat color so
+  // the prototype reads as the same instrument as the live site.
+  const WAVE_FILL = 'oklch(0.64 0.18 35)';
+  const GRID = 'oklch(0.62 0.014 75 / 0.35)';
+  function paint(canvas, seed){
+    const dpr = window.devicePixelRatio || 1;
+    const w = canvas.clientWidth, h = canvas.clientHeight;
+    canvas.width = w * dpr; canvas.height = h * dpr;
+    const ctx = canvas.getContext('2d'); ctx.scale(dpr, dpr);
+    // grid
+    ctx.fillStyle = GRID;
+    for (let i=0; i<8; i++){ ctx.fillRect(i * w/8, 0, 1, h); }
+    // pseudo-random stable peaks
+    let s = seed;
+    function rnd(){ s = (s * 1664525 + 1013904223) % 4294967296; return s / 4294967296; }
+    const cols = 256;
+    const colW = w / cols;
+    const mid = h / 2;
+    ctx.fillStyle = WAVE_FILL;
+    for (let i=0; i<cols; i++){
+      const env = 0.4 + 0.5 * Math.sin(i * 0.04 + seed * 0.01) + 0.2 * rnd();
+      const a = Math.min(1, Math.max(0.05, env));
+      const peak = a * (h * 0.45);
+      ctx.fillRect(i * colW, mid - peak, Math.max(1, colW - 0.5), peak * 2);
+    }
+  }
+  document.querySelectorAll('canvas[data-mock]').forEach((c, i) => {
+    requestAnimationFrame(() => paint(c, c.dataset.mock === 'wave-a' ? 7919 : 31337));
+  });
+  window.addEventListener('resize', () => {
+    document.querySelectorAll('canvas[data-mock]').forEach((c) => paint(c, c.dataset.mock === 'wave-a' ? 7919 : 31337));
+  });
+})();
+</script>
+
+</body>
+</html>
