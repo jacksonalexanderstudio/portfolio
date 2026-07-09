@@ -66,12 +66,12 @@ body.img-hover #cur{filter:invert(1)}
 #top-about.warp-active::before{display:none}
 #top-about.warp-active::after{display:none}
 /* ── ABOUT (top — full-bleed bg + Ken Burns) ── */
-#top-about{position:relative;padding-top:0;height:100vh;min-height:100vh;display:flex;flex-direction:column;justify-content:center;background:#0c0c0c;border-bottom:1px solid rgba(255,255,255,.1);overflow:hidden}
+#top-about{position:relative;margin-top:140px;height:calc(100vh - 140px);min-height:calc(100vh - 140px);display:flex;flex-direction:column;justify-content:center;background:#0c0c0c;border-bottom:1px solid rgba(255,255,255,.1);overflow:hidden}
 #top-about::before{content:'';position:absolute;inset:0;background-image:url('logos & backgrounds/about-bg.jpg');background-size:100% auto;background-position:center top;animation:kbAbout 18s ease-in-out infinite alternate;will-change:transform;z-index:0}
 #top-about::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,0,0,.75) 0%,rgba(0,0,0,.44) 50%,rgba(0,0,0,.68) 100%);z-index:1}
 @keyframes kbAbout{0%{transform:scale(1) translate(0%,0%)}100%{transform:scale(1.18) translate(-5%,-3%)}}
-.ta{position:absolute;z-index:5;bottom:0;right:0;width:50%;height:50%;padding:64px 72px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;background:#000000;mix-blend-mode:multiply}
-.ta-text-overlay{position:absolute;z-index:6;bottom:0;right:0;width:50%;height:50%;padding:64px 72px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;pointer-events:none}
+.ta{position:absolute;z-index:5;top:0;left:0;width:50%;height:50%;padding:64px 72px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;background:#000000;mix-blend-mode:multiply}
+.ta-text-overlay{position:absolute;z-index:6;top:0;left:0;width:50%;height:50%;padding:64px 72px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;pointer-events:none}
 .ta-left{display:flex;flex-direction:column;gap:24px;padding-top:6px}
 .ta-label{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.4)}
 .ta-meta{font-size:12px;font-family:var(--sf);font-weight:300;letter-spacing:.04em;line-height:2.2;color:rgba(255,255,255,.45)}
@@ -175,8 +175,12 @@ body.img-hover #cur{filter:invert(1)}
 #craft .wi:hover img{filter:sepia(0.04) saturate(0.92) contrast(1.03) brightness(0.99)}
 .ov{position:absolute;inset:0;background:none;display:flex;flex-direction:column;justify-content:flex-end;padding:14px;opacity:0;transition:opacity .35s}
 .wi:hover .ov{opacity:1}
-.ov-num{font-size:18px;color:#fff;letter-spacing:.06em;line-height:1;margin-bottom:6px;font-family:var(--sf)}
+.ov-num{font-size:11px;color:#fff;letter-spacing:.06em;line-height:1;margin-bottom:6px;font-family:var(--sf)}
 .ov-sec{font-size:9px;color:rgba(255,255,255,.7);letter-spacing:.16em;text-transform:uppercase}
+.gl .ov-num{color:#1A1919}
+.gl .ov-sec{color:rgba(26,25,25,.6)}
+.gl .wi[data-client="surroundings"] .ov-num{color:#fff}
+.gl .wi[data-client="surroundings"] .ov-sec{color:rgba(255,255,255,.7)}
 
 /* ── MASONRY — all sections ── */
 .gl,.gm,.gp{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;padding:0 52px;align-items:start}
@@ -243,7 +247,7 @@ body.img-hover #cur{filter:invert(1)}
   #cur{display:none!important}
   *,*::before,*::after{cursor:auto!important}
   a,button{cursor:pointer!important}
-  #top-about{padding-top:72px}
+  #top-about{margin-top:72px;padding-top:0;height:auto;min-height:calc(100vh - 72px)}
   #top-about::before{background-size:cover;background-position:center center}
   #hdr{height:72px}
   .nd{position:fixed;top:72px;left:0;right:0;min-width:0}
@@ -326,12 +330,12 @@ body.img-hover #cur{filter:invert(1)}
     <canvas id="warp-canvas"></canvas>
   </div>
   <div class="ta">
-    <a href="portfolio.html" class="ta-mark swp" style="display:block;width:120px;margin-bottom:24px"><img src="logos &amp; backgrounds/jastudio_shadow.png" alt="Jackson Alexander Studio mark" style="width:100%;height:auto;filter:invert(1);display:block"></a>
+    <a href="portfolio.html" class="ta-mark swp" style="display:block;width:60px;margin-bottom:24px"><img src="logos &amp; backgrounds/jastudio_shadow.png" alt="Jackson Alexander Studio mark" style="width:100%;height:auto;filter:invert(1);display:block;visibility:hidden"></a>
     <p class="ta-headline swp" style="visibility:hidden">A creative studio &#8212;<br>based in Santa Fe, NM.</p>
     <p class="ta-body swp-d" style="visibility:hidden">Thanks for stopping by &#8212; I&#39;m Jackson. The studio works across a wide range of mediums: graphic design, illustration, web design, fabrication, sound, and landscape.</p>
   </div>
   <div class="ta-text-overlay">
-    <img src="logos &amp; backgrounds/jastudio_shadow.png" alt="" style="display:block;width:120px;margin-bottom:24px;visibility:hidden">
+    <img src="logos &amp; backgrounds/jastudio_shadow.png" alt="" style="display:block;width:60px;margin-bottom:24px;filter:invert(1)">
     <p class="ta-headline">A creative studio &#8212;<br>based in Santa Fe, NM.</p>
     <p class="ta-body">Thanks for stopping by &#8212; I&#39;m Jackson. The studio works across a wide range of mediums: graphic design, illustration, web design, fabrication, sound, and landscape.</p>
   </div>
@@ -407,23 +411,23 @@ body.img-hover #cur{filter:invert(1)}
     <p class="sdesc swp-d">Brand identity and logo design<br>for small businesses, creative studios,<br>and independent clients.</p>
   </div>
   <div class="gl fi"><div class="wi" data-section="logos" data-title="Rocket Ramps | Word Mark" data-category="Word Mark" data-client="rocket-ramps" data-seclabel="Logos"><img src="logos/rocket-ramps-wordmark.png" alt="Rocket Ramps Word Mark" loading="lazy"><div class="ov"><div class="ov-num">001</div><div class="ov-sec">Rocket Ramps | Word Mark</div></div></div>
-<div class="wi" data-section="logos" data-title="Surroundings Studio | Animated Word Mark" data-category="Word Mark" data-client="surroundings" data-seclabel="Logos"><iframe src="logos/surroundings-loop.html" title="Surroundings Studio Animated Word Mark" loading="lazy" tabindex="-1"></iframe><div class="ov"><div class="ov-num">002</div><div class="ov-sec">Surroundings Studio | Word Mark</div></div></div>
+<div class="wi" data-section="logos" data-title="Surroundings Studio | Logo Animation" data-category="Logo Animation" data-client="surroundings" data-seclabel="Logos"><iframe src="logos/surroundings-loop.html" title="Surroundings Studio Logo Animation" loading="lazy" tabindex="-1"></iframe><div class="ov"><div class="ov-num">002</div><div class="ov-sec">Surroundings Studio | Logo Animation</div></div></div>
 <div class="wi" data-section="logos" data-title="JA Studio | Logo Mark" data-category="Logo Mark" data-client="ja-studio" data-seclabel="Logos"><img src="logos/jastudio_shadow.png" alt="JA Studio Logo Mark" loading="lazy"><div class="ov"><div class="ov-num">003</div><div class="ov-sec">JA Studio | Logo Mark</div></div></div>
 <div class="wi" data-section="logos" data-title="JA Studio | Word Mark" data-category="Word Mark" data-client="ja-studio" data-seclabel="Logos"><img src="logos/jack-logo-web.png" alt="JA Studio Word Mark" loading="lazy"><div class="ov"><div class="ov-num">004</div><div class="ov-sec">JA Studio | Word Mark</div></div></div>
 <div class="wi" data-section="logos" data-title="JA Studio | Alt Logo" data-category="Alt Logo" data-client="ja-studio" data-seclabel="Logos"><img src="logos/jack%20logo%202.png" alt="JA Studio Alt Logo" loading="lazy"><div class="ov"><div class="ov-num">005</div><div class="ov-sec">JA Studio | Alt Logo</div></div></div>
-<div class="wi" data-section="logos" data-title="Bird + Arrow | Logo Mark" data-category="Logo Mark" data-client="bird-arrow" data-seclabel="Logos"><video autoplay loop muted playsinline src="logos/bird-arrow-hero.mp4" loading="lazy"></video><div class="ov"><div class="ov-num">006</div><div class="ov-sec">Bird + Arrow | Logo Mark</div></div></div>
-<div class="wi" data-section="logos" data-title="JA Studio | Alt Logo" data-category="Alt Logo" data-client="ja-studio" data-seclabel="Logos"><img src="logos/Screenshot%202026-02-12%20at%204.46.35%E2%80%AFPM.png" alt="JA Studio Alt Logo" loading="lazy"><div class="ov"><div class="ov-num">007</div><div class="ov-sec">JA Studio | Alt Logo</div></div></div>
-<div class="wi" data-section="logos" data-title="JA Studio | Logo Mark" data-category="Logo Mark" data-client="ja-studio" data-seclabel="Logos"><img src="logos/Screenshot%202026-02-12%20at%204.46.53%E2%80%AFPM.png" alt="JA Studio Logo Mark" loading="lazy"><div class="ov"><div class="ov-num">008</div><div class="ov-sec">JA Studio | Logo Mark</div></div></div>
-<div class="wi" data-section="logos" data-title="Peyote Bird | Logo Mark" data-category="Logo Mark" data-client="peyote-bird" data-seclabel="Logos"><img src="logos/pb%20logo%20new.png" alt="Peyote Bird Logo Mark" loading="lazy"><div class="ov"><div class="ov-num">009</div><div class="ov-sec">Peyote Bird | Logo Mark</div></div></div>
-<div class="wi" data-section="logos" data-title="Peyote Bird | Logo Mark" data-category="Logo Mark" data-client="peyote-bird" data-seclabel="Logos"><img src="logos/pb-business-cards-2025.jpg" alt="Peyote Bird Logo Mark" loading="lazy"><div class="ov"><div class="ov-num">010</div><div class="ov-sec">Peyote Bird | Logo Mark</div></div></div>
-<div class="wi" data-section="logos" data-title="Peyote Bird | 50th Anniversary Logo Mark" data-category="Anniversary Logo" data-client="peyote-bird" data-seclabel="Logos"><img src="logos/Screenshot%202026-02-19%20at%203.58.24%E2%80%AFPM.png" alt="Peyote Bird 50th Anniversary Logo Mark" loading="lazy"><div class="ov"><div class="ov-num">011</div><div class="ov-sec">Peyote Bird | 50th Anniversary</div></div></div>
+<div class="wi" data-section="logos" data-title="JA Studio | Alt Logo" data-category="Alt Logo" data-client="ja-studio" data-seclabel="Logos"><img src="logos/Screenshot%202026-02-12%20at%204.46.35%E2%80%AFPM.png" alt="JA Studio Alt Logo" loading="lazy"><div class="ov"><div class="ov-num">006</div><div class="ov-sec">JA Studio | Alt Logo</div></div></div>
+<div class="wi" data-section="logos" data-title="JA Studio | Logo Mark" data-category="Logo Mark" data-client="ja-studio" data-seclabel="Logos"><img src="logos/Screenshot%202026-02-12%20at%204.46.53%E2%80%AFPM.png" alt="JA Studio Logo Mark" loading="lazy"><div class="ov"><div class="ov-num">007</div><div class="ov-sec">JA Studio | Logo Mark</div></div></div>
+<div class="wi" data-section="logos" data-title="Peyote Bird | Logo Mark" data-category="Logo Mark" data-client="peyote-bird" data-seclabel="Logos"><img src="logos/pb%20logo%20new.png" alt="Peyote Bird Logo Mark" loading="lazy"><div class="ov"><div class="ov-num">008</div><div class="ov-sec">Peyote Bird | Logo Mark</div></div></div>
+<div class="wi" data-section="logos" data-title="Peyote Bird | Logo Mark" data-category="Logo Mark" data-client="peyote-bird" data-seclabel="Logos"><img src="logos/pb-business-cards-2025.jpg" alt="Peyote Bird Logo Mark" loading="lazy"><div class="ov"><div class="ov-num">009</div><div class="ov-sec">Peyote Bird | Logo Mark</div></div></div>
+<div class="wi" data-section="logos" data-title="Peyote Bird | 50th Anniversary Logo Mark" data-category="Anniversary Logo" data-client="peyote-bird" data-seclabel="Logos"><img src="logos/Screenshot%202026-02-19%20at%203.58.24%E2%80%AFPM.png" alt="Peyote Bird 50th Anniversary Logo Mark" loading="lazy"><div class="ov"><div class="ov-num">010</div><div class="ov-sec">Peyote Bird | 50th Anniversary</div></div></div>
+<div class="wi" data-section="logos" data-title="Bird + Arrow | Logo Mark" data-category="Logo Mark" data-client="bird-arrow" data-seclabel="Logos"><video autoplay loop muted playsinline src="logos/bird-arrow-hero.mp4" loading="lazy"></video><div class="ov"><div class="ov-num">011</div><div class="ov-sec">Bird + Arrow | Logo Mark</div></div></div>
 <div class="wi" data-section="logos" data-title="Bird + Arrow - Visual Identity Symbol" data-category="Visual Identity" data-client="bird-arrow" data-seclabel="Logos"><img src="logos/Screenshot%202026-02-19%20at%203.54.15%E2%80%AFPM.png" alt="Bird + Arrow Visual Identity Symbol" loading="lazy"><div class="ov"><div class="ov-num">012</div><div class="ov-sec">Bird + Arrow | Visual Identity</div></div></div>
 <div class="wi" data-section="logos" data-title="David Brown, MD | Logo Mark" data-category="Logo Mark" data-client="david-brown" data-seclabel="Logos"><img src="logos/david-brown.jpg" alt="David Brown MD Logo Mark" loading="lazy"><div class="ov"><div class="ov-num">013</div><div class="ov-sec">David Brown, MD | Logo Mark</div></div></div>
 <div class="wi" data-section="logos" data-title="Mind Shift Therapy | Logo Mark" data-category="Logo Mark" data-client="mind-shift" data-seclabel="Logos"><img src="logos/mind-shift-logo.jpg" alt="Mind Shift Therapy Logo Mark" loading="lazy"><div class="ov"><div class="ov-num">014</div><div class="ov-sec">Mind Shift Therapy | Logo Mark</div></div></div>
 <div class="wi" data-section="logos" data-title="Summit Peak Performance | Logo Mark" data-category="Logo Mark" data-client="summit-peak" data-seclabel="Logos"><img src="logos/summit%20peak-02.png" alt="Summit Peak Performance Logo Mark" loading="lazy"><div class="ov"><div class="ov-num">015</div><div class="ov-sec">Summit Peak Performance | Logo Mark</div></div></div>
 <div class="wi" data-section="logos" data-title="Meticulous Motors | Visual Identity Symbol" data-category="Visual Identity" data-client="meticulous-motors" data-seclabel="Logos"><img src="logos/Screenshot%202026-02-08%20at%209.48.12%E2%80%AFAM.png" alt="Meticulous Motors Visual Identity Symbol" loading="lazy"><div class="ov"><div class="ov-num">016</div><div class="ov-sec">Meticulous Motors | Visual Identity</div></div></div>
 <div class="wi" data-section="logos" data-title="Hutton Films | Visual Identity" data-category="Visual Identity" data-client="hutton-films" data-seclabel="Logos"><img src="logos/zozobra%20_hutton1.png" alt="Hutton Films Visual Identity" loading="lazy"><div class="ov"><div class="ov-num">017</div><div class="ov-sec">Hutton Films | Visual Identity</div></div></div>
-<div class="wi" data-section="logos" data-title="Jacks Garden | Visual Identity" data-category="Visual Identity" data-client="jacks-garden" data-seclabel="Logos"><img src="logos/garden%20logo.png" alt="Jacks Garden Visual Identity" loading="lazy"><div class="ov"><div class="ov-num">018</div><div class="ov-sec">Jacks Garden | Visual Identity</div></div></div>
+<div class="wi" data-section="logos" data-title="Jacks Garden | Visual Identity" data-category="Visual Identity" data-client="jacks-garden" data-seclabel="Logos"><img src="logos/jacks-garden-logo.png" alt="Jacks Garden Visual Identity" loading="lazy"><div class="ov"><div class="ov-num">018</div><div class="ov-sec">Jacks Garden | Visual Identity</div></div></div>
 <div class="wi" data-section="logos" data-title="Waves At Dogs | Logo Mark" data-category="Logo Mark" data-client="waves-at-dogs" data-seclabel="Logos"><img src="logos/waves-at-dogs-bw.png" alt="Waves At Dogs Logo Mark" loading="lazy"><div class="ov"><div class="ov-num">019</div><div class="ov-sec">Waves At Dogs | Logo Mark</div></div></div>
 <div class="wi" data-section="logos" data-title="Savs | Logo Mark" data-category="Logo Mark" data-client="savs" data-seclabel="Logos"><img src="logos/Screen%20Shot%202024-04-25%20at%2011.54.28%20AM.png" alt="Savs Logo Mark" loading="lazy"><div class="ov"><div class="ov-num">020</div><div class="ov-sec">Savs | Logo Mark</div></div></div></div>
 </section></div>
