@@ -25,7 +25,7 @@
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,300&family=Fragment+Mono&family=DM+Sans:wght@200;300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,300&family=Fragment+Mono&family=DM+Sans:wght@200;300;400;500;800&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;cursor:none!important}
 :root{--bg:#FFFFFF;--alt:#FFFFFF;--tx:#1A1919;--sec:#000;--br:#EBEBEB;--fn:'Fragment Mono','Courier New',monospace;--sf:'DM Sans',sans-serif;--accent:#D95740}
@@ -103,7 +103,7 @@ body.img-hover #cur{filter:invert(1)}
 #wi::-webkit-scrollbar-track{background:transparent}
 #wi::-webkit-scrollbar-thumb{background:var(--br);border-radius:2px}
 .work-main{flex:1;min-width:0;border-left:1px solid var(--br)}
-.wil{font-size:16px;font-family:'Cormorant Garamond',serif;font-weight:300;font-style:italic;letter-spacing:.06em;color:var(--tx);text-transform:none;margin-bottom:0;padding-left:0;cursor:pointer;display:flex;align-items:center;justify-content:space-between;padding-bottom:10px;border-bottom:1px solid var(--br);transition:color .15s}
+.wil{font-size:16px;font-family:var(--sf);font-weight:800;font-style:normal;letter-spacing:.06em;color:var(--tx);text-transform:none;margin-bottom:0;padding-left:0;cursor:pointer;display:flex;align-items:center;justify-content:space-between;padding-bottom:10px;border-bottom:1px solid var(--br);transition:color .15s}
 .wil:hover{color:var(--accent)}
 .wil .wil-toggle{font-family:var(--sf);font-size:16px;font-weight:300;font-style:normal;color:var(--accent)}
 .wi-nav-list{overflow:hidden;transition:max-height .4s ease,opacity .3s ease,margin .3s ease;max-height:600px;opacity:1;margin-top:20px}
@@ -111,16 +111,16 @@ body.img-hover #cur{filter:invert(1)}
 .wir{display:flex;align-items:center;gap:10px;padding:10px 0;transition:opacity .3s,color .3s;opacity:1;text-decoration:none;color:var(--tx);border-bottom:1px solid transparent}
 .wir:hover{opacity:.7}
 .wir.active{opacity:1;border-bottom:1px solid var(--accent)}
-.wir.active .wt{color:var(--tx);font-weight:700}
+.wir.active .wt{color:var(--tx)}
 .wir.active .wn{color:var(--accent)}
 .wi-sub{display:flex;flex-direction:column;padding-left:32px;margin-top:8px;margin-bottom:16px}
 .wi-sub.sub-collapsed{display:none}
-.wi-sub-link{display:flex;align-items:center;gap:8px;font:300 10px/1 var(--sf);letter-spacing:.14em;text-transform:uppercase;color:#000;padding:7px 0;text-decoration:none;transition:color .2s;cursor:pointer}
+.wi-sub-link{display:flex;align-items:center;gap:8px;font:500 10px/1 var(--sf);letter-spacing:.14em;text-transform:uppercase;color:#000;padding:7px 0;text-decoration:none;transition:color .2s;cursor:pointer}
 .wi-sub-link:hover,.wi-sub-link.sub-active{color:var(--accent)}
-.wi-sub-count{font:300 10px/1 var(--sf);color:rgba(0,0,0,.25);min-width:18px;letter-spacing:.02em}
+.wi-sub-count{font:500 10px/1 var(--sf);color:rgba(0,0,0,.25);min-width:18px;letter-spacing:.02em}
 .wir-toggle{font-family:var(--sf);font-size:16px;font-weight:300;font-style:normal;color:var(--accent);margin-left:auto;cursor:pointer;line-height:1}
 .wn{font-size:9px;color:var(--accent);letter-spacing:.06em;font-family:var(--sf);flex-shrink:0;width:22px;display:flex;align-items:center;justify-content:center;transition:color .35s ease}
-.wt{font-size:10px;font-weight:300;letter-spacing:.14em;text-transform:uppercase;font-family:var(--sf);flex:1;min-width:0}
+.wt{font-size:10px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;font-family:var(--sf);flex:1;min-width:0}
 
 /* ── SECTIONS ── */
 .sw{background:var(--bg)}
