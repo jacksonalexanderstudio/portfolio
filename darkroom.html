@@ -3913,7 +3913,7 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
     if (DR.nodes.soundTouchLoading) return DR.nodes.soundTouchLoading;
     DR.nodes.soundTouchLoading = (async () => {
       try {
-        await DR.ctx.audioWorklet.addModule('darkroom/lib/soundtouch-processor.js?v=3');
+        await DR.ctx.audioWorklet.addModule('darkroom/lib/soundtouch-processor.js?v=6');
         DR.nodes.soundTouchReady = true;
         return true;
       } catch (e) {
