@@ -269,6 +269,8 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
       sim:{ kind:'groove', swellPeriod:14, hueLag:4.5, anchors:[2000,6500,10000,14000,25000,39000,45500,50000,56500,61000] } },
     { id:'adytum', num:'L-02', title:'Adytum', tagline:'A 6:21 descent into the inner sanctum, composed to the Dycide track — indigo threshold, torchlit descent, a candle-gold ember that trades sides, and a withdrawal to a single dying light.', mood:['dark','ritual','narrative'], type:'show', loop:false, duration:381,
       sim:{ kind:'adytum', speed:8 } },
+    { id:'auto-spotify', num:'L-06', title:'Auto', tagline:'Follows Spotify — tempo from the track’s BPM, palette from its genre, phase-locked to the playhead. Trap gets the purples; rock gets the embers.', mood:['auto','music','reactive'], type:'show', loop:true, duration:null,
+      sim:{ kind:'auto' } },
     { id:'gallery-white', num:'L-03', title:'Gallery White', tagline:'Steady warm white — the default working light.', mood:['work','neutral'], type:'scene',
       sim:{ kind:'static', rgb:[[255,228,192],[255,228,192]], bri:0.8 } },
     { id:'safelight', num:'L-04', title:'Safelight', tagline:'Dim, deep darkroom red. Photo paper can’t see it; you barely can.', mood:['dark','red','focus'], type:'scene',
@@ -394,10 +396,45 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
     };
   }
 
+  // AUTO preview: emulates following a playlist — every ~24s a new "track"
+  // arrives with a different mood palette and tempo.
+  var AUTO_MOODS = [
+    { anchors: [48500, 52000, 56500, 61000], swell: 8.6 },   // trap purples
+    { anchors: [43000, 45500, 39000, 50000], swell: 5.9 },   // electronic blues
+    { anchors: [6500, 10000, 56500, 2000],  swell: 11.4 },   // soul brass + rose
+    { anchors: [0, 5500, 10000, 63500],     swell: 6.8 },    // rock embers
+    { anchors: [8000, 11000, 45500, 39000], swell: 14.2 }    // ambient warmth
+  ];
+  function makeAuto() {
+    var TRACK = 24;
+    return function(t) {
+      var m = AUTO_MOODS[Math.floor(t / TRACK) % AUTO_MOODS.length];
+      var into = t % TRACK;
+      var fade = Math.min(1, into / 2.5);                    // crossfade on "track change"
+      var sw = Math.sin(2 * Math.PI * t / m.swell);
+      var leg = 8;
+      var i = Math.floor(t / leg);
+      var f = easeCos((t % leg) / leg);
+      var hR = lerpHue(m.anchors[i % m.anchors.length], m.anchors[(i + 1) % m.anchors.length], f);
+      var lagT = Math.max(0, t - m.swell / 3);
+      var j = Math.floor(lagT / leg);
+      var hL = lerpHue(m.anchors[j % m.anchors.length], m.anchors[(j + 1) % m.anchors.length], easeCos((lagT % leg) / leg));
+      var briR = (160 + 60 * sw) / 254 * fade;
+      var briL = (160 - 60 * sw) / 254 * fade;
+      return [
+        { rgb: hueToRgb(hR, 235, 254), bri: briR },
+        { rgb: hueToRgb(hL, 235, 254), bri: briL }
+      ];
+    };
+  }
+
   function simulatorFor(p) {
+    if (!p.sim || !p.sim.kind) return makeStatic({ rgb: [[200, 190, 170], [200, 190, 170]], bri: 0.3 });
     if (p.sim.kind === 'groove') return makeGroove(p.sim);
     if (p.sim.kind === 'adytum') return makeAdytum(p.sim);
-    return makeStatic(p.sim);
+    if (p.sim.kind === 'auto') return makeAuto();
+    if (p.sim.kind === 'static' && p.sim.rgb) return makeStatic(p.sim);
+    return makeStatic({ rgb: [[200, 190, 170], [200, 190, 170]], bri: 0.3 });
   }
 
   // ── CANVAS RENDER ──
