@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>lumen.ja — Jackson Alexander Studio</title>
+<meta name="description" content="A live console of generative light presets for the studio's Philips Hue lamps — each one a small algorithm, simulated in browser.">
+<link rel="canonical" href="https://jacksonalexanderstudio.com/lumen.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="lumen.ja — Jackson Alexander Studio">
+<meta property="og:description" content="Generative light presets for the studio — simulated in browser, cast to the room from home.">
+<meta property="og:image" content="https://jacksonalexanderstudio.com/og-image.jpg">
+<meta property="og:url" content="https://jacksonalexanderstudio.com/lumen.html">
+<meta property="og:site_name" content="Jackson Alexander Studio">
+<meta name="author" content="Jackson Alexander">
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,300&family=Fragment+Mono&family=DM+Sans:wght@200;300;400;500&family=Pixelify+Sans:wght@700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0c0c0c;--tx:#fff;--dim:rgba(255,255,255,.55);--faint:rgba(255,255,255,.28);--br:rgba(255,255,255,.12);--fn:'Fragment Mono','Courier New',monospace;--sf:'DM Sans',sans-serif;--accent:#D95740}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--tx);font-family:var(--fn);line-height:1.6;overflow-x:hidden}
+img{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+
+/* ── HEADER (house style) ── */
+#hdr{position:fixed;top:0;left:0;right:0;z-index:1000;height:140px;background:#0c0c0c;border-bottom:1px solid rgba(255,255,255,.1);display:flex;align-items:center;transition:height .4s,box-shadow .4s}
+#hdr.sc{box-shadow:0 1px 32px rgba(0,0,0,.06);height:88px}
+.hi{width:100%;padding:0 28px;display:flex;align-items:center;justify-content:space-between}
+.hl img{height:102px;width:auto;transition:height .4s;filter:invert(1)}
+#hdr.sc .hl img{height:61px}
+
+/* ── LUMEN.JA MARK ──
+   The page's own wordmark: the site's pixel face (an LED letterform for an
+   LED instrument), with the "u" — two vertical stems, the two Play lamps —
+   lit and drifting through the groove-mode color anchors. Everything else
+   stays unlit white, so the mark reads as a dark room with one glowing
+   fixture. */
+.lumen-mark{display:flex;flex-direction:column;gap:7px}
+.lm-word{font-family:'Pixelify Sans','DM Sans',sans-serif;font-weight:700;font-size:38px;line-height:.9;color:#fff;transition:font-size .4s}
+#hdr.sc .lm-word{font-size:27px}
+.lm-u{animation:lm-glow 36s linear infinite}
+.lm-ja{color:var(--accent);font-size:.55em;vertical-align:baseline;margin-left:.06em}
+.lm-sub{font:400 8px/1 var(--sf);letter-spacing:.3em;text-transform:uppercase;color:rgba(255,255,255,.38);transition:opacity .4s}
+#hdr.sc .lm-sub{opacity:0;height:0;overflow:hidden}
+@keyframes lm-glow{
+  0%   {color:#ffab55;text-shadow:0 0 16px rgba(255,171,85,.6),0 0 44px rgba(255,171,85,.25)}
+  16%  {color:#ffd968;text-shadow:0 0 16px rgba(255,217,104,.6),0 0 44px rgba(255,217,104,.25)}
+  33%  {color:#7fe08d;text-shadow:0 0 16px rgba(127,224,141,.55),0 0 44px rgba(127,224,141,.22)}
+  50%  {color:#6fa8ff;text-shadow:0 0 16px rgba(111,168,255,.6),0 0 44px rgba(111,168,255,.25)}
+  66%  {color:#9d7bff;text-shadow:0 0 16px rgba(157,123,255,.6),0 0 44px rgba(157,123,255,.25)}
+  83%  {color:#ff7bd4;text-shadow:0 0 16px rgba(255,123,212,.6),0 0 44px rgba(255,123,212,.25)}
+  100% {color:#ffab55;text-shadow:0 0 16px rgba(255,171,85,.6),0 0 44px rgba(255,171,85,.25)}
+}
+@media(prefers-reduced-motion:reduce){
+  .lm-u{animation:none;color:#9d7bff;text-shadow:0 0 16px rgba(157,123,255,.5)}
+}
+.hn{display:flex;align-items:center;gap:36px}
+.hn a,.nb{font:500 11px/1 var(--sf);letter-spacing:.13em;text-transform:uppercase;color:#fff;background:none;border:none;padding:0;position:relative}
+.hn a::after,.nb::after{content:'';position:absolute;bottom:-3px;left:0;width:0;height:1px;background:#fff;transition:width .3s ease}
+.hn a:hover::after,.nb:hover::after{width:100%}
+.nw{position:relative}
+.nb{display:flex;align-items:center;gap:5px}
+.nw::before{content:'';position:absolute;top:100%;left:-20px;right:-20px;height:28px;z-index:99}
+.nd{position:absolute;top:calc(100% + 28px);right:0;background:#0c0c0c;border:1px solid rgba(255,255,255,.1);min-width:260px;opacity:0;pointer-events:none;transform:translateY(-8px);transition:opacity .2s,transform .2s;z-index:100}
+.nw:hover .nd,.nw:focus-within .nd,.nd.nd-open{opacity:1;pointer-events:all;transform:translateY(0)}
+.nd a{display:flex;align-items:center;padding:12px 18px;font-size:11px;letter-spacing:.08em;border-bottom:1px solid rgba(255,255,255,.08);color:#fff}
+.nd a:last-child{border-bottom:none}
+.nd a:hover{background:rgba(255,255,255,.06)}
+.nd a::after{display:none}
+.dn{color:#D95740;margin-right:10px;font-size:10px;font-family:var(--sf)}
+
+/* ── HERO ── */
+.page-hero{padding:200px 52px 64px;border-bottom:1px solid var(--br)}
+.page-hero-inner{max-width:900px}
+.page-hero h1{font-size:clamp(24px,3vw,39px);font-family:'Cormorant Garamond',serif;font-weight:300;font-style:italic;letter-spacing:.04em;color:#fff;margin-bottom:24px}
+.page-hero p{font:300 13px/1.8 var(--sf);color:var(--dim);max-width:560px;letter-spacing:.02em}
+
+/* studio link status — a quiet mono line, not a banner */
+.link-line{display:flex;align-items:center;gap:10px;margin-top:36px;font:400 10px/1 var(--fn);letter-spacing:.18em;text-transform:uppercase;color:var(--faint)}
+.link-dot{width:6px;height:6px;border-radius:50%;background:var(--faint);flex-shrink:0;transition:background .4s}
+.link-line.live .link-dot{background:var(--accent);animation:dotpulse 2.6s ease-in-out infinite}
+.link-line.live{color:var(--dim)}
+@keyframes dotpulse{0%,100%{opacity:1}50%{opacity:.35}}
+
+/* ── CONTROLS ROW ── */
+.console-bar{display:flex;align-items:baseline;gap:40px;flex-wrap:wrap;padding:40px 52px 8px}
+.search-wrap{position:relative;flex:0 1 300px;min-width:210px}
+#search{width:100%;background:none;border:none;border-bottom:1px solid var(--br);color:#fff;font:400 12px/1 var(--fn);letter-spacing:.06em;padding:8px 0;outline:none;transition:border-color .3s}
+#search:focus{border-color:rgba(255,255,255,.45)}
+#search::placeholder{color:var(--faint)}
+.chips{display:flex;gap:10px;flex-wrap:wrap}
+.chip{font:400 9px/1 var(--sf);letter-spacing:.16em;text-transform:uppercase;color:var(--dim);padding:8px 13px;border:1px solid var(--br);border-radius:999px;transition:color .25s,border-color .25s}
+.chip:hover{color:#fff;border-color:rgba(255,255,255,.4)}
+.chip.on{color:#0c0c0c;background:#fff;border-color:#fff}
+.result-count{margin-left:auto;font:300 10px/1 var(--fn);letter-spacing:.14em;color:var(--faint);text-transform:uppercase}
+
+/* ── PRESET GRID ── */
+.preset-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:36px 28px;padding:36px 52px 140px;align-items:start}
+.preset{position:relative}
+.preset-canvas-wrap{position:relative;aspect-ratio:16/10;background:#000;overflow:hidden;cursor:pointer;transition:transform .4s ease,border-radius .4s ease}
+.preset-canvas-wrap:hover{transform:translateY(-4px);border-radius:12px}
+.preset canvas{width:100%;height:100%;display:block}
+.preset-run{position:absolute;top:12px;left:14px;font:400 8px/1 var(--sf);letter-spacing:.22em;text-transform:uppercase;color:#fff;opacity:0;transition:opacity .3s;pointer-events:none;display:flex;align-items:center;gap:7px}
+.preset.playing .preset-run{opacity:1}
+.preset-run::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--accent);animation:dotpulse 1.4s ease-in-out infinite}
+.preset-cast{position:absolute;top:10px;right:12px;font:400 8px/1 var(--sf);letter-spacing:.18em;text-transform:uppercase;color:#fff;background:rgba(0,0,0,.5);padding:7px 12px;border:1px solid rgba(255,255,255,.22);opacity:0;transition:opacity .3s,background .25s;pointer-events:none}
+.live .preset-canvas-wrap:hover .preset-cast{opacity:1;pointer-events:all}
+.live .preset.playing .preset-cast{opacity:1;pointer-events:all}
+.preset-cast:hover{background:var(--accent);border-color:var(--accent)}
+.preset-info{display:flex;align-items:baseline;gap:14px;margin-top:16px}
+.preset-num{font-family:'Pixelify Sans','DM Sans',sans-serif;font-weight:700;font-size:15px;color:var(--accent);letter-spacing:.02em;flex-shrink:0}
+.preset-title{font:300 12px/1.3 var(--sf);letter-spacing:.2em;text-transform:uppercase;color:#fff}
+.preset-meta{margin-left:auto;font:300 9px/1 var(--fn);letter-spacing:.12em;text-transform:uppercase;color:var(--faint);flex-shrink:0}
+.preset-tagline{margin-top:8px;font:300 11px/1.7 var(--sf);color:var(--dim);letter-spacing:.02em;max-width:46ch}
+.preset-tags{display:flex;gap:8px;margin-top:12px}
+.preset-tag{font:400 8px/1 var(--sf);letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
+.preset-tag::before{content:'/ ';color:var(--accent)}
+
+/* empty search state */
+.console-empty{grid-column:1/-1;padding:100px 20px;text-align:center;font:300 13px/1.8 var(--sf);color:var(--faint);letter-spacing:.04em}
+
+/* ── NOW PLAYING BAR ── */
+#nowbar{position:fixed;left:50%;bottom:26px;transform:translate(-50%,140%);z-index:900;display:flex;align-items:center;gap:22px;background:#161616;border:1px solid rgba(255,255,255,.16);padding:14px 16px 14px 22px;transition:transform .5s cubic-bezier(.22,1,.36,1);box-shadow:0 18px 60px rgba(0,0,0,.6)}
+#nowbar.show{transform:translate(-50%,0)}
+.nowbar-label{font:400 9px/1 var(--sf);letter-spacing:.22em;text-transform:uppercase;color:var(--faint)}
+.nowbar-title{font:400 11px/1 var(--fn);letter-spacing:.14em;text-transform:uppercase;color:#fff}
+#nowbar .stop{font:500 9px/1 var(--sf);letter-spacing:.2em;text-transform:uppercase;color:#fff;border:1px solid rgba(255,255,255,.3);padding:9px 16px;transition:background .25s,border-color .25s}
+#nowbar .stop:hover{background:var(--accent);border-color:var(--accent)}
+
+/* ── FOOTER (house style) ── */
+#ftr{background:#0c0c0c;padding:48px 28px;border-top:1px solid rgba(255,255,255,.1)}
+.fi2{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:20px;font:400 10px/1.6 var(--fn);letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.45)}
+.fc{text-align:center}
+.fr{display:flex;gap:24px;justify-content:flex-end}
+.fr a{color:rgba(255,255,255,.45);transition:color .2s}
+.fr a:hover{color:#fff}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  .nd{position:fixed;top:88px;left:0;right:0;min-width:0}
+  .page-hero{padding:160px 20px 48px}
+  .console-bar{padding:28px 20px 4px;gap:20px}
+  .result-count{display:none}
+  .preset-grid{padding:28px 16px 130px;gap:32px 16px}
+  .hi,.fi2{padding-left:16px;padding-right:16px}
+  #hdr{height:88px}
+  .hl img{height:52px}
+  #hdr.sc .hl img{height:42px}
+  .lm-word,#hdr.sc .lm-word{font-size:22px}
+  .lm-sub{display:none}
+  .hn{gap:18px}
+  .hn a,.nb{font-size:9px}
+  #nowbar{left:16px;right:16px;transform:translateY(140%);width:auto}
+  #nowbar.show{transform:translateY(0)}
+}
+@media(max-width:600px){
+  .preset-grid{grid-template-columns:1fr}
+  .fi2{grid-template-columns:1fr;gap:12px;text-align:center}
+  .fr{justify-content:center}
+}
+@media(prefers-reduced-motion:reduce){
+  .link-line.live .link-dot,.preset-run::before{animation:none}
+}
+</style>
+</head>
+<body>
+
+<header id="hdr">
+  <div class="hi">
+    <a href="playground.html" class="hl lumen-mark" aria-label="lumen.ja — back to the playground">
+      <span class="lm-word">l<span class="lm-u">u</span>men<span class="lm-ja">.ja</span></span>
+      <span class="lm-sub">Jackson Alexander Studio &mdash; light console</span>
+    </a>
+    <nav class="hn">
+      <div class="nw">
+        <a href="portfolio.html" class="nb">Portfolio &#9662;</a>
+        <div class="nd">
+          <a href="portfolio.html#logos"><span class="dn">01</span>Logos</a>
+          <a href="portfolio.html#illustration"><span class="dn">02</span>Illustration / Graphic</a>
+          <a href="portfolio.html#craft"><span class="dn">03</span>Fabrication</a>
+          <a href="portfolio.html#styling"><span class="dn">04</span>Creative Direction</a>
+          <a href="portfolio.html#garden"><span class="dn">05</span>Jack&#39;s Garden</a>
+          <a href="portfolio.html#production"><span class="dn">06</span>Production</a>
+        </div>
+      </div>
+      <a href="case-studies.html">Case Studies</a>
+      <a href="archive.html">Archive</a>
+      <a href="playground.html">Playground</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<!-- HERO -->
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <h1>lumen.ja</h1>
+    <p>A console of generative light presets for the studio&rsquo;s two floor lamps &mdash; each one a small algorithm. Every tile below runs its real math as a live simulation. From inside the studio, the same tiles cast to the physical room.</p>
+    <div class="link-line" id="linkline">
+      <span class="link-dot"></span>
+      <span id="linktext">Studio link &mdash; checking&hellip;</span>
+    </div>
+  </div>
+</div>
+
+<!-- CONTROLS -->
+<div class="console-bar">
+  <div class="search-wrap"><input id="search" type="search" placeholder="search presets&hellip;" autocomplete="off"></div>
+  <div class="chips" id="chips"></div>
+  <span class="result-count" id="count"></span>
+</div>
+
+<!-- GRID -->
+<div class="preset-grid" id="grid"></div>
+
+<!-- NOW PLAYING -->
+<div id="nowbar" aria-live="polite">
+  <span class="nowbar-label">Now lighting</span>
+  <span class="nowbar-title" id="nowtitle"></span>
+  <button class="stop" id="stopbtn">Stop</button>
+</div>
+
+<noscript>
+<div style="padding:52px;max-width:1200px">
+  <p style="font:300 13px/1.8 'DM Sans',sans-serif;color:rgba(255,255,255,.55)">Please enable JavaScript to view the light console.</p>
+</div>
+</noscript>
+
+<footer id="ftr">
+  <div class="fi2">
+    <span>&#169; 2026 Jackson Alexander Studio</span>
+    <span class="fc">Santa Fe, NM</span>
+    <div class="fr">
+      <a href="https://www.instagram.com/sandboxkid" target="_blank" rel="noopener">Instagram</a>
+      <a href="mailto:jacksonalexanderstudio@gmail.com">jacksonalexanderstudio@gmail.com</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function() {
+  'use strict';
+
+  // ── HEADER SHRINK ──
+  var hdr = document.getElementById('hdr');
+  window.addEventListener('scroll', function() {
+    hdr.classList.toggle('sc', window.scrollY > 60);
+  });
+  var nbBtn = document.querySelector('.nb');
+  var ndMenu = document.querySelector('.nd');
+  if (nbBtn && ndMenu) {
+    nbBtn.addEventListener('click', function(e) {
+      if (window.innerWidth <= 900) { e.preventDefault(); ndMenu.classList.toggle('nd-open'); }
+    });
+  }
+
+  // ── PRESET DATA ──
+  // Public snapshot of the registry (no bridge details). When the local
+  // daemon is reachable it re-supplies this list, so new presets added at
+  // home appear without editing this file — this copy is the visitor
+  // fallback.
+  var PRESETS = [
+    { id:'groove-mode', num:'L-01', title:'Groove Mode', tagline:'Continuous side-to-side color wave — one full breath every 14 seconds, hue streaming across the room with the left lamp trailing the right.', mood:['ambient','flow','color'], type:'show', loop:true, duration:null,
+      sim:{ kind:'groove', swellPeriod:14, hueLag:4.5, anchors:[2000,6500,10000,14000,25000,39000,45500,50000,56500,61000] } },
+    { id:'adytum', num:'L-02', title:'Adytum', tagline:'A 6:21 descent into the inner sanctum, composed to the Dycide track — indigo threshold, torchlit descent, a candle-gold ember that trades sides, and a withdrawal to a single dying light.', mood:['dark','ritual','narrative'], type:'show', loop:false, duration:381,
+      sim:{ kind:'adytum', speed:8 } },
+    { id:'gallery-white', num:'L-03', title:'Gallery White', tagline:'Steady warm white — the default working light.', mood:['work','neutral'], type:'scene',
+      sim:{ kind:'static', rgb:[[255,228,192],[255,228,192]], bri:0.8 } },
+    { id:'safelight', num:'L-04', title:'Safelight', tagline:'Dim, deep darkroom red. Photo paper can’t see it; you barely can.', mood:['dark','red','focus'], type:'scene',
+      sim:{ kind:'static', rgb:[[138,14,0],[138,14,0]], bri:0.45 } },
+    { id:'blackout', num:'L-05', title:'Blackout', tagline:'Everything off.', mood:['off'], type:'scene',
+      sim:{ kind:'static', rgb:[[8,8,10],[8,8,10]], bri:0.06 } }
+  ];
+
+  var DAEMON = 'http://127.0.0.1:8899';
+  var live = false;
+  var running = null;      // preset id currently on the physical lamps
+
+  // ── COLOR HELPERS ──
+  // Hue API hue (0-65535) + sat + bri → rgb. HSV is a fair approximation
+  // of the lamp output for simulation purposes.
+  function hueToRgb(apiHue, sat, bri) {
+    var h = (apiHue % 65536) / 65536 * 360, s = sat / 254, v = bri / 254;
+    var c = v * s, x = c * (1 - Math.abs((h / 60) % 2 - 1)), m = v - c;
+    var r = 0, g = 0, b = 0;
+    if (h < 60)       { r = c; g = x; }
+    else if (h < 120) { r = x; g = c; }
+    else if (h < 180) { g = c; b = x; }
+    else if (h < 240) { g = x; b = c; }
+    else if (h < 300) { r = x; b = c; }
+    else              { r = c; b = x; }
+    return [(r + m) * 255, (g + m) * 255, (b + m) * 255];
+  }
+  function lerp(a, b, f) { return a + (b - a) * f; }
+  function easeCos(f) { return (1 - Math.cos(Math.PI * f)) / 2; }
+  function lerpHue(from, to, f) {
+    var diff = ((to - from + 32768) % 65536) - 32768;
+    return (from + diff * f + 65536) % 65536;
+  }
+
+  // ── SIMULATORS ──
+  // Each returns [{rgb:[r,g,b], bri:0..1} x2] for (right, left) at time t.
+
+  function seededAnchorPath(anchors, legLen, seed) {
+    // deterministic anchor sequence per preset so the preview is stable
+    var seq = [];
+    var s = seed;
+    for (var i = 0; i < 64; i++) {
+      s = (s * 9301 + 49297) % 233280;
+      seq.push(anchors[Math.floor(s / 233280 * anchors.length)]);
+    }
+    return function(t) {
+      var leg = Math.floor(t / legLen);
+      var f = easeCos((t % legLen) / legLen);
+      return lerpHue(seq[leg % seq.length], seq[(leg + 1) % seq.length], f);
+    };
+  }
+
+  function makeGroove(sim) {
+    var path = seededAnchorPath(sim.anchors, 25, 11);
+    return function(t) {
+      var energy = 20 * Math.sin(2 * Math.PI * t / 55);
+      var swell = Math.sin(2 * Math.PI * t / sim.swellPeriod);
+      var briR = (170 + energy + 55 * swell) / 254;
+      var briL = (170 + energy - 55 * swell) / 254;
+      var sat = 205 + 35 * Math.sin(2 * Math.PI * t / 37);
+      var hR = path(t);
+      var hL = path(Math.max(0, t - sim.hueLag));
+      return [
+        { rgb: hueToRgb(hR, sat, 254), bri: briR },
+        { rgb: hueToRgb(hL, sat, 254), bri: briL }
+      ];
+    };
+  }
+
+  function makeAdytum(sim) {
+    var INDIGO = 47000, VIOLET = 51500, BLUE = 44000, EMBER = 6500, GOLD = 9500;
+    var BEAT = 60 / 123, P16 = 16 * BEAT;
+    return function(raw) {
+      var t = (raw * sim.speed) % 396;           // 381s arc + a beat of dark
+      var swell = Math.sin(2 * Math.PI * t / P16);
+      var R, L;
+      if (t < 45) {
+        var b = (8 + 6 * (0.5 + 0.5 * Math.sin(2 * Math.PI * t / (2 * P16)))) / 254;
+        R = { rgb: hueToRgb(INDIGO, 254, 254), bri: b };
+        L = { rgb: hueToRgb(BLUE, 254, 254), bri: b * 0.7 };
+      } else if (t < 120) {
+        var d = (t - 45) / 75, mid = 20 + 45 * d, amp = 12 + 30 * d;
+        R = { rgb: hueToRgb(INDIGO, 254, 254), bri: (mid + amp * swell) / 254 };
+        L = { rgb: hueToRgb(VIOLET, 245, 254), bri: (mid - amp * swell) / 254 };
+      } else if (t < 240) {
+        var u = (t - 120) / 120;
+        var flame = 0.5 + 0.5 * Math.sin(2 * Math.PI * (t - 120) / (4 * P16));
+        var glow = 60 + 80 * u, fB = (glow + 50 * flame) / 254, dB = (30 + 25 * (1 - flame)) / 254;
+        var rHot = flame > 0.5;
+        R = { rgb: hueToRgb(rHot ? EMBER : INDIGO, rHot ? 235 : 254, 254), bri: rHot ? fB : dB };
+        L = { rgb: hueToRgb(!rHot ? EMBER : INDIGO, !rHot ? 235 : 254, 254), bri: !rHot ? fB : dB };
+      } else if (t < 330) {
+        var s8 = Math.sin(2 * Math.PI * t / (8 * BEAT));
+        R = { rgb: hueToRgb(GOLD, 220, 254), bri: (150 + 70 * s8) / 254 };
+        L = { rgb: hueToRgb(VIOLET, 235, 254), bri: (150 - 70 * s8) / 254 };
+      } else if (t < 381) {
+        var w = (t - 330) / 51, b2 = (120 * (1 - w) * (1 - w) + 4) / 254;
+        R = { rgb: hueToRgb(lerpHue(GOLD, INDIGO, w), 250, 254), bri: b2 };
+        L = { rgb: hueToRgb(INDIGO, 254, 254), bri: b2 * 0.8 };
+      } else {
+        var out = 1 - (t - 381) / 15;
+        R = { rgb: hueToRgb(EMBER, 254, 254), bri: Math.max(0, 0.05 * out) };
+        L = { rgb: [0, 0, 0], bri: 0 };
+      }
+      return [R, L];
+    };
+  }
+
+  function hexToRgb(hex) {
+    var m = /^#?([0-9a-f]{6})$/i.exec(hex || '');
+    if (!m) return [255, 255, 255];
+    var n = parseInt(m[1], 16);
+    return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+  }
+
+  function makeStatic(sim) {
+    // registry may express colors as rgb arrays or css hex strings
+    var cols = sim.rgb || (sim.css || []).map(hexToRgb);
+    var a = cols[0] || [255, 255, 255], b = cols[1] || a;
+    var bri = typeof sim.bri === 'number' ? sim.bri : 0.5;
+    return function() {
+      return [{ rgb: a, bri: bri }, { rgb: b, bri: bri }];
+    };
+  }
+
+  function simulatorFor(p) {
+    if (p.sim.kind === 'groove') return makeGroove(p.sim);
+    if (p.sim.kind === 'adytum') return makeAdytum(p.sim);
+    return makeStatic(p.sim);
+  }
+
+  // ── CANVAS RENDER ──
+  // Two lamp glows in a dark room: soft radial pools with a floor line.
+  // Two luminous columns on black — the pair of Hue Play floor lamps as a
+  // graphic mark, not a rendered room. Glow stays tight so the field around
+  // them reads dark.
+  function drawRoom(ctx, w, h, lamps) {
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.fillStyle = '#050505';
+    ctx.fillRect(0, 0, w, h);
+    ctx.globalCompositeOperation = 'lighter';
+    var positions = [w * 0.66, w * 0.34];    // right lamp, left lamp
+    var barTop = h * 0.24, barBot = h * 0.76;
+    var cy = (barTop + barBot) / 2;
+    for (var i = 0; i < 2; i++) {
+      var lamp = lamps[i], x = positions[i];
+      var raw = Math.max(0, Math.min(1, lamp.bri));
+      var r = lamp.rgb;
+      if (raw > 0.004) {
+        var b = Math.pow(raw, 0.75);
+        // halo: tight radial pool behind the column
+        var reach = h * (0.12 + 0.26 * b);
+        var g = ctx.createRadialGradient(x, cy, 0, x, cy, reach);
+        g.addColorStop(0, 'rgba(' + (r[0] | 0) + ',' + (r[1] | 0) + ',' + (r[2] | 0) + ',' + (0.5 * b) + ')');
+        g.addColorStop(0.5, 'rgba(' + (r[0] | 0) + ',' + (r[1] | 0) + ',' + (r[2] | 0) + ',' + (0.14 * b) + ')');
+        g.addColorStop(1, 'rgba(0,0,0,0)');
+        ctx.fillStyle = g;
+        ctx.fillRect(x - reach, cy - reach, reach * 2, reach * 2);
+        // column glow: soft vertical capsule drawn as stacked gradient
+        var gw = 6 + 20 * b;
+        var vg = ctx.createLinearGradient(x - gw, 0, x + gw, 0);
+        vg.addColorStop(0, 'rgba(0,0,0,0)');
+        vg.addColorStop(0.5, 'rgba(' + (r[0] | 0) + ',' + (r[1] | 0) + ',' + (r[2] | 0) + ',' + (0.55 * b) + ')');
+        vg.addColorStop(1, 'rgba(0,0,0,0)');
+        ctx.fillStyle = vg;
+        ctx.fillRect(x - gw, barTop, gw * 2, barBot - barTop);
+        // hot core: brightens toward white with intensity
+        var core = [
+          Math.min(255, r[0] + (255 - r[0]) * 0.7 * b),
+          Math.min(255, r[1] + (255 - r[1]) * 0.7 * b),
+          Math.min(255, r[2] + (255 - r[2]) * 0.7 * b)
+        ];
+        ctx.fillStyle = 'rgba(' + (core[0] | 0) + ',' + (core[1] | 0) + ',' + (core[2] | 0) + ',' + (0.85 * b + 0.1) + ')';
+        ctx.fillRect(x - 1.5, barTop, 3, barBot - barTop);
+      } else {
+        // off: the unlit column, barely there
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.fillStyle = 'rgba(255,255,255,.07)';
+        ctx.fillRect(x - 1, barTop, 2, barBot - barTop);
+        ctx.globalCompositeOperation = 'lighter';
+      }
+    }
+    ctx.globalCompositeOperation = 'source-over';
+  }
+
+  // ── BUILD GRID ──
+  var grid = document.getElementById('grid');
+  var animated = [];   // {canvas, ctx, sim, el}
+
+  function metaFor(p) {
+    if (p.type === 'scene') return 'scene';
+    if (p.loop) return 'loop ∞';
+    var m = Math.floor(p.duration / 60), s = ('0' + Math.round(p.duration % 60)).slice(-2);
+    return m + ':' + s;
+  }
+
+  function buildCard(p) {
+    var el = document.createElement('article');
+    el.className = 'preset';
+    el.setAttribute('data-id', p.id);
+    el.innerHTML =
+      '<div class="preset-canvas-wrap">' +
+        '<canvas></canvas>' +
+        '<span class="preset-run">In the room</span>' +
+        '<button class="preset-cast">Cast to studio &nearr;</button>' +
+      '</div>' +
+      '<div class="preset-info">' +
+        '<span class="preset-num">' + p.num + '</span>' +
+        '<h3 class="preset-title">' + p.title + '</h3>' +
+        '<span class="preset-meta">' + metaFor(p) + '</span>' +
+      '</div>' +
+      '<p class="preset-tagline">' + p.tagline + '</p>' +
+      '<div class="preset-tags">' + p.mood.map(function(m) {
+        return '<span class="preset-tag">' + m + '</span>';
+      }).join('') + '</div>';
+
+    var canvas = el.querySelector('canvas');
+    var wrap = el.querySelector('.preset-canvas-wrap');
+    function size() {
+      var r = wrap.getBoundingClientRect();
+      if (r.width < 4) return;   // not laid out yet
+      canvas.width = r.width * (window.devicePixelRatio || 1) / 2;
+      canvas.height = r.height * (window.devicePixelRatio || 1) / 2;
+    }
+    animated.push({ canvas: canvas, ctx: canvas.getContext('2d'), sim: simulatorFor(p), el: el, size: size });
+
+    el.querySelector('.preset-cast').addEventListener('click', function(e) {
+      e.stopPropagation();
+      cast(p);
+    });
+    return el;
+  }
+
+  function render(list) {
+    grid.innerHTML = '';
+    animated = [];
+    if (!list.length) {
+      grid.innerHTML = '<div class="console-empty">Nothing matches &mdash; the room stays dark.</div>';
+    }
+    list.forEach(function(p) { grid.appendChild(buildCard(p)); });
+    // size canvases only after the cards are in the document and laid out
+    requestAnimationFrame(function() { animated.forEach(function(a) { a.size(); }); });
+    markPlaying();
+    document.getElementById('count').textContent =
+      list.length + ' / ' + PRESETS.length + ' presets';
+  }
+
+  // ── ANIMATION LOOP (one rAF for all cards) ──
+  var t0 = performance.now();
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function frame(now) {
+    var t = (now - t0) / 1000;
+    animated.forEach(function(a) {
+      // a single misbehaving preset must never kill the shared loop
+      try {
+        drawRoom(a.ctx, a.canvas.width, a.canvas.height, a.sim(reduceMotion ? 6 : t));
+      } catch (e) { /* skip this card this frame */ }
+    });
+    if (!reduceMotion) requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+  window.addEventListener('resize', function() {
+    animated.forEach(function(a) { a.size(); });
+  });
+
+  // ── SEARCH + FILTER ──
+  var activeMoods = [];
+  var query = '';
+  var allMoods = [];
+  PRESETS.forEach(function(p) { p.mood.forEach(function(m) {
+    if (allMoods.indexOf(m) === -1) allMoods.push(m);
+  }); });
+
+  var chipsEl = document.getElementById('chips');
+  allMoods.forEach(function(m) {
+    var b = document.createElement('button');
+    b.className = 'chip';
+    b.textContent = m;
+    b.addEventListener('click', function() {
+      var i = activeMoods.indexOf(m);
+      if (i === -1) activeMoods.push(m); else activeMoods.splice(i, 1);
+      b.classList.toggle('on', i === -1);
+      apply();
+    });
+    chipsEl.appendChild(b);
+  });
+
+  document.getElementById('search').addEventListener('input', function() {
+    query = this.value.trim().toLowerCase();
+    apply();
+  });
+
+  function apply() {
+    var list = PRESETS.filter(function(p) {
+      var text = (p.title + ' ' + p.tagline + ' ' + p.mood.join(' ')).toLowerCase();
+      var qOK = !query || text.indexOf(query) !== -1;
+      var mOK = !activeMoods.length || activeMoods.every(function(m) {
+        return p.mood.indexOf(m) !== -1;
+      });
+      return qOK && mOK;
+    });
+    render(list);
+  }
+
+  // ── DAEMON LINK ──
+  var linkline = document.getElementById('linkline');
+  var linktext = document.getElementById('linktext');
+  var nowbar = document.getElementById('nowbar');
+  var nowtitle = document.getElementById('nowtitle');
+
+  function markPlaying() {
+    document.querySelectorAll('.preset').forEach(function(el) {
+      el.classList.toggle('playing', live && el.getAttribute('data-id') === running);
+    });
+    var p = PRESETS.filter(function(x) { return x.id === running; })[0];
+    if (live && p && p.type !== 'scene') {
+      nowtitle.textContent = p.num + ' — ' + p.title;
+      nowbar.classList.add('show');
+    } else {
+      nowbar.classList.remove('show');
+    }
+  }
+
+  function setLive(on) {
+    live = on;
+    document.body.classList.toggle('live', on);
+    linkline.classList.toggle('live', on);
+    linktext.textContent = on
+      ? 'Studio link live — tiles cast to the room'
+      : 'Studio link offline — simulations only';
+  }
+
+  function syncStatus() {
+    fetch(DAEMON + '/presets', { method: 'GET' })
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        if (data.presets && data.presets.length) {
+          // daemon registry wins: newer presets appear without editing this file
+          PRESETS = data.presets.map(function(p) {
+            var pub = { id: p.id, num: p.num, title: p.title, tagline: p.tagline,
+                        mood: p.mood, type: p.type, loop: p.loop || false,
+                        duration: p.duration || null, sim: p.sim };
+            return pub;
+          });
+        }
+        running = data.status && data.status.running;
+        if (!live) { setLive(true); apply(); } else { markPlaying(); }
+      })
+      .catch(function() {
+        if (live !== false) { setLive(false); running = null; markPlaying(); }
+        setLive(false);
+      });
+  }
+
+  function cast(p) {
+    if (!live) return;
+    fetch(DAEMON + '/start/' + encodeURIComponent(p.id), { method: 'POST' })
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        running = data.status && data.status.running;
+        markPlaying();
+      })
+      .catch(function() { setLive(false); });
+  }
+
+  document.getElementById('stopbtn').addEventListener('click', function() {
+    fetch(DAEMON + '/stop', { method: 'POST' })
+      .then(function(r) { return r.json(); })
+      .then(function() { running = null; markPlaying(); })
+      .catch(function() { setLive(false); });
+  });
+
+  // first paint with the public snapshot, then try the daemon
+  setLive(false);
+  apply();
+  syncStatus();
+  setInterval(syncStatus, 5000);
+
+})();
+</script>
+</body>
+</html>

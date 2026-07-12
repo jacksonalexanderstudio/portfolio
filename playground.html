@@ -200,6 +200,7 @@ h2.arc-section-title:not(:first-child){margin-top:64px}
       <a class="arc-nav-item" data-filter="audio-midi"><span class="arc-nav-num">02</span><span class="arc-nav-label">Audio / MIDI</span></a>
       <a class="arc-nav-item" data-filter="visualizers"><span class="arc-nav-num">03</span><span class="arc-nav-label">Visualizers</span></a>
       <a class="arc-nav-item" data-filter="type"><span class="arc-nav-num">04</span><span class="arc-nav-label">Type / Specimens</span></a>
+      <a class="arc-nav-item" data-filter="light"><span class="arc-nav-num">05</span><span class="arc-nav-label">Light / Studio</span></a>
     </div>
   </aside>
   <div class="archive-main">
@@ -209,6 +210,8 @@ h2.arc-section-title:not(:first-child){margin-top:64px}
     <div class="archive-grid" id="pg-grid-vz"></div>
     <h2 class="arc-section-title" id="section-tp">Type / Specimens</h2>
     <div class="archive-grid" id="pg-grid-tp"></div>
+    <h2 class="arc-section-title" id="section-lt">Light / Studio</h2>
+    <div class="archive-grid" id="pg-grid-lt"></div>
   </div>
 </div>
 
@@ -351,6 +354,14 @@ h2.arc-section-title:not(:first-child){margin-top:64px}
       year: '2026',
       livePreview: 'specimen',
       href: 'font-test.html'
+    },
+    {
+      category: 'light',
+      id: '004',
+      title: 'lumen.ja',
+      year: '2026',
+      livePreview: 'placeholder',
+      href: 'lumen.html'
     }
   ];
 
@@ -360,6 +371,8 @@ h2.arc-section-title:not(:first-child){margin-top:64px}
   var sectionVZ = document.getElementById('section-vz');
   var gridTP = document.getElementById('pg-grid-tp');
   var sectionTP = document.getElementById('section-tp');
+  var gridLT = document.getElementById('pg-grid-lt');
+  var sectionLT = document.getElementById('section-lt');
 
   function renderItem(item) {
     var a = document.createElement('a');
@@ -415,6 +428,7 @@ h2.arc-section-title:not(:first-child){margin-top:64px}
     if (item.category === 'audio-midi') gridAM.appendChild(el);
     else if (item.category === 'visualizers') gridVZ.appendChild(el);
     else if (item.category === 'type') gridTP.appendChild(el);
+    else if (item.category === 'light') gridLT.appendChild(el);
     allEls.push(el);
     if (item.livePreview === 'specimen') hasLivePreview = true;
   });
@@ -438,6 +452,10 @@ h2.arc-section-title:not(:first-child){margin-top:64px}
     sectionTP.style.display = 'none';
     gridTP.style.display = 'none';
   }
+  if (gridLT.children.length === 0) {
+    sectionLT.style.display = 'none';
+    gridLT.style.display = 'none';
+  }
 
   // ── SIDEBAR FILTERING ──
   var navItems = document.querySelectorAll('.arc-nav-item[data-filter]');
@@ -452,6 +470,7 @@ h2.arc-section-title:not(:first-child){margin-top:64px}
       if (gridAM.children.length > 0) { sectionAM.style.display = ''; gridAM.style.display = ''; }
       if (gridVZ.children.length > 0) { sectionVZ.style.display = ''; gridVZ.style.display = ''; }
       if (gridTP.children.length > 0) { sectionTP.style.display = ''; gridTP.style.display = ''; }
+      if (gridLT.children.length > 0) { sectionLT.style.display = ''; gridLT.style.display = ''; }
     } else {
       allEls.forEach(function(el) {
         el.style.display = el.getAttribute('data-category') === filter ? '' : 'none';
@@ -463,6 +482,8 @@ h2.arc-section-title:not(:first-child){margin-top:64px}
       gridVZ.style.display = filter === 'visualizers' ? '' : 'none';
       sectionTP.style.display = filter === 'type' ? '' : 'none';
       gridTP.style.display = filter === 'type' ? '' : 'none';
+      sectionLT.style.display = filter === 'light' ? '' : 'none';
+      gridLT.style.display = filter === 'light' ? '' : 'none';
     }
   }
 
