@@ -271,6 +271,8 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
       sim:{ kind:'adytum', speed:8 } },
     { id:'auto-spotify', num:'L-06', title:'Auto', tagline:'Follows Spotify — tempo from the track’s BPM, palette from its genre, phase-locked to the playhead. Trap gets the purples; rock gets the embers.', mood:['auto','music','reactive'], type:'show', loop:true, duration:null,
       sim:{ kind:'auto' } },
+    { id:'strobe', num:'L-07', title:'Strobe', tagline:'Hard-cut pops trading sides at three a second — white, red, electric blue, magenta, acid green. A blackout breath between sections. Mind photosensitive guests.', mood:['party','hard','fast'], type:'show', loop:true, duration:null,
+      sim:{ kind:'strobe' } },
     { id:'gallery-white', num:'L-03', title:'Gallery White', tagline:'Steady warm white — the default working light.', mood:['work','neutral'], type:'scene',
       sim:{ kind:'static', rgb:[[255,228,192],[255,228,192]], bri:0.8 } },
     { id:'safelight', num:'L-04', title:'Safelight', tagline:'Dim, deep darkroom red. Photo paper can’t see it; you barely can.', mood:['dark','red','focus'], type:'scene',
@@ -428,11 +430,32 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
     };
   }
 
+  // STROBE preview: kept to ~2.5 flashes/sec (under the WCAG three-per-second
+  // seizure threshold) — slightly slower than the real thing, same character.
+  var STROBE_SCHEMES = [[235, 240, 255], [255, 30, 10], [40, 90, 255], [255, 40, 200], [120, 255, 40]];
+  function makeStrobe() {
+    var RATE = 2.5, SECTION = 9;
+    return function(t) {
+      var step = Math.floor(t * RATE);
+      var scheme = STROBE_SCHEMES[Math.floor(t / SECTION) % STROBE_SCHEMES.length];
+      var inSection = t % SECTION;
+      if (inSection > SECTION - 0.8) {
+        return [{ rgb: scheme, bri: 0 }, { rgb: scheme, bri: 0 }];   // blackout breath
+      }
+      var rightOn = step % 2 === 0;
+      return [
+        { rgb: scheme, bri: rightOn ? 1 : 0 },
+        { rgb: scheme, bri: rightOn ? 0 : 1 }
+      ];
+    };
+  }
+
   function simulatorFor(p) {
     if (!p.sim || !p.sim.kind) return makeStatic({ rgb: [[200, 190, 170], [200, 190, 170]], bri: 0.3 });
     if (p.sim.kind === 'groove') return makeGroove(p.sim);
     if (p.sim.kind === 'adytum') return makeAdytum(p.sim);
     if (p.sim.kind === 'auto') return makeAuto();
+    if (p.sim.kind === 'strobe') return makeStrobe();
     if (p.sim.kind === 'static' && p.sim.rgb) return makeStatic(p.sim);
     return makeStatic({ rgb: [[200, 190, 170], [200, 190, 170]], bri: 0.3 });
   }
