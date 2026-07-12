@@ -432,20 +432,44 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
 
   // STROBE preview: kept to ~2.5 flashes/sec (under the WCAG three-per-second
   // seizure threshold) — slightly slower than the real thing, same character.
-  var STROBE_SCHEMES = [[235, 240, 255], [255, 30, 10], [40, 90, 255], [255, 40, 200], [120, 255, 40]];
+  // Color advances per pop; unison sections clash complements; every 8th
+  // pop is a cold white accent.
+  var STROBE_COLORS = [[255, 30, 10], [255, 40, 200], [40, 90, 255], [120, 255, 40], [255, 130, 20], [150, 60, 255], [30, 220, 255], [255, 60, 150]];
+  var STROBE_WHITE = [235, 240, 255];
+  function strobePop(step, offset) {
+    if (step % 8 === 7) return STROBE_WHITE;
+    return STROBE_COLORS[(step + (offset || 0)) % STROBE_COLORS.length];
+  }
   function makeStrobe() {
     var RATE = 2.5, SECTION = 9;
     return function(t) {
       var step = Math.floor(t * RATE);
-      var scheme = STROBE_SCHEMES[Math.floor(t / SECTION) % STROBE_SCHEMES.length];
+      var section = Math.floor(t / SECTION);
+      var pattern = section % 3;                 // alternate / unison / bursts
       var inSection = t % SECTION;
       if (inSection > SECTION - 0.8) {
-        return [{ rgb: scheme, bri: 0 }, { rgb: scheme, bri: 0 }];   // blackout breath
+        return [{ rgb: STROBE_WHITE, bri: 0 }, { rgb: STROBE_WHITE, bri: 0 }];
       }
-      var rightOn = step % 2 === 0;
+      if (pattern === 1) {                       // unison: clashing complements
+        var on = step % 2 === 0;
+        return [
+          { rgb: strobePop(step), bri: on ? 1 : 0 },
+          { rgb: strobePop(step, 4), bri: on ? 1 : 0 }
+        ];
+      }
+      var rightOn;
+      if (pattern === 2) {                       // bursts: 2 + 2
+        var burstOn = step % 2 === 0;
+        rightOn = Math.floor(step / 2) % 2 === 0;
+        return [
+          { rgb: strobePop(step), bri: burstOn && rightOn ? 1 : 0 },
+          { rgb: strobePop(step), bri: burstOn && !rightOn ? 1 : 0 }
+        ];
+      }
+      rightOn = step % 2 === 0;                  // alternate ping-pong
       return [
-        { rgb: scheme, bri: rightOn ? 1 : 0 },
-        { rgb: scheme, bri: rightOn ? 0 : 1 }
+        { rgb: strobePop(step), bri: rightOn ? 1 : 0 },
+        { rgb: strobePop(step), bri: rightOn ? 0 : 1 }
       ];
     };
   }
