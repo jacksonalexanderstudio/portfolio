@@ -100,7 +100,11 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
 .result-count{margin-left:auto;font:300 10px/1 var(--fn);letter-spacing:.14em;color:var(--faint);text-transform:uppercase}
 
 /* ── PRESET GRID ── */
-.preset-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:36px 28px;padding:36px 52px 140px;align-items:start}
+#grid{padding:36px 52px 140px}
+.console-section-title{font:300 11px/1 var(--sf);letter-spacing:.14em;text-transform:uppercase;color:var(--dim);padding:0 0 14px;margin:64px 0 28px;border-bottom:1px solid var(--br)}
+.console-section-title:first-child{margin-top:0}
+.console-section-count{float:right;font:300 9px/1 var(--fn);color:var(--faint);letter-spacing:.1em}
+.preset-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:36px 28px;align-items:start}
 .preset{position:relative}
 .preset-canvas-wrap{position:relative;aspect-ratio:16/10;background:#000;overflow:hidden;cursor:pointer;transition:transform .4s ease,border-radius .4s ease}
 .preset-canvas-wrap:hover{transform:translateY(-4px);border-radius:12px}
@@ -146,7 +150,8 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
   .page-hero{padding:160px 20px 48px}
   .console-bar{padding:28px 20px 4px;gap:20px}
   .result-count{display:none}
-  .preset-grid{padding:28px 16px 130px;gap:32px 16px}
+  #grid{padding:28px 16px 130px}
+  .preset-grid{gap:32px 16px}
   .hi,.fi2{padding-left:16px;padding-right:16px}
   #hdr{height:88px}
   .hl img{height:52px}
@@ -216,7 +221,7 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
 </div>
 
 <!-- GRID -->
-<div class="preset-grid" id="grid"></div>
+<div id="grid"></div>
 
 <!-- NOW PLAYING -->
 <div id="nowbar" aria-live="polite">
@@ -265,20 +270,32 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
   // home appear without editing this file — this copy is the visitor
   // fallback.
   var PRESETS = [
-    { id:'groove-mode', num:'L-01', title:'Groove Mode', tagline:'Continuous side-to-side color wave — one full breath every 14 seconds, hue streaming across the room with the left lamp trailing the right.', mood:['ambient','flow','color'], type:'show', loop:true, duration:null,
+    { id:'groove-mode', num:'L-01', title:'Groove Mode', tagline:'Continuous side-to-side color wave — one full breath every 14 seconds, hue streaming across the room with the left lamp trailing the right.', mood:['ambient','flow','color'], section:'shows', type:'show', loop:true, duration:null,
       sim:{ kind:'groove', swellPeriod:14, hueLag:4.5, anchors:[2000,6500,10000,14000,25000,39000,45500,50000,56500,61000] } },
-    { id:'adytum', num:'L-02', title:'Adytum', tagline:'A 6:21 descent into the inner sanctum, composed to the Dycide track — indigo threshold, torchlit descent, a candle-gold ember that trades sides, and a withdrawal to a single dying light.', mood:['dark','ritual','narrative'], type:'show', loop:false, duration:381,
+    { id:'adytum', num:'L-02', title:'Adytum', tagline:'A 6:21 descent into the inner sanctum, composed to the Dycide track — indigo threshold, torchlit descent, a candle-gold ember that trades sides, and a withdrawal to a single dying light.', mood:['dark','ritual','narrative'], section:'shows', type:'show', loop:false, duration:381,
       sim:{ kind:'adytum', speed:8 } },
-    { id:'auto-spotify', num:'L-06', title:'Auto', tagline:'Follows Spotify — tempo from the track’s BPM, palette from its genre, phase-locked to the playhead. Trap gets the purples; rock gets the embers.', mood:['auto','music','reactive'], type:'show', loop:true, duration:null,
+    { id:'auto-spotify', num:'L-03', title:'Auto', tagline:'Follows Spotify — tempo from the track’s BPM, palette from its genre, phase-locked to the playhead. Trap gets the purples; rock gets the embers.', mood:['auto','music','reactive'], section:'shows', type:'show', loop:true, duration:null,
       sim:{ kind:'auto' } },
-    { id:'strobe', num:'L-07', title:'Strobe', tagline:'Hard-cut pops trading sides at three a second — white, red, electric blue, magenta, acid green. A blackout breath between sections. Mind photosensitive guests.', mood:['party','hard','fast'], type:'show', loop:true, duration:null,
+    { id:'strobe', num:'L-04', title:'Strobe', tagline:'Hard-cut pops at three a second, every pop a new color — with cold-white accent hits and clashing complements in unison. Mind photosensitive guests.', mood:['party','hard','fast'], section:'shows', type:'show', loop:true, duration:null,
       sim:{ kind:'strobe' } },
-    { id:'gallery-white', num:'L-03', title:'Gallery White', tagline:'Steady warm white — the default working light.', mood:['work','neutral'], type:'scene',
+    { id:'daylight', num:'W-01', title:'Daylight', tagline:'Full bright, cool (~5500K) — the alert light. Sharpest for screens, code, and anything that needs you awake.', mood:['work','bright','cool'], section:'work', type:'scene',
+      sim:{ kind:'static', rgb:[[225,235,255],[225,235,255]], bri:1.0 } },
+    { id:'north-light', num:'W-02', title:'North Light', tagline:'Even neutral (~4000K) — the drawing light. Bright enough for true color, soft enough to not glare off the page.', mood:['work','draw','neutral'], section:'work', type:'scene',
+      sim:{ kind:'static', rgb:[[245,240,225],[245,240,225]], bri:0.9 } },
+    { id:'gallery-white', num:'W-03', title:'Gallery White', tagline:'Steady warm white (~2700K) — the all-purpose room light.', mood:['work','neutral','warm'], section:'work', type:'scene',
       sim:{ kind:'static', rgb:[[255,228,192],[255,228,192]], bri:0.8 } },
-    { id:'safelight', num:'L-04', title:'Safelight', tagline:'Dim, deep darkroom red. Photo paper can’t see it; you barely can.', mood:['dark','red','focus'], type:'scene',
+    { id:'late-shift', num:'W-04', title:'Late Shift', tagline:'Low and deep-warm (~2200K) — night work without the blue. Enough to draw or type by, easy on the melatonin.', mood:['work','night','warm'], section:'work', type:'scene',
+      sim:{ kind:'static', rgb:[[255,190,120],[255,190,120]], bri:0.45 } },
+    { id:'safelight', num:'U-01', title:'Safelight', tagline:'Dim, deep darkroom red. Photo paper can’t see it; you barely can.', mood:['dark','red','focus'], section:'utility', type:'scene',
       sim:{ kind:'static', rgb:[[138,14,0],[138,14,0]], bri:0.45 } },
-    { id:'blackout', num:'L-05', title:'Blackout', tagline:'Everything off.', mood:['off'], type:'scene',
+    { id:'blackout', num:'U-02', title:'Blackout', tagline:'Everything off.', mood:['off'], section:'utility', type:'scene',
       sim:{ kind:'static', rgb:[[8,8,10],[8,8,10]], bri:0.06 } }
+  ];
+
+  var SECTIONS = [
+    { key: 'shows',   label: 'Shows' },
+    { key: 'work',    label: 'Work Light' },
+    { key: 'utility', label: 'Utility' }
   ];
 
   var DAEMON = 'http://127.0.0.1:8899';
@@ -592,7 +609,18 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
     if (!list.length) {
       grid.innerHTML = '<div class="console-empty">Nothing matches &mdash; the room stays dark.</div>';
     }
-    list.forEach(function(p) { grid.appendChild(buildCard(p)); });
+    SECTIONS.forEach(function(sec) {
+      var inSec = list.filter(function(p) { return (p.section || 'shows') === sec.key; });
+      if (!inSec.length) return;
+      var h = document.createElement('h2');
+      h.className = 'console-section-title';
+      h.innerHTML = sec.label + '<span class="console-section-count">' + inSec.length + '</span>';
+      grid.appendChild(h);
+      var g = document.createElement('div');
+      g.className = 'preset-grid';
+      inSec.forEach(function(p) { g.appendChild(buildCard(p)); });
+      grid.appendChild(g);
+    });
     // size canvases only after the cards are in the document and laid out
     requestAnimationFrame(function() { animated.forEach(function(a) { a.size(); }); });
     markPlaying();
@@ -694,7 +722,8 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
           PRESETS = data.presets.map(function(p) {
             var pub = { id: p.id, num: p.num, title: p.title, tagline: p.tagline,
                         mood: p.mood, type: p.type, loop: p.loop || false,
-                        duration: p.duration || null, sim: p.sim };
+                        duration: p.duration || null, sim: p.sim,
+                        section: p.section || 'shows' };
             return pub;
           });
         }
