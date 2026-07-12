@@ -39,7 +39,11 @@
 
   --dr-ink:      oklch(0.18 0.008 80);    /* deep charcoal — printed silkscreen on cream */
   --dr-ink-dim:  oklch(0.42 0.010 80);    /* secondary type */
-  --dr-ink-2:    oklch(0.58 0.012 80);    /* tertiary / spec lines on cream */
+  --dr-ink-2:    oklch(0.48 0.012 80);    /* tertiary / spec lines on cream.
+                                             Darkened 0.58→0.48 2026-07-11: at 0.58 the
+                                             7-11px labels using this sat at 2.5-3.8:1
+                                             contrast (WCAG AA needs 4.5); 0.48 reads
+                                             ~4.9:1 on module surfaces. */
 
   /* primary control accent — Braun Hermes orange (the SK4 / TS45 / ET66 button) */
   --dr-moss:       oklch(0.64 0.18 35);
@@ -230,18 +234,6 @@ body[data-mode="play"] .dr-collapsible-head{padding-right:0}
 body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collapsible-head){display:revert !important}
 
 /* ── MASTER KILLSWITCH (A/B compare, top-right of masthead) ── */
-/* GLOBAL CONTROLS POD — kill button on top, master pod below, lives in the right
-   slot of the bay row. The single "post-rack" column. */
-.dr-globals{display:flex;flex-direction:column;gap:var(--s3);min-width:0}
-.dr-globals .dr-kill{position:relative;top:auto;right:auto;width:100%;align-items:center;flex-direction:row;justify-content:center;gap:var(--s3);padding:12px 16px}
-.dr-globals .dr-mod[data-mod="master"]{margin:0}
-.dr-globals .dr-mod[data-mod="master"] .dr-meters{gap:6px}
-.dr-globals .dr-bay-source{font-family:var(--dr-mono);font-size:10px;color:var(--dr-ink-dim);letter-spacing:.04em;line-height:1.4;display:block;margin-bottom:var(--s2)}
-.dr-globals .dr-bay-source b{color:var(--dr-coral);font-weight:400}
-.dr-globals .dr-bay-level{position:relative;height:5px;background:var(--dr-panel);overflow:hidden;border-radius:var(--r-sm);border:1px solid var(--dr-line);margin-bottom:var(--s3)}
-.dr-globals .dr-bay-level-bar{position:absolute;left:0;top:0;bottom:0;width:0%;background:linear-gradient(90deg,var(--dr-coral-dim),var(--dr-coral));transition:width .08s linear}
-.dr-globals .dr-bay-level-tick{position:absolute;top:0;bottom:0;width:1px;background:var(--dr-line)}
-
 .dr-kill{display:flex;flex-direction:column;align-items:flex-end;gap:4px;padding:14px 22px;
   background:
     radial-gradient(ellipse 120vw 80vh at 22% 8%, oklch(0.97 0.010 80) 0%, oklch(0.97 0.010 80 / 0.25) 35%, oklch(0.97 0.010 80 / 0) 65%) fixed,
@@ -288,8 +280,6 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
 .dr-bay-options{position:relative;display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s3)}
 @media (max-width: 720px){.dr-bay-options{grid-template-columns:1fr}}
 
-/* MONITOR + MASTER row — Step 2. Globals (kill + master) on the left, tape on the right. */
-.dr-bay{display:grid;grid-template-columns:280px 1fr;gap:var(--s5);align-items:stretch;padding:var(--s5) 0;border-bottom:1px solid var(--dr-line)}
 @media (max-width: 720px){.dr-bay{grid-template-columns:1fr}}
 
 /* Section labels — DM Sans, 2x prior size for stronger zone hierarchy. */
@@ -402,8 +392,6 @@ body[data-source="none"] .dr-rack{opacity:.45;filter:saturate(.55)}
 }
 /* When the tape player lives in the bay row's third grid column (its current
    home), let it size itself naturally inside that column. */
-.dr-bay .dr-tape{margin:0;padding:var(--s4);min-width:0;height:100%}
-.dr-bay .dr-tape .dr-strip{height:auto;min-height:0;flex:1}
 .dr-strip-canvas{width:100%;height:100%}
 .dr-strip-meta{position:absolute;top:var(--s3);left:var(--s3);display:flex;gap:var(--s4);font-family:var(--dr-mono);font-size:9px;letter-spacing:.16em;color:var(--dr-ink-2);text-transform:uppercase;pointer-events:none}
 .dr-strip-meta span b{color:var(--dr-ink-dim);font-weight:400}
@@ -642,8 +630,9 @@ body[data-source="none"] .dr-rack{opacity:.45;filter:saturate(.55)}
    left-aligned. Sits flush with the masthead so it reads as a top-level
    utility row, not part of any single section. */
 .dr-globalbar{display:flex;flex-direction:row;align-items:center;gap:var(--s3);padding:var(--s4) 0 var(--s2)}
-/* A/B (performance control) sits alone left; MIDI toggle + destructive
+/* STOP + A/B (performance controls) sit left; MIDI toggle + destructive
    resets cluster right so the two kinds of control don't read as siblings */
+.dr-stop-square{width:8px;height:8px;border-radius:1px;background:var(--dr-coral);flex-shrink:0}
 .dr-globalbar .dr-midi-toggle{margin-left:auto}
 .dr-midi-toggle[aria-pressed="true"]{color:oklch(0.98 0.003 80);background:var(--dr-moss);border-color:var(--dr-moss)}
 /* MIDI mapping mode — the ~40 per-knob LEARN pills only render while the
@@ -660,14 +649,8 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
    vertically so heading sits on top (with the chevron on its right) and
    the actions row sits below. Chevron is anchored to the top of the head
    instead of vertically-centered across both rows. */
-.dr-toprow .dr-master-header{flex-direction:column;align-items:stretch;gap:var(--s3);min-height:0}
-.dr-toprow .dr-master-header .dr-collapsible-toggle{top:0;transform:none}
-.dr-toprow .dr-master-header .dr-collapsible-head[data-collapsed="true"] .dr-collapsible-toggle,
-.dr-toprow .dr-master-wrap[data-collapsed="true"] .dr-collapsible-toggle{transform:none}
 @media (max-width:920px){
   .dr-toprow{flex-direction:column}
-  .dr-toprow > .dr-master-wrap{width:100%}
-  .dr-toprow .dr-master-header{flex-direction:row;align-items:center}
 }
 
 /* SAMPLER — outer wrap that holds the section heading + the existing tape grid.
@@ -684,28 +667,6 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
 .dr-sampler-knobs .dr-knob-label{font-size:9px;letter-spacing:.18em}
 .dr-sampler-knobs .dr-knob-value{font-size:9px;min-width:48px}
 
-/* MASTER — Step 5. Header strip on top with RELEASE + CLEAR ALL inline-right.
-   The master pod (limiter + meters + OUT) sits below at full width. */
-.dr-master-wrap{padding:var(--s5) 0;border-bottom:1px solid var(--dr-line)}
-.dr-master-header{display:flex;flex-direction:row;align-items:center;justify-content:space-between;gap:var(--s4);margin-bottom:var(--s4)}
-.dr-master-header .dr-section{margin:0}
-.dr-master-actions{display:flex;align-items:center;gap:var(--s3)}
-.dr-master-wrap .dr-mod[data-mod="master"]{margin:0;max-width:none}
-.dr-master-wrap .dr-meters{gap:var(--s4)}
-/* RELEASE: in master wrap context, render as a tight inline button
-   (single-line) instead of the stacked label+sub-label that worked in the
-   bay column. Preserves the active-state styling. */
-.dr-master-actions .dr-kill{position:relative;top:auto;right:auto;flex-direction:row;align-items:center;gap:var(--s2);padding:7px 14px;width:auto}
-.dr-master-actions .dr-kill .dr-kill-sub{display:none}
-.dr-master-actions .dr-kill .dr-kill-label{font-size:10px}
-/* mirror the dr-globals scoped rules so the master-pod source label + level
-   meter keep their compact styling in the new home (without .dr-globals
-   ancestor those rules would no longer match). */
-.dr-master-wrap .dr-bay-source{font-family:var(--dr-mono);font-size:10px;color:var(--dr-ink-dim);letter-spacing:.04em;line-height:1.4;display:block;margin-bottom:var(--s2)}
-.dr-master-wrap .dr-bay-source b{color:var(--dr-coral);font-weight:400}
-.dr-master-wrap .dr-bay-level{position:relative;height:5px;background:var(--dr-panel);overflow:hidden;border-radius:var(--r-sm);border:1px solid var(--dr-line);margin-bottom:var(--s3)}
-.dr-master-wrap .dr-bay-level-bar{position:absolute;left:0;top:0;bottom:0;width:0%;background:linear-gradient(90deg,var(--dr-coral-dim),var(--dr-coral));transition:width .08s linear}
-.dr-master-wrap .dr-bay-level-tick{position:absolute;top:0;bottom:0;width:1px;background:var(--dr-line)}
 
 /* SAMPLE PADS — 4×2 grid tucked into the sampler's right column beneath the
    waveform. Tighter than drum pads (smaller min-height, smaller fonts) since
@@ -1055,6 +1016,8 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
 /* ── KNOBS (SVG line-drawn, no skeuomorphism) ── */
 .dr-knobs{display:flex;align-items:flex-end;justify-content:space-around;gap:var(--s3);padding:var(--s2) 0}
 .dr-knob{display:flex;flex-direction:column;align-items:center;gap:var(--s2);user-select:none}
+/* keyboard focus — knobs are role=slider tab stops (arrows adjust) */
+.dr-knob:focus-visible{outline:2px solid var(--dr-moss);outline-offset:3px;border-radius:var(--r-sm)}
 .dr-knob-label{font-family:var(--dr-fx);font-weight:600;font-size:10px;letter-spacing:.16em;color:var(--dr-ink-dim);text-transform:uppercase}
 .dr-knob-dial{width:64px;height:64px;cursor:grab;display:block;filter:drop-shadow(0 2px 3px rgba(0,0,0,.18))}
 .dr-knob-dial:active{cursor:grabbing}
@@ -1493,6 +1456,14 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
          envelope-release in audio) is a performance control, so it sits
          alone on the left. The destructive resets + the MIDI mapping
          toggle live as their own cluster on the right. -->
+    <!-- STOP — disconnects the current source (demo / tab / device / file)
+         and returns the page to its cold state. Without it there was no
+         way to stop a playing source short of closing the tab. -->
+    <button class="dr-kill" id="dr-stop" type="button" aria-label="stop — disconnect the current audio source">
+      <span class="dr-stop-square"></span>
+      <span class="dr-kill-label">STOP</span>
+      <span class="dr-kill-sub">disconnect source</span>
+    </button>
     <button class="dr-kill" id="dr-kill" type="button" aria-label="A/B — bypass all effects, tap again to restore">
       <span class="dr-kill-dot"></span>
       <span class="dr-kill-label">A/B</span>
@@ -3942,7 +3913,7 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
     if (DR.nodes.soundTouchLoading) return DR.nodes.soundTouchLoading;
     DR.nodes.soundTouchLoading = (async () => {
       try {
-        await DR.ctx.audioWorklet.addModule('darkroom/lib/soundtouch-processor.js');
+        await DR.ctx.audioWorklet.addModule('darkroom/lib/soundtouch-processor.js?v=3');
         DR.nodes.soundTouchReady = true;
         return true;
       } catch (e) {
@@ -3992,11 +3963,6 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
             return;
           }
           if (e.data.trigger) {
-            // TEMP DIAGNOSTIC — with the rearm-only worklet, this should fire
-            // EXACTLY ONCE per user action (engage / division change). If it
-            // ever fires more than that without a user click, something is
-            // sending phantom rearm messages.
-            console.log('[beat-repeat] capture', performance.now().toFixed(0));
             const led = document.getElementById('dr-br-trigger');
             if (led) {
               led.setAttribute('data-firing', 'true');
@@ -4277,6 +4243,17 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
     const valueEl = knobEl.querySelector('.dr-knob-value');
     let value = opts.default;
 
+    // Keyboard access — every knob is a focusable slider. Arrows step 1%
+    // of the range (shift = 0.1% fine), PageUp/Down 10%, Home/End min/max.
+    // aria-valuetext mirrors the formatted readout so screen readers hear
+    // real units, not raw numbers.
+    const labelEl = knobEl.querySelector('.dr-knob-label');
+    knobEl.tabIndex = 0;
+    knobEl.setAttribute('role', 'slider');
+    knobEl.setAttribute('aria-label', (labelEl && labelEl.textContent.trim()) || knobEl.dataset.param || 'knob');
+    knobEl.setAttribute('aria-valuemin', opts.min);
+    knobEl.setAttribute('aria-valuemax', opts.max);
+
     // The whole SVG rotates (preserves original behavior — the indicator line,
     // arc, and aluminum face all participate). The position-tick group gets a
     // counter-rotation so it visually stays put against the document — they
@@ -4290,6 +4267,8 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
       dial.style.transform = `rotate(${angle}deg)`;
       if (ticksGroup) ticksGroup.setAttribute('transform', `rotate(${-angle})`);
       valueEl.textContent = opts.format(value);
+      knobEl.setAttribute('aria-valuenow', +value.toFixed(4));
+      knobEl.setAttribute('aria-valuetext', opts.format(value));
     }
     function setValue(v, fire = true) {
       value = Math.max(opts.min, Math.min(opts.max, v));
@@ -4339,6 +4318,27 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
       if (opts.scale === 'log') setValue(opts.min * Math.pow(opts.max / opts.min, t));
       else setValue(opts.min + t * (opts.max - opts.min));
     }
+
+    function getNormalized() {
+      return opts.scale === 'log'
+        ? Math.log(Math.max(value, opts.min) / opts.min) / Math.log(opts.max / opts.min)
+        : (value - opts.min) / (opts.max - opts.min);
+    }
+    knobEl.addEventListener('keydown', e => {
+      let t = null;
+      const step = e.shiftKey ? 0.001 : 0.01;
+      switch (e.key) {
+        case 'ArrowUp': case 'ArrowRight':   t = getNormalized() + step; break;
+        case 'ArrowDown': case 'ArrowLeft':  t = getNormalized() - step; break;
+        case 'PageUp':   t = getNormalized() + 0.1; break;
+        case 'PageDown': t = getNormalized() - 0.1; break;
+        case 'Home': t = 0; break;
+        case 'End':  t = 1; break;
+        default: return;
+      }
+      e.preventDefault();
+      setNormalized(t);
+    });
 
     setValue(opts.default, false);
     return { setValue, getValue: () => value, setNormalized };
@@ -6216,6 +6216,17 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
       }
     });
   });
+  // ─── STOP — disconnect the current source ────────────────────────
+  // Stops the demo/file buffer or ends the tab/device stream (which also
+  // clears Chrome's sharing bar), clears the active-source pill, and lets
+  // setSourceLive(false) re-dim the processing surface. FX tails (delay
+  // feedback, reverb) ring out naturally rather than being cut.
+  document.getElementById('dr-stop')?.addEventListener('click', () => {
+    disconnectSource();
+    bayBtns.forEach(b => b.removeAttribute('data-active'));
+    setStatus(`<b>stopped</b> — pick a source to continue`);
+  });
+
   fileInput.addEventListener('change', e => {
     const file = e.target.files[0];
     if (!file) return;
@@ -8110,8 +8121,7 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
     { wrapSel: '.dr-sseq-wrap',    headSel: '.dr-sseq-header',   storageKey: 'sseq'    },
     { wrapSel: '.dr-instr-wrap',   headSel: 'h3.dr-section',     storageKey: 'instr'   },
     { wrapSel: '.dr-seq-wrap',     headSel: '.dr-seq-header',    storageKey: 'seq'     },
-    { wrapSel: '.dr-rack-wrap',    headSel: '.dr-rack-header',   storageKey: 'rack'    },
-    { wrapSel: '.dr-master-wrap',  headSel: '.dr-master-header', storageKey: 'master'  }
+    { wrapSel: '.dr-rack-wrap',    headSel: '.dr-rack-header',   storageKey: 'rack'    }
   ];
   const COLLAPSE_STORAGE = 'darkroom:collapsed';
   function loadCollapseState() {

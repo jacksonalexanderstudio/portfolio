@@ -872,6 +872,11 @@ var SoundTouchProcessor = class extends AudioWorkletProcessor {
 	_pipe;
 	_samples;
 	_outputSamples;
+	_rateClamp;
+	_wasGapped;
+	_gateCount;
+	_gapCount;
+	_statFrames;
 	constructor() {
 		super();
 		this._pipe = new SoundTouch();
@@ -881,6 +886,12 @@ var SoundTouchProcessor = class extends AudioWorkletProcessor {
 		this._pipe.stretch.setParameters(sampleRate, 40, 15, 8);
 		this._samples = new Float32Array(256);
 		this._outputSamples = new Float32Array(256);
+		// darkroom: live-stream FIFO management state (see process())
+		this._rateClamp = 1;
+		this._wasGapped = false;
+		this._gateCount = 0;
+		this._gapCount = 0;
+		this._statFrames = 0;
 	}
 	process(inputs, outputs, parameters) {
 		const input = inputs[0];
@@ -900,22 +911,59 @@ var SoundTouchProcessor = class extends AudioWorkletProcessor {
 		const pitch = parameters["pitch"][0];
 		const pitchSemitones = parameters["pitchSemitones"][0];
 		const playbackRate = parameters["playbackRate"][0];
-		this._pipe.rate = rate;
+		// ─── darkroom: live-stream FIFO management (2026-07-11) ───────────
+		// A live input arrives at exactly realtime, but SoundTouch consumes
+		// it at rate×tempo. Left alone that mismatch drifts without bound:
+		//   rate<1 → output FIFO grows forever (runaway latency + memory);
+		//   rate>1 → output starves every quantum (constant zero-fill crackle
+		//            — the "FIFO drain" reverted 2026-05-04 attacked this from
+		//            the output side and clicked ~20×/sec).
+		// Two complementary controls:
+		// 1. INPUT GATE (rate<1): once the output backlog exceeds GATE_FRAMES
+		//    (~500 ms), skip pushing this quantum's input. The stretcher's
+		//    WSOLA overlap-add crossfades across each dropped 128-frame
+		//    granule, so the result reads as slowed audio that quietly sheds
+		//    the excess content instead of drifting ever further behind live.
+		// 2. LIVE-EDGE CLAMP (rate>1): playing faster than realtime is only
+		//    possible while there is banked backlog to spend. effRate eases
+		//    from the user's rate down to 1.0 as the supply runs out
+		//    (smoothed ~15%/quantum so the transition doesn't warble).
+		//    Backlog banked while screwed down gets spent as a genuine
+		//    speed-up that catches back up toward live before settling.
+		const outputBuffer = this._pipe.outputBuffer;
+		const GATE_FRAMES = 24e3;
+		const consumption = Math.max(.1, rate * tempo);
+		let effRate = rate;
+		if (rate > 1.0001) {
+			// Spendable supply = banked output + input the stretcher can
+			// actually process NOW. Input below inputChunkSize is a standing
+			// residual that produces nothing until future (realtime) frames
+			// top it up — counting it stalled the clamp ~6% above 1.0 with
+			// steady zero-fill gaps.
+			const usableIn = Math.max(0, this._pipe.inputBuffer.frameCount - this._pipe.stretch.inputChunkSize);
+			const supply = outputBuffer.frameCount + usableIn / consumption;
+			// FLOOR sits just under 1.0 so an empty supply rebuilds a small
+			// output cushion (~50 ms at equilibrium) that absorbs the
+			// stretcher's bursty chunk production; at exactly 1.0 there is no
+			// cushion and every chunk boundary risks a gap.
+			const LOW = 2048, HIGH = 8192, FLOOR = .98;
+			const target = supply <= LOW ? FLOOR : supply >= HIGH ? rate : FLOOR + (rate - FLOOR) * (supply - LOW) / (HIGH - LOW);
+			this._rateClamp += (target - this._rateClamp) * .15;
+			effRate = Math.min(rate, this._rateClamp);
+		} else this._rateClamp = rate;
+		this._pipe.rate = effRate;
 		this._pipe.tempo = tempo;
 		this._pipe.pitch = pitch * Math.pow(2, pitchSemitones / 12) / playbackRate;
-		const samples = this._samples;
-		for (let i = 0; i < frameCount; i++) {
-			samples[i * 2] = leftInput[i];
-			samples[i * 2 + 1] = rightInput[i];
+		if (outputBuffer.frameCount > GATE_FRAMES) this._gateCount++;
+		else {
+			const samples = this._samples;
+			for (let i = 0; i < frameCount; i++) {
+				samples[i * 2] = leftInput[i];
+				samples[i * 2 + 1] = rightInput[i];
+			}
+			this._pipe.inputBuffer.putSamples(samples, 0, frameCount);
 		}
-		this._pipe.inputBuffer.putSamples(samples, 0, frameCount);
 		this._pipe.process();
-		// darkroom: FIFO drain reverted 2026-05-04 — drain frequency at
-		// non-1× tempo on streams was ~20 events/sec, audibly crackly. The
-		// proper fix is input-side gating (skip pushing input when output
-		// is full, let SoundTouch's overlap-add cross-fade across the gap)
-		// rather than dropping output frames. Queued.
-		const outputBuffer = this._pipe.outputBuffer;
 		const available = outputBuffer.frameCount;
 		const toExtract = Math.min(available, frameCount);
 		if (toExtract > 0) {
@@ -927,10 +975,46 @@ var SoundTouchProcessor = class extends AudioWorkletProcessor {
 				leftOutput[i] = Number.isFinite(l) ? l : 0;
 				rightOutput[i] = Number.isFinite(r) ? r : 0;
 			}
+			// Soften the edges around any zero-fill gap: fade back in after a
+			// gap, fade out into one. 32 frames ≈ 0.7 ms — inaudible as a fade,
+			// but it turns a hard click into a soft dip.
+			if (this._wasGapped) {
+				const F = Math.min(32, toExtract);
+				for (let i = 0; i < F; i++) {
+					const g = (i + 1) / F;
+					leftOutput[i] *= g;
+					rightOutput[i] *= g;
+				}
+			}
+			if (toExtract < frameCount) {
+				const F = Math.min(32, toExtract);
+				for (let i = 0; i < F; i++) {
+					const g = 1 - (i + 1) / F;
+					leftOutput[toExtract - F + i] *= g;
+					rightOutput[toExtract - F + i] *= g;
+				}
+			}
 		}
+		if (toExtract < frameCount) this._gapCount++;
+		this._wasGapped = toExtract < frameCount;
 		for (let i = toExtract; i < frameCount; i++) {
 			leftOutput[i] = 0;
 			rightOutput[i] = 0;
+		}
+		// Lightweight telemetry — one message/sec while processing. No
+		// listener attached in production; test harnesses subscribe to
+		// verify backlog stays bounded and gaps stay at zero.
+		this._statFrames += frameCount;
+		if (this._statFrames >= sampleRate) {
+			this._statFrames = 0;
+			this.port.postMessage({ stats: {
+				backlog: outputBuffer.frameCount,
+				gated: this._gateCount,
+				gaps: this._gapCount,
+				effRate: Math.round(effRate * 1e3) / 1e3
+			} });
+			this._gateCount = 0;
+			this._gapCount = 0;
 		}
 		return true;
 	}
