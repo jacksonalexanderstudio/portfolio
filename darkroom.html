@@ -125,25 +125,27 @@ canvas{display:block}
    280px master sidebar in the top row. Bordered card matches the rest
    of the instrument's surface language (same panel gradient + line +
    radius as .dr-mod). */
-/* Compact master pod — single horizontal row. MASTER title (large) on
-   the left, POST meter middle, OUT knob right; all vertically center-
-   aligned on one axis. Value readouts hidden — meter bar fill + knob
-   position carry the info. */
-.dr-mast-master{display:flex;flex-direction:row;align-items:center;gap:var(--s5);flex-shrink:0;
-  padding:var(--s3) var(--s4);
+/* Compact master pod — single horizontal row. MASTER title on the left,
+   POST meter middle, OUT knob right; all vertically center-aligned on
+   one axis. Value readouts hidden — meter bar fill + knob position
+   carry the info. Deliberately quiet (small type, narrow meter, small
+   knob): the sources are the page's first action, the master pod is a
+   utility — hierarchy swapped 2026-07-11. */
+.dr-mast-master{display:flex;flex-direction:row;align-items:center;gap:var(--s4);flex-shrink:0;
+  padding:var(--s2) var(--s3);
   background:linear-gradient(180deg,var(--dr-panel-3) 0%,var(--dr-panel-2) 100%);
   border:1px solid var(--dr-line);
   border-radius:var(--r-lg);
   box-shadow:inset 0 1px 0 rgba(255,255,255,.85),0 1px 1px rgba(0,0,0,.04),0 4px 14px -8px rgba(0,0,0,.10)}
-.dr-mast-master-title{font-family:var(--dr-disp);font-weight:600;font-size:14px;letter-spacing:.18em;color:var(--dr-ink);text-transform:uppercase}
+.dr-mast-master-title{font-family:var(--dr-disp);font-weight:600;font-size:10px;letter-spacing:.18em;color:var(--dr-ink-2);text-transform:uppercase}
 .dr-mast-meter{display:flex;align-items:center;gap:var(--s2);min-width:0}
 .dr-mast-meter .dr-meter-label{font-family:var(--dr-fx);font-weight:700;font-size:9px;letter-spacing:.18em;color:var(--dr-ink-2);text-transform:uppercase}
-.dr-mast-meter .dr-meter-bar{position:relative;height:5px;width:120px;background:var(--dr-panel);border:1px solid var(--dr-line);border-radius:var(--r-sm);overflow:hidden}
+.dr-mast-meter .dr-meter-bar{position:relative;height:5px;width:84px;background:var(--dr-panel);border:1px solid var(--dr-line);border-radius:var(--r-sm);overflow:hidden}
 .dr-mast-meter .dr-meter-bar > span{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,var(--dr-moss-dim),var(--dr-moss));transition:width .06s linear}
 .dr-mast-meter .dr-meter-bar .dr-meter-tick{position:absolute;top:0;bottom:0;width:1px;background:var(--dr-line);left:75%}
 .dr-mast-meter .dr-meter-value{display:none}
 .dr-mast-knob{display:flex;flex-direction:column;align-items:center;gap:2px}
-.dr-mast-knob .dr-knob-dial{width:36px;height:36px}
+.dr-mast-knob .dr-knob-dial{width:30px;height:30px}
 .dr-mast-knob .dr-knob-label{font-family:var(--dr-fx);font-weight:700;font-size:9px;letter-spacing:.20em;color:var(--dr-moss);text-transform:uppercase}
 .dr-mast-knob .dr-knob-value{display:none}
 
@@ -302,7 +304,7 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
    gradient body, sharp 1px top-edge highlight, soft bottom inset shadow,
    tight ground shadow + soft elevation shadow. Reads as plastic/aluminum
    under raked overhead light, not "linear gradient on a div." */
-.dr-bay-btn{position:relative;padding:10px var(--s4);
+.dr-bay-btn{position:relative;padding:16px var(--s4);
   /* very matte Rams body — barely-perceptible linear (0.02 lightness range) +
      a whisper of viewport-anchored radial sheen. Form comes from edge highlights
      and shadows, not gradient. */
@@ -344,7 +346,7 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
     0 6px 18px -8px var(--dr-moss-glow);
 }
 .dr-bay-btn[data-active="true"] .dr-bay-btn-name{color:var(--dr-moss)}
-.dr-bay-btn-name{font-family:var(--dr-disp);font-weight:600;font-size:18px;letter-spacing:.06em;color:var(--dr-ink);transition:color .2s;line-height:1}
+.dr-bay-btn-name{font-family:var(--dr-disp);font-weight:600;font-size:21px;letter-spacing:.06em;color:var(--dr-ink);transition:color .2s;line-height:1}
 
 /* Spec subtitle now lives inline inside each pill — name + spec on one row,
    gap between them. Pill is short and reads like a single object. */
@@ -520,23 +522,8 @@ body[data-source="none"] .dr-rack{opacity:.45;filter:saturate(.55)}
 .dr-saturn-moon{fill:oklch(0.92 0.02 80);opacity:.92}
 .dr-saturn-moon-glow{fill:oklch(0.92 0.02 80);opacity:.18}
 
-/* ── ORB PLACEHOLDER ─────────────────────────────────────────────
-   YouTube placeholder iframe lives inside the orb's foreignObject and
-   plays continuously for the duration of the user's session. No swap
-   to live tab capture — the placeholder is the orb's permanent visual.
-   Audio sources still route through the engine for processing; only
-   the visual content of the orb is locked to the placeholder. */
-.dr-orb-placeholder-fo{display:block}
-.dr-orb-placeholder{width:100%;height:100%;border:0;display:block;pointer-events:none;background:#000}
-/* Black SVG circle drawn on top of the iframe, masking YouTube's pause/
-   buffering overlay during the initial load. Iframe still autoplays
-   underneath. JS removes the mask via display:none on the disc class
-   the instant the playhead has actually advanced. SVG <circle> respects
-   display:none reliably, unlike visibility on cross-origin iframes
-   inside foreignObject. */
-.dr-orb-loading-mask{fill:#000}
-.dr-tape-disc.placeholder-ready .dr-orb-loading-mask{display:none}
-
+/* Orb surface treatment — vignette + specular over the aluminum sphere.
+   (The YouTube placeholder video was removed 2026-07-11.) */
 .dr-orb-vignette{display:block;pointer-events:none;fill:url(#dr-orb-vignette-grad)}
 .dr-orb-specular{display:block;pointer-events:none;fill:url(#dr-orb-specular-grad);mix-blend-mode:screen;opacity:.55}
 
@@ -995,6 +982,26 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
    together on the left with only the gap between them */
 .dr-mod-head .dr-mod-reset{margin-left:auto}
 .dr-mod-head-text{display:flex;flex-direction:column;gap:var(--s2);min-width:0}
+/* ── SIGNAL-CHAIN ORDER ──────────────────────────────────────────
+   The rack renders in processing order via CSS `order` (DOM order is
+   unchanged — physical reorder waits for the drag-to-reorder feature);
+   the numbered chip in each module head states the chain position, so
+   the order is legible even where focus order differs. LFO is a
+   control-rate side-channel, not in the audio path — it sits last
+   with a MOD chip instead of a number. Mirror of buildChain(). */
+.dr-rack .dr-mod[data-mod="eq"]{order:1}
+.dr-rack .dr-mod[data-mod="filter"]{order:2}
+.dr-rack .dr-mod[data-mod="phaser"]{order:3}
+.dr-rack .dr-mod[data-mod="bitcrush"]{order:4}
+.dr-rack .dr-mod[data-mod="saturation"]{order:5}
+.dr-rack .dr-mod[data-mod="chorus"]{order:6}
+.dr-rack .dr-mod[data-mod="flanger"]{order:7}
+.dr-rack .dr-mod[data-mod="ambient"]{order:8}
+.dr-rack .dr-mod[data-mod="revdelay"]{order:9}
+.dr-rack .dr-mod[data-mod="delay"]{order:10}
+.dr-rack .dr-mod[data-mod="reverb"]{order:11}
+.dr-rack .dr-mod[data-mod="lfo"]{order:12}
+.dr-mod-index{font-family:var(--dr-mono);font-size:8px;letter-spacing:.14em;color:var(--dr-ink-dim);opacity:.8;line-height:1;user-select:none}
 /* FX hero titles switch to Departure Mono — the mechanical mono asset
    already preloaded for the project. Sits against DM Sans (utility /
    meter readouts) the way a hardware front-panel label sits against
@@ -1419,7 +1426,7 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
       <img class="dr-mast-logo" src="darkroom/assets/darkroom-logo.png" alt="darkroom"
         onerror="this.style.display='none';var f=document.getElementById('dr-mast-title-fallback');if(f)f.style.display='block'"/>
       <h1 class="dr-mast-title" id="dr-mast-title-fallback" style="display:none">darkroom</h1>
-      <p class="dr-mast-blurb">share a chrome tab, plug in a device, or load a file — then shape the signal in real time with the modules below. nothing is recorded; everything runs live in the browser.</p>
+      <p class="dr-mast-blurb">try the built-in demo loop, share a chrome tab, plug in a device, or load a file — then shape the signal in real time with the modules below. nothing is recorded; everything runs live in the browser.</p>
     </div>
     <div class="dr-mast-master" aria-label="Master output">
       <span class="dr-mast-master-title">MASTER</span>
@@ -1538,25 +1545,21 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
             <stop offset="80%"  stop-color="oklch(0.70 0.010 80)"/>
             <stop offset="100%" stop-color="oklch(0.58 0.012 80)"/>
           </radialGradient>
-          <!-- Orb-video vignette: transparent center, dark edges. Sells the
-               curvature read so a flat video reads as a glass sphere. -->
+          <!-- Orb vignette: transparent center, dark edges. Sells the
+               curvature read on the aluminum sphere. -->
           <radialGradient id="dr-orb-vignette-grad" cx="50%" cy="50%" r="50%">
             <stop offset="0%"   stop-color="rgba(0,0,0,0)"/>
             <stop offset="55%"  stop-color="rgba(0,0,0,0)"/>
             <stop offset="85%"  stop-color="rgba(0,0,0,0.32)"/>
             <stop offset="100%" stop-color="rgba(0,0,0,0.72)"/>
           </radialGradient>
-          <!-- Specular highlight at upper-left, screen-blended on top of
-               the video to fake a soft glass reflection. -->
+          <!-- Specular highlight at upper-left, screen-blended for a soft
+               glass reflection on the sphere. -->
           <radialGradient id="dr-orb-specular-grad" cx="32%" cy="28%" r="62%">
             <stop offset="0%"   stop-color="rgba(255,255,255,0.95)"/>
             <stop offset="55%"  stop-color="rgba(255,255,255,0.18)"/>
             <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
           </radialGradient>
-          <!-- Clip the foreignObject to a circle so the video fits the orb. -->
-          <clipPath id="dr-orb-clip">
-            <circle r="80"/>
-          </clipPath>
         </defs>
         <!-- space backdrop + faint outer rim -->
         <circle r="158" class="dr-tape-face"/>
@@ -1607,32 +1610,14 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
         </g>
 
         <!-- ════════════════════════════════════════════════════════════
-             ORB SPHERE — the soul of the page. Brushed-aluminum body sits
-             behind the video module; if the video fails to load it shows
-             through as a fallback. -->
+             ORB SPHERE — the soul of the page. Brushed-aluminum body,
+             pure instrument visual. The YouTube placeholder video that
+             lived here 2026-05 → 2026-07 was removed: a video with no
+             relationship to the audio being processed read as broken,
+             and the embed was the single heaviest thing on the page. -->
         <g class="dr-tape-rotor dr-saturn-planet">
           <circle r="80" class="dr-saturn-body"/>
         </g>
-        <!-- ════════════════════════════════════════════════════════════
-             VIDEO MODULE — placeholder iframe only. Lives inside the
-             orb permanently; never swaps to live tab capture. The
-             YouTube embed plays muted + looped + autoplay for the
-             duration of the session. foreignObject 480×320 (3:2) — the
-             SVG has overflow:visible so Chrome doesn't clip iframe at
-             the SVG box. Title bar at top of player and watermark at
-             bottom-right both fall outside the visible disk r=80.
-             ════════════════════════════════════════════════════════════ -->
-        <foreignObject class="dr-orb-placeholder-fo" x="-240" y="-160" width="480" height="320" clip-path="url(#dr-orb-clip)">
-          <iframe class="dr-orb-placeholder" id="dr-orb-placeholder"
-            width="480" height="320"
-            src="https://www.youtube.com/embed/jgm58cbu0kw?start=1200&autoplay=1&mute=1&loop=1&playlist=jgm58cbu0kw&controls=0&rel=0&modestbranding=1&showinfo=0&iv_load_policy=3&playsinline=1&disablekb=1&fs=0&enablejsapi=1"
-            allow="autoplay; encrypted-media" frameborder="0"></iframe>
-        </foreignObject>
-        <!-- Loading mask — black circle covering the iframe until JS confirms
-             the video has actually started playing. Hides YouTube's pause/
-             buffering overlay reliably (the iframe itself can't be hidden
-             cleanly inside foreignObject in Chrome). -->
-        <circle r="80" class="dr-orb-loading-mask"/>
         <circle r="80" class="dr-orb-vignette"/>
         <ellipse cx="-30" cy="-34" rx="40" ry="26" class="dr-orb-specular"/>
         <!-- FRONT ring arcs — drawn after planet body, cross in front of its
@@ -2595,48 +2580,6 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
 
 
 </main>
-
-<!-- YouTube IFrame API — reveal the iframe ONLY when the playhead is
-     actually advancing. PLAYING state alone fires too early (during
-     buffering, while YouTube still shows its center pause overlay).
-     Polling getCurrentTime() and waiting for it to tick forward gives
-     us a reliable "video is actually rolling" signal. Defensive 12s
-     safety timer reveals the iframe even if the API never responds. -->
-<script src="https://www.youtube.com/iframe_api"></script>
-<script>
-(function () {
-  var iframe = document.getElementById('dr-orb-placeholder');
-  var disc   = document.querySelector('.dr-tape-disc');
-  if (!iframe || !disc) return;
-  var revealed = false;
-  function reveal() { if (revealed) return; revealed = true; disc.classList.add('placeholder-ready'); }
-  setTimeout(reveal, 12000);
-  window.onYouTubeIframeAPIReady = function () {
-    try {
-      var lastT = -1, ticks = 0, poll;
-      var player = new YT.Player('dr-orb-placeholder', {
-        events: {
-          onReady: function () {
-            poll = setInterval(function () {
-              if (revealed) { clearInterval(poll); return; }
-              try {
-                var t = player.getCurrentTime();
-                if (t > 0 && t !== lastT) {
-                  ticks++;
-                  // Two consecutive observed advances = playhead is actually
-                  // moving (not just a stale value). Reveal immediately.
-                  if (ticks >= 2) { clearInterval(poll); reveal(); }
-                }
-                lastT = t;
-              } catch (err) { /* keep polling */ }
-            }, 120);
-          }
-        }
-      });
-    } catch (err) { reveal(); }
-  };
-})();
-</script>
 
 <footer class="dr-foot">
   <span>client-side only · no upload · for personal use</span>
@@ -3848,13 +3791,12 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
       DR.state.source.disconnect();
     }
     // If switching from a tab/device stream → file, also kill any lingering
-    // stream tracks AND unmount the orb video. play() doesn't go through
-    // disconnectSource(), so we have to do this explicitly.
+    // stream tracks. play() doesn't go through disconnectSource(), so we
+    // have to do this explicitly.
     if (DR.state.streamRef) {
       try { DR.state.streamRef.getTracks().forEach(t => t.stop()); } catch(_){}
       DR.state.streamRef = null;
     }
-    if (typeof unmountOrbVideo === 'function') unmountOrbVideo();
     const src = DR.ctx.createBufferSource();
     src.buffer = DR.state.buffer;
     src.loop = true;
@@ -4137,7 +4079,6 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
       try { DR.state.streamRef.getTracks().forEach(t => t.stop()); } catch(_){}
       DR.state.streamRef = null;
     }
-    unmountOrbVideo();
     DR.state.isPlaying = false;
     DR.state.sourceType = null;
     setSourceLive(false);
@@ -4152,6 +4093,15 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
       return;
     }
     setStatus(`<b>waiting</b> — pick a tab in chrome's dialog and check the "share tab audio" box at the bottom`);
+    // Mute the current source while Chrome's share dialog is up — the old
+    // source playing on top of the picker reads as "switching didn't work".
+    // Restored on cancel and on a share that carried no audio track (the
+    // previous source resumes); on success the new source replaces the old
+    // one and plays through the same restored gain.
+    const srcGainParam = DR.nodes.sourceGain ? DR.nodes.sourceGain.gain : null;
+    const prevGain = srcGainParam ? srcGainParam.value : 1;
+    if (srcGainParam) srcGainParam.setValueAtTime(0, DR.ctx.currentTime);
+    const restorePrevGain = () => { if (srcGainParam) srcGainParam.setValueAtTime(prevGain, DR.ctx.currentTime); };
     let stream;
     try {
       // CRITICAL audio constraints:
@@ -4172,14 +4122,18 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
         }
       });
     } catch (e) {
+      restorePrevGain();
       setStatus(`<b>cancelled</b> — ${e.name === 'NotAllowedError' ? 'no tab selected' : e.message}`);
       return;
     }
     const audioTracks = stream.getAudioTracks();
     const videoTracks = stream.getVideoTracks();
     if (!audioTracks.length) {
+      // End the useless share immediately (kills Chrome's "sharing this
+      // tab" bar so it can't read as connected) and resume the old source.
+      stream.getTracks().forEach(t => t.stop());
+      restorePrevGain();
       setStatus(`<b>no audio track</b> — chrome captured the tab but no audio came through. did you tick "share tab audio" in the dialog?`);
-      videoTracks.forEach(t => t.stop());
       return;
     }
     const audioTrack = audioTracks[0];
@@ -4189,14 +4143,15 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
     // tempo is bypassed by default → connect direct, no worklet, zero latency.
     // Routed through sourceGain so sampler FREEZE can mute the live source.
     src.connect(DR.nodes.sourceGain);
+    restorePrevGain(); // unmute — the gain now carries the new stream
     DR.state.source = src;
     DR.state.sourceType = 'stream';
     DR.state.isPlaying = true;
     DR.state.streamRef = stream;
     setSourceLive(true);
-    // Orb is locked to the YouTube placeholder for the duration of the
-    // session — we don't swap in the captured tab's video. Discard any
-    // video tracks that came along with the audio share.
+    // The orb is a pure instrument visual — we don't display the captured
+    // tab's video. Discard any video tracks that came along with the
+    // audio share.
     videoTracks.forEach(t => t.stop());
     audioTrack.onended = () => {
       setStatus(`<b>tab disconnected</b> — pick a new source to continue`);
@@ -5331,6 +5286,25 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
       e.stopPropagation();
       toggleModBypass(btn.closest('.dr-mod'));
     });
+  });
+
+  // ─── SIGNAL-CHAIN INDEX ──────────────────────────────────────────
+  // Chain-position chip in every rack module head. Visual rack order is
+  // set by matching CSS `order` rules — the numbers and the grid agree,
+  // and both mirror buildChain(). LFO is control-rate (not in the audio
+  // path) so it gets MOD instead of a number.
+  const CHAIN_ORDER = ['eq','filter','phaser','bitcrush','saturation','chorus',
+                       'flanger','ambient','revdelay','delay','reverb'];
+  document.querySelectorAll('.dr-rack .dr-mod[data-mod]').forEach(mod => {
+    const i = CHAIN_ORDER.indexOf(mod.dataset.mod);
+    const chip = document.createElement('span');
+    chip.className = 'dr-mod-index';
+    chip.textContent = i >= 0 ? String(i + 1).padStart(2, '0') : 'MOD';
+    chip.title = i >= 0
+      ? `signal chain position ${i + 1} of ${CHAIN_ORDER.length}`
+      : 'modulation source — outside the audio path';
+    const headText = mod.querySelector('.dr-mod-head-text');
+    if (headText) headText.insertBefore(chip, headText.firstChild);
   });
 
   // ─── MIDI bridge (Web MIDI API) ──────────────────────────────────
@@ -7829,41 +7803,6 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
     if (grFill)  grFill.style.width  = Math.min(100, gr * 5) + '%';
     if (grValue) grValue.textContent = gr.toFixed(1);
     if (inputLevel) inputLevel.style.width = dbToWidth(preDb) + '%';
-  }
-
-  // ─── ORB VIDEO ────────────────────────────────────────────────────
-  // Routes the captured tab's video track into the planet body of the
-  // Saturn deck so the orb shows the source as a "crystal ball." Pure
-  // visual feature — never touches the audio chain. Always on for tab
-  // captures; falls back to the brushed-aluminum sphere for FILE/DEVICE
-  // sources (no video track) or when no source is connected.
-  //
-  // The video keeps playing forward at the source's native rate, even
-  // when the audio chain diverges (SCREW ≠ 1, REVERSE engaged, scratch
-  // in progress). Audio and video can't follow each other — the source
-  // tab streams video at realtime — so we accept the decoupling. The
-  // "honest freeze-on-divergence" behavior was tried and removed: SCREW
-  // is the most-used knob and pausing the video every time you touched
-  // it killed the effect's appeal.
-  function mountOrbVideo(track) {
-    if (!track) return;
-    const videoEl = document.getElementById('dr-orb-video');
-    const disc    = document.querySelector('.dr-tape-disc');
-    if (!videoEl || !disc) return;
-    try {
-      videoEl.srcObject = new MediaStream([track]);
-      const playPromise = videoEl.play();
-      if (playPromise && typeof playPromise.catch === 'function') playPromise.catch(()=>{});
-      disc.setAttribute('data-orb-video', 'on');
-      track.addEventListener('ended', unmountOrbVideo, { once: true });
-    } catch (e) { /* fall through — orb stays as the planet body */ }
-  }
-
-  function unmountOrbVideo() {
-    const videoEl = document.getElementById('dr-orb-video');
-    const disc    = document.querySelector('.dr-tape-disc');
-    if (videoEl) { try { videoEl.pause(); videoEl.srcObject = null; } catch(_){} }
-    if (disc)    disc.removeAttribute('data-orb-video');
   }
 
   // ─── TAPE DECK (TP-7 style scratch + auto-rotate) ────────────────
