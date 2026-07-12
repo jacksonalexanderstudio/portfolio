@@ -278,6 +278,22 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
       sim:{ kind:'auto' } },
     { id:'strobe', num:'L-04', title:'Strobe', tagline:'Hard-cut pops at three a second, every pop a new color — with cold-white accent hits and clashing complements in unison. Mind photosensitive guests.', mood:['party','hard','fast'], section:'shows', type:'show', loop:true, duration:null,
       sim:{ kind:'strobe' } },
+    { id:'rose', num:'A-01', title:'Rose', tagline:'Dusty rose right, soft coral left — a still warm blush across the room.', mood:['ambient','still','pink'], section:'ambient', type:'scene',
+      sim:{ kind:'static', rgb:[[255,120,150],[255,150,130]], bri:0.6 } },
+    { id:'ember', num:'A-02', title:'Ember', tagline:'Burnt orange and deep amber — the fireplace pair, standing still.', mood:['ambient','still','warm'], section:'ambient', type:'scene',
+      sim:{ kind:'static', rgb:[[255,90,25],[255,130,40]], bri:0.55 } },
+    { id:'honey', num:'A-03', title:'Honey', tagline:'Honey gold and pale straw — the room at magic hour, on demand.', mood:['ambient','still','warm','gold'], section:'ambient', type:'scene',
+      sim:{ kind:'static', rgb:[[255,185,60],[255,210,110]], bri:0.65 } },
+    { id:'sage', num:'A-04', title:'Sage', tagline:'Soft sage and pale celadon — desert-plant green, not neon.', mood:['ambient','still','green'], section:'ambient', type:'scene',
+      sim:{ kind:'static', rgb:[[150,215,140],[190,225,155]], bri:0.5 } },
+    { id:'lagoon', num:'A-05', title:'Lagoon', tagline:'Saturated teal and lighter aqua — pool light without the ripple.', mood:['ambient','still','teal'], section:'ambient', type:'scene',
+      sim:{ kind:'static', rgb:[[20,195,200],[90,220,190]], bri:0.6 } },
+    { id:'twilight', num:'A-06', title:'Twilight', tagline:'Azure and periwinkle — the blue hour, cool without being cold.', mood:['ambient','still','blue'], section:'ambient', type:'scene',
+      sim:{ kind:'static', rgb:[[70,130,255],[130,155,255]], bri:0.6 } },
+    { id:'iris', num:'A-07', title:'Iris', tagline:'Deep violet and lifted lavender — the Purple Reign end of the spectrum, standing still.', mood:['ambient','still','violet'], section:'ambient', type:'scene',
+      sim:{ kind:'static', rgb:[[140,90,255],[180,140,255]], bri:0.6 } },
+    { id:'orchid', num:'A-08', title:'Orchid', tagline:'Full magenta and warm pink — the loudest of the still colors.', mood:['ambient','still','pink','magenta'], section:'ambient', type:'scene',
+      sim:{ kind:'static', rgb:[[230,60,220],[255,110,190]], bri:0.6 } },
     { id:'daylight', num:'W-01', title:'Daylight', tagline:'Full bright, cool (~5500K) — the alert light. Sharpest for screens, code, and anything that needs you awake.', mood:['work','bright','cool'], section:'work', type:'scene',
       sim:{ kind:'static', rgb:[[225,235,255],[225,235,255]], bri:1.0 } },
     { id:'north-light', num:'W-02', title:'North Light', tagline:'Even neutral (~4000K) — the drawing light. Bright enough for true color, soft enough to not glare off the page.', mood:['work','draw','neutral'], section:'work', type:'scene',
@@ -294,6 +310,7 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
 
   var SECTIONS = [
     { key: 'shows',   label: 'Shows' },
+    { key: 'ambient', label: 'Ambient Color' },
     { key: 'work',    label: 'Work Light' },
     { key: 'utility', label: 'Utility' }
   ];
