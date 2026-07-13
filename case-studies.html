@@ -22,7 +22,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,300&family=Fragment+Mono&family=DM+Sans:wght@200;300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,300&family=Fragment+Mono&family=DM+Sans:wght@200;300;400;500;600&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;cursor:none!important}
 :root{--bg:#FFFFFF;--alt:#FFFFFF;--tx:#1A1919;--sec:#000;--br:#EBEBEB;--fn:'Fragment Mono','Courier New',monospace;--sf:'DM Sans',sans-serif;--accent:#D95740}
@@ -69,7 +69,7 @@ body.img-hover #cur{filter:invert(1)}
 .cs-main{flex:1;min-width:0;border-left:1px solid var(--br)}
 
 /* ── CASE STUDY INDEX (sidebar) ── */
-.cs-index-label{font-size:16px;font-family:'Cormorant Garamond',serif;font-weight:300;font-style:italic;letter-spacing:.06em;color:var(--tx);text-transform:none;margin-bottom:0;cursor:pointer;display:flex;align-items:center;justify-content:space-between;padding-bottom:10px;border-bottom:1px solid var(--br);transition:color .15s}
+.cs-index-label{font-size:12px;font-family:var(--sf);font-weight:600;font-style:normal;letter-spacing:.06em;color:var(--tx);text-transform:none;margin-bottom:0;cursor:pointer;display:flex;align-items:center;justify-content:space-between;padding-bottom:10px;border-bottom:1px solid var(--br);transition:color .15s}
 .cs-index-label:hover{color:var(--accent)}
 .cs-index-label .cs-toggle{font-family:var(--sf);font-size:16px;font-weight:300;font-style:normal;color:var(--accent)}
 .cs-nav-list{overflow:hidden;transition:max-height .4s ease,opacity .3s ease,margin .3s ease;max-height:600px;opacity:1;margin-top:20px}
@@ -77,10 +77,10 @@ body.img-hover #cur{filter:invert(1)}
 .cs-index-row{display:flex;align-items:center;gap:10px;padding:10px 0;transition:opacity .3s,color .3s;opacity:1;text-decoration:none;color:var(--tx);border-bottom:1px solid transparent}
 .cs-index-row:hover{opacity:.7}
 .cs-index-row.active{opacity:1;border-bottom:1px solid var(--accent)}
-.cs-index-row.active .cs-index-title{color:var(--tx);font-weight:700}
+.cs-index-row.active .cs-index-title{color:var(--tx)}
 .cs-index-row.active .cs-index-num{color:var(--accent)}
 .cs-index-num{font-size:9px;color:var(--accent);letter-spacing:.06em;font-family:var(--sf);flex-shrink:0;width:22px;display:flex;align-items:center;justify-content:center;transition:color .35s ease}
-.cs-index-title{font-size:10px;font-weight:300;letter-spacing:.14em;text-transform:uppercase;font-family:var(--sf)}
+.cs-index-title{font-size:10px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;font-family:var(--sf)}
 
 /* ── CASE STUDY CARDS ── */
 .cs-card{padding:100px 0}

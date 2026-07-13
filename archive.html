@@ -23,7 +23,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,300&family=Fragment+Mono&family=DM+Sans:wght@200;300;400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,300&family=Fragment+Mono&family=DM+Sans:wght@200;300;400;500;600&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{--bg:#FFFFFF;--alt:#FFFFFF;--tx:#1A1919;--sec:#000;--br:#EBEBEB;--fn:'Fragment Mono','Courier New',monospace;--sf:'DM Sans',sans-serif;--accent:#D95740}
@@ -65,7 +65,7 @@ a{color:inherit;text-decoration:none}
 #arc-sidebar::-webkit-scrollbar{width:4px}
 #arc-sidebar::-webkit-scrollbar-track{background:transparent}
 #arc-sidebar::-webkit-scrollbar-thumb{background:var(--br);border-radius:2px}
-.arc-label{font-size:16px;font-family:'Cormorant Garamond',serif;font-weight:300;font-style:italic;letter-spacing:.06em;color:var(--tx);text-transform:none;padding-bottom:10px;border-bottom:1px solid var(--br);margin-bottom:0;display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:color .15s}
+.arc-label{font-size:12px;font-family:var(--sf);font-weight:600;font-style:normal;letter-spacing:.06em;color:var(--tx);text-transform:none;padding-bottom:10px;border-bottom:1px solid var(--br);margin-bottom:0;display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:color .15s}
 .arc-label:hover{color:var(--accent)}
 .arc-label-toggle{font-family:var(--sf);font-size:16px;font-weight:300;font-style:normal;color:var(--accent)}
 .arc-nav-list{overflow:hidden;transition:max-height .4s ease,opacity .3s ease,margin .3s ease;max-height:600px;opacity:1;margin-top:20px}
@@ -73,15 +73,15 @@ a{color:inherit;text-decoration:none}
 .arc-nav-item{display:flex;align-items:center;gap:10px;padding:10px 0;transition:opacity .3s,color .3s;opacity:1;text-decoration:none;color:var(--tx);border-bottom:1px solid transparent;cursor:pointer}
 .arc-nav-item:hover{opacity:.7}
 .arc-nav-item.active{opacity:1;border-bottom:1px solid var(--accent)}
-.arc-nav-item.active .arc-nav-label{color:var(--tx);font-weight:700}
+.arc-nav-item.active .arc-nav-label{color:var(--tx)}
 .arc-nav-item.active .arc-nav-num{color:var(--accent)}
 .arc-nav-num{font-size:9px;color:var(--accent);letter-spacing:.06em;font-family:var(--sf);flex-shrink:0;width:22px;display:flex;align-items:center;justify-content:center;transition:color .35s ease}
-.arc-nav-label{font-size:10px;font-weight:300;letter-spacing:.14em;text-transform:uppercase;font-family:var(--sf)}
+.arc-nav-label{font-size:10px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;font-family:var(--sf)}
 .arc-nav-count{font:300 9px/1 var(--sf);color:rgba(0,0,0,.35);margin-left:auto;letter-spacing:.02em}
 .arc-nav-toggle{font-family:var(--sf);font-size:16px;font-weight:300;font-style:normal;color:var(--accent);margin-left:auto;cursor:pointer;line-height:1}
 .arc-sub{display:flex;flex-direction:column;padding-left:32px;margin-top:8px;margin-bottom:16px}
 .arc-sub.sub-collapsed{display:none}
-.arc-sub-link{display:flex;align-items:center;gap:8px;font:300 10px/1 var(--sf);letter-spacing:.14em;text-transform:uppercase;color:#000;padding:7px 0;text-decoration:none;transition:color .2s;cursor:pointer}
+.arc-sub-link{display:flex;align-items:center;gap:8px;font:500 10px/1 var(--sf);letter-spacing:.14em;text-transform:uppercase;color:#000;padding:7px 0;text-decoration:none;transition:color .2s;cursor:pointer}
 .arc-sub-link:hover,.arc-sub-link.sub-active{color:var(--accent)}
 .arc-sub-count{font:300 10px/1 var(--sf);color:rgba(0,0,0,.25);min-width:18px;letter-spacing:.02em}
 
