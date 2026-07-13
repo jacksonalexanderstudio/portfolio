@@ -35,29 +35,33 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
 #hdr.sc .hl img{height:61px}
 
 /* ── LUMEN.JA MARK ──
-   The page's own wordmark: the site's pixel face (an LED letterform for an
-   LED instrument), with the "u" — two vertical stems, the two Play lamps —
-   lit and drifting through the groove-mode color anchors. Everything else
-   stays unlit white, so the mark reads as a dark room with one glowing
-   fixture. */
-.lumen-mark{display:flex;flex-direction:column;gap:7px}
-.lm-word{font-family:'Pixelify Sans','DM Sans',sans-serif;font-weight:700;font-size:38px;line-height:.9;color:#fff;transition:font-size .4s}
-#hdr.sc .lm-word{font-size:27px}
-.lm-u{animation:lm-glow 36s linear infinite}
-.lm-ja{color:var(--accent);font-size:.55em;vertical-align:baseline;margin-left:.06em}
+   Instrument badge: a two-bar glyph — the pair of Play lamps, one unlit
+   outline and one alive, drifting through the groove-mode anchors — beside
+   a wide-tracked lowercase mono wordmark. Reads as a maker's plate on the
+   instrument, not a sign. */
+.lumen-mark{display:flex;flex-direction:column;gap:9px}
+.lm-row{display:flex;align-items:center;gap:16px}
+.lm-glyph{display:flex;align-items:flex-end;gap:7px;height:34px;transition:height .4s}
+#hdr.sc .lm-glyph{height:24px}
+.lm-bar{display:block;width:4px;height:100%;border-radius:2px}
+.lm-bar-off{border:1px solid rgba(255,255,255,.35);background:none}
+.lm-bar-on{animation:lm-bar-glow 36s linear infinite}
+.lm-word{font:400 19px/1 var(--fn);letter-spacing:.24em;text-transform:lowercase;color:#fff;transition:font-size .4s}
+#hdr.sc .lm-word{font-size:15px}
+.lm-ja{color:var(--accent)}
 .lm-sub{font:400 8px/1 var(--sf);letter-spacing:.3em;text-transform:uppercase;color:rgba(255,255,255,.38);transition:opacity .4s}
 #hdr.sc .lm-sub{opacity:0;height:0;overflow:hidden}
-@keyframes lm-glow{
-  0%   {color:#ffab55;text-shadow:0 0 16px rgba(255,171,85,.6),0 0 44px rgba(255,171,85,.25)}
-  16%  {color:#ffd968;text-shadow:0 0 16px rgba(255,217,104,.6),0 0 44px rgba(255,217,104,.25)}
-  33%  {color:#7fe08d;text-shadow:0 0 16px rgba(127,224,141,.55),0 0 44px rgba(127,224,141,.22)}
-  50%  {color:#6fa8ff;text-shadow:0 0 16px rgba(111,168,255,.6),0 0 44px rgba(111,168,255,.25)}
-  66%  {color:#9d7bff;text-shadow:0 0 16px rgba(157,123,255,.6),0 0 44px rgba(157,123,255,.25)}
-  83%  {color:#ff7bd4;text-shadow:0 0 16px rgba(255,123,212,.6),0 0 44px rgba(255,123,212,.25)}
-  100% {color:#ffab55;text-shadow:0 0 16px rgba(255,171,85,.6),0 0 44px rgba(255,171,85,.25)}
+@keyframes lm-bar-glow{
+  0%   {background:#ffab55;box-shadow:0 0 12px rgba(255,171,85,.7),0 0 32px rgba(255,171,85,.3)}
+  16%  {background:#ffd968;box-shadow:0 0 12px rgba(255,217,104,.7),0 0 32px rgba(255,217,104,.3)}
+  33%  {background:#7fe08d;box-shadow:0 0 12px rgba(127,224,141,.65),0 0 32px rgba(127,224,141,.28)}
+  50%  {background:#6fa8ff;box-shadow:0 0 12px rgba(111,168,255,.7),0 0 32px rgba(111,168,255,.3)}
+  66%  {background:#9d7bff;box-shadow:0 0 12px rgba(157,123,255,.7),0 0 32px rgba(157,123,255,.3)}
+  83%  {background:#ff7bd4;box-shadow:0 0 12px rgba(255,123,212,.7),0 0 32px rgba(255,123,212,.3)}
+  100% {background:#ffab55;box-shadow:0 0 12px rgba(255,171,85,.7),0 0 32px rgba(255,171,85,.3)}
 }
 @media(prefers-reduced-motion:reduce){
-  .lm-u{animation:none;color:#9d7bff;text-shadow:0 0 16px rgba(157,123,255,.5)}
+  .lm-bar-on{animation:none;background:#9d7bff;box-shadow:0 0 12px rgba(157,123,255,.55)}
 }
 .hn{display:flex;align-items:center;gap:36px}
 .hn a,.nb{font:500 11px/1 var(--sf);letter-spacing:.13em;text-transform:uppercase;color:#fff;background:none;border:none;padding:0;position:relative}
@@ -171,7 +175,9 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
   #hdr{height:88px}
   .hl img{height:52px}
   #hdr.sc .hl img{height:42px}
-  .lm-word,#hdr.sc .lm-word{font-size:22px}
+  .lm-word,#hdr.sc .lm-word{font-size:13px;letter-spacing:.2em}
+  .lm-glyph,#hdr.sc .lm-glyph{height:20px}
+  .lm-row{gap:10px}
   .lm-sub{display:none}
   .hn{gap:18px}
   .hn a,.nb{font-size:9px}
@@ -193,7 +199,10 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
 <header id="hdr">
   <div class="hi">
     <a href="playground.html" class="hl lumen-mark" aria-label="lumen.ja — back to the playground">
-      <span class="lm-word">l<span class="lm-u">u</span>men<span class="lm-ja">.ja</span></span>
+      <span class="lm-row">
+        <span class="lm-glyph" aria-hidden="true"><i class="lm-bar lm-bar-off"></i><i class="lm-bar lm-bar-on"></i></span>
+        <span class="lm-word">lumen<span class="lm-ja">.ja</span></span>
+      </span>
       <span class="lm-sub">Jackson Alexander Studio &mdash; light console</span>
     </a>
     <nav class="hn">
