@@ -87,6 +87,21 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
 .link-line.live{color:var(--dim)}
 @keyframes dotpulse{0%,100%{opacity:1}50%{opacity:.35}}
 
+/* ── COLOR WHEEL ── */
+.wheel-section{padding:44px 52px 40px;border-bottom:1px solid var(--br)}
+.wheel-row{display:flex;gap:48px;align-items:center;flex-wrap:wrap}
+.wheel-canvas-wrap{width:min(280px,76vw);aspect-ratio:1;flex-shrink:0}
+#wheel{width:100%;height:100%;display:block;cursor:crosshair;border-radius:50%;touch-action:none}
+.wheel-side{flex:1;min-width:250px;max-width:430px;display:flex;flex-direction:column;gap:18px}
+.wheel-preview-wrap{aspect-ratio:16/10;background:#000;overflow:hidden}
+#wheelPreview{width:100%;height:100%;display:block}
+.wheel-bri{display:flex;align-items:center;gap:16px}
+.wheel-bri-label{font:400 9px/1 var(--sf);letter-spacing:.18em;text-transform:uppercase;color:var(--dim);flex-shrink:0}
+#wheelBri{-webkit-appearance:none;appearance:none;flex:1;height:1px;background:rgba(255,255,255,.25);outline:none}
+#wheelBri::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:14px;height:14px;border-radius:50%;background:#fff;cursor:pointer;border:none}
+#wheelBri::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:#fff;cursor:pointer;border:none}
+.wheel-hint{font:300 10px/1.7 var(--fn);letter-spacing:.06em;color:var(--faint)}
+
 /* ── CONTROLS ROW ── */
 .console-bar{display:flex;align-items:baseline;gap:40px;flex-wrap:wrap;padding:40px 52px 8px}
 .search-wrap{position:relative;flex:0 1 300px;min-width:210px}
@@ -209,6 +224,24 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
     <div class="link-line" id="linkline">
       <span class="link-dot"></span>
       <span id="linktext">Studio link &mdash; checking&hellip;</span>
+    </div>
+  </div>
+</div>
+
+<!-- COLOR WHEEL -->
+<div class="wheel-section">
+  <h2 class="console-section-title" style="margin-top:0">Dial</h2>
+  <div class="wheel-row">
+    <div class="wheel-canvas-wrap">
+      <canvas id="wheel"></canvas>
+    </div>
+    <div class="wheel-side">
+      <div class="wheel-preview-wrap"><canvas id="wheelPreview"></canvas></div>
+      <label class="wheel-bri">
+        <span class="wheel-bri-label">Brightness</span>
+        <input type="range" id="wheelBri" min="5" max="254" value="170">
+      </label>
+      <p class="wheel-hint" id="wheelHint">Drag R and L to paint each lamp.</p>
     </div>
   </div>
 </div>
@@ -656,6 +689,10 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
         drawRoom(a.ctx, a.canvas.width, a.canvas.height, a.sim(reduceMotion ? 6 : t));
       } catch (e) { /* skip this card this frame */ }
     });
+    if (typeof drawWheel === 'function' && wheelBase) {
+      drawWheel();
+      drawRoom(wheelPrevCtx, wheelPrev.width, wheelPrev.height, wheelLampStates());
+    }
     if (!reduceMotion) requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
@@ -702,6 +739,154 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
     render(list);
   }
 
+  // ── COLOR WHEEL ──
+  // HSV disc: hue by angle, saturation by radius. Two handles — R and L,
+  // one per lamp. Dragging previews always; when the studio link is live it
+  // also casts, throttled to spare the bridge.
+  var wheelCanvas = document.getElementById('wheel');
+  var wheelCtx = wheelCanvas.getContext('2d');
+  var wheelPrev = document.getElementById('wheelPreview');
+  var wheelPrevCtx = wheelPrev.getContext('2d');
+  var wheelBri = document.getElementById('wheelBri');
+  var wheelBase = null;   // cached disc pixels
+  var wheelSize = 0;
+  var handles = {
+    R: { hue: 49500, sat: 240 },
+    L: { hue: 51500, sat: 210 }
+  };
+  var dragging = null;
+
+  function sizeWheel() {
+    var r = wheelCanvas.parentNode.getBoundingClientRect();
+    if (r.width < 4) return;
+    var s = Math.round(r.width * (window.devicePixelRatio || 1));
+    if (s === wheelSize) return;
+    wheelSize = s;
+    wheelCanvas.width = wheelCanvas.height = s;
+    var img = wheelCtx.createImageData(s, s);
+    var c = s / 2, rad = s / 2;
+    for (var y = 0; y < s; y++) {
+      for (var x = 0; x < s; x++) {
+        var dx = x - c, dy = y - c;
+        var dist = Math.sqrt(dx * dx + dy * dy);
+        var idx = (y * s + x) * 4;
+        if (dist > rad) { img.data[idx + 3] = 0; continue; }
+        var ang = Math.atan2(dy, dx);           // -π..π
+        var hue = ((ang / (2 * Math.PI)) + 0.5) * 65535;
+        var sat = Math.min(1, dist / rad) * 254;
+        var rgb = hueToRgb(hue, sat, 254);
+        img.data[idx] = rgb[0]; img.data[idx + 1] = rgb[1]; img.data[idx + 2] = rgb[2];
+        // soft edge antialias
+        img.data[idx + 3] = dist > rad - 2 ? Math.max(0, 255 * (rad - dist) / 2) : 255;
+      }
+    }
+    wheelCtx.putImageData(img, 0, 0);
+    wheelBase = wheelCtx.getImageData(0, 0, s, s);
+    var pr = wheelPrev.parentNode.getBoundingClientRect();
+    wheelPrev.width = pr.width * (window.devicePixelRatio || 1) / 2;
+    wheelPrev.height = pr.height * (window.devicePixelRatio || 1) / 2;
+  }
+
+  function handlePos(h) {
+    var c = wheelSize / 2;
+    var ang = (h.hue / 65535 - 0.5) * 2 * Math.PI;
+    var dist = (h.sat / 254) * c;
+    return [c + Math.cos(ang) * dist, c + Math.sin(ang) * dist];
+  }
+
+  function drawWheel() {
+    if (!wheelBase) return;
+    wheelCtx.putImageData(wheelBase, 0, 0);
+    ['R', 'L'].forEach(function(k) {
+      var p = handlePos(handles[k]);
+      var rgb = hueToRgb(handles[k].hue, handles[k].sat, 254);
+      var rr = wheelSize * 0.045;
+      wheelCtx.beginPath();
+      wheelCtx.arc(p[0], p[1], rr, 0, 2 * Math.PI);
+      wheelCtx.fillStyle = 'rgb(' + (rgb[0] | 0) + ',' + (rgb[1] | 0) + ',' + (rgb[2] | 0) + ')';
+      wheelCtx.fill();
+      wheelCtx.lineWidth = Math.max(2, wheelSize * 0.008);
+      wheelCtx.strokeStyle = dragging === k ? '#fff' : 'rgba(255,255,255,.75)';
+      wheelCtx.stroke();
+      wheelCtx.fillStyle = 'rgba(12,12,12,.85)';
+      wheelCtx.font = '700 ' + Math.round(rr) + 'px "DM Sans",sans-serif';
+      wheelCtx.textAlign = 'center';
+      wheelCtx.textBaseline = 'middle';
+      wheelCtx.fillText(k, p[0], p[1] + rr * 0.06);
+    });
+  }
+
+  function wheelLampStates() {
+    var bri = parseInt(wheelBri.value, 10);
+    return [
+      { rgb: hueToRgb(handles.R.hue, handles.R.sat, 254), bri: bri / 254 },
+      { rgb: hueToRgb(handles.L.hue, handles.L.sat, 254), bri: bri / 254 }
+    ];
+  }
+
+  var lastCast = 0, castQueued = false;
+  function castWheel(force) {
+    if (!live) return;
+    var now = Date.now();
+    if (!force && now - lastCast < 250) {
+      if (!castQueued) {
+        castQueued = true;
+        setTimeout(function() { castQueued = false; castWheel(true); }, 260 - (now - lastCast));
+      }
+      return;
+    }
+    lastCast = now;
+    var bri = parseInt(wheelBri.value, 10);
+    fetch(DAEMON + '/set', {
+      method: 'POST',
+      body: JSON.stringify({ lights: {
+        '11': { on: true, bri: bri, hue: Math.round(handles.R.hue), sat: Math.round(handles.R.sat), transitiontime: 2 },
+        '12': { on: true, bri: bri, hue: Math.round(handles.L.hue), sat: Math.round(handles.L.sat), transitiontime: 2 }
+      } })
+    }).then(function() { running = null; markPlaying(); }).catch(function() {});
+  }
+
+  function wheelPoint(e) {
+    var r = wheelCanvas.getBoundingClientRect();
+    var scale = wheelSize / r.width;
+    return [(e.clientX - r.left) * scale, (e.clientY - r.top) * scale];
+  }
+
+  wheelCanvas.addEventListener('pointerdown', function(e) {
+    sizeWheel();
+    var p = wheelPoint(e);
+    var best = null, bestD = 1e9;
+    ['R', 'L'].forEach(function(k) {
+      var hp = handlePos(handles[k]);
+      var d = Math.hypot(p[0] - hp[0], p[1] - hp[1]);
+      if (d < bestD) { bestD = d; best = k; }
+    });
+    dragging = best;
+    wheelCanvas.setPointerCapture(e.pointerId);
+    moveHandle(p);
+  });
+  wheelCanvas.addEventListener('pointermove', function(e) {
+    if (!dragging) return;
+    moveHandle(wheelPoint(e));
+  });
+  wheelCanvas.addEventListener('pointerup', function() {
+    if (dragging) castWheel(true);
+    dragging = null;
+  });
+
+  function moveHandle(p) {
+    var c = wheelSize / 2;
+    var dx = p[0] - c, dy = p[1] - c;
+    var ang = Math.atan2(dy, dx);
+    handles[dragging].hue = ((ang / (2 * Math.PI)) + 0.5) * 65535;
+    handles[dragging].sat = Math.min(1, Math.hypot(dx, dy) / c) * 254;
+    castWheel(false);
+  }
+
+  wheelBri.addEventListener('input', function() { castWheel(false); });
+  window.addEventListener('resize', sizeWheel);
+  sizeWheel();
+
   // ── DAEMON LINK ──
   var linkline = document.getElementById('linkline');
   var linktext = document.getElementById('linktext');
@@ -728,6 +913,10 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
     linktext.textContent = on
       ? 'Studio link live — tiles cast to the room'
       : 'Studio link offline — simulations only';
+    var hint = document.getElementById('wheelHint');
+    if (hint) hint.textContent = on
+      ? 'Drag R and L to paint each lamp — the room follows live.'
+      : 'Drag R and L to paint each lamp in the preview.';
   }
 
   function syncStatus() {
