@@ -282,7 +282,10 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
         <span class="wheel-bri-label">Brightness</span>
         <input type="range" id="wheelBri" min="5" max="254" value="170">
       </label>
-      <p class="wheel-hint" id="wheelHint">Drag R and L to paint each lamp.</p>
+      <div style="display:flex;align-items:center;gap:14px">
+        <button class="desk-btn" id="wheelTake" style="display:none">Take the room</button>
+        <p class="wheel-hint" id="wheelHint" style="margin:0">Drag R and L to paint each lamp.</p>
+      </div>
     </div>
   </div>
 </div>
@@ -884,8 +887,25 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
   }
 
   var lastCast = 0, castQueued = false;
+  var wheelEngaged = false;
+  function wheelBlocked() {
+    // a running show keeps the room unless the user explicitly takes it
+    return running && running !== 'wheel' && !wheelEngaged;
+  }
+  function updateTakeBtn() {
+    var b = document.getElementById('wheelTake');
+    b.style.display = (live && running && running !== 'wheel') ? '' : 'none';
+  }
   function castWheel(force) {
     if (!live) return;
+    if (wheelBlocked()) {
+      var b = document.getElementById('wheelTake');
+      b.classList.add('armed');
+      setTimeout(function() { b.classList.remove('armed'); }, 900);
+      document.getElementById('wheelHint').textContent =
+        'A preset has the room — the wheel previews only. Tap "Take the room" to override.';
+      return;
+    }
     var now = Date.now();
     if (!force && now - lastCast < 250) {
       if (!castQueued) {
@@ -943,6 +963,11 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
   }
 
   wheelBri.addEventListener('input', function() { castWheel(false); });
+  document.getElementById('wheelTake').addEventListener('click', function() {
+    wheelEngaged = true;
+    castWheel(true);
+    updateTakeBtn();
+  });
   window.addEventListener('resize', sizeWheel);
   sizeWheel();
 
@@ -1250,6 +1275,7 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
     } else {
       nowbar.classList.remove('show');
     }
+    if (typeof updateTakeBtn === 'function') updateTakeBtn();
   }
 
   function setLive(on) {
@@ -1291,6 +1317,7 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
 
   function cast(p) {
     if (!live) return;
+    wheelEngaged = false;          // starting a preset hands the room back
     fetch(DAEMON + '/start/' + encodeURIComponent(p.id), { method: 'POST' })
       .then(function(r) { return r.json(); })
       .then(function(data) {
