@@ -134,6 +134,20 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
 .mini-wheel{position:relative;width:54px;height:54px;border-radius:50%;cursor:crosshair;touch-action:none}
 .mini-wheel canvas{width:100%;height:100%;display:block;border-radius:50%}
 .mini-wheel .mw-dot{position:absolute;width:9px;height:9px;border-radius:50%;border:1.5px solid #fff;box-shadow:0 0 4px rgba(0,0,0,.8);transform:translate(-50%,-50%);pointer-events:none}
+
+/* ── PAD RACK ── */
+.pad-rack{display:grid;grid-template-columns:repeat(8,minmax(74px,1fr));gap:12px;margin-top:28px}
+.pad{position:relative;border:1px solid var(--br);aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;cursor:pointer;user-select:none;transition:background .12s,border-color .12s,transform .08s}
+.pad:active,.pad.hit{background:var(--accent);border-color:var(--accent);transform:scale(.97)}
+.pad.latched{border-color:var(--accent)}
+.pad.latched::after{content:'';position:absolute;top:8px;right:8px;width:5px;height:5px;border-radius:50%;background:var(--accent)}
+.pad-num{font-family:'Pixelify Sans','DM Sans',sans-serif;font-weight:700;font-size:15px;color:var(--dim)}
+.pad.hit .pad-num,.pad:active .pad-num{color:#0c0c0c}
+.pad-label{font:500 8px/1 var(--sf);letter-spacing:.18em;text-transform:uppercase;color:#fff}
+.pad-kind{font:400 6.5px/1 var(--sf);letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
+.pad-set{position:absolute;bottom:7px;font:400 7px/1 var(--sf);letter-spacing:.14em;text-transform:uppercase;color:var(--faint);padding:2px 4px}
+.pad-set:hover{color:var(--accent)}
+@media(max-width:900px){.pad-rack{grid-template-columns:repeat(4,1fr)}}
 .strip-pp{display:flex;align-items:center;gap:6px;font:400 8px/1 var(--sf);letter-spacing:.14em;text-transform:uppercase;color:var(--dim);cursor:pointer}
 .strip-pp input{accent-color:var(--accent)}
 body.midi-learning .midi-bound{outline:1px solid var(--accent);outline-offset:3px}
@@ -306,6 +320,7 @@ body.midi-learning .midi-bound{outline:1px solid var(--accent);outline-offset:3p
   </div>
   <div class="desk-offline" id="deskOffline">Studio link offline &mdash; the desk wakes with it. Faders and knobs here drive the physical engine in real time.</div>
   <div class="desk-strips" id="deskStrips" style="display:none"></div>
+  <div class="pad-rack" id="padRack" style="display:none"></div>
   <p class="desk-hint" id="deskHint" style="display:none">Faders set channel gain &middot; drag knobs vertically &middot; changes hit the lamps live while L-05 runs &middot; MIDI: arm learn, click a control, move a knob on your hardware &mdash; bindings persist in this browser.</p>
 </div>
 
@@ -1277,6 +1292,7 @@ body.midi-learning .midi-bound{outline:1px solid var(--accent);outline-offset:3p
 
   function deskSetLive(on) {
     document.getElementById('deskStrips').style.display = on ? '' : 'none';
+    document.getElementById('padRack').style.display = on ? '' : 'none';
     document.getElementById('deskHint').style.display = on ? '' : 'none';
     document.getElementById('deskOffline').style.display = on ? 'none' : '';
     if (on && !deskReady) {
@@ -1298,6 +1314,120 @@ body.midi-learning .midi-bound{outline:1px solid var(--accent);outline-offset:3p
     Object.keys(deskControls).forEach(function(k) {
       deskControls[k].el.classList.toggle('midi-learn-target', k === id);
     });
+    if (id !== null) padTarget(null);
+  }
+
+  // ── PAD RACK ──
+  var PADS = [
+    { id: 'deep',   n: '1', label: 'Deep',   kind: 'vibe', preset: 'DEEP' },
+    { id: 'groove', n: '2', label: 'Groove', kind: 'vibe', preset: 'GROOVE' },
+    { id: 'wash',   n: '3', label: 'Wash',   kind: 'vibe', preset: 'WASH' },
+    { id: 'peak',   n: '4', label: 'Peak',   kind: 'vibe', preset: 'PEAK' },
+    { id: 'blind',  n: '5', label: 'Blind',  kind: 'hold' },
+    { id: 'flash',  n: '6', label: 'Flash',  kind: 'shot' },
+    { id: 'sweep',  n: '7', label: 'Sweep',  kind: 'shot' },
+    { id: 'ember',  n: '8', label: 'Ember',  kind: 'toggle' }
+  ];
+  var padEls = {};
+  var padMap = {};
+  var padLearnId = null;
+  try { padMap = JSON.parse(localStorage.getItem('lumen-midi-pads') || '{}'); } catch (e) {}
+
+  function padTarget(id) {
+    padLearnId = id;
+    Object.keys(padEls).forEach(function(k) {
+      padEls[k].classList.toggle('midi-learn-target', k === id);
+    });
+    if (id !== null) {
+      midiLearnCtl = null;
+      Object.keys(deskControls).forEach(function(k) {
+        deskControls[k].el.classList.remove('midi-learn-target');
+      });
+    }
+  }
+
+  function padMarkBound() {
+    Object.keys(padEls).forEach(function(k) {
+      padEls[k].classList.toggle('midi-bound',
+        Object.keys(padMap).some(function(mk) { return padMap[mk] === k; }));
+    });
+  }
+
+  function padHit(el) {
+    el.classList.add('hit');
+    setTimeout(function() { el.classList.remove('hit'); }, 140);
+  }
+
+  function padTrigger(pad, down) {
+    if (!live) return;
+    var el = padEls[pad.id];
+    if (pad.kind === 'vibe') {
+      if (!down) return;
+      padHit(el);
+      fetch(DAEMON + '/live/preset/load', { method: 'POST',
+        body: JSON.stringify({ name: pad.preset }) })
+        .then(function(r) { return r.json(); })
+        .then(function(d) {
+          if (d.params) deskApply(d.params, true);
+          PADS.forEach(function(p) {
+            if (p.kind === 'vibe') padEls[p.id].classList.toggle('latched', p.id === pad.id);
+          });
+        }).catch(function() {});
+    } else if (pad.kind === 'hold') {
+      el.classList.toggle('hit', down);
+      fetch(DAEMON + '/live/fx', { method: 'POST',
+        body: JSON.stringify({ type: down ? 'blind_on' : 'blind_off' }) }).catch(function() {});
+    } else if (pad.kind === 'shot') {
+      if (!down) return;
+      padHit(el);
+      fetch(DAEMON + '/live/fx', { method: 'POST',
+        body: JSON.stringify({ type: pad.id }) }).catch(function() {});
+    } else if (pad.kind === 'toggle') {
+      if (!down) return;
+      el.classList.toggle('latched');
+      fetch(DAEMON + '/live/fx', { method: 'POST',
+        body: JSON.stringify({ type: 'ember_toggle' }) }).catch(function() {});
+    }
+  }
+
+  function buildPads() {
+    var rack = document.getElementById('padRack');
+    PADS.forEach(function(pad) {
+      var el = document.createElement('div');
+      el.className = 'pad';
+      el.innerHTML = '<span class="pad-num">' + pad.n + '</span>' +
+                     '<span class="pad-label">' + pad.label + '</span>' +
+                     '<span class="pad-kind">' +
+                     ({ vibe: 'vibe', hold: 'hold', shot: 'one-shot', toggle: 'toggle' })[pad.kind] +
+                     '</span>';
+      if (pad.kind === 'vibe') {
+        var setBtn = document.createElement('button');
+        setBtn.className = 'pad-set';
+        setBtn.textContent = 'set';
+        setBtn.title = 'Save the current desk as ' + pad.preset;
+        setBtn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          fetch(DAEMON + '/live/presets', { method: 'POST',
+            body: JSON.stringify({ name: pad.preset, params: deskParams() }) })
+            .then(function() { padHit(el); }).catch(function() {});
+        });
+        el.appendChild(setBtn);
+      }
+      el.addEventListener('pointerdown', function(e) {
+        if (midiLearnArmed) { e.stopPropagation(); padTarget(pad.id); return; }
+        padTrigger(pad, true);
+      });
+      el.addEventListener('pointerup', function() {
+        if (midiLearnArmed) return;
+        if (pad.kind === 'hold') padTrigger(pad, false);
+      });
+      el.addEventListener('pointercancel', function() {
+        if (pad.kind === 'hold') padTrigger(pad, false);
+      });
+      rack.appendChild(el);
+      padEls[pad.id] = el;
+    });
+    padMarkBound();
   }
 
   function markBound() {
@@ -1320,7 +1450,25 @@ body.midi-learning .midi-bound{outline:1px solid var(--accent);outline-offset:3p
         access.inputs.forEach(function(input) {
           input.onmidimessage = function(msg) {
             var d = msg.data;
-            if ((d[0] & 0xF0) !== 0xB0) return;       // CC only
+            var status = d[0] & 0xF0;
+            // NOTES drive the pad rack
+            if (status === 0x90 || status === 0x80) {
+              var nkey = 'n' + (d[0] & 0x0F) + ':' + d[1];
+              var isDown = status === 0x90 && d[2] > 0;
+              if (midiLearnArmed && padLearnId && isDown) {
+                padMap[nkey] = padLearnId;
+                localStorage.setItem('lumen-midi-pads', JSON.stringify(padMap));
+                padTarget(null); padMarkBound();
+                return;
+              }
+              var padId = padMap[nkey];
+              if (padId) {
+                var pad = PADS.filter(function(p) { return p.id === padId; })[0];
+                if (pad) padTrigger(pad, isDown);
+              }
+              return;
+            }
+            if (status !== 0xB0) return;              // CC only
             var key = (d[0] & 0x0F) + ':' + d[1];
             if (midiLearnArmed && midiLearnCtl) {
               midiMap[key] = midiLearnCtl;
@@ -1348,6 +1496,7 @@ body.midi-learning .midi-bound{outline:1px solid var(--accent);outline-offset:3p
   }
 
   initDesk();
+  buildPads();
 
   // ── DAEMON LINK ──
   var linkline = document.getElementById('linkline');
