@@ -131,6 +131,9 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
 .knob-label{font:400 7px/1 var(--sf);letter-spacing:.16em;text-transform:uppercase;color:var(--faint)}
 .knob-val{font:400 8px/1 var(--fn);color:var(--dim)}
 .strip select{background:#161616;border:1px solid var(--br);color:#fff;font:400 9px/1 var(--fn);padding:5px 6px;outline:none;width:100%}
+.mini-wheel{position:relative;width:54px;height:54px;border-radius:50%;cursor:crosshair;touch-action:none}
+.mini-wheel canvas{width:100%;height:100%;display:block;border-radius:50%}
+.mini-wheel .mw-dot{position:absolute;width:9px;height:9px;border-radius:50%;border:1.5px solid #fff;box-shadow:0 0 4px rgba(0,0,0,.8);transform:translate(-50%,-50%);pointer-events:none}
 .strip-pp{display:flex;align-items:center;gap:6px;font:400 8px/1 var(--sf);letter-spacing:.14em;text-transform:uppercase;color:var(--dim);cursor:pointer}
 .strip-pp input{accent-color:var(--accent)}
 .midi-bound{outline:1px solid var(--accent);outline-offset:3px}
@@ -1036,6 +1039,79 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
     return wrap;
   }
 
+  var _miniDisc = null;
+  function miniDisc() {
+    if (_miniDisc) return _miniDisc;
+    var s = 108;
+    var c = document.createElement('canvas');
+    c.width = c.height = s;
+    var x2 = c.getContext('2d');
+    var img = x2.createImageData(s, s);
+    var mid = s / 2;
+    for (var y = 0; y < s; y++) {
+      for (var x = 0; x < s; x++) {
+        var dx = x - mid, dy = y - mid;
+        var dist = Math.sqrt(dx * dx + dy * dy);
+        var idx = (y * s + x) * 4;
+        if (dist > mid) { img.data[idx + 3] = 0; continue; }
+        var hue = ((Math.atan2(dy, dx) / (2 * Math.PI)) + 0.5) * 65535;
+        var rgb = hueToRgb(hue, Math.min(1, dist / mid) * 254, 254);
+        img.data[idx] = rgb[0]; img.data[idx + 1] = rgb[1]; img.data[idx + 2] = rgb[2];
+        img.data[idx + 3] = dist > mid - 2 ? Math.max(0, 255 * (mid - dist) / 2) : 255;
+      }
+    }
+    x2.putImageData(img, 0, 0);
+    _miniDisc = c;
+    return c;
+  }
+
+  function makeMiniWheel(cid, h0, s0) {
+    var wrap = document.createElement('div');
+    wrap.className = 'mini-wheel';
+    var cv = document.createElement('canvas');
+    cv.width = cv.height = 108;
+    wrap.appendChild(cv);
+    cv.getContext('2d').drawImage(miniDisc(), 0, 0);
+    var dot = document.createElement('div');
+    dot.className = 'mw-dot';
+    wrap.appendChild(dot);
+    var hue = h0, sat = s0;
+    function render() {
+      var ang = (hue - 0.5) * 2 * Math.PI;
+      var r = sat * 50;                       // % of half-size
+      dot.style.left = (50 + Math.cos(ang) * r) + '%';
+      dot.style.top = (50 + Math.sin(ang) * r) + '%';
+      var rgb = hueToRgb(hue * 65535, sat * 254, 254);
+      dot.style.background = 'rgb(' + (rgb[0] | 0) + ',' + (rgb[1] | 0) + ',' + (rgb[2] | 0) + ')';
+    }
+    function fromEvent(e) {
+      var rect = wrap.getBoundingClientRect();
+      var dx = e.clientX - rect.left - rect.width / 2;
+      var dy = e.clientY - rect.top - rect.height / 2;
+      hue = ((Math.atan2(dy, dx) / (2 * Math.PI)) + 0.5) % 1;
+      sat = Math.min(1, Math.hypot(dx, dy) / (rect.width / 2));
+      render();
+      deskPush();
+    }
+    var down = false;
+    wrap.addEventListener('pointerdown', function(e) {
+      if (midiLearnArmed) return;
+      down = true; wrap.setPointerCapture(e.pointerId); fromEvent(e);
+    });
+    wrap.addEventListener('pointermove', function(e) { if (down) fromEvent(e); });
+    wrap.addEventListener('pointerup', function() { down = false; });
+    render();
+    registerCtl(cid + '.hue', wrap, 0, 1,
+                function() { return hue; },
+                function(v, s) { hue = ((v % 1) + 1) % 1; render(); if (!s) deskPush(); });
+    // saturation registered separately so MIDI can map it too
+    var satProxy = document.createElement('span');
+    registerCtl(cid + '.sat', satProxy, 0, 1,
+                function() { return sat; },
+                function(v, s) { sat = Math.max(0, Math.min(1, v)); render(); if (!s) deskPush(); });
+    return wrap;
+  }
+
   function makeFader(id, min, max, val) {
     var f = document.createElement('input');
     f.type = 'range'; f.className = 'strip-fader';
@@ -1054,6 +1130,7 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
       var name = document.createElement('div');
       name.className = 'strip-name'; name.textContent = c.label;
       strip.appendChild(name);
+      strip.appendChild(makeMiniWheel(c.id, 0.6, 0.9));
       strip.appendChild(makeFader(c.id + '.gain', 0, 1.2, 0.8));
       var row1 = document.createElement('div'); row1.className = 'knob-row';
       row1.appendChild(makeKnob(c.id + '.sens', 'Sens', 0, 1, 0.5, fmtP));
@@ -1116,7 +1193,9 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
         sens: deskControls[c.id + '.sens'].get(),
         a: deskControls[c.id + '.a'].get(),
         r: deskControls[c.id + '.r'].get(),
-        route: deskControls[c.id + '.route'].get()
+        route: deskControls[c.id + '.route'].get(),
+        hue: deskControls[c.id + '.hue'].get(),
+        sat: deskControls[c.id + '.sat'].get()
       };
       if (c.trigger) {
         ch.d = deskControls[c.id + '.d'].get();
@@ -1138,7 +1217,7 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
     setIf('master.drift', (p.master || {}).drift);
     DESK_CHANNELS.forEach(function(c) {
       var ch = p.channels[c.id] || {};
-      ['gain', 'sens', 'a', 'd', 's', 'r', 'route', 'pingpong'].forEach(function(k) {
+      ['gain', 'sens', 'a', 'd', 's', 'r', 'route', 'pingpong', 'hue', 'sat'].forEach(function(k) {
         setIf(c.id + '.' + k, ch[k]);
       });
     });
