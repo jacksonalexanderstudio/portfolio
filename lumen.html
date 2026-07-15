@@ -106,6 +106,38 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
 #wheelBri::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:#fff;cursor:pointer;border:none}
 .wheel-hint{font:300 10px/1.7 var(--fn);letter-spacing:.06em;color:var(--faint)}
 
+/* ── DESK (Live mixing console) ── */
+.desk-section{padding:44px 52px 48px;border-bottom:1px solid var(--br)}
+.desk-head{display:flex;align-items:baseline;gap:24px;flex-wrap:wrap;margin-bottom:30px}
+.desk-preset-row{display:flex;align-items:center;gap:14px;margin-left:auto;flex-wrap:wrap}
+#deskName{background:none;border:none;border-bottom:1px solid var(--br);color:#fff;font:400 11px/1 var(--fn);letter-spacing:.06em;padding:7px 0;width:170px;outline:none}
+#deskName:focus{border-color:rgba(255,255,255,.45)}
+#deskName::placeholder{color:var(--faint)}
+.desk-btn{font:500 9px/1 var(--sf);letter-spacing:.18em;text-transform:uppercase;color:#fff;border:1px solid rgba(255,255,255,.3);padding:9px 14px;transition:background .2s,border-color .2s}
+.desk-btn:hover{background:var(--accent);border-color:var(--accent)}
+.desk-btn.armed{background:var(--accent);border-color:var(--accent);animation:dotpulse 1.2s ease-in-out infinite}
+#deskPresets{background:#161616;border:1px solid var(--br);color:#fff;font:400 10px/1 var(--fn);letter-spacing:.06em;padding:8px 10px;outline:none}
+.desk-strips{display:flex;gap:14px;flex-wrap:wrap;align-items:stretch}
+.strip{flex:1;min-width:128px;max-width:190px;border:1px solid var(--br);padding:16px 12px 14px;display:flex;flex-direction:column;gap:13px;align-items:center}
+.strip.master{border-color:rgba(255,255,255,.3)}
+.strip-name{font:500 10px/1 var(--sf);letter-spacing:.24em;text-transform:uppercase;color:#fff}
+.strip-fader{-webkit-appearance:none;appearance:none;writing-mode:vertical-lr;direction:rtl;width:2px;height:110px;background:rgba(255,255,255,.25);outline:none}
+.strip-fader::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:22px;height:10px;border-radius:2px;background:#fff;cursor:ns-resize;border:none}
+.strip-fader::-moz-range-thumb{width:22px;height:10px;border-radius:2px;background:#fff;cursor:ns-resize;border:none}
+.knob-row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.knob{display:flex;flex-direction:column;align-items:center;gap:5px;cursor:ns-resize;user-select:none;touch-action:none}
+.knob-dial{width:30px;height:30px;border-radius:50%;border:1px solid rgba(255,255,255,.4);position:relative}
+.knob-dial::after{content:'';position:absolute;left:50%;top:2px;width:1.5px;height:9px;background:#fff;transform-origin:50% 13px;transform:translateX(-50%) rotate(var(--kang,0deg))}
+.knob-label{font:400 7px/1 var(--sf);letter-spacing:.16em;text-transform:uppercase;color:var(--faint)}
+.knob-val{font:400 8px/1 var(--fn);color:var(--dim)}
+.strip select{background:#161616;border:1px solid var(--br);color:#fff;font:400 9px/1 var(--fn);padding:5px 6px;outline:none;width:100%}
+.strip-pp{display:flex;align-items:center;gap:6px;font:400 8px/1 var(--sf);letter-spacing:.14em;text-transform:uppercase;color:var(--dim);cursor:pointer}
+.strip-pp input{accent-color:var(--accent)}
+.midi-bound{outline:1px solid var(--accent);outline-offset:3px}
+.midi-learn-target{outline:1px dashed var(--accent);outline-offset:3px;animation:dotpulse 1s ease-in-out infinite}
+.desk-offline{font:300 11px/1.7 var(--fn);color:var(--faint);letter-spacing:.04em;padding:20px 0}
+.desk-hint{font:300 9px/1.6 var(--fn);color:var(--faint);letter-spacing:.06em;margin-top:18px}
+
 /* ── CONTROLS ROW ── */
 .console-bar{display:flex;align-items:baseline;gap:40px;flex-wrap:wrap;padding:40px 52px 8px}
 .search-wrap{position:relative;flex:0 1 300px;min-width:210px}
@@ -253,6 +285,22 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
       <p class="wheel-hint" id="wheelHint">Drag R and L to paint each lamp.</p>
     </div>
   </div>
+</div>
+
+<!-- DESK -->
+<div class="desk-section">
+  <div class="desk-head">
+    <h2 class="console-section-title" style="margin:0;padding:0;border:none">Desk &mdash; L-05 Live</h2>
+    <div class="desk-preset-row">
+      <input id="deskName" type="text" placeholder="preset title&hellip;" autocomplete="off">
+      <button class="desk-btn" id="deskSave">Save</button>
+      <select id="deskPresets"><option value="">saved presets&hellip;</option></select>
+      <button class="desk-btn" id="midiLearn">MIDI learn</button>
+    </div>
+  </div>
+  <div class="desk-offline" id="deskOffline">Studio link offline &mdash; the desk wakes with it. Faders and knobs here drive the physical engine in real time.</div>
+  <div class="desk-strips" id="deskStrips" style="display:none"></div>
+  <p class="desk-hint" id="deskHint" style="display:none">Faders set channel gain &middot; drag knobs vertically &middot; changes hit the lamps live while L-05 runs &middot; MIDI: arm learn, click a control, move a knob on your hardware &mdash; bindings persist in this browser.</p>
 </div>
 
 <!-- CONTROLS -->
@@ -898,6 +946,293 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
   window.addEventListener('resize', sizeWheel);
   sizeWheel();
 
+  // ── DESK (Live mixing console) ──
+  var DESK_CHANNELS = [
+    { id: 'kick',  label: 'Kick',  trigger: true },
+    { id: 'hats',  label: 'Hats',  trigger: true },
+    { id: 'bass',  label: 'Bass',  trigger: false },
+    { id: 'synth', label: 'Synth', trigger: false },
+    { id: 'vocal', label: 'Vocal', trigger: false }
+  ];
+  var deskControls = {};       // ctlId -> {get,set,min,max,el}
+  var deskReady = false;
+  var deskPushTimer = null;
+
+  function fmtS(v) { return v >= 1 ? v.toFixed(2) + 's' : Math.round(v * 1000) + 'ms'; }
+  function fmtP(v) { return Math.round(v * 100) + '%'; }
+
+  function registerCtl(id, el, min, max, get, set) {
+    deskControls[id] = { el: el, min: min, max: max, get: get, set: set };
+    el.setAttribute('data-ctl', id);
+    el.addEventListener('click', function(e) {
+      if (midiLearnArmed) { e.stopPropagation(); midiTarget(id); }
+    });
+  }
+
+  function makeKnob(id, label, min, max, val, fmt, log) {
+    var wrap = document.createElement('div');
+    wrap.className = 'knob';
+    wrap.innerHTML = '<div class="knob-dial"></div><span class="knob-label">' + label + '</span><span class="knob-val"></span>';
+    var dial = wrap.querySelector('.knob-dial');
+    var valEl = wrap.querySelector('.knob-val');
+    var cur = val;
+    function frac(v) {
+      if (log) return (Math.log(v) - Math.log(min)) / (Math.log(max) - Math.log(min));
+      return (v - min) / (max - min);
+    }
+    function fromFrac(f) {
+      f = Math.max(0, Math.min(1, f));
+      if (log) return Math.exp(Math.log(min) + f * (Math.log(max) - Math.log(min)));
+      return min + f * (max - min);
+    }
+    function render() {
+      dial.style.setProperty('--kang', (frac(cur) * 270 - 135) + 'deg');
+      valEl.textContent = fmt(cur);
+    }
+    function set(v, silent) {
+      cur = Math.max(min, Math.min(max, v));
+      render();
+      if (!silent) deskPush();
+    }
+    var dragY = null, dragF = null;
+    wrap.addEventListener('pointerdown', function(e) {
+      if (midiLearnArmed) return;
+      dragY = e.clientY; dragF = frac(cur);
+      wrap.setPointerCapture(e.pointerId);
+    });
+    wrap.addEventListener('pointermove', function(e) {
+      if (dragY === null) return;
+      set(fromFrac(dragF + (dragY - e.clientY) / 150));
+    });
+    wrap.addEventListener('pointerup', function() { dragY = null; });
+    render();
+    registerCtl(id, wrap, min, max, function() { return cur; },
+                function(v, s) { set(v, s); });
+    return wrap;
+  }
+
+  function makeFader(id, min, max, val) {
+    var f = document.createElement('input');
+    f.type = 'range'; f.className = 'strip-fader';
+    f.min = min; f.max = max; f.step = 0.01; f.value = val;
+    f.addEventListener('input', function() { deskPush(); });
+    registerCtl(id, f, min, max, function() { return parseFloat(f.value); },
+                function(v, s) { f.value = v; if (!s) deskPush(); });
+    return f;
+  }
+
+  function buildDesk() {
+    var host = document.getElementById('deskStrips');
+    DESK_CHANNELS.forEach(function(c) {
+      var strip = document.createElement('div');
+      strip.className = 'strip';
+      var name = document.createElement('div');
+      name.className = 'strip-name'; name.textContent = c.label;
+      strip.appendChild(name);
+      strip.appendChild(makeFader(c.id + '.gain', 0, 1.2, 0.8));
+      var row1 = document.createElement('div'); row1.className = 'knob-row';
+      row1.appendChild(makeKnob(c.id + '.sens', 'Sens', 0, 1, 0.5, fmtP));
+      row1.appendChild(makeKnob(c.id + '.a', 'Atk', 0.002, 1, 0.05, fmtS, true));
+      strip.appendChild(row1);
+      var row2 = document.createElement('div'); row2.className = 'knob-row';
+      if (c.trigger) {
+        row2.appendChild(makeKnob(c.id + '.d', 'Dec', 0.01, 1, 0.1, fmtS, true));
+        row2.appendChild(makeKnob(c.id + '.s', 'Sus', 0, 1, 1.0, fmtP));
+      }
+      row2.appendChild(makeKnob(c.id + '.r', 'Rel', 0.05, 3, 0.6, fmtS, true));
+      strip.appendChild(row2);
+      var route = document.createElement('select');
+      ['floor', 'mids', 'crowns', 'bar'].forEach(function(r) {
+        var o = document.createElement('option'); o.value = r; o.textContent = r;
+        route.appendChild(o);
+      });
+      route.addEventListener('change', function() { deskPush(); });
+      registerCtl(c.id + '.route', route, 0, 3,
+                  function() { return route.value; },
+                  function(v, s) { route.value = v; if (!s) deskPush(); });
+      strip.appendChild(route);
+      if (c.trigger) {
+        var pp = document.createElement('label');
+        pp.className = 'strip-pp';
+        pp.innerHTML = '<input type="checkbox"><span>ping-pong</span>';
+        var cb = pp.querySelector('input');
+        cb.addEventListener('change', function() { deskPush(); });
+        registerCtl(c.id + '.pingpong', pp, 0, 1,
+                    function() { return cb.checked; },
+                    function(v, s) { cb.checked = !!v; if (!s) deskPush(); });
+        strip.appendChild(pp);
+      }
+      host.appendChild(strip);
+    });
+    // master strip
+    var m = document.createElement('div');
+    m.className = 'strip master';
+    var mn = document.createElement('div');
+    mn.className = 'strip-name'; mn.textContent = 'Master';
+    m.appendChild(mn);
+    m.appendChild(makeFader('master.brightness', 0, 1, 1));
+    var mr = document.createElement('div'); mr.className = 'knob-row';
+    mr.appendChild(makeKnob('master.base', 'Glow', 0, 0.5, 0.16, fmtP));
+    mr.appendChild(makeKnob('master.drift', 'Drift', 30, 600, 210,
+                            function(v) { return Math.round(v) + 's'; }, true));
+    m.appendChild(mr);
+    host.appendChild(m);
+  }
+
+  function deskParams() {
+    var p = { master: {
+      brightness: deskControls['master.brightness'].get(),
+      base: deskControls['master.base'].get(),
+      drift: deskControls['master.drift'].get()
+    }, channels: {} };
+    DESK_CHANNELS.forEach(function(c) {
+      var ch = {
+        gain: deskControls[c.id + '.gain'].get(),
+        sens: deskControls[c.id + '.sens'].get(),
+        a: deskControls[c.id + '.a'].get(),
+        r: deskControls[c.id + '.r'].get(),
+        route: deskControls[c.id + '.route'].get()
+      };
+      if (c.trigger) {
+        ch.d = deskControls[c.id + '.d'].get();
+        ch.s = deskControls[c.id + '.s'].get();
+        ch.pingpong = deskControls[c.id + '.pingpong'].get();
+      }
+      p.channels[c.id] = ch;
+    });
+    return p;
+  }
+
+  function deskApply(p, silent) {
+    if (!p || !p.channels) return;
+    function setIf(id, v) {
+      if (deskControls[id] && v !== undefined) deskControls[id].set(v, true);
+    }
+    setIf('master.brightness', (p.master || {}).brightness);
+    setIf('master.base', (p.master || {}).base);
+    setIf('master.drift', (p.master || {}).drift);
+    DESK_CHANNELS.forEach(function(c) {
+      var ch = p.channels[c.id] || {};
+      ['gain', 'sens', 'a', 'd', 's', 'r', 'route', 'pingpong'].forEach(function(k) {
+        setIf(c.id + '.' + k, ch[k]);
+      });
+    });
+  }
+
+  function deskPush() {
+    if (!deskReady || !live) return;
+    clearTimeout(deskPushTimer);
+    deskPushTimer = setTimeout(function() {
+      fetch(DAEMON + '/live/params', { method: 'POST',
+        body: JSON.stringify(deskParams()) }).catch(function() {});
+    }, 150);
+  }
+
+  function refreshDeskPresets() {
+    fetch(DAEMON + '/live/presets').then(function(r) { return r.json(); })
+      .then(function(d) {
+        var sel = document.getElementById('deskPresets');
+        sel.innerHTML = '<option value="">saved presets&hellip;</option>';
+        (d.presets || []).forEach(function(p) {
+          var o = document.createElement('option');
+          o.value = p.name; o.textContent = p.name;
+          sel.appendChild(o);
+        });
+      }).catch(function() {});
+  }
+
+  function initDesk() {
+    buildDesk();
+    document.getElementById('deskSave').addEventListener('click', function() {
+      var name = document.getElementById('deskName').value.trim();
+      if (!name || !live) return;
+      fetch(DAEMON + '/live/presets', { method: 'POST',
+        body: JSON.stringify({ name: name, params: deskParams() }) })
+        .then(function() { refreshDeskPresets(); });
+    });
+    document.getElementById('deskPresets').addEventListener('change', function() {
+      if (!this.value || !live) return;
+      fetch(DAEMON + '/live/preset/load', { method: 'POST',
+        body: JSON.stringify({ name: this.value }) })
+        .then(function(r) { return r.json(); })
+        .then(function(d) { deskApply(d.params, true); });
+    });
+    initMIDI();
+  }
+
+  function deskSetLive(on) {
+    document.getElementById('deskStrips').style.display = on ? '' : 'none';
+    document.getElementById('deskHint').style.display = on ? '' : 'none';
+    document.getElementById('deskOffline').style.display = on ? 'none' : '';
+    if (on && !deskReady) {
+      deskReady = true;
+      fetch(DAEMON + '/live/params').then(function(r) { return r.json(); })
+        .then(function(p) { deskApply(p, true); }).catch(function() {});
+      refreshDeskPresets();
+    }
+  }
+
+  // ── MIDI LEARN ──
+  var midiLearnArmed = false;
+  var midiLearnCtl = null;
+  var midiMap = {};
+  try { midiMap = JSON.parse(localStorage.getItem('lumen-midi-map') || '{}'); } catch (e) {}
+
+  function midiTarget(id) {
+    midiLearnCtl = id;
+    Object.keys(deskControls).forEach(function(k) {
+      deskControls[k].el.classList.toggle('midi-learn-target', k === id);
+    });
+  }
+
+  function markBound() {
+    Object.keys(deskControls).forEach(function(k) {
+      deskControls[k].el.classList.toggle('midi-bound',
+        Object.keys(midiMap).some(function(mk) { return midiMap[mk] === k; }));
+    });
+  }
+
+  function initMIDI() {
+    document.getElementById('midiLearn').addEventListener('click', function() {
+      midiLearnArmed = !midiLearnArmed;
+      this.classList.toggle('armed', midiLearnArmed);
+      if (!midiLearnArmed) midiTarget(null);
+    });
+    if (!navigator.requestMIDIAccess) return;
+    navigator.requestMIDIAccess().then(function(access) {
+      function bindInputs() {
+        access.inputs.forEach(function(input) {
+          input.onmidimessage = function(msg) {
+            var d = msg.data;
+            if ((d[0] & 0xF0) !== 0xB0) return;       // CC only
+            var key = (d[0] & 0x0F) + ':' + d[1];
+            if (midiLearnArmed && midiLearnCtl) {
+              midiMap[key] = midiLearnCtl;
+              localStorage.setItem('lumen-midi-map', JSON.stringify(midiMap));
+              midiTarget(null); markBound();
+              return;
+            }
+            var ctlId = midiMap[key];
+            var ctl = ctlId && deskControls[ctlId];
+            if (!ctl) return;
+            if (typeof ctl.get() === 'boolean') { ctl.set(d[2] >= 64); return; }
+            if (typeof ctl.get() === 'string') {
+              var routes = ['floor', 'mids', 'crowns', 'bar'];
+              ctl.set(routes[Math.min(3, Math.floor(d[2] / 32))]);
+              return;
+            }
+            ctl.set(ctl.min + (d[2] / 127) * (ctl.max - ctl.min));
+          };
+        });
+      }
+      bindInputs();
+      access.onstatechange = bindInputs;
+      markBound();
+    }).catch(function() {});
+  }
+
+  initDesk();
+
   // ── DAEMON LINK ──
   var linkline = document.getElementById('linkline');
   var linktext = document.getElementById('linktext');
@@ -928,6 +1263,7 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
     if (hint) hint.textContent = on
       ? 'Drag R and L to paint each lamp — the room follows live.'
       : 'Drag R and L to paint each lamp in the preview.';
+    deskSetLive(on);
   }
 
   function syncStatus() {
