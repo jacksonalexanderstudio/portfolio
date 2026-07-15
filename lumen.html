@@ -126,10 +126,11 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
 .strip-fader::-moz-range-thumb{width:22px;height:10px;border-radius:2px;background:#fff;cursor:ns-resize;border:none}
 .knob-row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
 .knob{display:flex;flex-direction:column;align-items:center;gap:5px;cursor:ns-resize;user-select:none;touch-action:none}
-.knob-dial{width:30px;height:30px;border-radius:50%;border:1px solid rgba(255,255,255,.4);position:relative}
-.knob-dial::after{content:'';position:absolute;left:50%;top:2px;width:1.5px;height:9px;background:#fff;transform-origin:50% 13px;transform:translateX(-50%) rotate(var(--kang,0deg))}
-.knob-label{font:400 7px/1 var(--sf);letter-spacing:.16em;text-transform:uppercase;color:var(--faint)}
-.knob-val{font:400 8px/1 var(--fn);color:var(--dim)}
+.knob-dial{width:34px;height:34px;border-radius:50%;border:1px solid rgba(255,255,255,.4);position:relative}
+.knob-dial::after{content:'';position:absolute;left:50%;top:2px;width:2px;height:11px;background:#fff;transform-origin:50% 15px;transform:translateX(-50%) rotate(var(--kang,0deg))}
+.knob-label{font:500 9px/1 var(--sf);letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.85)}
+.knob-val{font:400 9px/1 var(--fn);color:var(--dim)}
+.knob:hover .knob-label{color:var(--accent)}
 .strip select{background:#161616;border:1px solid var(--br);color:#fff;font:400 9px/1 var(--fn);padding:5px 6px;outline:none;width:100%}
 .mini-wheel{position:relative;width:54px;height:54px;border-radius:50%;cursor:crosshair;touch-action:none}
 .mini-wheel canvas{width:100%;height:100%;display:block;border-radius:50%}
@@ -961,10 +962,21 @@ body.midi-learning .midi-bound{outline:1px solid var(--accent);outline-offset:3p
     });
   }
 
+  var KNOB_HELP = {
+    'Sense': 'Sensitivity — how easily this channel reacts',
+    'Attack': 'Attack — how fast the light rises',
+    'Decay': 'Decay — fall time from the peak to the sustain level',
+    'Sustain': 'Sustain — the level held after the peak',
+    'Release': 'Release — how long the light takes to fade out',
+    'Glow': 'Base glow — the always-on light under everything',
+    'Drift': 'Color drift — seconds per trip through the palette'
+  };
+
   function makeKnob(id, label, min, max, val, fmt, log) {
     var wrap = document.createElement('div');
     wrap.className = 'knob';
     wrap.innerHTML = '<div class="knob-dial"></div><span class="knob-label">' + label + '</span><span class="knob-val"></span>';
+    wrap.title = KNOB_HELP[label] || label;
     var dial = wrap.querySelector('.knob-dial');
     var valEl = wrap.querySelector('.knob-val');
     var cur = val;
@@ -1106,15 +1118,15 @@ body.midi-learning .midi-bound{outline:1px solid var(--accent);outline-offset:3p
       strip.appendChild(makeMiniWheel(c.id, 0.6, 0.9));
       strip.appendChild(makeFader(c.id + '.gain', 0, 1.2, 0.8));
       var row1 = document.createElement('div'); row1.className = 'knob-row';
-      row1.appendChild(makeKnob(c.id + '.sens', 'Sens', 0, 1, 0.5, fmtP));
-      row1.appendChild(makeKnob(c.id + '.a', 'Atk', 0.002, 1, 0.05, fmtS, true));
+      row1.appendChild(makeKnob(c.id + '.sens', 'Sense', 0, 1, 0.5, fmtP));
+      row1.appendChild(makeKnob(c.id + '.a', 'Attack', 0.002, 1, 0.05, fmtS, true));
       strip.appendChild(row1);
       var row2 = document.createElement('div'); row2.className = 'knob-row';
       if (c.trigger) {
-        row2.appendChild(makeKnob(c.id + '.d', 'Dec', 0.01, 1, 0.1, fmtS, true));
-        row2.appendChild(makeKnob(c.id + '.s', 'Sus', 0, 1, 1.0, fmtP));
+        row2.appendChild(makeKnob(c.id + '.d', 'Decay', 0.01, 1, 0.1, fmtS, true));
+        row2.appendChild(makeKnob(c.id + '.s', 'Sustain', 0, 1, 1.0, fmtP));
       }
-      row2.appendChild(makeKnob(c.id + '.r', 'Rel', 0.05, 3, 0.6, fmtS, true));
+      row2.appendChild(makeKnob(c.id + '.r', 'Release', 0.05, 3, 0.6, fmtS, true));
       strip.appendChild(row2);
       var route = document.createElement('select');
       ['floor', 'mids', 'crowns', 'bar'].forEach(function(r) {
