@@ -136,7 +136,7 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
 .mini-wheel .mw-dot{position:absolute;width:9px;height:9px;border-radius:50%;border:1.5px solid #fff;box-shadow:0 0 4px rgba(0,0,0,.8);transform:translate(-50%,-50%);pointer-events:none}
 .strip-pp{display:flex;align-items:center;gap:6px;font:400 8px/1 var(--sf);letter-spacing:.14em;text-transform:uppercase;color:var(--dim);cursor:pointer}
 .strip-pp input{accent-color:var(--accent)}
-.midi-bound{outline:1px solid var(--accent);outline-offset:3px}
+body.midi-learning .midi-bound{outline:1px solid var(--accent);outline-offset:3px}
 .midi-learn-target{outline:1px dashed var(--accent);outline-offset:3px;animation:dotpulse 1s ease-in-out infinite}
 .desk-offline{font:300 11px/1.7 var(--fn);color:var(--faint);letter-spacing:.04em;padding:20px 0}
 .desk-hint{font:300 9px/1.6 var(--fn);color:var(--faint);letter-spacing:.06em;margin-top:18px}
@@ -949,12 +949,14 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
   });
   wheelCanvas.addEventListener('pointermove', function(e) {
     if (!dragging) return;
+    if (!(e.buttons & 1)) { dragging = null; return; }
     moveHandle(wheelPoint(e));
   });
   wheelCanvas.addEventListener('pointerup', function() {
     if (dragging) castWheel(true);
     dragging = null;
   });
+  wheelCanvas.addEventListener('pointercancel', function() { dragging = null; });
 
   function moveHandle(p) {
     var c = wheelSize / 2;
@@ -1030,9 +1032,12 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
     });
     wrap.addEventListener('pointermove', function(e) {
       if (dragY === null) return;
+      if (!(e.buttons & 1)) { dragY = null; return; }   // button released off-target
       set(fromFrac(dragF + (dragY - e.clientY) / 150));
     });
     wrap.addEventListener('pointerup', function() { dragY = null; });
+    wrap.addEventListener('pointercancel', function() { dragY = null; });
+    wrap.addEventListener('lostpointercapture', function() { dragY = null; });
     render();
     registerCtl(id, wrap, min, max, function() { return cur; },
                 function(v, s) { set(v, s); });
@@ -1098,8 +1103,14 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
       if (midiLearnArmed) return;
       down = true; wrap.setPointerCapture(e.pointerId); fromEvent(e);
     });
-    wrap.addEventListener('pointermove', function(e) { if (down) fromEvent(e); });
+    wrap.addEventListener('pointermove', function(e) {
+      if (!down) return;
+      if (!(e.buttons & 1)) { down = false; return; }
+      fromEvent(e);
+    });
     wrap.addEventListener('pointerup', function() { down = false; });
+    wrap.addEventListener('pointercancel', function() { down = false; });
+    wrap.addEventListener('lostpointercapture', function() { down = false; });
     render();
     registerCtl(cid + '.hue', wrap, 0, 1,
                 function() { return hue; },
@@ -1300,6 +1311,7 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
     document.getElementById('midiLearn').addEventListener('click', function() {
       midiLearnArmed = !midiLearnArmed;
       this.classList.toggle('armed', midiLearnArmed);
+      document.body.classList.toggle('midi-learning', midiLearnArmed);
       if (!midiLearnArmed) midiTarget(null);
     });
     if (!navigator.requestMIDIAccess) return;
