@@ -156,16 +156,6 @@ body.midi-learning .midi-bound{outline:1px solid var(--accent);outline-offset:3p
 .desk-hint{font:300 9px/1.6 var(--fn);color:var(--faint);letter-spacing:.06em;margin-top:18px}
 
 /* ── CONTROLS ROW ── */
-.console-bar{display:flex;align-items:baseline;gap:40px;flex-wrap:wrap;padding:40px 52px 8px}
-.search-wrap{position:relative;flex:0 1 300px;min-width:210px}
-#search{width:100%;background:none;border:none;border-bottom:1px solid var(--br);color:#fff;font:400 12px/1 var(--fn);letter-spacing:.06em;padding:8px 0;outline:none;transition:border-color .3s}
-#search:focus{border-color:rgba(255,255,255,.45)}
-#search::placeholder{color:var(--faint)}
-.chips{display:flex;gap:10px;flex-wrap:wrap}
-.chip{font:400 9px/1 var(--sf);letter-spacing:.16em;text-transform:uppercase;color:var(--dim);padding:8px 13px;border:1px solid var(--br);border-radius:999px;transition:color .25s,border-color .25s}
-.chip:hover{color:#fff;border-color:rgba(255,255,255,.4)}
-.chip.on{color:#0c0c0c;background:#fff;border-color:#fff}
-.result-count{margin-left:auto;font:300 10px/1 var(--fn);letter-spacing:.14em;color:var(--faint);text-transform:uppercase}
 
 /* ── PRESET GRID ── */
 #grid{padding:36px 52px 140px}
@@ -216,8 +206,6 @@ body.midi-learning .midi-bound{outline:1px solid var(--accent);outline-offset:3p
 @media(max-width:900px){
   .nd{position:fixed;top:88px;left:0;right:0;min-width:0}
   .page-hero{padding:160px 20px 48px}
-  .console-bar{padding:28px 20px 4px;gap:20px}
-  .result-count{display:none}
   #grid{padding:28px 16px 130px}
   .preset-grid{gap:32px 16px}
   .hi,.fi2{padding-left:16px;padding-right:16px}
@@ -325,11 +313,6 @@ body.midi-learning .midi-bound{outline:1px solid var(--accent);outline-offset:3p
 </div>
 
 <!-- CONTROLS -->
-<div class="console-bar">
-  <div class="search-wrap"><input id="search" type="search" placeholder="search presets&hellip;" autocomplete="off"></div>
-  <div class="chips" id="chips"></div>
-  <span class="result-count" id="count"></span>
-</div>
 
 <!-- GRID -->
 <div id="grid"></div>
@@ -754,8 +737,6 @@ body.midi-learning .midi-bound{outline:1px solid var(--accent);outline-offset:3p
     // size canvases only after the cards are in the document and laid out
     requestAnimationFrame(function() { animated.forEach(function(a) { a.size(); }); });
     markPlaying();
-    document.getElementById('count').textContent =
-      list.length + ' / ' + PRESETS.length + ' presets';
   }
 
   // ── ANIMATION LOOP (one rAF for all cards) ──
@@ -780,43 +761,9 @@ body.midi-learning .midi-bound{outline:1px solid var(--accent);outline-offset:3p
     animated.forEach(function(a) { a.size(); });
   });
 
-  // ── SEARCH + FILTER ──
-  var activeMoods = [];
-  var query = '';
-  var allMoods = [];
-  PRESETS.forEach(function(p) { p.mood.forEach(function(m) {
-    if (allMoods.indexOf(m) === -1) allMoods.push(m);
-  }); });
-
-  var chipsEl = document.getElementById('chips');
-  allMoods.forEach(function(m) {
-    var b = document.createElement('button');
-    b.className = 'chip';
-    b.textContent = m;
-    b.addEventListener('click', function() {
-      var i = activeMoods.indexOf(m);
-      if (i === -1) activeMoods.push(m); else activeMoods.splice(i, 1);
-      b.classList.toggle('on', i === -1);
-      apply();
-    });
-    chipsEl.appendChild(b);
-  });
-
-  document.getElementById('search').addEventListener('input', function() {
-    query = this.value.trim().toLowerCase();
-    apply();
-  });
-
+  // the sections organize the library; no search layer needed
   function apply() {
-    var list = PRESETS.filter(function(p) {
-      var text = (p.title + ' ' + p.tagline + ' ' + p.mood.join(' ')).toLowerCase();
-      var qOK = !query || text.indexOf(query) !== -1;
-      var mOK = !activeMoods.length || activeMoods.every(function(m) {
-        return p.mood.indexOf(m) !== -1;
-      });
-      return qOK && mOK;
-    });
-    render(list);
+    render(PRESETS);
   }
 
   // ── COLOR WHEEL ──
