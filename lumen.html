@@ -1208,14 +1208,29 @@ body.midi-learning .midi-bound{outline:1px solid var(--accent);outline-offset:3p
     });
   }
 
+  var lastDeskTouch = 0;
   function deskPush() {
     if (!deskReady || !live) return;
+    lastDeskTouch = Date.now();
     clearTimeout(deskPushTimer);
     deskPushTimer = setTimeout(function() {
       fetch(DAEMON + '/live/params', { method: 'POST',
         body: JSON.stringify(deskParams()) }).catch(function() {});
     }, 150);
   }
+
+  // the Tap Dial (and anything else server-side) also edits the params —
+  // pull them back into the UI whenever the user's hands are off the desk,
+  // so the page never clobbers dial moves with stale state
+  setInterval(function() {
+    if (!deskReady || !live) return;
+    if (Date.now() - lastDeskTouch < 3000) return;
+    fetch(DAEMON + '/live/params').then(function(r) { return r.json(); })
+      .then(function(p) {
+        if (Date.now() - lastDeskTouch < 3000) return;
+        deskApply(p, true);
+      }).catch(function() {});
+  }, 2000);
 
   function refreshDeskPresets() {
     fetch(DAEMON + '/live/presets').then(function(r) { return r.json(); })
