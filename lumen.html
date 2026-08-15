@@ -1129,7 +1129,7 @@ body.midi-learning .midi-bound{outline:1px solid var(--accent);outline-offset:3p
       row2.appendChild(makeKnob(c.id + '.r', 'Release', 0.05, 3, 0.6, fmtS, true));
       strip.appendChild(row2);
       var route = document.createElement('select');
-      ['floor', 'mids', 'crowns', 'bar'].forEach(function(r) {
+      ['floor', 'mids', 'crowns', 'bar', 'wall', 'room'].forEach(function(r) {
         var o = document.createElement('option'); o.value = r; o.textContent = r;
         route.appendChild(o);
       });
@@ -1440,8 +1440,8 @@ body.midi-learning .midi-bound{outline:1px solid var(--accent);outline-offset:3p
             if (!ctl) return;
             if (typeof ctl.get() === 'boolean') { ctl.set(d[2] >= 64); return; }
             if (typeof ctl.get() === 'string') {
-              var routes = ['floor', 'mids', 'crowns', 'bar'];
-              ctl.set(routes[Math.min(3, Math.floor(d[2] / 32))]);
+              var routes = ['floor', 'mids', 'crowns', 'bar', 'wall', 'room'];
+              ctl.set(routes[Math.min(5, Math.floor(d[2] / 22))]);
               return;
             }
             ctl.set(ctl.min + (d[2] / 127) * (ctl.max - ctl.min));
