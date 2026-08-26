@@ -44,7 +44,6 @@ body {
 @keyframes spin { to { transform: rotate(360deg); } }
 #container { position: relative; display: none; z-index: 1; }
 canvas { display: block; }
-#steam { position: absolute; top: 0; left: 0; pointer-events: none; }
 input[type=file] { display: none; }
 </style>
 </head>
@@ -61,7 +60,6 @@ input[type=file] { display: none; }
 
 <div id="container">
   <canvas id="gl"></canvas>
-  <canvas id="steam"></canvas>
 </div>
 
 <script>
@@ -169,40 +167,6 @@ void main() {
   gl_FragColor = vec4(result, 1.0);
 }`;
 
-// ─── Steam Particle ───────────────────────────────────────────────────────────
-class Particle {
-  constructor(x, y) {
-    this.x = x + (Math.random() - 0.5) * 12;
-    this.y = y;
-    this.vx = (Math.random() - 0.5) * 0.7;
-    this.vy = -(Math.random() * 1.4 + 0.5);
-    this.life = 0.85 + Math.random() * 0.15;
-    this.decay = 0.0038 + Math.random() * 0.005;
-    this.r = Math.random() * 5 + 2;
-    this.phi = Math.random() * Math.PI * 2;
-  }
-
-  tick(t) {
-    this.x += this.vx + Math.sin(t * 2.6 + this.phi + this.y * 0.04) * 0.55;
-    this.y += this.vy;
-    this.life -= this.decay;
-    this.r += 0.055;
-  }
-
-  draw(ctx) {
-    const a = this.life * this.life * 0.38;
-    const grad = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.r);
-    grad.addColorStop(0, `rgba(230,240,255,${a.toFixed(3)})`);
-    grad.addColorStop(1, 'rgba(200,220,255,0)');
-    ctx.fillStyle = grad;
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
-    ctx.fill();
-  }
-
-  dead() { return this.life <= 0; }
-}
-
 // ─── WebGL helpers ────────────────────────────────────────────────────────────
 function mkShader(gl, type, src) {
   const s = gl.createShader(type);
@@ -215,23 +179,18 @@ function mkShader(gl, type, src) {
 
 // ─── Globals ──────────────────────────────────────────────────────────────────
 let gl, prog, tex, uT, uImg;
-let glC, stC, stX;
-let emitPts = [], parts = [];
+let glC;
 let t0 = 0;
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
 function init(img) {
   glC = document.getElementById('gl');
-  stC = document.getElementById('steam');
 
   const sc = Math.min(window.innerWidth / img.width, window.innerHeight / img.height, 1);
-  const W = Math.round(img.width * sc);
-  const H = Math.round(img.height * sc);
-  glC.width  = stC.width  = W;
-  glC.height = stC.height = H;
+  glC.width  = Math.round(img.width * sc);
+  glC.height = Math.round(img.height * sc);
 
-  gl  = glC.getContext('webgl');
-  stX = stC.getContext('2d');
+  gl = glC.getContext('webgl');
   if (!gl) { alert('WebGL not supported in this browser.'); return; }
 
   // Build shader program
@@ -265,28 +224,6 @@ function init(img) {
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
   gl.uniform1i(uImg, 0);
 
-  // Detect top-edge pixels of white figures → steam emitters
-  const tmp = document.createElement('canvas');
-  tmp.width = img.width; tmp.height = img.height;
-  const tc = tmp.getContext('2d');
-  tc.drawImage(img, 0, 0);
-  const pd = tc.getImageData(0, 0, img.width, img.height).data;
-  const row = img.width * 4;
-  const raw = [];
-  for (let y = 1; y < img.height - 1; y++) {
-    for (let x = 1; x < img.width - 1; x++) {
-      const i = y * row + x * 4;
-      if (pd[i] > 185 && pd[i+1] > 185 && pd[i+2] > 185) {
-        const a = (y - 1) * row + x * 4;
-        if (pd[a] < 155 || pd[a+1] < 155 || pd[a+2] < 155) {
-          raw.push({ x: x * sc, y: y * sc });
-        }
-      }
-    }
-  }
-  const step = Math.max(1, Math.floor(raw.length / 400));
-  emitPts = raw.filter((_, i) => i % step === 0);
-
   if (window._stopBg) window._stopBg();
   document.getElementById('loader').style.display    = 'none';
   document.getElementById('container').style.display = 'block';
@@ -304,20 +241,6 @@ function frame(now) {
   gl.viewport(0, 0, glC.width, glC.height);
   gl.uniform1f(uT, t);
   gl.drawArrays(gl.TRIANGLES, 0, 6);
-
-  // Steam pass
-  stX.clearRect(0, 0, stC.width, stC.height);
-
-  if (emitPts.length) {
-    for (let i = 0; i < 5; i++) {
-      const ep = emitPts[Math.floor(Math.random() * emitPts.length)];
-      parts.push(new Particle(ep.x, ep.y));
-    }
-  }
-
-  parts = parts.filter(p => !p.dead());
-  if (parts.length > 800) parts.splice(0, parts.length - 800);
-  for (const p of parts) { p.tick(t); p.draw(stX); }
 }
 
 // ─── Loader Background Animation ─────────────────────────────────────────────
