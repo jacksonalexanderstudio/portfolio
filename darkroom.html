@@ -65,6 +65,30 @@
   --dr-alu-mid:  oklch(0.86 0.008 80);
   --dr-alu-lo:   oklch(0.62 0.012 80);
 
+  /* surface/edge/sheen tokens — promoted from repeated literals 2026-07-13
+     so the dark theme can restyle every gradient and inset from one block */
+  --dr-srf-hi:   oklch(0.94 0.013 80);    /* gradient tops — pills, buttons */
+  --dr-srf-2:    oklch(0.92 0.013 80);
+  --dr-srf-lo:   oklch(0.89 0.014 80);    /* gradient bottoms */
+  --dr-srf-3:    oklch(0.91 0.014 80);
+  --dr-edge:     oklch(0.66 0.014 78);    /* control borders */
+  --dr-edge-2:   oklch(0.62 0.014 78);
+  --dr-glint:    oklch(0.97 0.010 80);    /* knob-face highlight */
+  --dr-glint-25: oklch(0.97 0.010 80 / 0.25);
+  --dr-glint-0:  oklch(0.97 0.010 80 / 0);
+  --dr-paper:    oklch(0.98 0.003 80);    /* text on accent-filled pills */
+  --dr-sheen-100:rgba(255,255,255,1);     /* white inset sheens */
+  --dr-sheen-95: rgba(255,255,255,.95);
+  --dr-sheen-92: rgba(255,255,255,.92);
+  --dr-sheen-85: rgba(255,255,255,.85);
+  --dr-sheen-80: rgba(255,255,255,.80);
+  --dr-sheen-45: rgba(255,255,255,.45);
+  --dr-sheen-40: rgba(255,255,255,.4);
+  --dr-sheen-10: rgba(255,255,255,.1);
+  --dr-bg-top:   oklch(0.86 0.012 78);    /* page gradient */
+  --dr-bg-mid:   oklch(0.83 0.013 80);
+  --dr-bg-bot:   oklch(0.80 0.014 76);
+
   /* All four roles point to DM Sans for pristine clarity. The legacy variable
      names are kept so existing rules don't need rewriting; numeric readouts
      opt into tabular-nums explicitly via .dr-readout (and existing rules) so
@@ -85,13 +109,77 @@ html{scroll-behavior:smooth;background:var(--dr-panel)}
 body{background:var(--dr-panel);color:var(--dr-ink);font-family:var(--dr-mono);line-height:1.5;overflow-x:hidden;min-height:100vh}
 /* ambient background — subtle warm-grey gradient, like Braun T3 case under raked light.
    Modules sit ON this base in lighter cream (--dr-panel-2), reading as elevated. */
-body{background:linear-gradient(180deg,oklch(0.86 0.012 78) 0%,oklch(0.83 0.013 80) 50%,oklch(0.80 0.014 76) 100%);background-attachment:fixed}
+body{background:linear-gradient(180deg,var(--dr-bg-top) 0%,var(--dr-bg-mid) 50%,var(--dr-bg-bot) 100%);background-attachment:fixed}
+
+/* ── DARK THEME — the original moss-on-black build (darkroom-dark.html),
+      mapped onto the token system. Toggled by the DARK pill in the action
+      bar; persists via localStorage:darkroom:theme. Green-tinted neutrals
+      (hue 145), phosphor moss accent, dark-metal knobs. ── */
+body[data-theme="dark"]{
+  --dr-panel:    oklch(0.17 0.008 145);
+  --dr-panel-2:  oklch(0.22 0.010 145);
+  --dr-panel-3:  oklch(0.27 0.011 145);
+  --dr-panel-4:  oklch(0.13 0.008 145);
+  --dr-line:     oklch(0.34 0.012 145);
+  --dr-line-2:   oklch(0.44 0.014 145);
+  --dr-ink:      oklch(0.95 0.006 145);
+  --dr-ink-dim:  oklch(0.70 0.012 145);
+  --dr-ink-2:    oklch(0.64 0.014 145);
+  --dr-moss:       oklch(0.74 0.18 142);
+  --dr-moss-dim:   oklch(0.56 0.13 142);
+  --dr-moss-glow:  oklch(0.74 0.18 142 / 0.32);
+  --dr-coral:      oklch(0.80 0.06 150);
+  --dr-amber:      oklch(0.80 0.17 75);
+  --dr-alu-hi:   oklch(0.34 0.010 145);
+  --dr-alu-mid:  oklch(0.25 0.009 145);
+  --dr-alu-lo:   oklch(0.13 0.010 145);
+  --dr-srf-hi:   oklch(0.26 0.011 145);
+  --dr-srf-2:    oklch(0.24 0.010 145);
+  --dr-srf-3:    oklch(0.235 0.010 145);
+  --dr-edge:     oklch(0.36 0.012 145);
+  --dr-edge-2:   oklch(0.42 0.013 145);
+  --dr-glint:    oklch(0.33 0.012 145);
+  --dr-glint-25: oklch(0.33 0.012 145 / 0.25);
+  --dr-glint-0:  oklch(0.33 0.012 145 / 0);
+  --dr-paper:    oklch(0.15 0.008 145);
+  --dr-sheen-100:rgba(255,255,255,.10);
+  --dr-sheen-95: rgba(255,255,255,.09);
+  --dr-sheen-92: rgba(255,255,255,.08);
+  --dr-sheen-85: rgba(255,255,255,.07);
+  --dr-sheen-80: rgba(255,255,255,.06);
+  --dr-sheen-45: rgba(255,255,255,.045);
+  --dr-sheen-40: rgba(255,255,255,.04);
+  --dr-sheen-10: rgba(255,255,255,.02);
+  --dr-bg-top:   oklch(0.15 0.008 145);
+  --dr-bg-mid:   oklch(0.13 0.008 145);
+  --dr-bg-bot:   oklch(0.11 0.008 145);
+}
+/* the fixed site header is black in both themes — pin its hairline */
+body[data-theme="dark"] #hdr, body[data-theme="dark"] .nd{--dr-sheen-10:rgba(255,255,255,.1)}
+/* the logo is charcoal ink on transparent — flip it to off-white on dark */
+body[data-theme="dark"] .dr-mast-logo{filter:invert(.93) hue-rotate(180deg)}
+body[data-theme="dark"]{--dr-srf-lo:oklch(0.215 0.010 145)}
+/* recessed waveform well — light-theme rule carries a literal gradient */
+body[data-theme="dark"] .dr-strip{
+  background:linear-gradient(180deg, oklch(0.12 0.008 145) 0%, oklch(0.14 0.008 145) 50%, oklch(0.15 0.008 145) 100%)}
+/* engaged modules: lifted dark surface + moss outline (the light rule's
+   cream gradient + ink border would invert to bright-on-dark) */
+body[data-theme="dark"] .dr-rack .dr-mod:not([data-bypassed="true"]),
+body[data-theme="dark"] .dr-rack .dr-mod[data-collapsed="true"]:not([data-bypassed="true"]){
+  border-color:var(--dr-moss-dim);
+  background:
+    repeating-linear-gradient(180deg, transparent 0 2px, rgba(0,0,0,.10) 2px 3px),
+    linear-gradient(180deg, oklch(0.27 0.011 145) 0%, oklch(0.22 0.010 145) 100%)}
+/* sequencer on-cells read as lit keys */
+body[data-theme="dark"] .dr-seq-cell[data-on="true"]{
+  background:linear-gradient(180deg, var(--dr-moss-dim) 0%, oklch(0.32 0.09 142) 100%);
+  border-color:var(--dr-moss)}
 a{color:inherit;text-decoration:none}
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 canvas{display:block}
 
 /* ── EXISTING SITE HEADER (consistent with rest of site) ── */
-#hdr{position:fixed;top:0;left:0;right:0;z-index:1000;height:140px;background:#0c0c0c;border-bottom:1px solid rgba(255,255,255,.1);display:flex;align-items:center;transition:height .4s,box-shadow .4s}
+#hdr{position:fixed;top:0;left:0;right:0;z-index:1000;height:140px;background:#0c0c0c;border-bottom:1px solid var(--dr-sheen-10);display:flex;align-items:center;transition:height .4s,box-shadow .4s}
 #hdr.sc{box-shadow:0 1px 32px rgba(0,0,0,.06);height:88px}
 .hi{width:100%;padding:0 28px;display:flex;align-items:center;justify-content:space-between}
 .hl img{height:102px;width:auto;transition:height .4s;filter:invert(1)}
@@ -103,11 +191,11 @@ canvas{display:block}
 .nw{position:relative}
 .nb{display:flex;align-items:center;gap:5px}
 .nw::before{content:'';position:absolute;top:100%;left:-20px;right:-20px;height:28px;z-index:99}
-.nd{position:absolute;top:calc(100% + 28px);right:0;background:#0c0c0c;border:1px solid rgba(255,255,255,.1);min-width:260px;opacity:0;pointer-events:none;transform:translateY(-8px);transition:opacity .2s,transform .2s;z-index:100}
+.nd{position:absolute;top:calc(100% + 28px);right:0;background:#0c0c0c;border:1px solid var(--dr-sheen-10);min-width:260px;opacity:0;pointer-events:none;transform:translateY(-8px);transition:opacity .2s,transform .2s;z-index:100}
 .nw:hover .nd{opacity:1;pointer-events:all;transform:translateY(0)}
 .nd a{display:flex;align-items:center;padding:12px 18px;font-size:11px;letter-spacing:.08em;border-bottom:1px solid rgba(255,255,255,.08);color:#fff}
 .nd a:last-child{border-bottom:none}
-.nd a:hover{background:rgba(255,255,255,.95)}
+.nd a:hover{background:var(--dr-sheen-95)}
 .nd a::after{display:none}
 .dn{color:var(--dr-moss);margin-right:10px;font-size:10px;font-family:var(--dr-sf)}
 
@@ -140,7 +228,7 @@ canvas{display:block}
   background:linear-gradient(180deg,var(--dr-panel-3) 0%,var(--dr-panel-2) 100%);
   border:1px solid var(--dr-line);
   border-radius:var(--r-lg);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.85),0 1px 1px rgba(0,0,0,.04),0 4px 14px -8px rgba(0,0,0,.10)}
+  box-shadow:inset 0 1px 0 var(--dr-sheen-85),0 1px 1px rgba(0,0,0,.04),0 4px 14px -8px rgba(0,0,0,.10)}
 .dr-mast-master-title{font-family:var(--dr-disp);font-weight:600;font-size:10px;letter-spacing:.18em;color:var(--dr-ink-2);text-transform:uppercase}
 .dr-mast-meter{display:flex;align-items:center;gap:var(--s2);min-width:0}
 .dr-mast-meter .dr-meter-label{font-family:var(--dr-fx);font-weight:700;font-size:9px;letter-spacing:.18em;color:var(--dr-ink-2);text-transform:uppercase}
@@ -169,7 +257,7 @@ canvas{display:block}
   background:transparent;border:1px solid var(--dr-line);border-radius:9999px;cursor:pointer;line-height:1;
   transition:color .12s,border-color .12s,background .12s}
 .dr-knob-midi-learn:hover{color:var(--dr-ink);border-color:var(--dr-line-2)}
-.dr-knob-midi-learn[data-bound="true"]{color:oklch(0.98 0.003 80);border-color:var(--dr-moss);background:var(--dr-moss)}
+.dr-knob-midi-learn[data-bound="true"]{color:var(--dr-paper);border-color:var(--dr-moss);background:var(--dr-moss)}
 .dr-knob-midi-learning .dr-knob-midi-learn{color:var(--dr-amber);border-color:var(--dr-amber);background:var(--dr-panel-3)}
 .dr-mast-meta{display:flex;align-items:center;gap:var(--s4);font-family:var(--dr-mono);font-size:9px;letter-spacing:.22em;color:var(--dr-ink-2);text-transform:uppercase;margin:0}
 .dr-mast-version{color:var(--dr-moss);font-weight:400}
@@ -177,10 +265,10 @@ canvas{display:block}
 /* MODE TOGGLE — two-pill segmented control. Active pill gets the moss
    tactile treatment; inactive sits flush + dim. Sits in masthead-meta
    alongside v0.1 so it reads as a top-level page control. */
-.dr-mode-toggle{display:flex;align-items:stretch;background:linear-gradient(180deg,oklch(0.94 0.013 80) 0%,oklch(0.89 0.014 80) 100%);
-  border:1px solid oklch(0.60 0.014 78);border-radius:var(--r-md);padding:0;
+.dr-mode-toggle{display:flex;align-items:stretch;background:linear-gradient(180deg,var(--dr-srf-hi) 0%,var(--dr-srf-lo) 100%);
+  border:1px solid var(--dr-edge-2);border-radius:var(--r-md);padding:0;
   box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.92),
+    inset 0 1px 0 var(--dr-sheen-92),
     inset 0 -1px 0 rgba(0,0,0,.04),
     0 1px 1px rgba(0,0,0,.04),
     0 4px 12px -6px rgba(0,0,0,.10);
@@ -189,7 +277,7 @@ canvas{display:block}
   font-family:var(--dr-fx);font-weight:600;font-size:13px;letter-spacing:.18em;color:var(--dr-ink-dim);text-transform:uppercase;
   background:transparent;border:0;border-radius:0;cursor:pointer;line-height:1;
   transition:color .12s,background .12s}
-.dr-mode-pill + .dr-mode-pill{border-left:1px solid oklch(0.66 0.014 78)}
+.dr-mode-pill + .dr-mode-pill{border-left:1px solid var(--dr-edge)}
 .dr-mode-pill:hover{color:var(--dr-ink)}
 /* Active state — recessed darker grey using existing palette vars only
    (--dr-panel for the top, --dr-panel-4 which is the defined "deeper recess"
@@ -236,20 +324,20 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
 /* ── MASTER KILLSWITCH (A/B compare, top-right of masthead) ── */
 .dr-kill{display:flex;flex-direction:column;align-items:flex-end;gap:4px;padding:14px 22px;
   background:
-    radial-gradient(ellipse 120vw 80vh at 22% 8%, oklch(0.97 0.010 80) 0%, oklch(0.97 0.010 80 / 0.25) 35%, oklch(0.97 0.010 80 / 0) 65%) fixed,
-    linear-gradient(180deg, oklch(0.92 0.013 80) 0%, oklch(0.90 0.014 80) 100%);
-  border:1px solid oklch(0.66 0.014 78);border-radius:var(--r-lg);
+    radial-gradient(ellipse 120vw 80vh at 22% 8%, var(--dr-glint) 0%, var(--dr-glint-25) 35%, var(--dr-glint-0) 65%) fixed,
+    linear-gradient(180deg, var(--dr-srf-2) 0%, var(--dr-panel-2) 100%);
+  border:1px solid var(--dr-edge);border-radius:var(--r-lg);
   transition:border-color .15s,box-shadow .15s,color .15s;
   box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.95),
+    inset 0 1px 0 var(--dr-sheen-95),
     inset 0 -1px 0 rgba(0,0,0,.06),
     0 1px 1px rgba(0,0,0,.04),
     0 6px 16px -8px rgba(0,0,0,.12);
 }
 .dr-kill:hover{
-  border-color:oklch(0.55 0.014 78);
+  border-color:var(--dr-edge-2);
   box-shadow:
-    inset 0 1px 0 rgba(255,255,255,1),
+    inset 0 1px 0 var(--dr-sheen-100),
     inset 0 -1px 0 rgba(0,0,0,.06),
     0 1px 1px rgba(0,0,0,.04),
     0 8px 20px -8px rgba(0,0,0,.16);
@@ -257,7 +345,7 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
 .dr-kill:active{
   box-shadow:
     inset 0 2px 5px rgba(0,0,0,.12),
-    inset 0 1px 0 rgba(255,255,255,.45),
+    inset 0 1px 0 var(--dr-sheen-45),
     0 1px 1px rgba(0,0,0,.03);
   transition:box-shadow .04s ease-out;
 }
@@ -299,19 +387,19 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
      a whisper of viewport-anchored radial sheen. Form comes from edge highlights
      and shadows, not gradient. */
   background:
-    radial-gradient(ellipse 120vw 80vh at 22% 8%, oklch(0.97 0.010 80) 0%, oklch(0.97 0.010 80 / 0.25) 35%, oklch(0.97 0.010 80 / 0) 65%) fixed,
-    linear-gradient(180deg, oklch(0.92 0.013 80) 0%, oklch(0.90 0.014 80) 100%);
-  border:1px solid oklch(0.66 0.014 78);border-radius:999px;text-align:center;display:flex;flex-direction:row;align-items:baseline;justify-content:center;gap:var(--s3);min-width:0;transition:border-color .2s,box-shadow .2s,transform .1s;outline:none;
+    radial-gradient(ellipse 120vw 80vh at 22% 8%, var(--dr-glint) 0%, var(--dr-glint-25) 35%, var(--dr-glint-0) 65%) fixed,
+    linear-gradient(180deg, var(--dr-srf-2) 0%, var(--dr-panel-2) 100%);
+  border:1px solid var(--dr-edge);border-radius:999px;text-align:center;display:flex;flex-direction:row;align-items:baseline;justify-content:center;gap:var(--s3);min-width:0;transition:border-color .2s,box-shadow .2s,transform .1s;outline:none;
   box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.95),
+    inset 0 1px 0 var(--dr-sheen-95),
     inset 0 -1px 0 rgba(0,0,0,.06),
     0 1px 1px rgba(0,0,0,.04),
     0 6px 14px -8px rgba(0,0,0,.12);
 }
 .dr-bay-btn:hover{
-  border-color:oklch(0.58 0.014 78);
+  border-color:var(--dr-edge-2);
   box-shadow:
-    inset 0 1px 0 rgba(255,255,255,1),
+    inset 0 1px 0 var(--dr-sheen-100),
     inset 0 -1px 0 rgba(0,0,0,.06),
     0 1px 1px rgba(0,0,0,.04),
     0 8px 18px -8px rgba(0,0,0,.16);
@@ -321,7 +409,7 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
 .dr-bay-btn:active{
   box-shadow:
     inset 0 2px 5px rgba(0,0,0,.12),
-    inset 0 1px 0 rgba(255,255,255,.45),
+    inset 0 1px 0 var(--dr-sheen-45),
     0 1px 1px rgba(0,0,0,.03);
   transition:box-shadow .04s ease-out;
 }
@@ -330,7 +418,7 @@ body[data-mode="play"] .dr-collapsible[data-collapsed="true"] > :not(.dr-collaps
 .dr-bay-btn[data-active="true"]{
   border-color:var(--dr-moss);
   box-shadow:
-    inset 0 1px 0 rgba(255,255,255,1),
+    inset 0 1px 0 var(--dr-sheen-100),
     inset 0 -1px 0 rgba(0,0,0,.06),
     0 0 0 1px var(--dr-moss-glow),
     0 6px 18px -8px var(--dr-moss-glow);
@@ -361,7 +449,7 @@ body[data-source="none"] .dr-rack{opacity:.45;filter:saturate(.55)}
 .dr-bay-level-tick{position:absolute;top:0;bottom:0;width:1px;background:var(--dr-line)}
 
 /* ── DEVICE PICKER POPOVER ── */
-.dr-device-picker{position:absolute;top:calc(100% + var(--s2));left:0;right:0;background:var(--dr-panel-2);border:1px solid var(--dr-line);border-radius:var(--r-lg);z-index:50;box-shadow:0 12px 36px rgba(0,0,0,.10),inset 0 1px 0 rgba(255,255,255,.85);max-height:320px;display:flex;flex-direction:column;overflow:hidden}
+.dr-device-picker{position:absolute;top:calc(100% + var(--s2));left:0;right:0;background:var(--dr-panel-2);border:1px solid var(--dr-line);border-radius:var(--r-lg);z-index:50;box-shadow:0 12px 36px rgba(0,0,0,.10),inset 0 1px 0 var(--dr-sheen-85);max-height:320px;display:flex;flex-direction:column;overflow:hidden}
 .dr-device-picker[hidden]{display:none}
 .dr-device-picker-head{display:flex;align-items:center;justify-content:space-between;padding:var(--s3) var(--s4);border-bottom:1px solid var(--dr-line)}
 .dr-device-picker-label{font-family:var(--dr-fx);font-weight:700;font-size:10px;letter-spacing:.20em;color:var(--dr-ink-2);text-transform:uppercase}
@@ -385,10 +473,10 @@ body[data-source="none"] .dr-rack{opacity:.45;filter:saturate(.55)}
    and shadows fall *into* the well), no top highlight, gentle bottom highlight. */
 .dr-strip{position:relative;
   background:linear-gradient(180deg, oklch(0.78 0.014 78) 0%, oklch(0.81 0.014 80) 50%, oklch(0.83 0.014 80) 100%);
-  border:1px solid oklch(0.64 0.014 78);border-radius:var(--r-lg);height:104px;overflow:hidden;
+  border:1px solid var(--dr-edge-2);border-radius:var(--r-lg);height:104px;overflow:hidden;
   box-shadow:
     inset 0 2px 4px rgba(0,0,0,.10),
-    inset 0 -1px 0 rgba(255,255,255,.4);
+    inset 0 -1px 0 var(--dr-sheen-40);
 }
 /* When the tape player lives in the bay row's third grid column (its current
    home), let it size itself naturally inside that column. */
@@ -402,11 +490,11 @@ body[data-source="none"] .dr-rack{opacity:.45;filter:saturate(.55)}
    whole project) | waveform panel. */
 .dr-tape{display:grid;grid-template-columns:auto auto 1fr;gap:var(--s5);align-items:stretch;padding:var(--s5) var(--s5);
   background:
-    radial-gradient(ellipse 120vw 80vh at 22% 8%, oklch(0.97 0.010 80) 0%, oklch(0.97 0.010 80 / 0.25) 35%, oklch(0.97 0.010 80 / 0) 65%) fixed,
-    linear-gradient(180deg, oklch(0.92 0.013 80) 0%, oklch(0.90 0.014 80) 100%);
-  border:1px solid oklch(0.64 0.014 78);border-radius:var(--r-lg);
+    radial-gradient(ellipse 120vw 80vh at 22% 8%, var(--dr-glint) 0%, var(--dr-glint-25) 35%, var(--dr-glint-0) 65%) fixed,
+    linear-gradient(180deg, var(--dr-srf-2) 0%, var(--dr-panel-2) 100%);
+  border:1px solid var(--dr-edge-2);border-radius:var(--r-lg);
   box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.92),
+    inset 0 1px 0 var(--dr-sheen-92),
     inset 0 -1px 0 rgba(0,0,0,.05),
     0 1px 1px rgba(0,0,0,.04),
     0 12px 32px -16px rgba(0,0,0,.14);
@@ -426,10 +514,10 @@ body[data-source="none"] .dr-rack{opacity:.45;filter:saturate(.55)}
 .dr-tape-controls{display:grid;grid-template-rows:3fr 1fr;gap:var(--s3);min-width:160px;flex-shrink:0}
 .dr-tape-screw,
 .dr-tape-reverse-mod{display:flex;align-items:center;justify-content:center;padding:var(--s4);
-  background:linear-gradient(180deg, oklch(0.94 0.013 80) 0%, oklch(0.91 0.014 80) 100%);
-  border:1px solid oklch(0.62 0.014 78);border-radius:var(--r-xl);
+  background:linear-gradient(180deg, var(--dr-srf-hi) 0%, var(--dr-srf-3) 100%);
+  border:1px solid var(--dr-edge-2);border-radius:var(--r-xl);
   box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.92),
+    inset 0 1px 0 var(--dr-sheen-92),
     inset 0 -1px 0 rgba(0,0,0,.04),
     0 1px 1px rgba(0,0,0,.04),
     0 6px 18px -10px rgba(0,0,0,.12)}
@@ -439,10 +527,10 @@ body[data-source="none"] .dr-rack{opacity:.45;filter:saturate(.55)}
 .dr-tape-screw .dr-knob-value{font-family:var(--dr-mono);font-size:13px;color:var(--dr-ink);font-variant-numeric:tabular-nums;letter-spacing:.02em;min-width:64px;text-align:center}
 
 .dr-tape-deck{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;flex-shrink:0;gap:var(--s4);padding:var(--s5) var(--s5) var(--s5);
-  background:linear-gradient(180deg, oklch(0.94 0.013 80) 0%, oklch(0.91 0.014 80) 100%);
-  border:1px solid oklch(0.62 0.014 78);border-radius:var(--r-xl);
+  background:linear-gradient(180deg, var(--dr-srf-hi) 0%, var(--dr-srf-3) 100%);
+  border:1px solid var(--dr-edge-2);border-radius:var(--r-xl);
   box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.92),
+    inset 0 1px 0 var(--dr-sheen-92),
     inset 0 -1px 0 rgba(0,0,0,.04),
     0 1px 1px rgba(0,0,0,.04),
     0 6px 18px -10px rgba(0,0,0,.12)}
@@ -452,12 +540,12 @@ body[data-source="none"] .dr-rack{opacity:.45;filter:saturate(.55)}
    (amber dot on left, pill-shaped, dot lights amber when engaged). Same
    visual vocabulary so both A/B compare actions read as a family. */
 .dr-tape-reverse{display:inline-flex;flex-direction:row;align-items:center;justify-content:center;gap:8px;padding:11px 18px;align-self:center;
-  background:linear-gradient(180deg,oklch(0.94 0.013 80),oklch(0.90 0.014 80));
-  border:1px solid oklch(0.66 0.014 78);border-radius:999px;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.85),0 1px 1px rgba(0,0,0,.04);
+  background:linear-gradient(180deg,var(--dr-srf-hi),var(--dr-panel-2));
+  border:1px solid var(--dr-edge);border-radius:999px;
+  box-shadow:inset 0 1px 0 var(--dr-sheen-85),0 1px 1px rgba(0,0,0,.04);
   cursor:pointer;transition:color .2s,border-color .2s,box-shadow .2s,background .2s}
-.dr-tape-reverse:hover{border-color:var(--dr-line-2);box-shadow:inset 0 1px 0 rgba(255,255,255,1),0 1px 1px rgba(0,0,0,.04)}
-.dr-tape-reverse:active{box-shadow:inset 0 1px 3px rgba(0,0,0,.12),inset 0 1px 0 rgba(255,255,255,.4)}
+.dr-tape-reverse:hover{border-color:var(--dr-line-2);box-shadow:inset 0 1px 0 var(--dr-sheen-100),0 1px 1px rgba(0,0,0,.04)}
+.dr-tape-reverse:active{box-shadow:inset 0 1px 3px rgba(0,0,0,.12),inset 0 1px 0 var(--dr-sheen-40)}
 .dr-tape-reverse-dot{width:10px;height:10px;border-radius:50%;background:var(--dr-line-2);box-shadow:0 0 0 0 var(--dr-amber);transition:background .2s,box-shadow .2s}
 .dr-tape-reverse-label{font-family:var(--dr-fx);font-weight:700;font-size:11px;letter-spacing:.16em;color:var(--dr-ink);text-transform:uppercase;line-height:1;transition:color .2s}
 .dr-tape-reverse[data-active="true"]{background:var(--dr-panel-3);border-color:var(--dr-amber)}
@@ -519,10 +607,10 @@ body[data-source="none"] .dr-rack{opacity:.45;filter:saturate(.55)}
 /* Wave/sample panel card — same bounded-box treatment as the tape deck so
    the two cards read as a matched pair within the sampler row. */
 .dr-tape-panel{display:flex;flex-direction:column;gap:var(--s4);min-width:0;padding:var(--s5);
-  background:linear-gradient(180deg, oklch(0.94 0.013 80) 0%, oklch(0.91 0.014 80) 100%);
-  border:1px solid oklch(0.62 0.014 78);border-radius:var(--r-xl);
+  background:linear-gradient(180deg, var(--dr-srf-hi) 0%, var(--dr-srf-3) 100%);
+  border:1px solid var(--dr-edge-2);border-radius:var(--r-xl);
   box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.92),
+    inset 0 1px 0 var(--dr-sheen-92),
     inset 0 -1px 0 rgba(0,0,0,.04),
     0 1px 1px rgba(0,0,0,.04),
     0 6px 18px -10px rgba(0,0,0,.12)}
@@ -600,23 +688,23 @@ body[data-source="none"] .dr-rack{opacity:.45;filter:saturate(.55)}
 .dr-br-tool-label{font-family:var(--dr-fx);font-weight:700;font-size:10px;letter-spacing:.20em;color:var(--dr-ink-2);text-transform:uppercase;line-height:1;flex-shrink:0}
 .dr-br-tool .dr-br-trigger{flex-shrink:0;width:8px;height:8px;border-radius:50%;background:var(--dr-line-2);transition:background .08s,box-shadow .08s}
 .dr-br-tool .dr-br-trigger[data-active="true"]{background:var(--dr-moss);box-shadow:0 0 10px var(--dr-moss-glow)}
-.dr-br-tool .dr-br-grid{flex:1;display:grid;grid-template-columns:repeat(7,1fr);gap:1px;background:oklch(0.66 0.014 78);border:1px solid oklch(0.62 0.014 78);border-radius:var(--r-sm);overflow:hidden}
-.dr-br-tool .dr-br-div{padding:7px 4px;font-size:10px;font-family:var(--dr-fx);font-weight:600;letter-spacing:.10em;color:var(--dr-ink-dim);text-transform:uppercase;background:linear-gradient(180deg,oklch(0.94 0.013 80),oklch(0.90 0.014 80));border:0;cursor:pointer;line-height:1;transition:color .12s,background .12s}
+.dr-br-tool .dr-br-grid{flex:1;display:grid;grid-template-columns:repeat(7,1fr);gap:1px;background:var(--dr-edge);border:1px solid var(--dr-edge-2);border-radius:var(--r-sm);overflow:hidden}
+.dr-br-tool .dr-br-div{padding:7px 4px;font-size:10px;font-family:var(--dr-fx);font-weight:600;letter-spacing:.10em;color:var(--dr-ink-dim);text-transform:uppercase;background:linear-gradient(180deg,var(--dr-srf-hi),var(--dr-panel-2));border:0;cursor:pointer;line-height:1;transition:color .12s,background .12s}
 .dr-br-tool .dr-br-div:hover{color:var(--dr-ink);background:var(--dr-panel-3)}
 .dr-br-tool .dr-br-div[data-div="off"]{font-weight:700;letter-spacing:.16em}
 .dr-br-tool .dr-br-div[data-active="true"]{color:var(--dr-amber);background:linear-gradient(180deg,oklch(0.96 0.018 60 / 0.85),oklch(0.91 0.022 60 / 0.85));box-shadow:inset 0 2px 0 var(--dr-amber)}
-.dr-br-tool .dr-br-div[data-active="true"][data-div="off"]{color:var(--dr-ink-dim);background:linear-gradient(180deg,oklch(0.94 0.013 80),oklch(0.90 0.014 80));box-shadow:inset 0 2px 0 var(--dr-line-2)}
+.dr-br-tool .dr-br-div[data-active="true"][data-div="off"]{color:var(--dr-ink-dim);background:linear-gradient(180deg,var(--dr-srf-hi),var(--dr-panel-2));box-shadow:inset 0 2px 0 var(--dr-line-2)}
 
 .dr-sampler-controls{display:flex;flex-direction:row;align-items:center;gap:var(--s3);padding:var(--s2) 0 0}
 .dr-sampler-btn{display:flex;align-items:center;gap:var(--s2);padding:6px 12px;font-family:var(--dr-fx);font-weight:600;font-size:10px;letter-spacing:.18em;color:var(--dr-ink-dim);text-transform:uppercase;cursor:pointer;
-  background:linear-gradient(180deg,oklch(0.94 0.013 80),oklch(0.90 0.014 80));
-  border:1px solid oklch(0.66 0.014 78);border-radius:var(--r-sm);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.85),0 1px 1px rgba(0,0,0,.04);
+  background:linear-gradient(180deg,var(--dr-srf-hi),var(--dr-panel-2));
+  border:1px solid var(--dr-edge);border-radius:var(--r-sm);
+  box-shadow:inset 0 1px 0 var(--dr-sheen-85),0 1px 1px rgba(0,0,0,.04);
   transition:color .12s,border-color .12s,box-shadow .12s,background .12s}
 .dr-sampler-btn:hover:not(:disabled){color:var(--dr-moss);border-color:var(--dr-moss)}
-.dr-sampler-btn:active:not(:disabled){box-shadow:inset 0 1px 3px rgba(0,0,0,.12),inset 0 1px 0 rgba(255,255,255,.4)}
+.dr-sampler-btn:active:not(:disabled){box-shadow:inset 0 1px 3px rgba(0,0,0,.12),inset 0 1px 0 var(--dr-sheen-40)}
 .dr-sampler-btn:disabled{opacity:.4;cursor:not-allowed}
-.dr-sampler-btn[data-active="true"]{color:var(--dr-moss);border-color:var(--dr-moss);box-shadow:inset 0 1px 0 rgba(255,255,255,.85),0 0 12px var(--dr-moss-glow)}
+.dr-sampler-btn[data-active="true"]{color:var(--dr-moss);border-color:var(--dr-moss);box-shadow:inset 0 1px 0 var(--dr-sheen-85),0 0 12px var(--dr-moss-glow)}
 .dr-sampler-btn-glyph{font-size:10px;line-height:1;color:inherit}
 .dr-sampler-hint{flex:1;font-family:var(--dr-mono);font-size:10px;letter-spacing:.04em;color:var(--dr-ink-2);line-height:1.4;text-align:right}
 .dr-sampler-hint b{color:var(--dr-ink-dim);font-weight:400}
@@ -630,11 +718,12 @@ body[data-source="none"] .dr-rack{opacity:.45;filter:saturate(.55)}
    left-aligned. Sits flush with the masthead so it reads as a top-level
    utility row, not part of any single section. */
 .dr-globalbar{display:flex;flex-direction:row;align-items:center;gap:var(--s3);padding:var(--s4) 0 var(--s2)}
-/* STOP + A/B (performance controls) sit left; MIDI toggle + destructive
-   resets cluster right so the two kinds of control don't read as siblings */
+/* STOP + A/B (performance controls) sit left; theme + MIDI toggles +
+   destructive resets cluster right so the two kinds of control don't
+   read as siblings */
 .dr-stop-square{width:8px;height:8px;border-radius:1px;background:var(--dr-coral);flex-shrink:0}
-.dr-globalbar .dr-midi-toggle{margin-left:auto}
-.dr-midi-toggle[aria-pressed="true"]{color:oklch(0.98 0.003 80);background:var(--dr-moss);border-color:var(--dr-moss)}
+.dr-globalbar .dr-theme-toggle{margin-left:auto}
+.dr-midi-toggle[aria-pressed="true"]{color:var(--dr-paper);background:var(--dr-moss);border-color:var(--dr-moss)}
 /* MIDI mapping mode — the ~40 per-knob LEARN pills only render while the
    global MIDI toggle is on; bindings themselves stay live regardless */
 body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
@@ -675,17 +764,17 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
 @media (max-width:720px){.dr-samples-grid{grid-template-columns:repeat(2,1fr);grid-template-rows:repeat(4,1fr)}}
 .dr-spad{position:relative;display:flex;flex-direction:column;align-items:stretch;justify-content:space-between;gap:4px;padding:8px 10px 6px;min-height:60px;
   background:
-    radial-gradient(ellipse 120vw 80vh at 22% 8%, oklch(0.97 0.010 80) 0%, oklch(0.97 0.010 80 / 0.25) 35%, oklch(0.97 0.010 80 / 0) 65%) fixed,
-    linear-gradient(180deg, oklch(0.92 0.013 80) 0%, oklch(0.90 0.014 80) 100%);
-  border:1px solid oklch(0.66 0.014 78);border-radius:var(--r-md);cursor:pointer;
+    radial-gradient(ellipse 120vw 80vh at 22% 8%, var(--dr-glint) 0%, var(--dr-glint-25) 35%, var(--dr-glint-0) 65%) fixed,
+    linear-gradient(180deg, var(--dr-srf-2) 0%, var(--dr-panel-2) 100%);
+  border:1px solid var(--dr-edge);border-radius:var(--r-md);cursor:pointer;
   box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.92),
+    inset 0 1px 0 var(--dr-sheen-92),
     inset 0 -1px 0 rgba(0,0,0,.05),
     0 1px 1px rgba(0,0,0,.04),
     0 4px 12px -8px rgba(0,0,0,.14);
   transition:border-color .12s,box-shadow .12s,background .08s,color .08s}
 .dr-spad:hover{border-color:var(--dr-line-2)}
-.dr-spad[data-active="true"]{border-color:var(--dr-moss);box-shadow:inset 0 1px 0 rgba(255,255,255,.92),0 0 14px -4px var(--dr-moss-glow),0 1px 1px rgba(0,0,0,.04)}
+.dr-spad[data-active="true"]{border-color:var(--dr-moss);box-shadow:inset 0 1px 0 var(--dr-sheen-92),0 0 14px -4px var(--dr-moss-glow),0 1px 1px rgba(0,0,0,.04)}
 .dr-spad[data-firing="true"]{border-color:var(--dr-moss);background:var(--dr-panel-3);box-shadow:inset 0 2px 4px rgba(0,0,0,.10),0 0 14px -4px var(--dr-moss-glow)}
 .dr-spad-key{position:absolute;top:4px;right:6px;font-family:var(--dr-mono);font-weight:500;font-size:8px;letter-spacing:.10em;color:var(--dr-ink-2);text-transform:uppercase}
 .dr-spad[data-firing="true"] .dr-spad-key{color:var(--dr-moss)}
@@ -726,11 +815,11 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
 .dr-synth-knobs .dr-knob-label{font-size:9px;letter-spacing:.18em}
 .dr-pad{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--s2);padding:var(--s4) var(--s3);min-height:88px;
   background:
-    radial-gradient(ellipse 120vw 80vh at 22% 8%, oklch(0.97 0.010 80) 0%, oklch(0.97 0.010 80 / 0.25) 35%, oklch(0.97 0.010 80 / 0) 65%) fixed,
-    linear-gradient(180deg, oklch(0.92 0.013 80) 0%, oklch(0.90 0.014 80) 100%);
-  border:1px solid oklch(0.66 0.014 78);border-radius:var(--r-md);cursor:pointer;
+    radial-gradient(ellipse 120vw 80vh at 22% 8%, var(--dr-glint) 0%, var(--dr-glint-25) 35%, var(--dr-glint-0) 65%) fixed,
+    linear-gradient(180deg, var(--dr-srf-2) 0%, var(--dr-panel-2) 100%);
+  border:1px solid var(--dr-edge);border-radius:var(--r-md);cursor:pointer;
   box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.92),
+    inset 0 1px 0 var(--dr-sheen-92),
     inset 0 -1px 0 rgba(0,0,0,.05),
     0 1px 1px rgba(0,0,0,.04),
     0 4px 12px -8px rgba(0,0,0,.14);
@@ -757,18 +846,18 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
 .dr-collapsible-head{position:relative;padding-right:56px}
 .dr-collapsible-toggle{position:absolute;right:0;top:50%;transform:translateY(-50%);
   display:flex;align-items:center;justify-content:center;width:44px;height:32px;padding:0;
-  background:linear-gradient(180deg,oklch(0.94 0.013 80) 0%,oklch(0.89 0.014 80) 100%);
-  border:1px solid oklch(0.62 0.014 78);border-radius:var(--r-sm);cursor:pointer;
+  background:linear-gradient(180deg,var(--dr-srf-hi) 0%,var(--dr-srf-lo) 100%);
+  border:1px solid var(--dr-edge-2);border-radius:var(--r-sm);cursor:pointer;
   color:var(--dr-ink-dim);
   box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.92),
+    inset 0 1px 0 var(--dr-sheen-92),
     inset 0 -1px 0 rgba(0,0,0,.04),
     0 1px 1px rgba(0,0,0,.04),
     0 2px 6px -3px rgba(0,0,0,.10);
   transition:color .15s,border-color .15s,box-shadow .15s,background .12s}
 .dr-collapsible-toggle:hover{color:var(--dr-moss);border-color:var(--dr-moss);
   box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.92),
+    inset 0 1px 0 var(--dr-sheen-92),
     0 0 14px -2px var(--dr-moss-glow),
     0 2px 6px -3px rgba(0,0,0,.10)}
 .dr-collapsible-toggle:active{box-shadow:inset 0 1px 3px rgba(0,0,0,.14),inset 0 1px 0 rgba(255,255,255,.5)}
@@ -807,22 +896,22 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
 .dr-seq-swing .dr-knob-dial{width:36px;height:36px}
 .dr-seq-swing .dr-knob-value{font-size:9px;min-width:36px;text-align:left}
 .dr-seq-play,.dr-seq-clear{font-family:var(--dr-fx);font-weight:600;font-size:10px;letter-spacing:.20em;color:var(--dr-ink-dim);text-transform:uppercase;
-  background:linear-gradient(180deg,oklch(0.94 0.013 80),oklch(0.90 0.014 80));
-  border:1px solid oklch(0.66 0.014 78);border-radius:var(--r-sm);padding:7px 14px;cursor:pointer;
+  background:linear-gradient(180deg,var(--dr-srf-hi),var(--dr-panel-2));
+  border:1px solid var(--dr-edge);border-radius:var(--r-sm);padding:7px 14px;cursor:pointer;
   display:flex;align-items:center;gap:var(--s2);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.85),0 1px 1px rgba(0,0,0,.04);
+  box-shadow:inset 0 1px 0 var(--dr-sheen-85),0 1px 1px rgba(0,0,0,.04);
   transition:color .12s,border-color .12s,box-shadow .12s,background .12s}
 .dr-seq-play:hover,.dr-seq-clear:hover{color:var(--dr-moss);border-color:var(--dr-moss)}
-.dr-seq-play:active,.dr-seq-clear:active{box-shadow:inset 0 1px 3px rgba(0,0,0,.12),inset 0 1px 0 rgba(255,255,255,.4);background:var(--dr-panel-3)}
-.dr-seq-play[data-playing="true"]{color:var(--dr-moss);border-color:var(--dr-moss);box-shadow:inset 0 1px 0 rgba(255,255,255,.85),0 0 12px var(--dr-moss-glow)}
+.dr-seq-play:active,.dr-seq-clear:active{box-shadow:inset 0 1px 3px rgba(0,0,0,.12),inset 0 1px 0 var(--dr-sheen-40);background:var(--dr-panel-3)}
+.dr-seq-play[data-playing="true"]{color:var(--dr-moss);border-color:var(--dr-moss);box-shadow:inset 0 1px 0 var(--dr-sheen-85),0 0 12px var(--dr-moss-glow)}
 .dr-seq-play-arrow{font-size:11px;line-height:1;color:inherit}
 .dr-seq-clear{font-size:9px;padding:5px 12px}
 .dr-seq-grid{display:flex;flex-direction:column;gap:3px}
 .dr-seq-row{display:grid;grid-template-columns:64px repeat(16, 1fr);gap:3px;align-items:stretch}
 .dr-seq-rowname{font-family:var(--dr-disp);font-weight:600;font-size:11px;letter-spacing:.10em;color:var(--dr-ink-dim);text-transform:uppercase;line-height:1;display:flex;align-items:center;justify-content:flex-start;padding-right:var(--s2)}
-.dr-seq-cell{position:relative;height:28px;border:1px solid oklch(0.66 0.014 78);border-radius:3px;cursor:pointer;
-  background:linear-gradient(180deg, oklch(0.94 0.013 80) 0%, oklch(0.91 0.014 80) 100%);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.80),0 1px 1px rgba(0,0,0,.03);
+.dr-seq-cell{position:relative;height:28px;border:1px solid var(--dr-edge);border-radius:3px;cursor:pointer;
+  background:linear-gradient(180deg, var(--dr-srf-hi) 0%, var(--dr-srf-3) 100%);
+  box-shadow:inset 0 1px 0 var(--dr-sheen-80),0 1px 1px rgba(0,0,0,.03);
   transition:background .08s,border-color .12s,box-shadow .12s}
 .dr-seq-cell:hover{border-color:var(--dr-line-2)}
 /* beat boundary — left edge of cells 4, 8, 12 gets extra spacing via margin */
@@ -832,7 +921,7 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
   border-color:var(--dr-ink);
   box-shadow:inset 0 1px 0 rgba(255,255,255,.10),inset 0 -1px 0 rgba(0,0,0,.30),0 1px 2px rgba(0,0,0,.10)}
 .dr-seq-cell[data-playhead="true"]{
-  background:linear-gradient(180deg, oklch(0.94 0.013 80) 0%, var(--dr-moss-glow) 100%);
+  background:linear-gradient(180deg, var(--dr-srf-hi) 0%, var(--dr-moss-glow) 100%);
   border-color:var(--dr-moss-dim)}
 .dr-seq-cell[data-on="true"][data-playhead="true"]{
   background:linear-gradient(180deg, var(--dr-moss) 0%, var(--dr-moss-dim) 100%);
@@ -853,12 +942,12 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
 .dr-rack-header{display:flex;flex-direction:row;align-items:baseline;justify-content:space-between;gap:var(--s4);margin-bottom:var(--s3)}
 .dr-rack-header .dr-section{margin:0}
 .dr-rack-clear{font-family:var(--dr-fx);font-weight:600;font-size:9px;letter-spacing:.20em;color:var(--dr-ink-dim);text-transform:uppercase;
-  background:linear-gradient(180deg,oklch(0.94 0.013 80),oklch(0.90 0.014 80));
-  border:1px solid oklch(0.66 0.014 78);border-radius:var(--r-sm);padding:5px 12px;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.85),0 1px 1px rgba(0,0,0,.04);
+  background:linear-gradient(180deg,var(--dr-srf-hi),var(--dr-panel-2));
+  border:1px solid var(--dr-edge);border-radius:var(--r-sm);padding:5px 12px;
+  box-shadow:inset 0 1px 0 var(--dr-sheen-85),0 1px 1px rgba(0,0,0,.04);
   transition:color .12s,border-color .12s,box-shadow .12s,background .12s}
 .dr-rack-clear:hover{color:var(--dr-amber);border-color:var(--dr-amber)}
-.dr-rack-clear:active{box-shadow:inset 0 1px 3px rgba(0,0,0,.12),inset 0 1px 0 rgba(255,255,255,.4);background:var(--dr-panel-3)}
+.dr-rack-clear:active{box-shadow:inset 0 1px 3px rgba(0,0,0,.12),inset 0 1px 0 var(--dr-sheen-40);background:var(--dr-panel-3)}
 
 /* ── RACK — separate pill-shaped modules in a 5-up grid. No outer chassis;
    each module is its own elevated pill with rounded corners + soft shadow,
@@ -876,10 +965,10 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
    5-up grid. Each is its own tactile element with rounded corners + shadow.
    More top padding so the title has breathing room above the head divider. */
 .dr-mod{position:relative;
-  background:linear-gradient(180deg, oklch(0.94 0.013 80) 0%, oklch(0.91 0.014 80) 100%);
-  border:1px solid oklch(0.62 0.014 78);border-radius:var(--r-xl);padding:var(--s5) var(--s3) var(--s3);display:flex;flex-direction:column;gap:var(--s3);overflow:hidden;
+  background:linear-gradient(180deg, var(--dr-srf-hi) 0%, var(--dr-srf-3) 100%);
+  border:1px solid var(--dr-edge-2);border-radius:var(--r-xl);padding:var(--s5) var(--s3) var(--s3);display:flex;flex-direction:column;gap:var(--s3);overflow:hidden;
   box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.92),
+    inset 0 1px 0 var(--dr-sheen-92),
     inset 0 -1px 0 rgba(0,0,0,.04),
     0 1px 1px rgba(0,0,0,.04),
     0 6px 18px -10px rgba(0,0,0,.12);
@@ -905,7 +994,7 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
     repeating-linear-gradient(180deg, transparent 0 2px, rgba(0,0,0,.025) 2px 3px),
     linear-gradient(180deg, oklch(0.90 0.010 80) 0%, oklch(0.86 0.012 80) 100%);
   box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.85),
+    inset 0 1px 0 var(--dr-sheen-85),
     inset 0 -1px 0 rgba(0,0,0,.10),
     0 1px 1px rgba(0,0,0,.06),
     0 8px 22px -10px rgba(0,0,0,.22);
@@ -931,7 +1020,7 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
     repeating-linear-gradient(180deg, transparent 0 2px, rgba(0,0,0,.025) 2px 3px),
     linear-gradient(180deg, oklch(0.90 0.010 80) 0%, oklch(0.86 0.012 80) 100%);
   box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.85),
+    inset 0 1px 0 var(--dr-sheen-85),
     inset 0 -1px 0 rgba(0,0,0,.10),
     0 1px 1px rgba(0,0,0,.06),
     0 8px 22px -10px rgba(0,0,0,.22);
@@ -1051,7 +1140,7 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
 .dr-knob-dial circle:not(.dr-ring-inner){fill:none;stroke:oklch(0.58 0.014 80);stroke-width:.7;opacity:.55}
 .dr-knob-dial .dr-arc{fill:none;stroke:var(--dr-moss);stroke-width:1.8;stroke-linecap:butt}
 /* tick mark — deep charcoal, slightly thicker so it reads as molded plastic on metal */
-.dr-knob-dial .dr-tick{stroke:oklch(0.18 0.008 80);stroke-width:2.4;stroke-linecap:square}
+.dr-knob-dial .dr-tick{stroke:var(--dr-ink);stroke-width:2.4;stroke-linecap:square}
 .dr-knob-value{font-family:var(--dr-mono);font-size:10px;letter-spacing:.04em;color:var(--dr-ink);min-width:54px;text-align:center;font-variant-numeric:tabular-nums}
 
 .dr-knob-screw .dr-knob-dial{width:80px;height:80px}
@@ -1072,11 +1161,11 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
 .dr-mode-row{display:flex;gap:var(--s2);justify-content:flex-end}
 /* Small button family — flush, subtle airbrushed surface, press-in on :active */
 .dr-mode-btn{padding:5px 12px;font-family:var(--dr-fx);font-weight:600;font-size:10px;letter-spacing:.16em;color:var(--dr-ink-dim);text-transform:uppercase;
-  background:linear-gradient(180deg,oklch(0.94 0.013 80),oklch(0.90 0.014 80));
-  border:1px solid oklch(0.66 0.014 78);border-radius:var(--r-sm);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.85),0 1px 1px rgba(0,0,0,.04);
+  background:linear-gradient(180deg,var(--dr-srf-hi),var(--dr-panel-2));
+  border:1px solid var(--dr-edge);border-radius:var(--r-sm);
+  box-shadow:inset 0 1px 0 var(--dr-sheen-85),0 1px 1px rgba(0,0,0,.04);
   transition:color .15s,border-color .15s,box-shadow .12s}
-.dr-mode-btn:active{box-shadow:inset 0 1px 3px rgba(0,0,0,.12),inset 0 1px 0 rgba(255,255,255,.4)}
+.dr-mode-btn:active{box-shadow:inset 0 1px 3px rgba(0,0,0,.12),inset 0 1px 0 var(--dr-sheen-40)}
 .dr-mode-btn:hover{color:var(--dr-ink);border-color:var(--dr-line-2)}
 .dr-mode-btn[data-active="true"]{color:var(--dr-moss);border-color:var(--dr-moss);box-shadow:0 0 12px -4px var(--dr-moss-glow)}
 
@@ -1241,11 +1330,11 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
 
 /* ── DELAY MODULE — tempo + divisions + 4 knobs ── */
 .dr-tap-btn{padding:6px 14px;font-family:var(--dr-fx);font-weight:600;font-size:10px;letter-spacing:.20em;color:var(--dr-ink-dim);text-transform:uppercase;
-  background:linear-gradient(180deg,oklch(0.94 0.013 80),oklch(0.90 0.014 80));
-  border:1px solid oklch(0.66 0.014 78);border-radius:var(--r-sm);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.85),0 1px 1px rgba(0,0,0,.04);
+  background:linear-gradient(180deg,var(--dr-srf-hi),var(--dr-panel-2));
+  border:1px solid var(--dr-edge);border-radius:var(--r-sm);
+  box-shadow:inset 0 1px 0 var(--dr-sheen-85),0 1px 1px rgba(0,0,0,.04);
   transition:color .12s,border-color .12s,box-shadow .1s}
-.dr-tap-btn:active{box-shadow:inset 0 1px 3px rgba(0,0,0,.12),inset 0 1px 0 rgba(255,255,255,.4)}
+.dr-tap-btn:active{box-shadow:inset 0 1px 3px rgba(0,0,0,.12),inset 0 1px 0 var(--dr-sheen-40)}
 .dr-tap-btn:hover{color:var(--dr-ink);border-color:var(--dr-line-2)}
 .dr-tap-btn[data-pulsing="true"]{color:var(--dr-moss);border-color:var(--dr-moss);background:var(--dr-panel-3);box-shadow:0 0 12px -4px var(--dr-moss-glow)}
 .dr-delay-vis{width:100%;height:80px;background:var(--dr-panel);border:1px solid var(--dr-line);border-radius:var(--r-md);display:block;box-shadow:inset 0 2px 6px rgba(0,0,0,.08)}
@@ -1318,6 +1407,8 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
 </style>
 </head>
 <body data-source="none">
+<script>/* pre-paint theme stamp — avoids a cream flash for dark-theme users */
+try{var t=new URLSearchParams(location.search).get('theme')||localStorage.getItem('darkroom:theme');if(t==='dark')document.body.setAttribute('data-theme','dark')}catch(_){}</script>
 
 <!-- shared SVG defs for tactile knob gradients (referenced by every knob via url(#...)) -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -1469,6 +1560,9 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
       <span class="dr-kill-label">A/B</span>
       <span class="dr-kill-sub">bypass all / restore</span>
     </button>
+    <!-- Theme toggle — flips the panel to the original moss-on-black build's
+         palette. Label shows the theme you'd switch TO. -->
+    <button class="dr-rack-clear dr-theme-toggle" id="dr-theme" type="button" aria-pressed="false" title="switch the panel between cream and the original dark build">DARK</button>
     <!-- MIDI mapping toggle — reveals the per-knob LEARN pills. Carries the
          long-orphaned dr-midi-pill/dr-midi-status ids so midiSetStatus()'s
          states (LEARN · param, MIDI · n, denied…) render here. -->
@@ -2594,6 +2688,44 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
   const grValue      = null;
 
   // ─── ENGINE STATE ────────────────────────────────────────────────
+    // ─── THEME PALETTES (canvas drawing) ─────────────────────────────
+  // Canvas code can't read CSS vars per-stroke cheaply, so the JS palette
+  // mirrors the CSS token block. DRC is swapped by applyTheme(); every
+  // visualization redraws from DRC each frame and follows automatically.
+  const DR_THEMES = {
+    light: {
+      g96:'oklch(0.96 0.014 80)', g78:'oklch(0.78 0.014 80)',
+      g74:'oklch(0.74 0.014 80)', g74a55:'oklch(0.74 0.014 80 / 0.55)',
+      g68:'oklch(0.68 0.014 80)', g62:'oklch(0.62 0.014 80)',
+      g60:'oklch(0.60 0.014 80)', g55:'oklch(0.55 0.012 80)',
+      g45:'oklch(0.45 0.012 80)',
+      ink:'oklch(0.22 0.005 80)', ink55:'oklch(0.22 0.005 80 / 0.55)',
+      ink45:'oklch(0.22 0.005 80 / 0.45)', ink30:'oklch(0.22 0.005 80 / 0.30)',
+      ink28:'oklch(0.22 0.005 80 / 0.28)', ink04:'oklch(0.22 0.005 80 / 0.04)',
+      acc:'oklch(0.64 0.18 35)', acc70:'oklch(0.64 0.18 35 / 0.7)',
+      acc60:'oklch(0.64 0.18 35 / 0.6)', acc45:'oklch(0.64 0.18 35 / 0.45)',
+      acc35:'oklch(0.64 0.18 35 / 0.35)', accDim85:'oklch(0.50 0.16 35 / 0.85)',
+      haz90:'oklch(0.52 0.18 25 / 0.9)', haz85:'oklch(0.52 0.18 25 / 0.85)',
+      haz70:'oklch(0.52 0.18 25 / 0.7)', led:'oklch(0.66 0.012 140)'
+    },
+    dark: {
+      g96:'oklch(0.26 0.011 145)', g78:'oklch(0.36 0.012 145)',
+      g74:'oklch(0.38 0.012 145)', g74a55:'oklch(0.38 0.012 145 / 0.55)',
+      g68:'oklch(0.42 0.012 145)', g62:'oklch(0.48 0.013 145)',
+      g60:'oklch(0.50 0.013 145)', g55:'oklch(0.54 0.013 145)',
+      g45:'oklch(0.62 0.014 145)',
+      ink:'oklch(0.90 0.010 145)', ink55:'oklch(0.90 0.010 145 / 0.55)',
+      ink45:'oklch(0.90 0.010 145 / 0.45)', ink30:'oklch(0.90 0.010 145 / 0.30)',
+      ink28:'oklch(0.90 0.010 145 / 0.28)', ink04:'oklch(0.90 0.010 145 / 0.05)',
+      acc:'oklch(0.74 0.18 142)', acc70:'oklch(0.74 0.18 142 / 0.7)',
+      acc60:'oklch(0.74 0.18 142 / 0.6)', acc45:'oklch(0.74 0.18 142 / 0.45)',
+      acc35:'oklch(0.74 0.18 142 / 0.35)', accDim85:'oklch(0.58 0.14 142 / 0.85)',
+      haz90:'oklch(0.62 0.19 25 / 0.9)', haz85:'oklch(0.62 0.19 25 / 0.85)',
+      haz70:'oklch(0.62 0.19 25 / 0.7)', led:'oklch(0.70 0.10 142)'
+    }
+  };
+  let DRC = DR_THEMES.light;
+
   const DR = {
     ctx: null,
     nodes: {},
@@ -5551,6 +5683,37 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
   try { midiUiSaved = localStorage.getItem('darkroom:midiui') || 'off'; } catch(_) {}
   midiUiSet(midiUiSaved === 'on');
   if (midiUiSaved === 'on') midiEnable();
+
+  // ─── THEME — cream (default) / dark (the original moss-on-black build) ──
+  // CSS re-skins through the token block; canvases re-skin through DRC,
+  // picked up on their next animation frame. Pill label names the theme
+  // you'd switch TO. A tiny inline script in <head> pre-stamps data-theme
+  // before first paint so dark users don't get a cream flash.
+  const themeBtn = document.getElementById('dr-theme');
+  function applyTheme(name) {
+    const dark = name === 'dark';
+    document.body.setAttribute('data-theme', dark ? 'dark' : 'light');
+    DRC = dark ? DR_THEMES.dark : DR_THEMES.light;
+    if (themeBtn) {
+      themeBtn.textContent = dark ? 'LIGHT' : 'DARK';
+      themeBtn.setAttribute('aria-pressed', dark ? 'true' : 'false');
+    }
+    try { localStorage.setItem('darkroom:theme', dark ? 'dark' : 'light'); } catch(_) {}
+    // per-frame draws pick DRC up automatically; the IR display only draws
+    // on startup/IR-change, so nudge it (no-op before ctx exists)
+    if (typeof drawIR === 'function') drawIR();
+  }
+  themeBtn?.addEventListener('click', () => {
+    applyTheme(document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+  });
+  // ?theme=dark|light overrides (and then persists) — lets the dark build
+  // be linked directly
+  let themeSaved = 'light';
+  try {
+    themeSaved = new URLSearchParams(location.search).get('theme')
+      || localStorage.getItem('darkroom:theme') || 'light';
+  } catch(_) {}
+  applyTheme(themeSaved === 'dark' ? 'dark' : 'light');
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape' && MIDI.learnTarget) {
       midiExitLearn();
@@ -6371,7 +6534,7 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
     // BPM bar grid — vertical hairlines at bar boundaries based on current BPM
     const bpm = DR.state.delay.bpm || 120;
     const barsVisible = (SAMPLER_RING_SECONDS * bpm) / 60 / 4;
-    cx.strokeStyle = 'oklch(0.74 0.014 80 / 0.55)';
+    cx.strokeStyle = DRC.g74a55;
     cx.lineWidth = 1;
     for (let b = 1; b < barsVisible; b++) {
       const x = (w / barsVisible) * b;
@@ -6379,7 +6542,7 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
     }
 
     // baseline
-    cx.strokeStyle = 'oklch(0.62 0.014 80)';
+    cx.strokeStyle = DRC.g62;
     cx.beginPath(); cx.moveTo(0, h/2); cx.lineTo(w, h/2); cx.stroke();
 
     // peak bars from ring buffer
@@ -6387,7 +6550,7 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
       const cols = SAMPLER_PEAK_COLS;
       const colW = w / cols;
       const amp = h * 0.48;
-      cx.fillStyle = 'oklch(0.64 0.18 35)'; // --dr-moss (the site orange)
+      cx.fillStyle = DRC.acc; // --dr-moss (the site orange)
       for (let c = 0; c < cols; c++) {
         const mn = DR.sampler.peakMin[c];
         const mx = DR.sampler.peakMax[c];
@@ -6400,9 +6563,9 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
 
     // playhead — only when live-scrolling; sits on the right edge
     if (!DR.sampler.isFrozen && DR.sampler.totalFrames > 0) {
-      cx.shadowColor = 'oklch(0.52 0.18 25 / 0.7)';
+      cx.shadowColor = DRC.haz70;
       cx.shadowBlur = 8;
-      cx.fillStyle = 'oklch(0.52 0.18 25 / 0.9)';
+      cx.fillStyle = DRC.haz90;
       cx.fillRect(w - 2, 0, 2, h);
       cx.shadowBlur = 0;
     }
@@ -6622,7 +6785,7 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
     const cols = SAMPLE_PAD_PEAK_COLS;
     const colW = w / cols;
     const amp = h * 0.45;
-    cx.fillStyle = 'oklch(0.22 0.005 80)';
+    cx.fillStyle = DRC.ink;
     for (let c = 0; c < cols; c++) {
       const mn = peaks[c * 2];
       const mx = peaks[c * 2 + 1];
@@ -6773,12 +6936,12 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
     if (!curveCanvas) return;
     const { cx, w, h } = setupCanvas(curveCanvas);
     cx.clearRect(0, 0, w, h);
-    cx.strokeStyle = 'oklch(0.74 0.014 80)';
+    cx.strokeStyle = DRC.g74;
     cx.lineWidth = 1;
     [0.25, 0.5, 0.75].forEach(p => {
       const x = w * p; cx.beginPath(); cx.moveTo(x, 0); cx.lineTo(x, h); cx.stroke();
     });
-    cx.strokeStyle = 'oklch(0.60 0.014 80)';
+    cx.strokeStyle = DRC.g60;
     cx.beginPath(); cx.moveTo(0, h*0.5); cx.lineTo(w, h*0.5); cx.stroke();
 
     // live spectrum behind the curve — coral, FabFilter-style warm overlay
@@ -6787,8 +6950,8 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
       if (!curveBuf || curveBuf.length !== a.frequencyBinCount) curveBuf = new Uint8Array(a.frequencyBinCount);
       a.getByteFrequencyData(curveBuf);
       const grad = cx.createLinearGradient(0, 0, 0, h);
-      grad.addColorStop(0, 'oklch(0.22 0.005 80 / 0.28)');
-      grad.addColorStop(1, 'oklch(0.22 0.005 80 / 0.04)');
+      grad.addColorStop(0, DRC.ink28);
+      grad.addColorStop(1, DRC.ink04);
       cx.fillStyle = grad;
       cx.beginPath();
       cx.moveTo(0, h);
@@ -6815,10 +6978,10 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
       res = DR.state.res;
     }
     const type = DR.state.filterType;
-    cx.strokeStyle = DR.state.bypassed.filter ? 'oklch(0.68 0.014 80)' : 'oklch(0.64 0.18 35)';
+    cx.strokeStyle = DR.state.bypassed.filter ? DRC.g68 : DRC.acc;
     cx.lineWidth = 1.8;
     if (!DR.state.bypassed.filter) {
-      cx.shadowColor = 'oklch(0.64 0.18 35 / 0.35)';
+      cx.shadowColor = DRC.acc35;
       cx.shadowBlur = 6;
     }
     cx.beginPath();
@@ -6845,15 +7008,15 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
     // cutoff handle — glowing moss circle
     const cutX = w * (Math.log(cut/20) / Math.log(20000/20));
     if (!DR.state.bypassed.filter) {
-      cx.shadowColor = 'oklch(0.64 0.18 35 / 0.6)';
+      cx.shadowColor = DRC.acc60;
       cx.shadowBlur = 8;
     }
-    cx.fillStyle = DR.state.bypassed.filter ? 'oklch(0.68 0.014 80)' : 'oklch(0.64 0.18 35)';
+    cx.fillStyle = DR.state.bypassed.filter ? DRC.g68 : DRC.acc;
     cx.beginPath(); cx.arc(cutX, h*0.5, 5, 0, Math.PI * 2); cx.fill();
     cx.shadowBlur = 0;
 
     // axis labels
-    cx.fillStyle = 'oklch(0.45 0.012 80)';
+    cx.fillStyle = DRC.g45;
     cx.font = '9px "Departure Mono", "Fragment Mono", monospace';
     cx.fillText('20', 4, h - 6);
     cx.fillText('200', w*0.25 + 4, h - 6);
@@ -6870,7 +7033,7 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
     cx.clearRect(0, 0, w, h);
 
     // grid — vertical freq guides + ±6 dB & 0 dB horizontals
-    cx.strokeStyle = 'oklch(0.74 0.014 80)';
+    cx.strokeStyle = DRC.g74;
     cx.lineWidth = 1;
     [0.25, 0.5, 0.75].forEach(p => {
       const x = w * p; cx.beginPath(); cx.moveTo(x, 0); cx.lineTo(x, h); cx.stroke();
@@ -6878,7 +7041,7 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
     [0.275, 0.725].forEach(p => {
       cx.beginPath(); cx.moveTo(0, h * p); cx.lineTo(w, h * p); cx.stroke();
     });
-    cx.strokeStyle = 'oklch(0.60 0.014 80)';
+    cx.strokeStyle = DRC.g60;
     cx.beginPath(); cx.moveTo(0, h * 0.5); cx.lineTo(w, h * 0.5); cx.stroke();
 
     // input spectrum behind — olive overlay so user sees what they're shaping
@@ -6887,8 +7050,8 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
       if (!eqSpecBuf || eqSpecBuf.length !== a.frequencyBinCount) eqSpecBuf = new Uint8Array(a.frequencyBinCount);
       a.getByteFrequencyData(eqSpecBuf);
       const grad = cx.createLinearGradient(0, 0, 0, h);
-      grad.addColorStop(0, 'oklch(0.22 0.005 80 / 0.28)');
-      grad.addColorStop(1, 'oklch(0.22 0.005 80 / 0.04)');
+      grad.addColorStop(0, DRC.ink28);
+      grad.addColorStop(1, DRC.ink04);
       cx.fillStyle = grad;
       cx.beginPath();
       cx.moveTo(0, h);
@@ -6904,10 +7067,10 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
 
     // combined EQ response — uses getFrequencyResponse for accurate biquad math
     const bypassed = DR.state.bypassed.eq;
-    const accent = bypassed ? 'oklch(0.68 0.014 80)' : 'oklch(0.64 0.18 35)';
+    const accent = bypassed ? DRC.g68 : DRC.acc;
     cx.strokeStyle = accent;
     cx.lineWidth = 1.8;
-    if (!bypassed) { cx.shadowColor = 'oklch(0.64 0.18 35 / 0.35)'; cx.shadowBlur = 6; }
+    if (!bypassed) { cx.shadowColor = DRC.acc35; cx.shadowBlur = 6; }
     cx.beginPath();
     if (DR.nodes.eqLow && DR.nodes.eqMid && DR.nodes.eqHigh) {
       const N = Math.max(2, Math.floor(w));
@@ -6943,11 +7106,11 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
     bands.forEach(b => {
       const x = w * (Math.log(b.freq / 20) / Math.log(20000 / 20));
       const y = h * 0.5 - (b.gain / 15) * h * 0.45;
-      if (!bypassed) { cx.shadowColor = 'oklch(0.64 0.18 35 / 0.6)'; cx.shadowBlur = 8; }
+      if (!bypassed) { cx.shadowColor = DRC.acc60; cx.shadowBlur = 8; }
       cx.fillStyle = accent;
       cx.beginPath(); cx.arc(x, y, 9, 0, Math.PI * 2); cx.fill();
       cx.shadowBlur = 0;
-      cx.fillStyle = bypassed ? 'oklch(0.45 0.012 80)' : 'oklch(0.96 0.014 80)';
+      cx.fillStyle = bypassed ? DRC.g45 : DRC.g96;
       cx.font = 'bold 10px "Excon", system-ui, sans-serif';
       cx.textAlign = 'center';
       cx.textBaseline = 'middle';
@@ -6957,7 +7120,7 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
     cx.textBaseline = 'alphabetic';
 
     // axis labels — freq across bottom, ±15 dB on the left
-    cx.fillStyle = 'oklch(0.45 0.012 80)';
+    cx.fillStyle = DRC.g45;
     cx.font = '9px "Departure Mono", "Fragment Mono", monospace';
     cx.fillText('20', 4, h - 6);
     cx.fillText('200', w * 0.25 + 4, h - 6);
@@ -6992,13 +7155,13 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
     const { cx, w, h } = setupCanvas(phaserCanvas);
     cx.clearRect(0, 0, w, h);
     const bypassed = DR.state.bypassed.phaser;
-    cx.strokeStyle = 'oklch(0.74 0.014 80)';
+    cx.strokeStyle = DRC.g74;
     cx.lineWidth = 1;
     cx.beginPath(); cx.moveTo(0, h * 0.5); cx.lineTo(w, h * 0.5); cx.stroke();
     // sine waveform — full cycle across the canvas, scaled by depth
-    cx.strokeStyle = bypassed ? 'oklch(0.68 0.014 80)' : 'oklch(0.22 0.005 80)';
+    cx.strokeStyle = bypassed ? DRC.g68 : DRC.ink;
     cx.lineWidth = 1.6;
-    if (!bypassed) { cx.shadowColor = 'oklch(0.22 0.005 80 / 0.30)'; cx.shadowBlur = 4; }
+    if (!bypassed) { cx.shadowColor = DRC.ink30; cx.shadowBlur = 4; }
     cx.beginPath();
     const amp = h * 0.40 * (bypassed ? 0.4 : DR.state.phaser.depth);
     for (let x = 0; x <= w; x++) {
@@ -7012,8 +7175,8 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
     if (!bypassed) {
       const px = (DR.state.phaser.phase % 1) * w;
       const py = h * 0.5 - Math.sin(DR.state.phaser.phase * 2 * Math.PI) * amp;
-      cx.fillStyle = 'oklch(0.64 0.18 35)';
-      cx.shadowColor = 'oklch(0.64 0.18 35 / 0.6)';
+      cx.fillStyle = DRC.acc;
+      cx.shadowColor = DRC.acc60;
       cx.shadowBlur = 6;
       cx.beginPath(); cx.arc(px, py, 4, 0, Math.PI * 2); cx.fill();
       cx.shadowBlur = 0;
@@ -7036,7 +7199,7 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
     const { cx, w, h } = setupCanvas(bitcrushCanvas);
     cx.clearRect(0, 0, w, h);
     const bypassed = DR.state.bypassed.bitcrush;
-    cx.strokeStyle = 'oklch(0.74 0.014 80)';
+    cx.strokeStyle = DRC.g74;
     cx.lineWidth = 1;
     cx.beginPath(); cx.moveTo(0, h * 0.5); cx.lineTo(w, h * 0.5); cx.stroke();
     cx.beginPath(); cx.moveTo(w * 0.5, 0); cx.lineTo(w * 0.5, h); cx.stroke();
@@ -7044,9 +7207,9 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
     const bits = DR.state.bitcrush.bits;
     const levels = Math.pow(2, Math.max(1, Math.min(16, Math.round(bits))));
     const step = 2 / levels;
-    cx.strokeStyle = bypassed ? 'oklch(0.68 0.014 80)' : 'oklch(0.22 0.005 80)';
+    cx.strokeStyle = bypassed ? DRC.g68 : DRC.ink;
     cx.lineWidth = 1.6;
-    if (!bypassed) { cx.shadowColor = 'oklch(0.22 0.005 80 / 0.30)'; cx.shadowBlur = 4; }
+    if (!bypassed) { cx.shadowColor = DRC.ink30; cx.shadowBlur = 4; }
     cx.beginPath();
     for (let x = 0; x <= w; x++) {
       const inX = (x / w) * 2 - 1;
@@ -7065,15 +7228,15 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
     const { cx, w, h } = setupCanvas(satCanvas);
     cx.clearRect(0, 0, w, h);
     const bypassed = DR.state.bypassed.saturation;
-    cx.strokeStyle = 'oklch(0.74 0.014 80)';
+    cx.strokeStyle = DRC.g74;
     cx.lineWidth = 1;
     cx.beginPath(); cx.moveTo(0, h * 0.5); cx.lineTo(w, h * 0.5); cx.stroke();
     cx.beginPath(); cx.moveTo(w * 0.5, 0); cx.lineTo(w * 0.5, h); cx.stroke();
     const drive = DR.state.saturation.drive;
     const k = Math.max(0, Math.min(1, drive)) * 50;
-    cx.strokeStyle = bypassed ? 'oklch(0.68 0.014 80)' : 'oklch(0.22 0.005 80)';
+    cx.strokeStyle = bypassed ? DRC.g68 : DRC.ink;
     cx.lineWidth = 1.6;
-    if (!bypassed) { cx.shadowColor = 'oklch(0.22 0.005 80 / 0.30)'; cx.shadowBlur = 4; }
+    if (!bypassed) { cx.shadowColor = DRC.ink30; cx.shadowBlur = 4; }
     cx.beginPath();
     for (let x = 0; x <= w; x++) {
       const inX = (x / w) * 2 - 1;
@@ -7093,12 +7256,12 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
     const { cx, w, h } = setupCanvas(chorusCanvas);
     cx.clearRect(0, 0, w, h);
     const bypassed = DR.state.bypassed.chorus;
-    cx.strokeStyle = 'oklch(0.74 0.014 80)';
+    cx.strokeStyle = DRC.g74;
     cx.lineWidth = 1;
     cx.beginPath(); cx.moveTo(0, h * 0.5); cx.lineTo(w, h * 0.5); cx.stroke();
-    cx.strokeStyle = bypassed ? 'oklch(0.68 0.014 80)' : 'oklch(0.22 0.005 80)';
+    cx.strokeStyle = bypassed ? DRC.g68 : DRC.ink;
     cx.lineWidth = 1.6;
-    if (!bypassed) { cx.shadowColor = 'oklch(0.22 0.005 80 / 0.30)'; cx.shadowBlur = 4; }
+    if (!bypassed) { cx.shadowColor = DRC.ink30; cx.shadowBlur = 4; }
     const amp = h * 0.40 * (bypassed ? 0.4 : DR.state.chorus.depth);
     cx.beginPath();
     for (let x = 0; x <= w; x++) {
@@ -7116,8 +7279,8 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
       chorusPhase = (chorusPhase + DR.state.chorus.rate * dt) % 1;
       const px = chorusPhase * w;
       const py = h * 0.5 - Math.sin(chorusPhase * 2 * Math.PI) * amp;
-      cx.fillStyle = 'oklch(0.64 0.18 35)';
-      cx.shadowColor = 'oklch(0.64 0.18 35 / 0.6)';
+      cx.fillStyle = DRC.acc;
+      cx.shadowColor = DRC.acc60;
       cx.shadowBlur = 6;
       cx.beginPath(); cx.arc(px, py, 4, 0, Math.PI * 2); cx.fill();
       cx.shadowBlur = 0;
@@ -7131,12 +7294,12 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
     const { cx, w, h } = setupCanvas(flangerCanvas);
     cx.clearRect(0, 0, w, h);
     const bypassed = DR.state.bypassed.flanger;
-    cx.strokeStyle = 'oklch(0.74 0.014 80)';
+    cx.strokeStyle = DRC.g74;
     cx.lineWidth = 1;
     cx.beginPath(); cx.moveTo(0, h * 0.5); cx.lineTo(w, h * 0.5); cx.stroke();
-    cx.strokeStyle = bypassed ? 'oklch(0.68 0.014 80)' : 'oklch(0.22 0.005 80)';
+    cx.strokeStyle = bypassed ? DRC.g68 : DRC.ink;
     cx.lineWidth = 1.6;
-    if (!bypassed) { cx.shadowColor = 'oklch(0.22 0.005 80 / 0.30)'; cx.shadowBlur = 4; }
+    if (!bypassed) { cx.shadowColor = DRC.ink30; cx.shadowBlur = 4; }
     const amp = h * 0.40 * (bypassed ? 0.4 : DR.state.flanger.depth);
     cx.beginPath();
     for (let x = 0; x <= w; x++) {
@@ -7153,8 +7316,8 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
       flangerPhase = (flangerPhase + DR.state.flanger.rate * dt) % 1;
       const px = flangerPhase * w;
       const py = h * 0.5 - Math.sin(flangerPhase * 2 * Math.PI) * amp;
-      cx.fillStyle = 'oklch(0.64 0.18 35)';
-      cx.shadowColor = 'oklch(0.64 0.18 35 / 0.6)';
+      cx.fillStyle = DRC.acc;
+      cx.shadowColor = DRC.acc60;
       cx.shadowBlur = 6;
       cx.beginPath(); cx.arc(px, py, 4, 0, Math.PI * 2); cx.fill();
       cx.shadowBlur = 0;
@@ -7171,12 +7334,12 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
     const { cx, w, h } = setupCanvas(ambientCanvas);
     cx.clearRect(0, 0, w, h);
     const bypassed = DR.state.bypassed.ambient;
-    cx.strokeStyle = 'oklch(0.74 0.014 80)';
+    cx.strokeStyle = DRC.g74;
     cx.lineWidth = 1;
     cx.beginPath(); cx.moveTo(0, h * 0.5); cx.lineTo(w, h * 0.5); cx.stroke();
     // waveform of recent capture
     if (ambient.buf && ambient.totalWritten > 1024) {
-      cx.strokeStyle = bypassed ? 'oklch(0.68 0.014 80)' : 'oklch(0.22 0.005 80 / 0.55)';
+      cx.strokeStyle = bypassed ? DRC.g68 : DRC.ink55;
       cx.lineWidth = 1.2;
       cx.beginPath();
       const showFrames = Math.min(ambient.bufFrames, Math.floor(DR.ctx.sampleRate * 2)); // 2s
@@ -7206,7 +7369,7 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
           drift: 0.5 + bloom * 1.5
         });
       }
-      cx.fillStyle = 'oklch(0.64 0.18 35 / 0.7)';
+      cx.fillStyle = DRC.acc70;
       for (let i = ambientParticles.length - 1; i >= 0; i--) {
         const p = ambientParticles[i];
         p.x += p.drift;
@@ -7231,7 +7394,7 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
     const { cx, w, h } = setupCanvas(revdelayCanvas);
     cx.clearRect(0, 0, w, h);
     const bypassed = DR.state.bypassed.revdelay;
-    cx.strokeStyle = 'oklch(0.74 0.014 80)';
+    cx.strokeStyle = DRC.g74;
     cx.lineWidth = 1;
     cx.beginPath(); cx.moveTo(0, h * 0.5); cx.lineTo(w, h * 0.5); cx.stroke();
     if (revdelay.buf && revdelay.totalWritten > 1024 && DR.ctx) {
@@ -7242,7 +7405,7 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
       let readStart = readEnd - chunkFrames;
       if (readStart < 0) readStart += revdelay.bufFrames;
       // forward (top half)
-      cx.strokeStyle = bypassed ? 'oklch(0.68 0.014 80)' : 'oklch(0.22 0.005 80 / 0.45)';
+      cx.strokeStyle = bypassed ? DRC.g68 : DRC.ink45;
       cx.lineWidth = 1.2;
       cx.beginPath();
       const step = chunkFrames / w;
@@ -7255,7 +7418,7 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
       }
       cx.stroke();
       // reversed (bottom half), moss-tinted to mark the wet signal
-      cx.strokeStyle = bypassed ? 'oklch(0.68 0.014 80)' : 'oklch(0.50 0.16 35 / 0.85)';
+      cx.strokeStyle = bypassed ? DRC.g68 : DRC.accDim85;
       cx.beginPath();
       for (let x = 0; x < w; x++) {
         let idx = readStart + (chunkFrames - 1 - Math.floor(x * step));
@@ -7280,7 +7443,7 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
     const { cx, w, h } = setupCanvas(synthVisCanvas);
     cx.clearRect(0, 0, w, h);
     // centerline
-    cx.strokeStyle = 'oklch(0.74 0.014 80)';
+    cx.strokeStyle = DRC.g74;
     cx.lineWidth = 1;
     cx.beginPath(); cx.moveTo(0, h * 0.5); cx.lineTo(w, h * 0.5); cx.stroke();
     if (!DR.nodes.synthAnalyser) return;
@@ -7295,7 +7458,7 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
     }
     if (peak < 0.001) return;
     // draw waveform — ink black, sharp line
-    cx.strokeStyle = 'oklch(0.22 0.005 80)';
+    cx.strokeStyle = DRC.ink;
     cx.lineWidth = 1.6;
     cx.beginPath();
     const step = synthVisBuf.length / w;
@@ -7313,15 +7476,15 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
     if (!irCanvas) return;
     const { cx, w, h } = setupCanvas(irCanvas);
     cx.clearRect(0, 0, w, h);
-    cx.strokeStyle = 'oklch(0.60 0.014 80)';
+    cx.strokeStyle = DRC.g60;
     cx.lineWidth = 1;
     cx.beginPath(); cx.moveTo(0, h/2); cx.lineTo(w, h/2); cx.stroke();
     if (DR.ctx && DR.irs[DR.state.irSlot]) {
       const buf = DR.irs[DR.state.irSlot];
       const data = buf.getChannelData(0);
-      cx.strokeStyle = DR.state.bypassed.reverb ? 'oklch(0.68 0.014 80)' : 'oklch(0.22 0.005 80)';
+      cx.strokeStyle = DR.state.bypassed.reverb ? DRC.g68 : DRC.ink;
       if (!DR.state.bypassed.reverb) {
-        cx.shadowColor = 'oklch(0.22 0.005 80 / 0.30)';
+        cx.shadowColor = DRC.ink30;
         cx.shadowBlur = 4;
       }
       cx.lineWidth = 1;
@@ -7340,7 +7503,7 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
       }
       cx.stroke();
       cx.shadowBlur = 0;
-      cx.fillStyle = 'oklch(0.55 0.012 80)';
+      cx.fillStyle = DRC.g55;
       cx.font = '8px "Departure Mono", "Fragment Mono", monospace';
       cx.fillText('0 ms', 4, h - 4);
       cx.fillText(`${(buf.duration*1000).toFixed(0)} ms`, w - 56, h - 4);
@@ -7359,7 +7522,7 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
 
     // beat grid (faint vertical lines at every quarter note based on current bpm)
     const beat = 60 / d.bpm;
-    cx.strokeStyle = 'oklch(0.78 0.014 80)';
+    cx.strokeStyle = DRC.g78;
     cx.lineWidth = 1;
     for (let t = 0; t < totalSpan; t += beat) {
       const x = (t / totalSpan) * w;
@@ -7369,11 +7532,11 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
     }
 
     // baseline
-    cx.strokeStyle = 'oklch(0.60 0.014 80)';
+    cx.strokeStyle = DRC.g60;
     cx.beginPath(); cx.moveTo(0, h * 0.85); cx.lineTo(w, h * 0.85); cx.stroke();
 
     // initial impulse (the dry signal at t=0)
-    cx.strokeStyle = 'oklch(0.66 0.012 140)';
+    cx.strokeStyle = DRC.led;
     cx.lineWidth = 2;
     cx.beginPath();
     cx.moveTo(2, h * 0.85);
@@ -7383,11 +7546,11 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
     // simulated tap sequence — each tap is at n * delayTime, height decays by feedback^n
     const dimmed = DR.state.bypassed.delay;
     const wetMag = dimmed ? 0 : Math.max(0.001, d.mix);
-    const tapColor = dimmed ? 'oklch(0.68 0.014 80)' : 'oklch(0.22 0.005 80)';
+    const tapColor = dimmed ? DRC.g68 : DRC.ink;
     cx.strokeStyle = tapColor;
     cx.lineWidth = 1.8;
     if (!dimmed) {
-      cx.shadowColor = 'oklch(0.22 0.005 80 / 0.35)';
+      cx.shadowColor = DRC.ink30;
       cx.shadowBlur = 5;
     }
     const fb = d.feedback;
@@ -7412,7 +7575,7 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
     cx.shadowBlur = 0;
 
     // axis labels
-    cx.fillStyle = 'oklch(0.45 0.012 80)';
+    cx.fillStyle = DRC.g45;
     cx.font = '8px "Departure Mono", "Fragment Mono", monospace';
     cx.fillText('0', 4, h - 4);
     cx.fillText(`${(time*1000).toFixed(0)} ms`, Math.min(w - 56, (time/totalSpan)*w + 6), h - 4);
@@ -7604,10 +7767,10 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
     cx.clearRect(0, 0, w, h);
 
     // background grid
-    cx.strokeStyle = 'oklch(0.74 0.014 80)';
+    cx.strokeStyle = DRC.g74;
     cx.lineWidth = 1;
     cx.beginPath(); cx.moveTo(0, h/2); cx.lineTo(w, h/2); cx.stroke();
-    cx.strokeStyle = 'oklch(0.78 0.014 80)';
+    cx.strokeStyle = DRC.g78;
     for (let i = 1; i < 4; i++) {
       const x = (w / 4) * i;
       cx.beginPath(); cx.moveTo(x, 0); cx.lineTo(x, h); cx.stroke();
@@ -7617,10 +7780,10 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
     const dimmed = !enabled;
 
     // draw two cycles of the current shape
-    cx.strokeStyle = dimmed ? 'oklch(0.68 0.014 80)' : 'oklch(0.64 0.18 35)';
+    cx.strokeStyle = dimmed ? DRC.g68 : DRC.acc;
     cx.lineWidth = 1.6;
     if (!dimmed) {
-      cx.shadowColor = 'oklch(0.64 0.18 35 / 0.45)';
+      cx.shadowColor = DRC.acc45;
       cx.shadowBlur = 5;
     }
     cx.beginPath();
@@ -7645,13 +7808,13 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
     // playhead — current LFO phase (only one cycle's worth visible)
     if (enabled) {
       const playX = (DR.state.lfo.phase % 1) * (w / cycles);
-      cx.fillStyle = 'oklch(0.52 0.18 25 / 0.85)';
+      cx.fillStyle = DRC.haz85;
       cx.fillRect(playX, 0, 2, h);
       cx.fillRect(playX + (w / cycles), 0, 2, h);
     }
 
     // labels
-    cx.fillStyle = 'oklch(0.55 0.012 80)';
+    cx.fillStyle = DRC.g55;
     cx.font = '8px "Departure Mono", "Fragment Mono", monospace';
     let rateLabel;
     if (DR.state.lfo.sync) {
