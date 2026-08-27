@@ -1374,10 +1374,6 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
 .dr-mod[data-mod="master"] .dr-knobs{margin-top:auto}
 
 /* ── FOOTER ── */
-.dr-foot{margin-top:var(--s7);padding:var(--s5) 0;border-top:1px solid var(--dr-line);display:flex;justify-content:space-between;align-items:center;font-family:var(--dr-mono);font-size:10px;letter-spacing:.16em;color:var(--dr-ink-2);text-transform:uppercase}
-.dr-foot a{color:var(--dr-ink-dim);transition:color .2s}
-.dr-foot a:hover{color:var(--dr-ink)}
-.dr-foot-meta{display:flex;gap:var(--s5)}
 
 /* ── HIDDEN FILE INPUT ── */
 .dr-file-input{position:absolute;left:-9999px;opacity:0;width:1px;height:1px}
@@ -1396,8 +1392,7 @@ body:not([data-midi="on"]) .dr-knob-midi-learn{display:none}
 /* ── MOBILE / SMALL VIEWPORT REDIRECT ── */
 .dr-no-mobile{display:none}
 @media (max-width: 720px){
-  body > main.dr,
-  body > footer.dr-foot{display:none}
+  body > main.dr{display:none}
   .dr-no-mobile{display:flex;flex-direction:column;justify-content:center;align-items:flex-start;padding:200px 32px 80px;min-height:100vh;gap:var(--s5);max-width:640px;margin:0 auto}
   .dr-no-mobile h1{font-family:var(--dr-disp);font-weight:400;font-size:clamp(48px,12vw,96px);line-height:.86;color:var(--dr-ink);text-transform:lowercase}
   .dr-no-mobile h1 em{font-style:normal;color:var(--dr-moss)}
@@ -2645,14 +2640,6 @@ try{var t=new URLSearchParams(location.search).get('theme')||localStorage.getIte
 
 
 </main>
-
-<footer class="dr-foot">
-  <span>client-side only · no upload · for personal use</span>
-  <div class="dr-foot-meta">
-    <span>darkroom v 1.0</span>
-    <a href="playground.html">← playground</a>
-  </div>
-</footer>
 
 <script>
 (function(){
