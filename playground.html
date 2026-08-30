@@ -81,71 +81,78 @@ a{color:inherit;text-decoration:none}
 h2.arc-section-title{font:300 11px/1 var(--sf);letter-spacing:.14em;text-transform:uppercase;color:var(--tx);padding:0 0 16px;margin:0;border-bottom:1px solid var(--br)}
 h2.arc-section-title:not(:first-child){margin-top:64px}
 
-/* ── CATALOG ── */
-/* Accession-ledger layout: each experiment is a hairline-ruled index row —
-   serial number / small live "specimen plate" / title + one dry line / year /
-   launch mark. flex:1 + min-width:0 keeps the column claiming remaining
-   width next to the 322px sidebar. */
-.archive-main{flex:1;min-width:0;padding:52px 52px 100px;max-width:1040px}
-.archive-grid{display:block}
-.pg-item{display:grid;grid-template-columns:44px 152px minmax(0,1fr) auto;gap:0 30px;align-items:center;padding:22px 0;border-bottom:1px solid var(--br);cursor:pointer;text-decoration:none}
+/* ── FOUR ROOMS ── */
+/* Each experiment is a full-bleed band (~65vh) rendering its native world,
+   with the accession-ledger info floating bottom-left. Bands hold a still
+   pose; the dance runs on hover (.wake mirrors :hover for touch/testing). */
+.archive-main{flex:1;min-width:0;padding:0}
+.pg-band{position:relative;display:block;height:65vh;min-height:430px;overflow:hidden;border-bottom:1px solid var(--br);cursor:pointer;text-decoration:none}
+.pg-band .anim{animation-play-state:paused}
+.pg-band:hover .anim,.pg-band.wake .anim{animation-play-state:running}
+@media(hover:none){.pg-band .anim{animation-play-state:running}}
+
+/* Floating ledger */
+.pg-band-info{position:absolute;left:44px;bottom:38px;z-index:5;max-width:460px;pointer-events:none}
 .pg-num{font-size:11px;color:var(--accent);letter-spacing:.12em;font-family:var(--sf);line-height:1}
-.pg-thumb{width:152px;aspect-ratio:4/3;background:var(--accent);overflow:hidden;position:relative;transition:transform .35s ease}
-.pg-item:hover .pg-thumb{transform:scale(1.035)}
-.pg-thumb video,.pg-thumb img{width:100%;height:100%;object-fit:cover;display:block}
-.pg-cat-title{font:500 13px/1.3 var(--sf);letter-spacing:.1em;text-transform:uppercase;color:var(--tx);transition:color .2s}
-.pg-item:hover .pg-cat-title{color:var(--accent)}
-.pg-cat-desc{font:400 10px/1.7 var(--fn);color:rgba(0,0,0,.45);letter-spacing:.02em;margin-top:7px;max-width:52ch}
-.pg-cat-meta{display:flex;align-items:center;gap:26px}
-.pg-year{font:400 9px/1 var(--fn);letter-spacing:.14em;color:rgba(0,0,0,.4)}
+.pg-band-title{font:500 16px/1.2 var(--sf);letter-spacing:.12em;text-transform:uppercase;margin-top:10px}
+.pg-band-desc{font:400 10px/1.7 var(--fn);opacity:.62;letter-spacing:.02em;margin-top:8px;max-width:46ch}
+.pg-band-meta{display:flex;align-items:center;gap:18px;margin-top:14px;font:400 9px/1 var(--fn);letter-spacing:.14em}
 .pg-launch{font-size:13px;line-height:1;color:var(--accent);transition:transform .25s ease}
-.pg-item:hover .pg-launch{transform:translate(3px,-3px)}
+.pg-band:hover .pg-launch{transform:translate(3px,-3px)}
+.pg-band.ink-light{color:#F2F1EE}
+.pg-band.ink-dark{color:var(--tx)}
 
-/* Specimen-plate previews, scaled to catalog size, on the warm-stone field
-   with black ink. Placeholder plates read as a title card in miniature:
-   id number over a pulsing rule. */
-.pg-placeholder{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:var(--accent);color:var(--tx)}
-.pg-placeholder-stack{display:flex;flex-direction:column;align-items:center;gap:8px}
-.pg-placeholder-num{font-family:'Pixelify Sans','DM Sans',sans-serif;font-weight:700;font-size:30px;line-height:.9;letter-spacing:0}
-.pg-placeholder-line{width:22px;height:1px;background:var(--tx);animation:pg-placeholder-pulse 2.4s ease-in-out infinite;transform-origin:center}
-.pg-placeholder-title{font-family:'Fragment Mono','Courier New',monospace;font-size:8px;letter-spacing:.3em;text-transform:uppercase;color:rgba(0,0,0,.75)}
-@keyframes pg-placeholder-pulse{0%,100%{opacity:1;transform:scaleX(1)}50%{opacity:.5;transform:scaleX(1.7)}}
+/* Room 003 — darkroom: the wordmark under tape wow-and-flutter, a flowing
+   oscilloscope trace, and two huge ghosted reels turning at the edges */
+.pg-band-dr{background:#0d0f0d}
+.dr-svg{position:absolute;inset:0;width:100%;height:100%}
+.dr-spin-slow,.dr-spin-slower{transform-box:fill-box;transform-origin:center}
+.dr-spin-slow{animation:dr-spin 70s linear infinite}
+.dr-spin-slower{animation:dr-spin 110s linear infinite reverse}
+@keyframes dr-spin{to{transform:rotate(360deg)}}
+.dr-flow{animation:dr-flow 15s linear infinite}
+@keyframes dr-flow{to{transform:translateX(-1200px)}}
+.dr-logo-wrap{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);width:min(420px,46%)}
+.dr-logo{width:100%;height:auto;filter:invert(1);opacity:.92;transform-origin:center;animation:dr-wow 7.5s ease-in-out infinite}
+@keyframes dr-wow{0%,100%{transform:scaleX(1) rotate(0deg)}23%{transform:scaleX(1.018) rotate(.5deg)}41%{transform:scaleX(.986) rotate(-.35deg)}63%{transform:scaleX(1.012) rotate(.2deg)}82%{transform:scaleX(.994) rotate(-.4deg)}}
 
-/* darkroom plate: the wordmark (black-on-transparent PNG, no inversion needed
-   on the stone field) over a slow tape-meter waveform — thin ink bars rising
-   and falling in a staggered swell. */
-.pg-darkroom-preview{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:var(--accent);padding:14% 18% 34%}
-.pg-darkroom-preview img{display:block;max-width:100%;max-height:100%;width:auto;height:auto}
-.pg-dr-wave{position:absolute;left:18%;right:18%;bottom:16%;height:18%;display:flex;align-items:flex-end;gap:2px}
-.pg-dr-wave span{flex:1;height:100%;background:var(--tx);transform:scaleY(.15);transform-origin:bottom;animation:pg-dr-bar 2.2s ease-in-out infinite}
-@keyframes pg-dr-bar{0%,100%{transform:scaleY(.15)}50%{transform:scaleY(1)}}
+/* Room 001 — visualizer: the real shader on the Shiprock plate */
+.pg-band-vz{background:#000}
+.vz-canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
 
-/* Visualizer plate: generative signal — concentric ink rings expanding from
-   center and dissolving, radar-style, on staggered phases. */
-.pg-viz-rings{position:absolute;inset:0;background:var(--accent)}
-.pg-viz-rings span{position:absolute;top:50%;left:50%;width:58%;aspect-ratio:1/1;margin:-29% 0 0 -29%;border:1px solid var(--tx);border-radius:50%;opacity:0;animation:pg-viz-ring 3.6s linear infinite}
-.pg-viz-rings span:nth-child(2){animation-delay:1.2s}
-.pg-viz-rings span:nth-child(3){animation-delay:2.4s}
-@keyframes pg-viz-ring{0%{transform:scale(.12);opacity:.9}70%{opacity:.35}100%{transform:scale(1.15);opacity:0}}
-
-/* lumen plate: line-art bulb in ink on the stone field. Radiating light
-   strokes pulse on staggered phases — same rhythmic register as the
-   darkroom tape-meter — with a faint filament flicker. */
-.pg-lumen-bulb{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:var(--accent);color:var(--tx)}
-.pg-lumen-bulb svg{width:52px;height:auto;overflow:visible}
-.pg-bulb-ray{opacity:.12;animation:pg-bulb-ray 2.2s ease-in-out infinite}
-@keyframes pg-bulb-ray{0%,100%{opacity:.12}50%{opacity:1}}
-.pg-bulb-fil{animation:pg-bulb-fil 2.2s ease-in-out infinite}
-@keyframes pg-bulb-fil{0%,100%{opacity:.55}50%{opacity:1}}
-
-/* Live specimen plate: animated cycling title at plate scale (no mp4 needed). */
-.pg-title-preview{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:var(--accent);font-family:'Pixelify Sans','DM Sans',sans-serif;font-weight:700;color:var(--tx);letter-spacing:0;text-transform:uppercase;font-size:14px;line-height:1;padding:10px;text-align:center}
+/* Room 002 — specimen: the proof sheet */
+.pg-band-sp{background:#F7F5F1}
+.sp-stage{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.sp-title{position:relative;font-family:'Pixelify Sans','DM Sans',sans-serif;font-weight:700;font-size:clamp(40px,6.5vw,88px);letter-spacing:0;color:var(--tx);line-height:1;text-transform:uppercase}
+.sp-rule{position:absolute;left:-44vw;right:-44vw;height:1px;background:rgba(26,25,25,.20);pointer-events:none}
+.sp-rule.cap{top:.06em}
+.sp-rule.base{bottom:.02em}
+.sp-scale{position:absolute;left:44px;top:50%;transform:translateY(-50%);font:400 8px/2.4 var(--fn);color:rgba(26,25,25,.45);letter-spacing:.08em;white-space:pre;pointer-events:none}
+.sp-readout{position:absolute;right:44px;bottom:38px;font:400 9px/1 var(--fn);letter-spacing:.14em;color:rgba(26,25,25,.55);text-transform:uppercase;text-align:right;pointer-events:none}
+/* Illustrator-cyan guides being dragged by a human hand: move, overshoot a
+   touch, settle, hold. The cap/baseline rules get the same treatment in Y. */
+.sp-guide{position:absolute;top:0;bottom:0;width:1px;background:rgba(64,158,207,.55);pointer-events:none}
+.sp-gv1{left:31%;animation:sp-gv1 12s ease-in-out infinite}
+.sp-gv2{left:69%;animation:sp-gv2 15.5s ease-in-out infinite}
+@keyframes sp-gv1{0%,20%{transform:translateX(0)}25%{transform:translateX(70px)}26.5%{transform:translateX(62px)}54%{transform:translateX(62px)}59%{transform:translateX(-30px)}60.5%{transform:translateX(-22px)}86%{transform:translateX(-22px)}92%{transform:translateX(5px)}93.5%,100%{transform:translateX(0)}}
+@keyframes sp-gv2{0%,30%{transform:translateX(0)}36%{transform:translateX(-88px)}37.5%{transform:translateX(-78px)}62%{transform:translateX(-78px)}68%{transform:translateX(26px)}69.5%{transform:translateX(18px)}88%{transform:translateX(18px)}95%{transform:translateX(-4px)}96.5%,100%{transform:translateX(0)}}
+.sp-rule.cap{animation:sp-gh1 13.5s ease-in-out infinite}
+.sp-rule.base{animation:sp-gh2 17s ease-in-out infinite}
+@keyframes sp-gh1{0%,34%{transform:translateY(0)}39%{transform:translateY(-11px)}40.5%{transform:translateY(-8px)}70%{transform:translateY(-8px)}76%{transform:translateY(2px)}77.5%,100%{transform:translateY(0)}}
+@keyframes sp-gh2{0%,26%{transform:translateY(0)}31%{transform:translateY(9px)}32.5%{transform:translateY(6px)}60%{transform:translateY(6px)}66%{transform:translateY(-3px)}67.5%,100%{transform:translateY(0)}}
 .pg-letter{display:inline-block;text-align:center;vertical-align:baseline;transition:transform .3s cubic-bezier(.4,0,.2,1),opacity .18s ease;will-change:transform,opacity}
 .pg-letter.exiting{transform:translateY(.28em);opacity:0}
 .pg-letter.entering{transform:translateY(-.28em);opacity:0;transition:none}
 
-/* ── EMPTY STATE ── */
-.pg-empty{grid-column:1/-1;text-align:center;padding:120px 20px;font:300 14px/1.8 var(--sf);color:rgba(0,0,0,.35);letter-spacing:.04em}
+/* Room 004 — lumen: cast light in a dark room */
+.pg-band-lu{background:#07070a}
+.lum-wash{position:absolute;width:150%;height:34%;filter:blur(34px);mix-blend-mode:screen;opacity:.55;pointer-events:none}
+.lw1{background:linear-gradient(90deg,transparent,#e8963f 35%,#e85a3f 60%,transparent);top:10%;left:-22%;transform:rotate(-16deg);animation:lum-d1 12s ease-in-out infinite alternate}
+.lw2{background:linear-gradient(90deg,transparent,#c9457e 40%,#7b3fd0 65%,transparent);top:40%;left:-15%;transform:rotate(9deg);animation:lum-d2 15s ease-in-out infinite alternate}
+.lw3{background:linear-gradient(90deg,transparent,#3fb8a8 45%,#3f7fe8 70%,transparent);top:64%;left:-25%;transform:rotate(-24deg);animation:lum-d3 18s ease-in-out infinite alternate}
+@keyframes lum-d1{to{transform:rotate(-12deg) translateX(6%);filter:blur(34px) hue-rotate(38deg)}}
+@keyframes lum-d2{to{transform:rotate(13deg) translateX(-5%);filter:blur(34px) hue-rotate(-30deg)}}
+@keyframes lum-d3{to{transform:rotate(-28deg) translateX(7%);filter:blur(34px) hue-rotate(45deg)}}
 
 /* ── FOOTER ── */
 #ftr{background:#0c0c0c;padding:48px 28px;border-top:1px solid rgba(255,255,255,.1)}
@@ -165,12 +172,14 @@ h2.arc-section-title:not(:first-child){margin-top:64px}
   #arc-sidebar{position:static;width:100%;max-height:none;border-bottom:1px solid var(--br);padding:20px;display:flex;flex-direction:column;gap:0}
   .arc-nav-list{margin-top:12px}
   .arc-nav-item{padding:8px 0}
-  .archive-main{padding:24px 16px 80px}
-  .pg-item{grid-template-columns:32px 120px minmax(0,1fr) auto;gap:0 16px;padding:16px 0}
-  .pg-thumb{width:120px}
-  .pg-cat-title{font-size:11px}
-  .pg-cat-desc{font-size:9px;margin-top:5px}
-  .pg-year{display:none}
+  .archive-main{padding:0}
+  .pg-band{height:52vh;min-height:340px}
+  .pg-band-info{left:20px;bottom:20px;max-width:80%}
+  .pg-band-title{font-size:13px}
+  .pg-band-desc{font-size:9px}
+  .sp-scale{left:16px}
+  .sp-readout{right:20px;bottom:20px}
+  .dr-logo-wrap{width:min(280px,62%)}
   .hi,.fi2{padding-left:16px;padding-right:16px}
   #hdr{height:88px}
   .hl img{height:52px}
@@ -213,7 +222,7 @@ h2.arc-section-title:not(:first-child){margin-top:64px}
 <div class="page-hero">
   <div class="page-hero-inner">
     <h1>Playground</h1>
-    <p>A working room for coded experiments &mdash; generative sketches, audio-reactive visualizers, and small browser-based tools. Some are finished pieces, some are open-ended explorations. Click any tile to open the live experiment.</p>
+    <p>A working room for coded experiments &mdash; generative sketches, audio-reactive visualizers, and small browser-based tools. Some are finished pieces, some are open-ended explorations. Click any panel to open the live experiment.</p>
   </div>
 </div>
 
@@ -230,14 +239,79 @@ h2.arc-section-title:not(:first-child){margin-top:64px}
     </div>
   </aside>
   <div class="archive-main">
-    <h2 class="arc-section-title" id="section-am">Audio / MIDI</h2>
-    <div class="archive-grid" id="pg-grid-am"></div>
-    <h2 class="arc-section-title" id="section-vz">Visualizers</h2>
-    <div class="archive-grid" id="pg-grid-vz"></div>
-    <h2 class="arc-section-title" id="section-tp">Type / Specimens</h2>
-    <div class="archive-grid" id="pg-grid-tp"></div>
-    <h2 class="arc-section-title" id="section-lt">Light / Studio</h2>
-    <div class="archive-grid" id="pg-grid-lt"></div>
+
+    <!-- 003 darkroom — the faceplate at rest -->
+    <a class="pg-band pg-band-dr ink-light" id="band-am" href="darkroom.html" target="_blank" rel="noopener">
+      <svg class="dr-svg" viewBox="0 0 1200 640" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <!-- ghosted reels, barely there, turning at the edges -->
+        <g class="anim dr-spin-slow">
+          <circle cx="150" cy="120" r="250" fill="none" stroke="#242a24" stroke-width="1.5"/>
+          <line x1="150" y1="-130" x2="150" y2="370" stroke="#242a24" stroke-width="1"/>
+          <line x1="-100" y1="120" x2="400" y2="120" stroke="#242a24" stroke-width="1"/>
+        </g>
+        <g class="anim dr-spin-slower">
+          <circle cx="1080" cy="560" r="300" fill="none" stroke="#242a24" stroke-width="1.5"/>
+          <line x1="1080" y1="260" x2="1080" y2="860" stroke="#242a24" stroke-width="1"/>
+          <line x1="780" y1="560" x2="1380" y2="560" stroke="#242a24" stroke-width="1"/>
+        </g>
+        <!-- oscilloscope trace flowing behind the mark -->
+        <g class="anim dr-flow" opacity="0.5">
+          <path d="M0 330 C 40 306, 78 354, 120 328 C 158 306, 196 352, 238 332 C 270 316, 300 348, 348 326 C 392 306, 424 358, 470 334 C 512 314, 548 346, 596 328 C 640 312, 676 354, 724 330 C 764 310, 800 350, 852 328 C 894 310, 928 352, 980 332 C 1020 316, 1056 346, 1104 326 C 1140 310, 1172 340, 1200 330" fill="none" stroke="#8FD6A0" stroke-width="1.5"/>
+          <path d="M0 330 C 40 306, 78 354, 120 328 C 158 306, 196 352, 238 332 C 270 316, 300 348, 348 326 C 392 306, 424 358, 470 334 C 512 314, 548 346, 596 328 C 640 312, 676 354, 724 330 C 764 310, 800 350, 852 328 C 894 310, 928 352, 980 332 C 1020 316, 1056 346, 1104 326 C 1140 310, 1172 340, 1200 330" fill="none" stroke="#8FD6A0" stroke-width="1.5" transform="translate(1200 0)"/>
+          <path d="M0 330 C 40 306, 78 354, 120 328 C 158 306, 196 352, 238 332 C 270 316, 300 348, 348 326 C 392 306, 424 358, 470 334 C 512 314, 548 346, 596 328 C 640 312, 676 354, 724 330 C 764 310, 800 350, 852 328 C 894 310, 928 352, 980 332 C 1020 316, 1056 346, 1104 326 C 1140 310, 1172 340, 1200 330" fill="none" stroke="#8FD6A0" stroke-width="1" opacity="0.3" transform="translate(0 16)"/>
+          <path d="M0 330 C 40 306, 78 354, 120 328 C 158 306, 196 352, 238 332 C 270 316, 300 348, 348 326 C 392 306, 424 358, 470 334 C 512 314, 548 346, 596 328 C 640 312, 676 354, 724 330 C 764 310, 800 350, 852 328 C 894 310, 928 352, 980 332 C 1020 316, 1056 346, 1104 326 C 1140 310, 1172 340, 1200 330" fill="none" stroke="#8FD6A0" stroke-width="1" opacity="0.3" transform="translate(1200 16)"/>
+        </g>
+      </svg>
+      <div class="dr-logo-wrap"><img class="anim dr-logo" src="darkroom/assets/darkroom-logo.png" alt=""></div>
+      <div class="pg-band-info">
+        <span class="pg-num">003</span>
+        <div class="pg-band-title">darkroom.ja</div>
+        <div class="pg-band-desc">Browser audio processor. Tape-speed screw, an eleven-module FX rack, and hardware MIDI control.</div>
+        <div class="pg-band-meta"><span>2026</span><span class="pg-launch">&nearr;</span></div>
+      </div>
+    </a>
+
+    <!-- 001 visualizer — the real shader on the Shiprock plate -->
+    <a class="pg-band pg-band-vz ink-light" id="band-vz" href="visualizer.html" target="_blank" rel="noopener">
+      <canvas class="vz-canvas" id="vz-canvas"></canvas>
+      <div class="pg-band-info">
+        <span class="pg-num">001</span>
+        <div class="pg-band-title">Visualizer 001</div>
+        <div class="pg-band-desc">Audio-reactive generative visualizer. Renders in real time from the signal.</div>
+        <div class="pg-band-meta"><span>2026</span><span class="pg-launch">&nearr;</span></div>
+      </div>
+    </a>
+
+    <!-- 002 specimen — the proof sheet -->
+    <a class="pg-band pg-band-sp ink-dark" id="band-tp" href="font-test.html" target="_blank" rel="noopener">
+      <div class="sp-stage">
+        <div class="sp-title" id="sp-title"><span class="sp-rule cap anim"></span><span class="sp-rule base anim"></span></div>
+      </div>
+      <span class="sp-guide sp-gv1 anim"></span>
+      <span class="sp-guide sp-gv2 anim"></span>
+      <div class="sp-scale">96 —&#10;48 —&#10;24 —&#10;12 —</div>
+      <div class="sp-readout" id="sp-readout">Pixelify Sans</div>
+      <div class="pg-band-info">
+        <span class="pg-num">002</span>
+        <div class="pg-band-title">Specimen.JA</div>
+        <div class="pg-band-desc">Type specimen instrument. Cycles curated faces letter by letter on a shared baseline.</div>
+        <div class="pg-band-meta"><span>2026</span><span class="pg-launch">&nearr;</span></div>
+      </div>
+    </a>
+
+    <!-- 004 lumen — cast light -->
+    <a class="pg-band pg-band-lu ink-light" id="band-lt" href="lumen.html" target="_blank" rel="noopener">
+      <div class="lum-wash lw1 anim"></div>
+      <div class="lum-wash lw2 anim"></div>
+      <div class="lum-wash lw3 anim"></div>
+      <div class="pg-band-info">
+        <span class="pg-num">004</span>
+        <div class="pg-band-title">lumen.ja</div>
+        <div class="pg-band-desc">Preset console for the studio light rig. Shows, scenes, and a free-form color dial.</div>
+        <div class="pg-band-meta"><span>2026</span><span class="pg-launch">&nearr;</span></div>
+      </div>
+    </a>
+
   </div>
 </div>
 
@@ -318,242 +392,222 @@ h2.arc-section-title:not(:first-child){margin-top:64px}
     return html;
   }
 
-  // Drop-fade letter cycling, shared by the specimen plate and the catalog
-  // row titles. intervalMs sets the flip cadence; staggerMs delays the start
-  // so multiple instances never tick in sync.
-  function startSpecimenAnimation(previewEl, intervalMs, staggerMs) {
-    intervalMs = intervalMs || 3000;
-    var letters = previewEl.querySelectorAll('.pg-letter');
-    if (!letters.length) return;
-    var lettersArr = [].slice.call(letters);
-
+  // Drop-fade letter cycler with hover gating and a font-name readout.
+  function makeSpecimenCycler(el, readout, intervalMs) {
+    var lettersArr = [].slice.call(el.querySelectorAll('.pg-letter'));
+    var iv = null, want = false, locked = false;
     function lockWidths() {
+      if (locked) return;
+      locked = true;
       lettersArr.forEach(function(span) {
         var w = span.getBoundingClientRect().width;
         if (w > 0) span.style.width = (w * 1.35) + 'px';
       });
     }
-
-    function pickFont() { return SPECIMEN_FONTS[Math.floor(Math.random() * SPECIMEN_FONTS.length)]; }
-    function pickLetter() { return lettersArr[Math.floor(Math.random() * lettersArr.length)]; }
-
     function flipOne() {
-      var letter = pickLetter();
-      var targetFont = pickFont();
+      var letter = lettersArr[Math.floor(Math.random() * lettersArr.length)];
+      var f = SPECIMEN_FONTS[Math.floor(Math.random() * SPECIMEN_FONTS.length)];
       letter.classList.add('exiting');
       setTimeout(function() {
-        letter.style.fontFamily = '"' + targetFont + '", "Pixelify Sans", sans-serif';
+        letter.style.fontFamily = '"' + f + '", "Pixelify Sans", sans-serif';
         letter.classList.remove('exiting');
         letter.classList.add('entering');
         void letter.offsetHeight;
         letter.classList.remove('entering');
+        if (readout) readout.textContent = f;
       }, 300);
     }
-
-    var begin = function() {
+    function go() {
+      if (!want || iv || !lettersArr.length) return;
       lockWidths();
-      setTimeout(function() { setInterval(flipOne, intervalMs); }, 600 + (staggerMs || 0));
+      iv = setInterval(flipOne, intervalMs || 2600);
+      flipOne();
+    }
+    return {
+      start: function() {
+        want = true;
+        if (document.fonts && document.fonts.ready) document.fonts.ready.then(go);
+        else go();
+      },
+      stop: function() { want = false; clearInterval(iv); iv = null; }
     };
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(begin);
-    else setTimeout(begin, 1500);
   }
 
-  // ── PLAYGROUND ITEMS ──
-  // To add a new experiment: push an entry into the array below with category, id, title, year, video, poster, href.
-  var items = [
-    {
-      category: 'audio-midi',
-      id: '003',
-      title: 'darkroom.ja',
-      year: '2026',
-      desc: 'Browser audio processor. Tape-speed screw, an eleven-module FX rack, and hardware MIDI control.',
-      livePreview: 'darkroom-logo',
-      href: 'darkroom.html'
-    },
-    {
-      category: 'visualizers',
-      id: '001',
-      title: 'Visualizer 001',
-      year: '2026',
-      desc: 'Audio-reactive generative visualizer. Renders in real time from the signal.',
-      livePreview: 'viz-rings',
-      href: 'visualizer.html'
-    },
-    {
-      category: 'type',
-      id: '002',
-      title: 'Specimen.JA',
-      year: '2026',
-      desc: 'Type specimen instrument. Cycles curated faces letter by letter on a shared baseline.',
-      livePreview: 'specimen',
-      href: 'font-test.html'
-    },
-    {
-      category: 'light',
-      id: '004',
-      title: 'lumen.ja',
-      year: '2026',
-      desc: 'Preset console for the studio light rig. Shows, scenes, and a free-form color dial.',
-      livePreview: 'lumen-bulb',
-      href: 'lumen.html'
-    }
-  ];
+  // ── FOUR ROOMS BOOT ──
+  var hoverNone = window.matchMedia && window.matchMedia('(hover: none)').matches;
 
-  var gridAM = document.getElementById('pg-grid-am');
-  var sectionAM = document.getElementById('section-am');
-  var gridVZ = document.getElementById('pg-grid-vz');
-  var sectionVZ = document.getElementById('section-vz');
-  var gridTP = document.getElementById('pg-grid-tp');
-  var sectionTP = document.getElementById('section-tp');
-  var gridLT = document.getElementById('pg-grid-lt');
-  var sectionLT = document.getElementById('section-lt');
+  // 002 specimen: letters + hover-gated cycler with font-name readout
+  loadSpecimenFonts();
+  (function() {
+    var title = document.getElementById('sp-title');
+    var readout = document.getElementById('sp-readout');
+    var band = document.getElementById('band-tp');
+    if (!title || !band) return;
+    title.insertAdjacentHTML('afterbegin', buildSpecimenLetters('SPECIMEN.JA'));
+    var cyc = makeSpecimenCycler(title, readout, hoverNone ? 5200 : 2600);
+    band.addEventListener('mouseenter', cyc.start);
+    band.addEventListener('mouseleave', cyc.stop);
+    if (hoverNone) cyc.start();
+  })();
 
-  function renderItem(item) {
-    var a = document.createElement('a');
-    a.className = 'pg-item';
-    a.href = item.href;
-    a.target = '_blank';
-    a.rel = 'noopener';
-    a.setAttribute('data-category', item.category);
+  // 001 visualizer: the real shader (bubble-free original) on the Shiprock
+  // plate, cover-cropped to the band. Still frame until hover; rAF loop
+  // runs only while the cursor is inside.
+  var VZ_VS = 'attribute vec2 a;varying vec2 v;void main(){v=a*0.5+0.5;gl_Position=vec4(a,0.0,1.0);}';
+  var VZ_FS = [
+    'precision highp float;',
+    'uniform sampler2D img;',
+    'uniform float t;',
+    'uniform vec2 uvS;',
+    'uniform vec2 uvO;',
+    'varying vec2 v;',
+    'vec3 rgb2hsv(vec3 c){',
+    '  vec4 K=vec4(0.0,-1.0/3.0,2.0/3.0,-1.0);',
+    '  vec4 p=mix(vec4(c.bg,K.wz),vec4(c.gb,K.xy),step(c.b,c.g));',
+    '  vec4 q=mix(vec4(p.xyw,c.r),vec4(c.r,p.yzx),step(p.x,c.r));',
+    '  float d=q.x-min(q.w,q.y);float e=1.0e-10;',
+    '  return vec3(abs(q.z+(q.w-q.y)/(6.0*d+e)),d/(q.x+e),q.x);}',
+    'vec3 hsv2rgb(vec3 c){',
+    '  vec4 K=vec4(1.0,2.0/3.0,1.0/3.0,3.0);',
+    '  return c.z*mix(K.xxx,clamp(abs(fract(c.xxx+K.xyz)*6.0-K.www)-K.xxx,0.0,1.0),c.y);}',
+    'float whiteAmt(vec2 uv){',
+    '  vec4 s=texture2D(img,uv);',
+    '  vec3 h=rgb2hsv(s.rgb);',
+    '  return smoothstep(0.65,0.88,h.z)*(1.0-smoothstep(0.0,0.28,h.y));}',
+    'void main(){',
+    '  vec2 uv0=uvO+v*uvS;',
+    '  vec2 drift=vec2(sin(uv0.y*3.4+t*0.50)*0.006+cos(uv0.x*5.1-t*0.33)*0.004,cos(uv0.x*2.8+t*0.44)*0.005+sin(uv0.y*4.6-t*0.27)*0.004);',
+    '  vec2 uv=uv0+drift;',
+    '  float w=whiteAmt(uv);',
+    '  float dx=sin(uv.y*5.2+t*0.65)*0.018+sin(uv.y*13.0+t*1.2)*0.007+cos(uv.x*7.3+uv.y*2.8+t*0.42)*0.012+sin(uv.x*3.0+uv.y*6.0+t*0.28)*0.009;',
+    '  float dy=cos(uv.x*4.4+t*0.52)*0.015+cos(uv.x*10.0+t*0.85)*0.006+sin(uv.y*5.0+uv.x*4.0+t*0.38)*0.010+cos(uv.y*8.0+uv.x*2.5+t*0.19)*0.007;',
+    '  vec2 wuv=uv+vec2(dx,dy)*(1.0-w);',
+    '  float ca=0.008*(1.0-w)*(0.55+0.45*sin(t*0.5+uv.y*2.0));',
+    '  vec3 bg=vec3(texture2D(img,wuv+vec2(ca,0.0)).r,texture2D(img,wuv).g,texture2D(img,wuv-vec2(ca,0.0)).b);',
+    '  vec3 bgHSV=rgb2hsv(bg);',
+    '  float hShift=t*0.09+sin(uv.x*2.1+t*0.30)*0.14+cos(uv.y*3.3+t*0.21)*0.10+sin((uv.x+uv.y)*4.5+t*0.17)*0.06;',
+    '  bgHSV.x=fract(bgHSV.x+hShift);',
+    '  bgHSV.y=clamp(bgHSV.y*1.7+0.18,0.0,1.0);',
+    '  bgHSV.z*=0.88+0.12*sin(t*0.7+uv.y*3.5+uv.x*2.0);',
+    '  vec3 bgFinal=hsv2rgb(bgHSV);',
+    '  float ripple=sin(uv.x*9.0+uv.y*7.0+t*1.1)*0.06;',
+    '  bgFinal*=(1.0+ripple*(1.0-w));',
+    '  float pulse=0.80+0.20*sin(t*2.9+uv.x*1.8+uv.y*1.3);',
+    '  float pulse2=0.92+0.08*sin(t*5.5+uv.y*4.0);',
+    '  float totalPulse=pulse*pulse2;',
+    '  float shimmer=sin(uv.y*45.0+t*6.0)*0.004+sin(uv.y*80.0+t*4.3)*0.002;',
+    '  float wShimmer=whiteAmt(uv+vec2(shimmer*w,0.0));',
+    '  float glow=whiteAmt(uv+vec2(0.003,0.0))+whiteAmt(uv+vec2(-0.003,0.0))+whiteAmt(uv+vec2(0.0,0.003))+whiteAmt(uv+vec2(0.0,-0.003));',
+    '  float glowAmt=glow*0.15*(0.6+0.4*sin(t*3.0));',
+    '  vec3 whiteFinal=vec3(totalPulse)*max(wShimmer,w);',
+    '  vec3 result=mix(bgFinal,whiteFinal,max(w,0.0));',
+    '  result+=glowAmt*vec3(0.9,0.95,1.0)*(1.0-w);',
+    '  gl_FragColor=vec4(result,1.0);}'
+  ].join('\n');
 
-    var media = '';
-    if (item.livePreview === 'specimen') {
-      media = '<div class="pg-title-preview" data-preview="specimen">' +
-                buildSpecimenLetters('SPECIMEN.JA') +
-              '</div>';
-    } else if (item.livePreview === 'darkroom-logo') {
-      // Wordmark over an animated tape-meter waveform. Uses the same logo
-      // PNG that ships in the darkroom masthead so the asset stays singular.
-      var bars = '';
-      for (var b = 0; b < 16; b++) {
-        bars += '<span style="animation-delay:' + (-(b * 0.14)).toFixed(2) + 's"></span>';
+  (function() {
+    var band = document.getElementById('band-vz');
+    var canvas = document.getElementById('vz-canvas');
+    if (!band || !canvas) return;
+    var img = new Image();
+    img.onload = function() {
+      var dpr = Math.min(window.devicePixelRatio || 1, 2);
+      function size() {
+        var r = band.getBoundingClientRect();
+        canvas.width = Math.max(1, Math.round(r.width * dpr));
+        canvas.height = Math.max(1, Math.round(r.height * dpr));
       }
-      media = '<div class="pg-darkroom-preview">' +
-                '<img src="darkroom/assets/darkroom-logo.png" alt="darkroom" loading="lazy">' +
-                '<div class="pg-dr-wave">' + bars + '</div>' +
-              '</div>';
-    } else if (item.livePreview === 'viz-rings') {
-      media = '<div class="pg-viz-rings"><span></span><span></span><span></span></div>';
-    } else if (item.livePreview === 'lumen-bulb') {
-      media = '<div class="pg-lumen-bulb">' +
-        '<svg viewBox="0 0 64 60" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">' +
-          '<circle cx="32" cy="26" r="12"/>' +
-          '<path d="M27 37 V42 M37 37 V42"/>' +
-          '<path d="M26.5 42 H37.5 M27.5 45.5 H36.5 M29.5 49 H34.5"/>' +
-          '<path class="pg-bulb-fil" d="M29 37 V31 L32 27.5 L35 31 V37"/>' +
-          '<path class="pg-bulb-ray" style="animation-delay:0s" d="M32 9 V3"/>' +
-          '<path class="pg-bulb-ray" style="animation-delay:-.44s" d="M44 14 L48.5 9.5"/>' +
-          '<path class="pg-bulb-ray" style="animation-delay:-.88s" d="M49 26 H55"/>' +
-          '<path class="pg-bulb-ray" style="animation-delay:-1.32s" d="M20 14 L15.5 9.5"/>' +
-          '<path class="pg-bulb-ray" style="animation-delay:-1.76s" d="M15 26 H9"/>' +
-        '</svg>' +
-      '</div>';
-    } else if (item.livePreview === 'placeholder') {
-      var label = (item.title || '').replace(/\s+\d+$/, '').toUpperCase();
-      media = '<div class="pg-placeholder">' +
-                '<div class="pg-placeholder-stack">' +
-                  '<div class="pg-placeholder-num">' + item.id + '</div>' +
-                  '<div class="pg-placeholder-line"></div>' +
-                  '<div class="pg-placeholder-title">' + label + '</div>' +
-                '</div>' +
-              '</div>';
-    } else if (item.video) {
-      media = '<video src="' + item.video + '"' +
-              (item.poster ? ' poster="' + item.poster + '"' : '') +
-              ' autoplay loop muted playsinline preload="metadata"></video>';
-    } else if (item.poster) {
-      media = '<img src="' + item.poster + '" alt="' + item.title + '" loading="lazy">';
-    }
+      size();
+      var gl = canvas.getContext('webgl');
+      if (!gl) return;
+      function sh(type, src) {
+        var s = gl.createShader(type);
+        gl.shaderSource(s, src);
+        gl.compileShader(s);
+        if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) console.error(gl.getShaderInfoLog(s));
+        return s;
+      }
+      var prog = gl.createProgram();
+      gl.attachShader(prog, sh(gl.VERTEX_SHADER, VZ_VS));
+      gl.attachShader(prog, sh(gl.FRAGMENT_SHADER, VZ_FS));
+      gl.linkProgram(prog);
+      gl.useProgram(prog);
+      var buf = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, -1,1, 1,-1, 1,1]), gl.STATIC_DRAW);
+      var al = gl.getAttribLocation(prog, 'a');
+      gl.enableVertexAttribArray(al);
+      gl.vertexAttribPointer(al, 2, gl.FLOAT, false, 0, 0);
+      var uT = gl.getUniformLocation(prog, 't');
+      var uS = gl.getUniformLocation(prog, 'uvS');
+      var uO = gl.getUniformLocation(prog, 'uvO');
+      var tex = gl.createTexture();
+      gl.bindTexture(gl.TEXTURE_2D, tex);
+      gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+      gl.uniform1i(gl.getUniformLocation(prog, 'img'), 0);
+      // Crop window inside the scan (cuts the postcard's border + caption),
+      // then cover-fit that window to the band. UV space, y-up.
+      var CROP = { x0: 0.085, y0: 0.11, x1: 0.915, y1: 0.935 };
+      function setCover() {
+        var cw = CROP.x1 - CROP.x0, ch = CROP.y1 - CROP.y0;
+        var ca2 = canvas.width / canvas.height;
+        var uw = cw, uh = cw * img.width / (img.height * ca2);
+        if (uh > ch) { uh = ch; uw = ch * img.height * ca2 / img.width; }
+        gl.uniform2f(uS, uw, uh);
+        gl.uniform2f(uO, CROP.x0 + (cw - uw) / 2, CROP.y0 + (ch - uh) / 2);
+      }
+      setCover();
+      var t0 = performance.now(), raf = null;
+      function draw() {
+        gl.viewport(0, 0, canvas.width, canvas.height);
+        gl.uniform1f(uT, (performance.now() - t0) / 1000);
+        gl.drawArrays(gl.TRIANGLES, 0, 6);
+      }
+      draw(); // still pose
+      function loop() { raf = requestAnimationFrame(loop); draw(); }
+      band.addEventListener('mouseenter', function() { if (!raf) loop(); });
+      band.addEventListener('mouseleave', function() { if (raf) { cancelAnimationFrame(raf); raf = null; } });
+      if (hoverNone) loop();
+      window.addEventListener('resize', function() { size(); setCover(); if (!raf) draw(); });
+    };
+    img.src = 'photographs/004.jpg';
+  })();
 
-    a.innerHTML =
-      '<div class="pg-num">' + item.id + '</div>' +
-      '<div class="pg-thumb">' + media + '</div>' +
-      '<div class="pg-cat-body">' +
-        '<div class="pg-cat-title">' + item.title + '</div>' +
-        (item.desc ? '<div class="pg-cat-desc">' + item.desc + '</div>' : '') +
-      '</div>' +
-      '<div class="pg-cat-meta">' +
-        '<span class="pg-year">' + item.year + '</span>' +
-        '<span class="pg-launch">&nearr;</span>' +
-      '</div>';
-    return a;
-  }
-
-  var allEls = [];
-  var hasLivePreview = false;
-  items.forEach(function(item) {
-    var el = renderItem(item);
-    if (item.category === 'audio-midi') gridAM.appendChild(el);
-    else if (item.category === 'visualizers') gridVZ.appendChild(el);
-    else if (item.category === 'type') gridTP.appendChild(el);
-    else if (item.category === 'light') gridLT.appendChild(el);
-    allEls.push(el);
-    if (item.livePreview === 'specimen') hasLivePreview = true;
-  });
-
-  // Boot the live specimen preview animation(s) on the page
-  if (hasLivePreview) {
-    loadSpecimenFonts();
-    document.querySelectorAll('.pg-title-preview[data-preview="specimen"]').forEach(function(el) {
-      startSpecimenAnimation(el, 3000, 0);
-    });
-  }
-
-  // Hide empty sections
-  if (gridAM.children.length === 0) {
-    sectionAM.style.display = 'none';
-    gridAM.style.display = 'none';
-  }
-  if (gridVZ.children.length === 0) {
-    sectionVZ.style.display = 'none';
-    gridVZ.style.display = 'none';
-  }
-  if (gridTP.children.length === 0) {
-    sectionTP.style.display = 'none';
-    gridTP.style.display = 'none';
-  }
-  if (gridLT.children.length === 0) {
-    sectionLT.style.display = 'none';
-    gridLT.style.display = 'none';
-  }
-
-  // ── SIDEBAR FILTERING ──
+  // ── SIDEBAR: scroll to bands + scroll-spy ──
   var navItems = document.querySelectorAll('.arc-nav-item[data-filter]');
-
-  function clearActive() {
-    navItems.forEach(function(n) { n.classList.remove('active'); });
+  var bandMap = { 'audio-midi': 'band-am', 'visualizers': 'band-vz', 'type': 'band-tp', 'light': 'band-lt' };
+  function clearActive() { navItems.forEach(function(n) { n.classList.remove('active'); }); }
+  function setActive(filter) {
+    clearActive();
+    navItems.forEach(function(n) { if (n.getAttribute('data-filter') === filter) n.classList.add('active'); });
   }
-
-  function applyFilter(filter) {
-    if (filter === 'all') {
-      allEls.forEach(function(el) { el.style.display = ''; });
-      if (gridAM.children.length > 0) { sectionAM.style.display = ''; gridAM.style.display = ''; }
-      if (gridVZ.children.length > 0) { sectionVZ.style.display = ''; gridVZ.style.display = ''; }
-      if (gridTP.children.length > 0) { sectionTP.style.display = ''; gridTP.style.display = ''; }
-      if (gridLT.children.length > 0) { sectionLT.style.display = ''; gridLT.style.display = ''; }
-    } else {
-      allEls.forEach(function(el) {
-        el.style.display = el.getAttribute('data-category') === filter ? '' : 'none';
-      });
-      // Show only the matching section
-      sectionAM.style.display = filter === 'audio-midi' ? '' : 'none';
-      gridAM.style.display = filter === 'audio-midi' ? '' : 'none';
-      sectionVZ.style.display = filter === 'visualizers' ? '' : 'none';
-      gridVZ.style.display = filter === 'visualizers' ? '' : 'none';
-      sectionTP.style.display = filter === 'type' ? '' : 'none';
-      gridTP.style.display = filter === 'type' ? '' : 'none';
-      sectionLT.style.display = filter === 'light' ? '' : 'none';
-      gridLT.style.display = filter === 'light' ? '' : 'none';
-    }
-  }
-
   navItems.forEach(function(navItem) {
     navItem.addEventListener('click', function() {
-      clearActive();
-      this.classList.add('active');
-      applyFilter(this.getAttribute('data-filter'));
+      var f = this.getAttribute('data-filter');
+      setActive(f);
+      var target = bandMap[f] && document.getElementById(bandMap[f]);
+      var anchor = target || document.querySelector('.archive-layout');
+      window.scrollTo({ top: anchor.getBoundingClientRect().top + window.scrollY - 96, behavior: 'smooth' });
     });
   });
+  if ('IntersectionObserver' in window) {
+    var inverse = {};
+    Object.keys(bandMap).forEach(function(k) { inverse[bandMap[k]] = k; });
+    var spy = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) {
+        if (e.isIntersecting) setActive(inverse[e.target.id]);
+      });
+    }, { rootMargin: '-45% 0px -45% 0px' });
+    Object.keys(inverse).forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) spy.observe(el);
+    });
+  }
 
 })();
 </script>
