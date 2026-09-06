@@ -45,6 +45,20 @@ body {
 #container { position: relative; display: none; z-index: 1; }
 canvas { display: block; }
 input[type=file] { display: none; }
+
+/* ── ABSURDITY RAIL — darkroom-language rotary knobs, right edge ── */
+#rail { position: fixed; right: 22px; top: 50%; transform: translateY(-50%);
+  display: none; flex-direction: column; gap: 30px; z-index: 5; user-select: none; }
+body.playing #rail { display: flex; }
+.kn { display: flex; flex-direction: column; align-items: center; gap: 9px; cursor: ns-resize; touch-action: none; }
+.kn-dial { width: 46px; height: 46px; border-radius: 50%;
+  background: radial-gradient(circle at 36% 30%, #dfe2e0, #9aa09c 55%, #5c625e);
+  border: 1px solid #1c1f1c; position: relative; }
+.kn-dial::after { content: ''; position: absolute; left: 50%; top: 3px; width: 3px; height: 13px;
+  margin-left: -1.5px; background: #1c1f1c; transform-origin: 50% 20px; transform: rotate(var(--a, -135deg)); }
+.kn-label { font: 400 9px/1 monospace; letter-spacing: .22em; color: rgba(255,255,255,.75); }
+.kn-val { font: 400 8px/1 monospace; letter-spacing: .1em; color: rgba(255,255,255,.35); min-height: 8px; }
+
 </style>
 </head>
 <body>
@@ -62,6 +76,18 @@ input[type=file] { display: none; }
   <canvas id="gl"></canvas>
 </div>
 
+<div id="rail">
+  <div class="kn" data-p="uMelt" data-max="6" title="drag up/down — double-click resets">
+    <div class="kn-dial"></div><div class="kn-label">MELT</div><div class="kn-val"></div>
+  </div>
+  <div class="kn" data-p="uAcid" data-max="8" title="drag up/down — double-click resets">
+    <div class="kn-dial"></div><div class="kn-label">ACID</div><div class="kn-val"></div>
+  </div>
+  <div class="kn" data-p="uSplit" data-max="10" title="drag up/down — double-click resets">
+    <div class="kn-dial"></div><div class="kn-label">SPLIT</div><div class="kn-val"></div>
+  </div>
+</div>
+
 <script>
 // ─── Vertex Shader ────────────────────────────────────────────────────────────
 const VS = `
@@ -77,6 +103,9 @@ const FS = `
 precision highp float;
 uniform sampler2D img;
 uniform float t;
+uniform float uMelt;   // warp amplitude multiplier (knob: MELT)
+uniform float uAcid;   // hue-cycle multiplier    (knob: ACID)
+uniform float uSplit;  // chromatic aberration     (knob: SPLIT)
 varying vec2 v;
 
 vec3 rgb2hsv(vec3 c) {
@@ -116,10 +145,10 @@ void main() {
     sin(uv.y * 5.0  + uv.x * 4.0 + t * 0.38) * 0.010 +
     cos(uv.y * 8.0  + uv.x * 2.5 + t * 0.19) * 0.007;
 
-  vec2 wuv = uv + vec2(dx, dy) * (1.0 - w);
+  vec2 wuv = uv + vec2(dx, dy) * (1.0 - w) * uMelt;
 
   // Chromatic aberration on background
-  float ca = 0.008 * (1.0 - w) * (0.55 + 0.45 * sin(t * 0.5 + uv.y * 2.0));
+  float ca = 0.008 * uSplit * (1.0 - w) * (0.55 + 0.45 * sin(t * 0.5 + uv.y * 2.0));
   vec3 bg = vec3(
     texture2D(img, wuv + vec2(ca,  0.0)).r,
     texture2D(img, wuv).g,
@@ -128,11 +157,11 @@ void main() {
 
   // Psychedelic hue cycling (non-uniform — different speeds per region)
   vec3 bgHSV = rgb2hsv(bg);
-  float hShift =
+  float hShift = uAcid * (
     t * 0.09 +
     sin(uv.x * 2.1  + t * 0.30) * 0.14 +
     cos(uv.y * 3.3  + t * 0.21) * 0.10 +
-    sin((uv.x + uv.y) * 4.5 + t * 0.17) * 0.06;
+    sin((uv.x + uv.y) * 4.5 + t * 0.17) * 0.06);
   bgHSV.x = fract(bgHSV.x + hShift);
   bgHSV.y = clamp(bgHSV.y * 1.7 + 0.18, 0.0, 1.0);
   bgHSV.z *= 0.88 + 0.12 * sin(t * 0.7 + uv.y * 3.5 + uv.x * 2.0);
@@ -182,6 +211,42 @@ let gl, prog, tex, uT, uImg;
 let glC;
 let t0 = 0;
 
+// ─── Absurdity rail: MELT / ACID / SPLIT rotary knobs ────────────────────────
+// Each maps to a shader multiplier. 1.0 = the classic look; the rest of the
+// sweep is headroom. Drag up/down to turn, double-click to reset.
+const KNOBS = [...document.querySelectorAll('#rail .kn')].map(el => ({
+  el, p: el.dataset.p, max: parseFloat(el.dataset.max), v: 1.0, loc: null
+}));
+
+function paintKnob(k) {
+  const t = Math.max(0, Math.min(1, k.v / k.max));
+  k.el.querySelector('.kn-dial').style.setProperty('--a', (-135 + 270 * t) + 'deg');
+  k.el.querySelector('.kn-val').textContent = k.v.toFixed(2) + '×';
+}
+
+function setKnob(k, v) {
+  k.v = Math.max(0, Math.min(k.max, v));
+  if (gl && k.loc) gl.uniform1f(k.loc, k.v);
+  paintKnob(k);
+}
+
+KNOBS.forEach(k => {
+  paintKnob(k);
+  k.el.addEventListener('pointerdown', e => {
+    e.preventDefault();
+    k.el.setPointerCapture(e.pointerId);
+    const y0 = e.clientY, v0 = k.v;
+    const move = ev => setKnob(k, v0 + (y0 - ev.clientY) / 150 * k.max);
+    const up = () => {
+      k.el.removeEventListener('pointermove', move);
+      k.el.removeEventListener('pointerup', up);
+    };
+    k.el.addEventListener('pointermove', move);
+    k.el.addEventListener('pointerup', up);
+  });
+  k.el.addEventListener('dblclick', () => setKnob(k, 1.0));
+});
+
 // ─── Init ─────────────────────────────────────────────────────────────────────
 function init(img) {
   glC = document.getElementById('gl');
@@ -212,6 +277,12 @@ function init(img) {
 
   uT   = gl.getUniformLocation(prog, 't');
   uImg = gl.getUniformLocation(prog, 'img');
+  KNOBS.forEach(k => {
+    k.loc = gl.getUniformLocation(prog, k.p);
+    gl.uniform1f(k.loc, k.v);
+    paintKnob(k);
+  });
+  document.body.classList.add('playing');
 
   // Upload texture
   tex = gl.createTexture();
