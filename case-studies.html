@@ -119,7 +119,9 @@ body.img-hover #cur{filter:invert(1)}
 .cs-caption{font-size:11px;font-family:var(--sf);font-weight:300;color:rgba(26,25,25,.5);letter-spacing:.04em;margin-top:8px;line-height:1.5}
 
 /* Outcome */
-.isru-hero-logo{position:absolute;inset:0;margin:auto;width:min(400px,44%);height:auto;object-fit:contain;pointer-events:none}
+.cs-hero-wrap{position:relative}
+.cs-sound{position:absolute;right:18px;bottom:14px;z-index:3;font:500 9px/1 var(--sf);letter-spacing:.2em;text-transform:uppercase;color:#fff;background:rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.35);padding:7px 11px;cursor:pointer;backdrop-filter:blur(4px);transition:background .2s}
+.cs-sound:hover{background:rgba(0,0,0,.7)}
 .cs-brief a{border-bottom:1px solid var(--accent);padding-bottom:1px;transition:opacity .2s}
 .cs-brief a:hover{opacity:.65}
 .cs-outcome{margin-bottom:0;padding-top:80px;padding-bottom:80px}
@@ -441,7 +443,7 @@ body.img-hover #cur{filter:invert(1)}
       <p class="cs-tagline swp-d">Experimental sound for Logan Bonwell&#39;s edit of the Trash Pit &#8212; Rocket Ramps&#39; newest bike park.</p>
     </div>
     <div class="cs-hero-wrap">
-      <img class="cs-hero-img fi" src="rocket ramps/rr-promo-poster.jpg" alt="Rider mid-backflip against open sky &#8212; still from the Trash Pit edit" style="object-position:center 45%">
+      <video class="cs-hero-video fi" loop muted playsinline preload="none" poster="rocket ramps/rr-promo-poster.jpg" data-lazy-src="rocket ramps/rr-promo-720.mp4" aria-label="Trash Pit film with sound design by Jackson Alexander"></video>
     </div>
     <div class="cs-meta fi">
       <div class="cs-meta-item">
@@ -571,7 +573,7 @@ body.img-hover #cur{filter:invert(1)}
       <p class="cs-tagline swp-d">Custom illustration, brand collateral, and event merch for the grand opening of the Picuris Pueblo All-Wheel Park &#8212; northern New Mexico&#39;s newest bike park.</p>
     </div>
     <div class="cs-hero-wrap">
-      <video class="cs-hero-video fi" loop muted playsinline preload="none" poster="rocket ramps/rr-photo-01.jpg" data-lazy-src="rocket ramps/rr-promo-720.mp4" aria-label="Rocket Ramps promo film"></video>
+      <img class="cs-hero-img fi" src="rocket ramps/rr-photo-01.jpg" alt="Rocket Ramps brand identity &#8212; printed t-shirt with hand-drawn icon circle" style="object-position:center 40%">
     </div>
     <div class="cs-meta fi">
       <div class="cs-meta-item">
@@ -632,7 +634,7 @@ body.img-hover #cur{filter:invert(1)}
       <p class="cs-tagline swp-d">A short film documenting daily garden practice as ritual &#8212; produced as the final challenge for the Tom Sachs ISRU summer camp.</p>
     </div>
     <div class="cs-hero-wrap">
-      <div style="position:relative"><video class="cs-hero-video fi" loop muted playsinline preload="none" data-lazy-src="isru-ritual.mp4" aria-label="ISRU Ritual film"></video><img class="isru-hero-logo" src="ISRU web/ISRU WEB1.png" alt="ISRU Ritual logo"></div>
+      <video class="cs-hero-video fi" loop muted playsinline preload="none" data-lazy-src="isru-ritual.mp4" aria-label="ISRU Ritual film"></video>
     </div>
     <div class="cs-meta fi">
       <div class="cs-meta-item">
@@ -1177,6 +1179,18 @@ body.img-hover #cur{filter:invert(1)}
     });
   }, { threshold: 0.2 });
   document.querySelectorAll('video.cs-hero-video[data-lazy-src]').forEach(function(v) { playObs.observe(v); });
+  // SOUND toggle: films autoplay muted (browser rule); one tap turns audio on
+  document.querySelectorAll('video.cs-hero-video[data-lazy-src]').forEach(function(v) {
+    var wrap = v.closest('.cs-hero-wrap'); if (!wrap) return;
+    var b = document.createElement('button'); b.className = 'cs-sound'; b.type = 'button'; b.textContent = 'Sound';
+    b.addEventListener('click', function(ev) {
+      ev.preventDefault();
+      v.muted = !v.muted;
+      b.textContent = v.muted ? 'Sound' : 'Mute';
+      if (!v.muted && v.paused) { var p = v.play(); if (p && p.catch) p.catch(function(){}); }
+    });
+    wrap.appendChild(b);
+  });
 
   // ── NAV DROPDOWN TOGGLE (mobile click) ──
   var nbBtn = document.querySelector('.nb');
