@@ -462,15 +462,6 @@ body.img-hover #cur{filter:invert(1)}
       <p>A 60-second experimental sound project nestled within Logan Bonwell&#39;s video edit for the newest Rocket Ramps bike park, the Trash Pit.</p>
     </div>
 
-    <div class="cs-film fi">
-      <div class="cs-section-label swp">The Film</div>
-      <div class="video-wrap">
-        <div class="video-play"><div class="video-play-btn"><div class="video-play-tri"></div></div></div>
-        <video preload="metadata" playsinline style="background:#0c0c0c">
-          <source src="rocket ramps/rr-promo-720.mp4" type="video/mp4">
-        </video>
-      </div>
-    </div>
 
 
     <a href="portfolio.html" class="cs-back">&larr; Back to Work</a>
@@ -580,7 +571,7 @@ body.img-hover #cur{filter:invert(1)}
       <p class="cs-tagline swp-d">Custom illustration, brand collateral, and event merch for the grand opening of the Picuris Pueblo All-Wheel Park &#8212; northern New Mexico&#39;s newest bike park.</p>
     </div>
     <div class="cs-hero-wrap">
-      <img class="cs-hero-img fi" src="rocket ramps/rr-photo-01.jpg" alt="Rocket Ramps brand identity &#8212; printed t-shirt with hand-drawn icon circle" style="object-position:center 40%">
+      <video class="cs-hero-video fi" loop muted playsinline preload="none" poster="rocket ramps/rr-photo-01.jpg" data-lazy-src="rocket ramps/rr-promo-720.mp4" aria-label="Rocket Ramps promo film"></video>
     </div>
     <div class="cs-meta fi">
       <div class="cs-meta-item">
@@ -641,7 +632,7 @@ body.img-hover #cur{filter:invert(1)}
       <p class="cs-tagline swp-d">A short film documenting daily garden practice as ritual &#8212; produced as the final challenge for the Tom Sachs ISRU summer camp.</p>
     </div>
     <div class="cs-hero-wrap">
-      <div style="position:relative"><video class="cs-hero-video fi" autoplay loop muted playsinline src="ISRU web/isru-hero-loop.webm" aria-label="ISRU Ritual &#8212; evening garden ritual, looping"></video><img class="isru-hero-logo" src="ISRU web/ISRU WEB1.png" alt="ISRU Ritual logo"></div>
+      <div style="position:relative"><video class="cs-hero-video fi" loop muted playsinline preload="none" data-lazy-src="isru-ritual.mp4" aria-label="ISRU Ritual film"></video><img class="isru-hero-logo" src="ISRU web/ISRU WEB1.png" alt="ISRU Ritual logo"></div>
     </div>
     <div class="cs-meta fi">
       <div class="cs-meta-item">
@@ -662,15 +653,6 @@ body.img-hover #cur{filter:invert(1)}
       <p>The Tom Sachs ISRU summer camp was a three-month daily practice &#8212; structured around discipline, craft, and showing up every day. The final challenge was a short form video submission around your daily ritual, whatever that may be. I called up my good friend and videographer, McCall Sides, and we built a piece focusing on the rituals surrounding maintaining a garden in late summer in Santa Fe.</p>
     </div>
 
-    <div class="cs-film fi">
-      <div class="cs-section-label swp">The Film</div>
-      <div class="video-wrap">
-        <div class="video-play"><div class="video-play-btn"><div class="video-play-tri"></div></div></div>
-        <video preload="metadata" playsinline style="background:#0c0c0c">
-          <source src="isru-ritual.mp4" type="video/mp4">
-        </video>
-      </div>
-    </div>
 
     <div class="cs-outcome fi">
       <div class="cs-section-label swp">Stills</div>
@@ -948,7 +930,7 @@ body.img-hover #cur{filter:invert(1)}
       <p class="cs-tagline swp-d">A short documentary following turquoise miner Jess Robbins into the Nevada desert &#8212; produced for Peyote Bird and the Sundance Catalog.</p>
     </div>
     <div class="cs-hero-wrap">
-      <img class="cs-hero-img fi" src="sq-images/v6_funky.00_02_22_09.Still023.jpg" alt="Cheyenne Turquoise &#8212; Jess Robbins at his turquoise claim, Tonopah, Nevada" style="object-position:center center">
+      <video class="cs-hero-video fi" loop muted playsinline preload="none" poster="sq-images/v6_funky.00_02_22_09.Still023.jpg" data-lazy-src="cheyenne-turquoise.mp4" aria-label="Cheyenne Turquoise documentary"></video>
     </div>
     <div class="cs-meta fi">
       <div class="cs-meta-item">
@@ -969,15 +951,6 @@ body.img-hover #cur{filter:invert(1)}
       <p>Jess Robbins mines turquoise by hand from his claim deep in the desert outside Tonopah, Nevada. The raw stone goes into ingot-based jewelry he sells all over the world. Peyote Bird and the Sundance Catalog wanted a short documentary that told his story &#8212; the land, the process, and the person behind the material. I produced the film over a three-day shoot at the claim. Photography by Leroy Graffe.</p>
     </div>
 
-    <div class="cs-film fi">
-      <div class="cs-section-label swp">The Film</div>
-      <div class="video-wrap">
-        <div class="video-play"><div class="video-play-btn"><div class="video-play-tri"></div></div></div>
-        <video preload="metadata" playsinline style="background:#0c0c0c">
-          <source src="cheyenne-turquoise.mp4" type="video/mp4">
-        </video>
-      </div>
-    </div>
 
     <div class="cs-outcome fi">
       <div class="cs-section-label swp">Stills</div>
@@ -1194,6 +1167,16 @@ body.img-hover #cur{filter:invert(1)}
     });
   }, { rootMargin: '400px 0px' });
   document.querySelectorAll('video[data-lazy-src]').forEach(function(v) { vidObs.observe(v); });
+  // hero films play only while on screen; pause when scrolled away
+  var playObs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      var v = e.target;
+      if (!v.src) return;
+      if (e.isIntersecting) { var p = v.play(); if (p && p.catch) p.catch(function(){}); }
+      else v.pause();
+    });
+  }, { threshold: 0.2 });
+  document.querySelectorAll('video.cs-hero-video[data-lazy-src]').forEach(function(v) { playObs.observe(v); });
 
   // ── NAV DROPDOWN TOGGLE (mobile click) ──
   var nbBtn = document.querySelector('.nb');
