@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Psychedelic Visualizer</title>
+<title>visualizer 01</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body {
@@ -58,6 +58,12 @@ body.playing #rail { display: flex; }
   margin-left: -1.5px; background: #1c1f1c; transform-origin: 50% 20px; transform: rotate(var(--a, -135deg)); }
 .kn-label { font: 400 9px/1 monospace; letter-spacing: .22em; color: rgba(255,255,255,.75); }
 .kn-val { font: 400 8px/1 monospace; letter-spacing: .1em; color: rgba(255,255,255,.35); min-height: 8px; }
+.kn-cc { font: 400 8px/1 monospace; letter-spacing: .12em; color: rgba(255,255,255,.3); min-height: 8px; }
+#rail.learn .kn-dial { box-shadow: 0 0 0 2px rgba(255,255,255,.5); animation: kn-arm 1.2s ease-in-out infinite; }
+@keyframes kn-arm { 50% { box-shadow: 0 0 0 2px rgba(255,255,255,.15); } }
+#midi { font: 400 9px/1 monospace; letter-spacing: .22em; color: rgba(255,255,255,.4);
+  background: none; border: 1px solid rgba(255,255,255,.25); padding: 6px 10px; cursor: pointer; margin-top: 4px; }
+#midi.on { color: #101010; background: rgba(255,255,255,.85); border-color: transparent; }
 
 </style>
 </head>
@@ -78,14 +84,15 @@ body.playing #rail { display: flex; }
 
 <div id="rail">
   <div class="kn" data-p="uMelt" data-max="6" title="drag up/down — double-click resets">
-    <div class="kn-dial"></div><div class="kn-label">MELT</div><div class="kn-val"></div>
+    <div class="kn-dial"></div><div class="kn-label">MELT</div><div class="kn-val"></div><div class="kn-cc"></div>
   </div>
   <div class="kn" data-p="uAcid" data-max="8" title="drag up/down — double-click resets">
-    <div class="kn-dial"></div><div class="kn-label">ACID</div><div class="kn-val"></div>
+    <div class="kn-dial"></div><div class="kn-label">ACID</div><div class="kn-val"></div><div class="kn-cc"></div>
   </div>
   <div class="kn" data-p="uSplit" data-max="10" title="drag up/down — double-click resets">
-    <div class="kn-dial"></div><div class="kn-label">SPLIT</div><div class="kn-val"></div>
+    <div class="kn-dial"></div><div class="kn-label">SPLIT</div><div class="kn-val"></div><div class="kn-cc"></div>
   </div>
+  <button id="midi" title="MIDI learn: click, then click a knob, then move a hardware control">MIDI</button>
 </div>
 
 <script>
@@ -234,6 +241,7 @@ KNOBS.forEach(k => {
   paintKnob(k);
   k.el.addEventListener('pointerdown', e => {
     e.preventDefault();
+    if (learnMode) { armKnob(k); return; }
     k.el.setPointerCapture(e.pointerId);
     const y0 = e.clientY, v0 = k.v;
     const move = ev => setKnob(k, v0 + (y0 - ev.clientY) / 150 * k.max);
@@ -246,6 +254,67 @@ KNOBS.forEach(k => {
   });
   k.el.addEventListener('dblclick', () => setKnob(k, 1.0));
 });
+
+// ─── MIDI: hardware knobs drive the rail (Web MIDI learn, persisted) ─────────
+// Click MIDI → learn mode: click a knob, twist a hardware control, bound.
+// Bindings live in localStorage and reconnect silently on later visits.
+const MKEY = 'visualizer:midi';
+let midiMap = {};
+try { midiMap = JSON.parse(localStorage.getItem(MKEY) || '{}'); } catch (e) {}
+let midiAccess = null, learnMode = false, learnTarget = null;
+const midiBtn = document.getElementById('midi');
+
+function ccBadge(k) {
+  const m = midiMap[k.p];
+  k.el.querySelector('.kn-cc').textContent =
+    learnTarget === k ? '· · ·' : (m ? 'CC' + m.cc : '');
+}
+function ccBadges() { KNOBS.forEach(ccBadge); }
+
+function hookInputs() {
+  midiAccess.inputs.forEach(inp => { inp.onmidimessage = onMIDI; });
+}
+function onMIDI(e) {
+  const st = e.data[0], cc = e.data[1], val = e.data[2];
+  if ((st & 0xF0) !== 0xB0) return; // CC messages only
+  const ch = st & 0x0F;
+  if (learnTarget) {
+    midiMap[learnTarget.p] = { ch: ch, cc: cc };
+    try { localStorage.setItem(MKEY, JSON.stringify(midiMap)); } catch (err) {}
+    learnTarget = null;
+    ccBadges();
+    return;
+  }
+  KNOBS.forEach(k => {
+    const m = midiMap[k.p];
+    if (m && m.ch === ch && m.cc === cc) setKnob(k, val / 127 * k.max);
+  });
+}
+function midiConnect(then) {
+  if (midiAccess) { if (then) then(); return; }
+  if (!navigator.requestMIDIAccess) { midiBtn.textContent = 'NO MIDI'; return; }
+  navigator.requestMIDIAccess().then(a => {
+    midiAccess = a;
+    hookInputs();
+    a.onstatechange = hookInputs;
+    if (then) then();
+  }, () => { midiBtn.textContent = 'NO MIDI'; });
+}
+function armKnob(k) { learnTarget = k; ccBadges(); }
+
+midiBtn.addEventListener('click', () => {
+  midiConnect(() => {
+    learnMode = !learnMode;
+    learnTarget = null;
+    midiBtn.classList.toggle('on', learnMode);
+    document.getElementById('rail').classList.toggle('learn', learnMode);
+    ccBadges();
+  });
+});
+
+// bindings saved from a previous visit reconnect silently
+if (Object.keys(midiMap).length) { midiConnect(); }
+ccBadges();
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
 function init(img) {

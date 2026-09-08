@@ -22,7 +22,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,300&family=Fragment+Mono&family=DM+Sans:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,300&family=Fragment+Mono&family=DM+Sans:wght@200;300;400;500;600&family=Instrument+Sans:wght@400;500&family=Instrument+Serif:ital@0;1&family=Newsreader:ital,wght@1,400&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;cursor:none!important}
 :root{--bg:#FFFFFF;--alt:#FFFFFF;--tx:#1A1919;--sec:#000;--br:#EBEBEB;--fn:'Fragment Mono','Courier New',monospace;--sf:'DM Sans',sans-serif;--accent:#8C8880}
@@ -119,16 +119,14 @@ body.img-hover #cur{filter:invert(1)}
 .cs-caption{font-size:11px;font-family:var(--sf);font-weight:300;color:rgba(26,25,25,.5);letter-spacing:.04em;margin-top:8px;line-height:1.5}
 
 /* Outcome */
-.cs-outcome{margin-bottom:0;padding-top:80px;padding-bottom:80px;border-bottom:1px solid var(--br)}
+.cs-outcome{margin-bottom:0;padding-top:80px;padding-bottom:80px}
 .cs-outcome-gallery{display:grid;grid-template-columns:repeat(2,1fr);gap:48px;margin-top:24px}
 .cs-outcome-gallery.cs-grid-3{grid-template-columns:repeat(3,1fr)}
 .cs-outcome-gallery img{width:100%;aspect-ratio:16/9;object-fit:contain}
-#cs-1 .cs-outcome-gallery{grid-template-columns:repeat(2,1fr);gap:2px;margin-top:0}
-#cs-1 .cs-outcome-gallery img{aspect-ratio:4/5;object-fit:cover;display:block;background:#fff}
+#cs-2 .cs-outcome-gallery{grid-template-columns:repeat(2,1fr);gap:2px;margin-top:0}
+#cs-2 .cs-outcome-gallery img{aspect-ratio:4/5;object-fit:cover;display:block;background:#fff}
 
 /* Takeaway */
-.cs-takeaway{padding-top:80px}
-.cs-takeaway p{font-size:14px;font-family:var(--sf);font-weight:300;line-height:2.0;max-width:660px;color:var(--sec)}
 
 /* ── VIDEO PLAY BUTTON ── */
 .video-wrap{position:relative;cursor:pointer}
@@ -142,15 +140,15 @@ body.img-hover #cur{filter:invert(1)}
 .video-play-tri{width:0;height:0;border-style:solid;border-width:11px 0 11px 20px;border-color:transparent transparent transparent rgba(255,255,255,.9);margin-left:4px}
 
 /* ── PHOTO FILTERS FOR CONTINUITY ── */
-#cs-2 img:not(.cs-contain),
-#cs-9 .cs-outcome img{filter:sepia(.15) saturate(.85) contrast(1.08) brightness(.97)}
+#cs-3 .cs-hero-img,
+#cs-10 .cs-outcome img{filter:sepia(.15) saturate(.85) contrast(1.08) brightness(.97)}
 
 /* Compensate background for sepia-filtered images */
-#cs-2 img:not(.cs-contain),
-#cs-9 .cs-outcome img{background:#fff}
+#cs-3 .cs-hero-img,
+#cs-10 .cs-outcome img{background:#fff}
 
 /* Jericho Ridge — no internal dividers */
-#cs-5 .cs-process,#cs-5 .cs-outcome,#cs-5 .cs-meta{border:none}
+#cs-6 .cs-process,#cs-6 .cs-outcome,#cs-6 .cs-meta{border:none}
 
 /* ── BACK LINK ── */
 .cs-back{display:inline-block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--tx);border:1px solid var(--br);padding:14px 28px;transition:background .2s,color .2s,border-color .2s;margin-top:80px}
@@ -186,9 +184,9 @@ body.img-hover #cur{filter:invert(1)}
 .fi{opacity:0;transform:translateY(20px);transition:opacity .7s ease,transform .7s ease}
 .fi.on{opacity:1;transform:none}
 .cs-gallery img,.cs-outcome-gallery img,.cs-hero-img{background:#fff}
-#cs-11 .cs-outcome-gallery img,#cs-11 .cs-hero-img{background:none}
-#cs-11 .cs-outcome-gallery{grid-template-columns:repeat(2,1fr);gap:1px;margin-top:0;background:#fff}
-#cs-11 .cs-outcome-gallery img{aspect-ratio:auto;width:100%;display:block;background:#fff}
+#cs-12 .cs-outcome-gallery img,#cs-12 .cs-hero-img{background:none}
+#cs-12 .cs-outcome-gallery{grid-template-columns:repeat(2,1fr);gap:1px;margin-top:0;background:#fff}
+#cs-12 .cs-outcome-gallery img{aspect-ratio:auto;width:100%;display:block;background:#fff}
 .js-on .swp{opacity:0;transform:translateX(-28px);transition:opacity .8s ease,transform .8s ease}
 .js-on .swp.on{opacity:1;transform:none}
 .js-on .swp-d{opacity:0;transform:translateX(-28px);transition:opacity .8s ease .2s,transform .8s ease .2s}
@@ -230,8 +228,6 @@ body.img-hover #cur{filter:invert(1)}
   .cs-brief p{font-size:12px;line-height:1.8}
   .cs-process{padding-bottom:36px}
   .cs-outcome{padding-top:36px;padding-bottom:36px}
-  .cs-takeaway{padding-top:36px}
-  .cs-takeaway p{font-size:12px;line-height:1.8}
   .cs-section-label{font-size:11px;letter-spacing:.2em;margin-bottom:14px}
   .cs-caption{font-size:10px;margin-top:6px}
   .cs-hero-wrap{margin-left:-24px;margin-right:-24px;margin-bottom:24px}
@@ -252,6 +248,12 @@ body.img-hover #cur{filter:invert(1)}
 @media(max-width:600px){
   .cs-gallery{grid-template-columns:1fr;gap:8px}
 }
+
+/* untitled case study — live cover embed (the site's own hero, framed) */
+.un-live{aspect-ratio:3/1;position:relative;overflow:hidden}
+.cs-live-tile{width:100%;aspect-ratio:8/5;border:0;pointer-events:none;display:block;background:#FBFBFA}
+.un-live{background:#FBFBFA;display:flex;justify-content:center;align-items:flex-start}
+.cs-hero-live{height:150%;aspect-ratio:2/1;flex:0 0 auto;transform:scale(.66667);transform-origin:top center;border:0;pointer-events:none;background:#FBFBFA}
 </style>
 </head>
 <body>
@@ -311,52 +313,56 @@ body.img-hover #cur{filter:invert(1)}
   <aside class="cs-sidebar nav-open">
     <div class="cs-index-label" onclick="var s=this.parentElement,o=s.classList.contains('nav-open');s.classList.toggle('nav-open');s.classList.toggle('nav-collapsed');this.querySelector('.cs-toggle').textContent=o?'+':'−'">Projects <span class="cs-toggle">&minus;</span></div>
     <div class="cs-nav-list">
-        <a href="#cs-1" class="cs-index-row active" data-target="cs-1">
+    <a href="#cs-1" class="cs-index-row active" data-target="cs-1">
       <span class="cs-index-num">01</span>
-      <span class="cs-index-title">Trash Pit</span>
+      <span class="cs-index-title">Rocket Ramps: Round Dos</span>
     </a>
-    <a href="#cs-2" class="cs-index-row" data-target="cs-2">
+        <a href="#cs-2" class="cs-index-row" data-target="cs-2">
       <span class="cs-index-num">02</span>
-      <span class="cs-index-title">Mr. Porter x Peyote Bird</span>
+      <span class="cs-index-title">Trash Pit</span>
     </a>
     <a href="#cs-3" class="cs-index-row" data-target="cs-3">
       <span class="cs-index-num">03</span>
-      <span class="cs-index-title">studio | BOSE</span>
+      <span class="cs-index-title">Mr. Porter x Peyote Bird</span>
     </a>
     <a href="#cs-4" class="cs-index-row" data-target="cs-4">
       <span class="cs-index-num">04</span>
-      <span class="cs-index-title">Rocket Ramps</span>
+      <span class="cs-index-title">studio | BOSE</span>
     </a>
     <a href="#cs-5" class="cs-index-row" data-target="cs-5">
       <span class="cs-index-num">05</span>
-      <span class="cs-index-title">ISRU Ritual</span>
+      <span class="cs-index-title">Rocket Ramps</span>
     </a>
     <a href="#cs-6" class="cs-index-row" data-target="cs-6">
       <span class="cs-index-num">06</span>
-      <span class="cs-index-title">Bird &amp; Arrow</span>
+      <span class="cs-index-title">ISRU Ritual</span>
     </a>
     <a href="#cs-7" class="cs-index-row" data-target="cs-7">
       <span class="cs-index-num">07</span>
-      <span class="cs-index-title">Jericho Ridge</span>
+      <span class="cs-index-title">Bird &amp; Arrow</span>
     </a>
     <a href="#cs-8" class="cs-index-row" data-target="cs-8">
       <span class="cs-index-num">08</span>
-      <span class="cs-index-title">Zozobra: 100 Years</span>
+      <span class="cs-index-title">Jericho Ridge</span>
     </a>
     <a href="#cs-9" class="cs-index-row" data-target="cs-9">
       <span class="cs-index-num">09</span>
-      <span class="cs-index-title">1974 BMW 2002tii</span>
+      <span class="cs-index-title">Zozobra: 100 Years</span>
     </a>
     <a href="#cs-10" class="cs-index-row" data-target="cs-10">
       <span class="cs-index-num">10</span>
-      <span class="cs-index-title">Cheyenne Turquoise</span>
+      <span class="cs-index-title">1974 BMW 2002tii</span>
     </a>
     <a href="#cs-11" class="cs-index-row" data-target="cs-11">
       <span class="cs-index-num">11</span>
-      <span class="cs-index-title">All Eyes On Us</span>
+      <span class="cs-index-title">Cheyenne Turquoise</span>
     </a>
     <a href="#cs-12" class="cs-index-row" data-target="cs-12">
       <span class="cs-index-num">12</span>
+      <span class="cs-index-title">All Eyes On Us</span>
+    </a>
+    <a href="#cs-13" class="cs-index-row" data-target="cs-13">
+      <span class="cs-index-num">13</span>
       <span class="cs-index-title">Flash Sheets</span>
     </a>
     </div>
@@ -364,11 +370,69 @@ body.img-hover #cur{filter:invert(1)}
   <div class="cs-main">
 
 <!-- CASE STUDY 1: Mr. Porter x Peyote Bird SS26 -->
+<!-- CASE STUDY 1: UNTITLED — LOCAL ONLY until the untitled site launches (Jackson's call). Do not push this file until then. -->
+<!-- CASE STUDY: ROCKET RAMPS ROUND TWO (local hold with untitled) -->
 <div class="cs-card" id="cs-1">
   <div class="cs-inner">
     <div class="cs-header fi">
       <div class="cs-title-row swp">
         <div class="cs-num">01</div>
+        <h2 class="cs-title">Rocket Ramps: Round Dos</h2>
+      </div>
+      <p class="cs-tagline swp-d">Second printing of the Rocket Ramps tee: a new hand-drawn mark, heavier fabric, and a multi-layer screenprint.</p>
+    </div>
+    <div class="cs-hero-wrap">
+      <img class="cs-hero-img fi" src="rocket-ramps-r2/rr-blackt-20.jpg" alt="Rocket Ramps round-two tee, black colorway, hand-drawn logo front">
+    </div>
+    <div class="cs-meta fi">
+      <div class="cs-meta-item">
+        <div class="cs-meta-label">Client</div>
+        <div class="cs-meta-value">Rocket Ramps</div>
+      </div>
+      <div class="cs-meta-item">
+        <div class="cs-meta-label">Discipline</div>
+        <div class="cs-meta-value">Apparel, Illustration, Screenprint</div>
+      </div>
+      <div class="cs-meta-item">
+        <div class="cs-meta-label">Year</div>
+        <div class="cs-meta-value">2026</div>
+      </div>
+    </div>
+
+    <div class="cs-brief fi">
+      <p>Round two rebuilds the shirt itself: a new logo, hand-drawn for the front; a sturdier blank; a screenprint laid down in multiple layers so the ink carries real body. Three colorways, black, rust, and camo, sold through <a href="https://rocketramps.com/merch" target="_blank" rel="noopener">the Rocket Ramps site</a>. This is the shirt as it was meant to be.</p>
+    </div>
+
+    <div class="cs-outcome fi">
+      <div class="cs-section-label swp">Project Gallery</div>
+      <div class="cs-outcome-gallery cs-grid-3">
+        <img class="cs-contain" src="rocket-ramps-r2/rr-blackt-11.jpg" alt="Round-two tee, black colorway">
+        <img class="cs-contain" src="rocket-ramps-r2/rr-blackt-17.jpg" alt="Round-two tee, black colorway, print detail">
+        <img class="cs-contain" src="rocket-ramps-r2/rr-blackt-18.jpg" alt="Round-two tee, black colorway">
+                <img class="cs-contain" src="rocket-ramps-r2/rr-blackt-25.jpg" alt="Round-two tee, black colorway">
+        <img class="cs-contain" src="rocket-ramps-r2/rr-blackt-32.jpg" alt="Round-two tee, black colorway">
+        <img class="cs-contain" src="rocket-ramps-r2/rr-blackt-34.jpg" alt="Round-two tee, black colorway">
+        <img class="cs-contain" src="rocket-ramps-r2/rr-blackt-37.jpg" alt="Round-two tee, black colorway">
+        <img class="cs-contain" src="rocket-ramps-r2/rr-brownt-11.jpg" alt="Round-two tee, rust colorway, back print">
+        <img class="cs-contain" src="rocket-ramps-r2/rr-brownt.jpg" alt="Round-two tee, rust colorway">
+        <img class="cs-contain" src="rocket-ramps-r2/rr-brownt-14.jpg" alt="Round-two tee, rust colorway">
+        <img class="cs-contain" src="rocket-ramps-r2/rr-brownt-23.jpg" alt="Round-two tee, rust colorway">
+        <img class="cs-contain" src="rocket-ramps-r2/rr-brownt-24.jpg" alt="Round-two tee, rust colorway">
+        <img class="cs-contain" src="rocket-ramps-r2/rr-brownt-25.jpg" alt="Round-two tee, rust colorway">
+        <img class="cs-contain" src="rocket-ramps-r2/rr-squad-33.jpg" alt="Round-two tees on the crew">
+        <img class="cs-contain" src="rocket-ramps-r2/rr-squad-37.jpg" alt="Round-two tees on the crew">
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- CASE STUDY 2: studio | BOSE -->
+<div class="cs-card" id="cs-2">
+  <div class="cs-inner">
+    <div class="cs-header fi">
+      <div class="cs-title-row swp">
+        <div class="cs-num">02</div>
         <h2 class="cs-title">Trash Pit</h2>
       </div>
       <p class="cs-tagline swp-d">Experimental sound for Logan Bonwell&#39;s edit of the Trash Pit &#8212; Rocket Ramps&#39; newest bike park.</p>
@@ -392,7 +456,6 @@ body.img-hover #cur{filter:invert(1)}
     </div>
 
     <div class="cs-brief fi">
-      <div class="cs-section-label swp">The Brief</div>
       <p>A 60-second experimental sound project nestled within Logan Bonwell&#39;s video edit for the newest Rocket Ramps bike park, the Trash Pit.</p>
     </div>
 
@@ -406,20 +469,17 @@ body.img-hover #cur{filter:invert(1)}
       </div>
     </div>
 
-    <div class="cs-takeaway fi">
-      <p>Sound built to score the motion rather than sit beneath it.</p>
-    </div>
 
     <a href="portfolio.html" class="cs-back">&larr; Back to Work</a>
 
   </div>
 </div>
 
-  <div class="cs-card" id="cs-2">
+  <div class="cs-card" id="cs-3">
   <div class="cs-inner">
     <div class="cs-header fi">
       <div class="cs-title-row swp">
-        <div class="cs-num">02</div>
+        <div class="cs-num">03</div>
         <h2 class="cs-title">Mr. Porter x Peyote Bird SS26</h2>
       </div>
       <p class="cs-tagline swp-d">Creative direction and photo styling for Peyote Bird&#39;s Spring/Summer 2026 collection, produced exclusively for Mr Porter.</p>
@@ -443,13 +503,12 @@ body.img-hover #cur{filter:invert(1)}
     </div>
 
     <div class="cs-brief fi">
-      <div class="cs-section-label swp">The Brief</div>
-      <p>Peyote Bird tapped the studio to direct the product photography for their Spring/Summer 2026 campaign with Mr Porter. The goal was to move beyond standard e-commerce flat lays and build a visual world around the jewelry itself &#8212; one that felt tactile, layered, and true to the Southwest without leaning on clich&#233;. Each composition needed to let the turquoise, coral, and silver speak while giving the campaign a cohesive editorial identity.</p>
+      <p>Peyote Bird tapped the studio to direct the product photography for their Spring/Summer 2026 campaign with Mr Porter. We set out to move beyond the standard e-commerce flat lay and build a visual world around the jewelry itself &#8212; one that felt tactile, layered, and true to the Southwest without leaning on clich&#233;. Each composition lets the turquoise, coral, and silver speak while giving the campaign a cohesive editorial identity.</p>
     </div>
 
     <div class="cs-outcome fi">
-      <div class="cs-section-label swp">Outcome</div>
-      <div class="cs-outcome-gallery">
+      <div class="cs-section-label swp">Project Gallery</div>
+      <div class="cs-outcome-gallery cs-grid-3">
         <img src="mr-porter-cs/mrp-cs-08.jpg" alt="Peyote Bird SS26 campaign" loading="lazy">
         <img src="mr-porter-cs/mrp-cs-19.jpg" alt="Peyote Bird SS26 campaign" loading="lazy">
         <img src="mr-porter-cs/mrp-cs-27.jpg" alt="Peyote Bird SS26 campaign" loading="lazy">
@@ -461,18 +520,14 @@ body.img-hover #cur{filter:invert(1)}
       </div>
     </div>
 
-    <div class="cs-takeaway fi">
-      <p>The resulting campaign gave Peyote Bird a rich, unmistakable visual language across the entire Mr Porter collection &#8212; every frame grounded in real materials, real color, and a point of view that felt as considered as the jewelry itself.</p>
-    </div>
   </div>
 </div>
 
-<!-- CASE STUDY 2: studio | BOSE -->
-<div class="cs-card" id="cs-3">
+<div class="cs-card" id="cs-4">
   <div class="cs-inner">
     <div class="cs-header fi">
       <div class="cs-title-row swp">
-        <div class="cs-num">03</div>
+        <div class="cs-num">04</div>
         <h2 class="cs-title">studio | BOSE</h2>
       </div>
       <p class="cs-tagline swp-d">Brand collateral, typography, and visual system design for a contemporary architectural studio.</p>
@@ -496,12 +551,11 @@ body.img-hover #cur{filter:invert(1)}
     </div>
 
     <div class="cs-brief fi">
-      <div class="cs-section-label swp">The Brief</div>
-      <p>With the primary logo established, studio | BOSE required a comprehensive collateral system built around it, including proposals, invoices, typography, color palette, and layout templates. The objective was to create a cohesive visual language that extended the existing mark into every client-facing touchpoint, grounded in forms that reflected the studio&#39;s creative ethos.</p>
+      <p>With the primary logo established, studio | BOSE needed a full collateral system built around it: proposals, invoices, typography, color palette, and layout templates. A cohesive visual language extending the mark into every client-facing touchpoint, grounded in forms that reflect the studio&#39;s creative ethos.</p>
     </div>
 
     <div class="cs-outcome fi">
-      <div class="cs-section-label swp">Outcome</div>
+      <div class="cs-section-label swp">Project Gallery</div>
       <div class="cs-outcome-gallery cs-grid-3">
         <img class="cs-contain" src="sq-images/studioBOSE-proposal-mockup-detail.jpg" alt="studio|BOSE signage detail">
         <img class="cs-contain" src="sq-images/studioBOSE-proposal-mockup-detail-2.jpg" alt="studio|BOSE mockup detail">
@@ -509,18 +563,15 @@ body.img-hover #cur{filter:invert(1)}
       </div>
     </div>
 
-    <div class="cs-takeaway fi">
-      <p>The collateral system translated a single logo into a cohesive brand presence. Every proposal, invoice, and document now reflects the same intentional visual language, strengthening studio | BOSE&#39;s professional identity across all interactions.</p>
-    </div>
   </div>
 </div>
 
 <!-- CASE STUDY 3: ROCKET RAMPS -->
-<div class="cs-card" id="cs-4">
+<div class="cs-card" id="cs-5">
   <div class="cs-inner">
     <div class="cs-header fi">
       <div class="cs-title-row swp">
-        <div class="cs-num">04</div>
+        <div class="cs-num">05</div>
         <h2 class="cs-title">Rocket Ramps</h2>
       </div>
       <p class="cs-tagline swp-d">Custom illustration, brand collateral, and event merch for the grand opening of the Picuris Pueblo All-Wheel Park &#8212; northern New Mexico&#39;s newest bike park.</p>
@@ -544,8 +595,7 @@ body.img-hover #cur{filter:invert(1)}
     </div>
 
     <div class="cs-brief fi">
-      <div class="cs-section-label swp">The Brief</div>
-      <p>Rocket Ramps, a Santa Fe-based trail building company, commissioned designs for the launch of the Picuris Pueblo All-Wheel Park, a $500K bike park funded by the New Mexico Outdoor Recreation Division. Working within the existing brand mark, the studio&#39;s project goal was to design event apparel and branded materials featuring hand-drawn icons that captured both the energy of the competition and the community behind it.</p>
+      <p>Rocket Ramps, a Santa Fe-based trail building company, commissioned designs for the launch of the Picuris Pueblo All-Wheel Park, a $500K bike park funded by the New Mexico Outdoor Recreation Division. Working within the existing brand mark, I designed event apparel and branded materials around hand-drawn icons that captured both the energy of the competition and the community behind it.</p>
     </div>
 
     <div class="cs-process fi">
@@ -564,7 +614,7 @@ body.img-hover #cur{filter:invert(1)}
     </div>
 
     <div class="cs-outcome fi">
-      <div class="cs-section-label swp">Outcome</div>
+      <div class="cs-section-label swp">Project Gallery</div>
       <div class="cs-outcome-gallery cs-grid-3">
         <img class="cs-contain" src="rocket ramps/rr-monogram-icons.png" alt="RR monogram filled with hand-drawn icon library">
         <img class="cs-contain" src="rocket ramps/rr-circle-icons.png" alt="Circular icon arrangement with RR mark at center">
@@ -574,18 +624,15 @@ body.img-hover #cur{filter:invert(1)}
 
     </div>
 
-    <div class="cs-takeaway fi">
-      <p>The Picuris Pueblo All-Wheel Park opened July 19, 2025 to a packed crowd. What started as a collateral project became a full visual language &#8212; over a hundred hand-drawn icons that told the story of the land, the tools, and the people building on it.</p>
-    </div>
   </div>
 </div>
 
 <!-- CASE STUDY 4: ISRU RITUAL -->
-<div class="cs-card" id="cs-5">
+<div class="cs-card" id="cs-6">
   <div class="cs-inner">
     <div class="cs-header fi">
       <div class="cs-title-row swp">
-        <div class="cs-num">05</div>
+        <div class="cs-num">06</div>
         <h2 class="cs-title">ISRU Ritual</h2>
       </div>
       <p class="cs-tagline swp-d">A short film documenting daily garden practice as ritual &#8212; produced as the final challenge for the Tom Sachs ISRU summer camp.</p>
@@ -609,7 +656,6 @@ body.img-hover #cur{filter:invert(1)}
     </div>
 
     <div class="cs-brief fi">
-      <div class="cs-section-label swp">The Brief</div>
       <p>The Tom Sachs ISRU summer camp was a three-month daily practice &#8212; structured around discipline, craft, and showing up every day. The final challenge was a short form video submission around your daily ritual, whatever that may be. I called up my good friend and videographer, McCall Sides, and we built a piece focusing on the rituals surrounding maintaining a garden in late summer in Santa Fe.</p>
     </div>
 
@@ -636,11 +682,11 @@ body.img-hover #cur{filter:invert(1)}
 </div>
 
 <!-- CASE STUDY 5: BIRD & ARROW -->
-<div class="cs-card" id="cs-6">
+<div class="cs-card" id="cs-7">
   <div class="cs-inner">
     <div class="cs-header fi">
       <div class="cs-title-row swp">
-        <div class="cs-num">06</div>
+        <div class="cs-num">07</div>
         <h2 class="cs-title">Bird &amp; Arrow</h2>
       </div>
       <p class="cs-tagline swp-d">Full brand identity, visual system, and brand book for Peyote Bird&#39;s contemporary jewelry line.</p>
@@ -664,8 +710,7 @@ body.img-hover #cur{filter:invert(1)}
     </div>
 
     <div class="cs-brief fi">
-      <div class="cs-section-label swp">The Brief</div>
-      <p>Peyote Bird needed a distinct identity for Bird &amp; Arrow &#8212; a sub-brand targeting a contemporary, design-forward audience. The goal was to create a complete visual system that could stand on its own while maintaining a connection to the parent brand. The deliverables spanned logo design, typography, color palette, and a comprehensive brand book.</p>
+      <p>Peyote Bird needed a distinct identity for Bird &amp; Arrow &#8212; a sub-brand targeting a contemporary, design-forward audience. A complete visual system that stands on its own while keeping a thread back to the parent brand: logo, typography, color palette, and a comprehensive brand book.</p>
     </div>
 
     <div class="cs-process fi">
@@ -684,7 +729,7 @@ body.img-hover #cur{filter:invert(1)}
     </div>
 
     <div class="cs-outcome fi">
-      <div class="cs-section-label swp">Outcome</div>
+      <div class="cs-section-label swp">Project Gallery</div>
       <div class="cs-outcome-gallery cs-grid-3">
         <img src="sq-images/Bird-Arrow-Logo_FAIRE-07.png" alt="Bird and Arrow final logo">
         <img class="cs-contain" src="bird + arrow/ba-outcome-01.png" alt="Brand keywords and identity">
@@ -695,18 +740,15 @@ body.img-hover #cur{filter:invert(1)}
       </div>
     </div>
 
-    <div class="cs-takeaway fi">
-      <p>Bird &amp; Arrow became a fully realized brand &#8212; from mark to motion to a 34-page brand book. The identity gave Peyote Bird a contemporary counterpart that speaks to a new audience while honoring the craftsmanship the studio is built on.</p>
-    </div>
   </div>
 </div>
 
 <!-- CASE STUDY 6: JERICHO RIDGE -->
-<div class="cs-card" id="cs-7">
+<div class="cs-card" id="cs-8">
   <div class="cs-inner">
     <div class="cs-header fi">
       <div class="cs-title-row swp">
-        <div class="cs-num">07</div>
+        <div class="cs-num">08</div>
         <h2 class="cs-title">Jericho Ridge</h2>
       </div>
       <p class="cs-tagline swp-d">A hand-built dry-stacked stone structure on a mountain ridge outside Santa Fe &#8212; raw materials, simple tools, and a long view.</p>
@@ -730,8 +772,7 @@ body.img-hover #cur{filter:invert(1)}
     </div>
 
     <div class="cs-brief fi">
-      <div class="cs-section-label swp">The Brief</div>
-      <p>A ridgeline at 8,000 feet with a 360-degree view of the Sangre de Cristos and the Rio Grande valley. The project was simple in concept &#8212; build a dry-stacked stone wind shelter using only the material already provided by the land itself. No mortar, no concrete, no power tools. Just a pickaxe, gloves, and the rocks underfoot. Inspired heavily by the land art of Andy Goldsworthy, this project was the first in what would become a series of rock walls across the property.</p>
+      <p>A ridgeline at 8,000 feet with a 360-degree view of the Sangre de Cristos and the Rio Grande valley. The project was simple in concept &#8212; build a dry-stacked stone wall atop the ridge using only the material already provided by the land itself. No mortar, no concrete, no power tools. Just a pickaxe, gloves, and the rocks underfoot. Inspired heavily by the land art of Andy Goldsworthy, this project was the first in what would become a series of rock walls across the property. Jericho Ridge was my first attempt to break away from the type of work I had been confined to for a decade or more. Sitting at a desk inside and moving things across a screen day in day out. With this project, I was now just hauling rocks up and down a hill and stacking them up one at a time. It ended up being one of my favorite projects to this day: quiet work in nature, building something physical with my hands, and entering the flow state that is so hard to truly sink into these days.</p>
     </div>
 
     <div class="cs-process fi">
@@ -756,7 +797,7 @@ body.img-hover #cur{filter:invert(1)}
     </div>
 
     <div class="cs-outcome fi">
-      <div class="cs-section-label swp">Outcome</div>
+      <div class="cs-section-label swp">Project Gallery</div>
       <div class="cs-outcome-gallery cs-grid-3">
         <img style="object-fit:cover" src="Jericho Ridge/Jericho Ridge1.JPG" alt="Stone wall and sunset &#8212; pink clouds over Sangre de Cristos">
         <img style="object-fit:cover" src="Jericho Ridge/Jericho Ridge5.JPG" alt="Two silhouettes on ridge at sunset">
@@ -764,18 +805,15 @@ body.img-hover #cur{filter:invert(1)}
       </div>
     </div>
 
-    <div class="cs-takeaway fi">
-      <p>Jericho Ridge was my first attempt to break away from the type of work I had been confined to for a decade or more. Sitting at a desk inside and moving things across a screen day in day out. With this project, I was now just hauling rocks up and down a hill and stacking them up one at a time. It ended up being one of my favorite projects to this day: quiet work in nature, building something physical with my hands, and entering the flow state that is so hard to truly sink into these days.</p>
-    </div>
   </div>
 </div>
 
 <!-- CASE STUDY 7: ZOZOBRA: 100 YEARS -->
-<div class="cs-card" id="cs-8">
+<div class="cs-card" id="cs-9">
   <div class="cs-inner">
     <div class="cs-header fi">
       <div class="cs-title-row swp">
-        <div class="cs-num">08</div>
+        <div class="cs-num">09</div>
         <h2 class="cs-title">Zozobra: 100 Years</h2>
       </div>
       <p class="cs-tagline swp-d">Poster design for <em>Zozobra: 100 Years of Fire and Redemption</em> &#8212; a documentary celebrating a century of Santa Fe&#39;s most iconic tradition.</p>
@@ -799,8 +837,7 @@ body.img-hover #cur{filter:invert(1)}
     </div>
 
     <div class="cs-brief fi">
-      <div class="cs-section-label swp">The Brief</div>
-      <p>Every September, Santa Fe burns a 50-foot marionette called Zozobra &#8212; a tradition started by artist Will Shuster in 1924. For the centennial, Hutton Films produced a short documentary and needed a poster that captured the weight and weirdness of a hundred years of burning gloom. The ask was a single image that could work on screen, in print, and on the marquee at Violet Crown Cinema for the premiere.</p>
+      <p>Every September, Santa Fe burns a 50-foot marionette called Zozobra &#8212; a tradition started by artist Will Shuster in 1924. For the centennial, Hutton Films produced a short documentary and needed a poster that captured the weight and weirdness of a hundred years of burning gloom. It had to be a single image that could work on screen, in print, and on the marquee at Violet Crown Cinema for the premiere.</p>
     </div>
 
     <div class="cs-process fi">
@@ -816,27 +853,23 @@ body.img-hover #cur{filter:invert(1)}
     </div>
 
     <div class="cs-outcome fi">
-      <div class="cs-section-label swp">Outcome</div>
+      <div class="cs-section-label swp">Project Gallery</div>
       <div class="cs-outcome-gallery cs-grid-3">
         <img class="no-filter" style="object-fit:contain;background:#fff" src="ZOZOBRA 100/zozobra _hutton7.jpg" alt="Final poster &#8212; Zozobra: 100 Years of Fire and Redemption">
-        <img style="object-fit:cover" src="ZOZOBRA 100/zozobra _hutton5.png" alt="Violet Crown Cinema screening page for Zozobra documentary">
         <img style="object-fit:cover" src="ZOZOBRA 100/zozobra _hutton2.jpeg" alt="Premiere at Violet Crown Cinema &#8212; team in front of Now Showing marquee">
         <img style="object-fit:cover" src="ZOZOBRA 100/IMG_8619.JPG" alt="Zozobra poster on Violet Crown Cinema marquee &#8212; Now Showing">
       </div>
     </div>
 
-    <div class="cs-takeaway fi">
-      <p>The final black-and-white composition balanced archival tone with contemporary clarity. Displayed across Santa Fe for the premiere, the poster functioned as both promotional material and commemorative artifact.</p>
-    </div>
   </div>
 </div>
 
 <!-- CASE STUDY 8: 1974 BMW 2002tii RESTORATION -->
-<div class="cs-card" id="cs-9">
+<div class="cs-card" id="cs-10">
   <div class="cs-inner">
     <div class="cs-header fi">
       <div class="cs-title-row swp">
-        <div class="cs-num">09</div>
+        <div class="cs-num">10</div>
         <h2 class="cs-title">1974 BMW 2002<span style="text-transform:lowercase">tii</span></h2>
       </div>
       <p class="cs-tagline swp-d">Full restoration &#8212; engine, suspension, bodywork, seats, stereo, wheels, wiring, interior.</p>
@@ -860,8 +893,7 @@ body.img-hover #cur{filter:invert(1)}
     </div>
 
     <div class="cs-brief fi">
-      <div class="cs-section-label swp">The Project</div>
-      <p>A 1974 BMW 2002tii &#8212; mechanically tired, electrically unreliable, and sunfaded after fifty years of wear and tear. The end goal was to bring the car back to life as a daily driver: rebuild the engine, upgrade the suspension, and restore the finer details back to their former glory.</p>
+      <p>A 1974 BMW 2002tii &#8212; mechanically tired, electrically unreliable, and sunfaded after fifty years of wear and tear. We set out to bring the car back to life as a daily driver: rebuild the engine, upgrade the suspension, and restore the finer details back to their former glory. This project was a collaboration between my father and me. Though painfully slow-moving, expensive, and frustrating at times, we both came out of the experience with a deeper appreciation for the car, inside and out. It is safe to say the car will be in the family for years to come.</p>
     </div>
 
     <div class="cs-process fi">
@@ -889,7 +921,7 @@ body.img-hover #cur{filter:invert(1)}
     </div>
 
     <div class="cs-outcome fi">
-      <div class="cs-section-label swp">Outcome</div>
+      <div class="cs-section-label swp">Project Gallery</div>
       <div class="cs-outcome-gallery cs-grid-3">
         <img style="object-fit:cover" src="bmw/bmw-profile-stucco.jpg" alt="1974 BMW 2002tii &#8212; side profile against stucco wall, Santa Fe">
         <img style="object-fit:cover;object-position:center 80%" src="bmw/bmw-hero-rainbow.jpg" alt="BMW 2002tii under a double rainbow in the New Mexico mountains">
@@ -899,18 +931,15 @@ body.img-hover #cur{filter:invert(1)}
       </div>
     </div>
 
-    <div class="cs-takeaway fi">
-      <p>This project was a collaboration between my father and me. Though painfully slow-moving, expensive, and frustrating at times, we both came out of the experience with a deeper appreciation for the car, inside and out. It is safe to say the car will be in the family for years to come.</p>
-    </div>
   </div>
 </div>
 
 <!-- CASE STUDY 9: CHEYENNE TURQUOISE -->
-<div class="cs-card" id="cs-10">
+<div class="cs-card" id="cs-11">
   <div class="cs-inner">
     <div class="cs-header fi">
       <div class="cs-title-row swp">
-        <div class="cs-num">10</div>
+        <div class="cs-num">11</div>
         <h2 class="cs-title">Cheyenne Turquoise</h2>
       </div>
       <p class="cs-tagline swp-d">A short documentary following turquoise miner Jess Robbins into the Nevada desert &#8212; produced for Peyote Bird and the Sundance Catalog.</p>
@@ -934,7 +963,6 @@ body.img-hover #cur{filter:invert(1)}
     </div>
 
     <div class="cs-brief fi">
-      <div class="cs-section-label swp">The Brief</div>
       <p>Jess Robbins mines turquoise by hand from his claim deep in the desert outside Tonopah, Nevada. The raw stone goes into ingot-based jewelry he sells all over the world. Peyote Bird and the Sundance Catalog wanted a short documentary that told his story &#8212; the land, the process, and the person behind the material. I produced the film over a three-day shoot at the claim. Photography by Leroy Graffe.</p>
     </div>
 
@@ -963,19 +991,16 @@ body.img-hover #cur{filter:invert(1)}
       </div>
     </div>
 
-    <div class="cs-takeaway fi">
-      <p>Three days in the middle of nowhere with a small crew and a guy who&#39;s been pulling stone out of the ground for decades. No studio, no controlled environment &#8212; just desert, dust, and the real thing. The film captured something you can&#39;t fake: the quiet obsession of a person who knows exactly what they&#39;re looking for and where to find it. One of the most memorable shoots I&#39;ve been part of.</p>
-    </div>
 
   </div>
 </div>
 
 <!-- CASE STUDY 10: ALL EYES ON US -->
-<div class="cs-card" id="cs-11">
+<div class="cs-card" id="cs-12">
   <div class="cs-inner">
     <div class="cs-header fi">
       <div class="cs-title-row swp">
-        <div class="cs-num">11</div>
+        <div class="cs-num">12</div>
         <h2 class="cs-title">All Eyes On Us</h2>
       </div>
       <p class="cs-tagline swp-d">A hand-made, mixed-media zine exploring surveillance, privacy, and the architecture of observation &#8212; built from newspaper clippings, drawings, satellite imagery, redacted documents, vintage graph paper.</p>
@@ -999,8 +1024,7 @@ body.img-hover #cur{filter:invert(1)}
     </div>
 
     <div class="cs-brief fi">
-      <div class="cs-section-label swp">The Brief</div>
-      <p>Create a self-published zine as a final project for a college design course. The result was a 13-page hand-assembled exploration of mass surveillance, data collection, and the feeling of being watched. Every page was built physically: cut, torn, taped, redacted, and scanned by hand.</p>
+      <p>A self-published zine, made as the final project for a college design course: a 13-page hand-assembled exploration of mass surveillance, data collection, and the feeling of being watched. Every page was built physically: cut, torn, taped, redacted, and scanned by hand.</p>
     </div>
 
     <div class="cs-process fi">
@@ -1022,7 +1046,7 @@ body.img-hover #cur{filter:invert(1)}
     </div>
 
     <div class="cs-outcome fi">
-      <div class="cs-section-label swp">Outcome</div>
+      <div class="cs-section-label swp">Project Gallery</div>
       <div class="cs-gallery">
         <img style="object-fit:cover" src="zine/zine-photo-spread-satellite.jpg" alt="All Eyes On Us &#8212; open spread showing ISS collage and die-cut circle pages">
         <img style="object-fit:cover" src="zine/zine-photo-spread-getaway.jpg" alt="All Eyes On Us &#8212; open spread showing getaway collage and surveillance camera pages">
@@ -1033,20 +1057,16 @@ body.img-hover #cur{filter:invert(1)}
       </div>
     </div>
 
-    <div class="cs-takeaway fi">
-      <p>Building every page by hand &#8212; sourcing material from newspapers, redacting text, punching holes, layering tape &#8212; forced a slower, more deliberate process than the usual screen-based workflows. It re-instilled my love for collage and analog methods of creating that I still work with almost 10 years later.</p>
-      <p style="margin-top:24px;font-size:12px;font-family:var(--sf);font-weight:300;color:rgba(26,25,25,.4);letter-spacing:.04em">Made in collaboration with Ian McMullen</p>
-    </div>
 
   </div>
 </div>
 
 <!-- CASE STUDY 11: FLASH SHEETS -->
-<div class="cs-card" id="cs-12">
+<div class="cs-card" id="cs-13">
   <div class="cs-inner">
     <div class="cs-header fi">
       <div class="cs-title-row swp">
-        <div class="cs-num">12</div>
+        <div class="cs-num">13</div>
         <h2 class="cs-title">Flash Sheets</h2>
       </div>
       <p class="cs-tagline swp-d">The flash sheets serve as an ever-growing archive, the result of revisiting a lifetime of drawings and doodles and assembling them into a digital collection. The process helps me understand the scope of my work, allowing me to see recurring patterns and themes, build upon past projects and ideas, and weave a clearer thread through my creative process.</p>
@@ -1070,12 +1090,11 @@ body.img-hover #cur{filter:invert(1)}
     </div>
 
     <div class="cs-brief fi">
-      <div class="cs-section-label swp">The Brief</div>
-      <p>A growing collection of characters that started filling up sketchbooks and never stopped. Faces, figures, totems, creatures, glyphs, geometric forms &#8212; all drawn by hand in ink, then scanned and arranged into flash sheets.</p>
+      <p>A growing collection of characters that started filling up sketchbooks and never stopped. Faces, figures, totems, creatures, glyphs, geometric forms &#8212; all drawn by hand in ink, then scanned and arranged into flash sheets. The flash sheets are the throughline across most of my work &#8212; the visual DNA that shows up in logo work, in the Rocket Ramps icons, in fabrication details, in the logos, etc. Drawing every day without a brief turned out to be the most useful practice of all. The archive, similarly to the garden, just keeps growing.</p>
     </div>
 
     <div class="cs-outcome fi">
-      <div class="cs-section-label swp">Outcome</div>
+      <div class="cs-section-label swp">Project Gallery</div>
       <div class="cs-outcome-gallery cs-grid-3">
         <img style="object-fit:contain" src="Illustration/flash sheets web-08.png" alt="Flash sheet &#8212; ink characters on black">
         <img style="object-fit:contain" src="Illustration/flash sheets web-09.png" alt="Flash sheet &#8212; ink characters on black">
@@ -1094,9 +1113,6 @@ body.img-hover #cur{filter:invert(1)}
       </div>
     </div>
 
-    <div class="cs-takeaway fi">
-      <p>The flash sheets are the throughline across most of my work &#8212; the visual DNA that shows up in logo work, in the Rocket Ramps icons, in fabrication details, in the logos, etc. Drawing every day without a brief turned out to be the most useful practice of all. The archive, similarly to the garden, just keeps growing.</p>
-    </div>
 
   </div>
 </div>
