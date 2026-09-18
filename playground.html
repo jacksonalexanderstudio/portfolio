@@ -102,16 +102,15 @@ h2.arc-section-title:not(:first-child){margin-top:64px}
 .pg-band.ink-light{color:#F2F1EE}
 .pg-band.ink-dark{color:var(--tx)}
 
-/* Room 003 — darkroom: the wordmark under tape wow-and-flutter, a flowing
-   oscilloscope trace, and two huge ghosted reels turning at the edges */
+/* Room 003 — darkroom: the wordmark under tape wow-and-flutter and two huge
+   ghosted reels turning at the edges (the oscilloscope trace was cut 09-17:
+   it read as a copy of room 005's rings) */
 .pg-band-dr{background:#0d0f0d}
 .dr-svg{position:absolute;inset:0;width:100%;height:100%}
 .dr-spin-slow,.dr-spin-slower{transform-box:fill-box;transform-origin:center}
 .dr-spin-slow{animation:dr-spin 70s linear infinite}
 .dr-spin-slower{animation:dr-spin 110s linear infinite reverse}
 @keyframes dr-spin{to{transform:rotate(360deg)}}
-.dr-flow{animation:dr-flow 15s linear infinite}
-@keyframes dr-flow{to{transform:translateX(-1200px)}}
 .dr-logo-wrap{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);width:min(420px,46%)}
 .dr-logo{width:100%;height:auto;filter:invert(1);opacity:.92;transform-origin:center;animation:dr-wow 7.5s ease-in-out infinite}
 @keyframes dr-wow{0%,100%{transform:scaleX(1) rotate(0deg)}23%{transform:scaleX(1.018) rotate(.5deg)}41%{transform:scaleX(.986) rotate(-.35deg)}63%{transform:scaleX(1.012) rotate(.2deg)}82%{transform:scaleX(.994) rotate(-.4deg)}}
@@ -283,13 +282,6 @@ h2.arc-section-title:not(:first-child){margin-top:64px}
           <circle cx="1080" cy="560" r="300" fill="none" stroke="#242a24" stroke-width="1.5"/>
           <line x1="1080" y1="260" x2="1080" y2="860" stroke="#242a24" stroke-width="1"/>
           <line x1="780" y1="560" x2="1380" y2="560" stroke="#242a24" stroke-width="1"/>
-        </g>
-        <!-- oscilloscope trace flowing behind the mark -->
-        <g class="anim dr-flow" opacity="0.5">
-          <path d="M0 330 C 40 306, 78 354, 120 328 C 158 306, 196 352, 238 332 C 270 316, 300 348, 348 326 C 392 306, 424 358, 470 334 C 512 314, 548 346, 596 328 C 640 312, 676 354, 724 330 C 764 310, 800 350, 852 328 C 894 310, 928 352, 980 332 C 1020 316, 1056 346, 1104 326 C 1140 310, 1172 340, 1200 330" fill="none" stroke="#8FD6A0" stroke-width="1.5"/>
-          <path d="M0 330 C 40 306, 78 354, 120 328 C 158 306, 196 352, 238 332 C 270 316, 300 348, 348 326 C 392 306, 424 358, 470 334 C 512 314, 548 346, 596 328 C 640 312, 676 354, 724 330 C 764 310, 800 350, 852 328 C 894 310, 928 352, 980 332 C 1020 316, 1056 346, 1104 326 C 1140 310, 1172 340, 1200 330" fill="none" stroke="#8FD6A0" stroke-width="1.5" transform="translate(1200 0)"/>
-          <path d="M0 330 C 40 306, 78 354, 120 328 C 158 306, 196 352, 238 332 C 270 316, 300 348, 348 326 C 392 306, 424 358, 470 334 C 512 314, 548 346, 596 328 C 640 312, 676 354, 724 330 C 764 310, 800 350, 852 328 C 894 310, 928 352, 980 332 C 1020 316, 1056 346, 1104 326 C 1140 310, 1172 340, 1200 330" fill="none" stroke="#8FD6A0" stroke-width="1" opacity="0.3" transform="translate(0 16)"/>
-          <path d="M0 330 C 40 306, 78 354, 120 328 C 158 306, 196 352, 238 332 C 270 316, 300 348, 348 326 C 392 306, 424 358, 470 334 C 512 314, 548 346, 596 328 C 640 312, 676 354, 724 330 C 764 310, 800 350, 852 328 C 894 310, 928 352, 980 332 C 1020 316, 1056 346, 1104 326 C 1140 310, 1172 340, 1200 330" fill="none" stroke="#8FD6A0" stroke-width="1" opacity="0.3" transform="translate(1200 16)"/>
         </g>
       </svg>
       <div class="dr-logo-wrap"><img class="anim dr-logo" src="darkroom/assets/darkroom-logo.png" alt=""></div>
