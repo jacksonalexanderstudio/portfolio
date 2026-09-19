@@ -202,26 +202,50 @@
     background:var(--g);color:var(--ink);margin:0 calc(var(--pad) * -1);
     padding:28px var(--pad) 44px;overflow:hidden;
     display:flex;flex-direction:column;justify-content:flex-start}
-  .crate-view{overflow:visible;min-width:0}
+  .crate-view{overflow:visible;min-width:0;perspective:1400px;perspective-origin:50% 38%}
   /* crate inherits the ledger's rhythm: full breath after editorial text,
      tighter after a blurb title, flush after grey/orange slabs */
   .essay+.crate,.sidenote+.crate{margin-top:clamp(88px,11vh,150px)}
   .sec-title+.crate{margin-top:44px}
   .subnote+.crate,.diagram+.crate{margin-top:0}
-  .crate-rail{display:flex;gap:16px;align-items:center;cursor:grab;
+  .crate-rail{position:relative;height:var(--csw);transform-style:preserve-3d;cursor:grab;
     touch-action:pan-y;
     transition:transform .5s cubic-bezier(.22,.9,.24,1)}
   .crate-rail.drag{transition:none;cursor:grabbing}
   /* one plane, one gridline: identical squares hugging the slab top,
      ~3/4 of the box; the LEFTMOST cover is always the active one */
-  .cs{flex:none;width:clamp(380px,62vh,700px);margin:0;opacity:.45;cursor:pointer;
-    transition:opacity .5s,border-radius .5s}
+  /* the queue stacks like the old iTunes flow (Jackson 09-18): each record
+     overlaps the previous by a quarter and sits behind it, scaled down a
+     touch per step back in the queue (--s/--z set per figure on seat()) */
+  .crate{--csw:clamp(380px,62vh,700px)}
+  /* COVER FLOW (Jackson 09-18, after the iTunes reference): the active
+     record flat and forward at center, both sides angled in perspective and
+     stacked, mirrored on the black floor. seat() places each record by its
+     distance d from the active (--x/--zt/--ry/--z); records beyond +-5 are
+     not rendered (.far) and sleeping crates keep only the active one, so
+     the angled covers never pile up GPU layers. */
+  .cs{position:absolute;left:50%;top:0;width:var(--csw);margin:0;cursor:pointer;
+    z-index:var(--z,1);backface-visibility:hidden;
+    transform:translateX(calc(-50% + var(--x,0px))) translateZ(var(--zt,0px)) rotateY(var(--ry,0deg));
+    transition:border-radius .5s,transform .55s cubic-bezier(.22,.9,.24,1)}
+  /* floor reflection tried 09-18 and set aside (Jackson: keep it clean; may
+     come back): -webkit-box-reflect:below 2px linear-gradient(rgba(0,0,0,.42),transparent 48%) */
+  .cs.far{display:none}
+  .crate.asleep .cs:not(.on){display:none}
+  /* queued records dim under an OPAQUE veil (not opacity: overlapped covers
+     would double-expose); the active one is clear */
+  .cs::after{content:'';position:absolute;inset:0;background:#101010;opacity:.55;pointer-events:none;
+    transition:opacity .5s}
+  .cs.on::after{opacity:0}
   .cs img,.cs .cs-blank{width:100%;aspect-ratio:1;display:block;object-fit:cover}
   .cs .cs-blank{background:#1C1C1C}
   .cs.on{opacity:1}
+  .cs.on.playing::after{border-radius:50%}
   .cs.on.playing img{border-radius:50%;animation:platter 4s linear infinite}
-  .crate-side{margin-top:0}
-  .crate-nav{display:flex;align-items:center;gap:20px;margin:36px 0 0}
+  /* the nav + info + player column hangs centered under the active record,
+     the record's width wide (Jackson 09-18); text left-aligned within it */
+  .crate-side{margin:0 auto;width:var(--csw);max-width:100%}
+  .crate-nav{display:flex;align-items:center;gap:20px;margin:64px 0 0}   /* = the 64px below the player: block sits equidistant in the slab (09-18) */
   .crate-nav button{font-family:var(--util);font-size:16px;line-height:20px;color:var(--ink);
     background:none;border:1px solid var(--dim);padding:10px 20px;cursor:pointer;flex:none;
     transition:background .15s,color .15s}
@@ -1552,6 +1576,7 @@ if (!new URLSearchParams(location.search).has('ledger')
     if (!rows.length) return;
     const crate = document.createElement('div');
     crate.className = 'crate';
+    if ('IntersectionObserver' in window) new IntersectionObserver(es => es.forEach(e => crate.classList.toggle('asleep', !e.isIntersecting)), {rootMargin: '40% 0px 40% 0px'}).observe(crate);
     crate.innerHTML = '<div class="crate-view"><div class="crate-rail"></div></div>' +
       '<div class="crate-side"><div class="crate-nav">' +
       '<button class="cn-prev" title="previous">←</button>' +
@@ -1595,9 +1620,22 @@ if (!new URLSearchParams(location.search).has('ledger')
       panel.appendChild(node);
     };
     const seat = () => {
-      const f = figs[idx];
-      rail.style.transform = 'translateX(' + (-f.offsetLeft) + 'px)';
-      nav.style.maxWidth = f.offsetWidth + 'px';
+      const f = figs[idx], w = f.offsetWidth;
+      rail.style.transform = '';
+      nav.style.maxWidth = w + 'px';
+      // cover flow: the active flat at center and forward; the sides pushed
+      // back a width and turned 65deg so their INNER edge recedes
+      // behind the active one (as in the iTunes reference), stacked 30% of
+      // a width apart from 68% out
+      figs.forEach((g, k) => {
+        const d = k - idx, ad = Math.abs(d), sg = d > 0 ? 1 : -1;
+        if (ad > 5) { g.classList.add('far'); return; }
+        g.classList.remove('far');
+        g.style.setProperty('--x', d ? (sg * (0.74 * w + (ad - 1) * 0.32 * w)).toFixed(1) + 'px' : '0px');
+        g.style.setProperty('--zt', d ? (-0.95 * w).toFixed(1) + 'px' : '0px');   // deep enough that their near edge stays behind the active
+        g.style.setProperty('--ry', d ? (-sg * 65) + 'deg' : '0deg');
+        g.style.setProperty('--z', String(500 - ad));
+      });
     };
     const focus = (i, play) => {
       i = Math.max(0, Math.min(rows.length - 1, i));
@@ -1665,7 +1703,7 @@ if (!new URLSearchParams(location.search).has('ledger')
     const drop = () => {
       if (!dragging) return;
       dragging = false; rail.classList.remove('drag');
-      const step = figs[0].offsetWidth + 16;
+      const step = 0.32 * figs[0].offsetWidth;   // the flow's pitch between side covers
       const j = Math.round(-dx / step);
       if (j) { const k = idx; idx = -1; focus(k + j); } else seat();
     };
