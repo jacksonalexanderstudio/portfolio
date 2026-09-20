@@ -199,7 +199,7 @@
   /* CHLADNI PLATE (Jackson 09-19): the hero's sand engine behind every crate,
      driven by the playing record's loudness and beats; far back, under
      everything, never in the way */
-  .crate-sand{position:absolute;inset:0;z-index:0;color:#5C5C54;pointer-events:none;filter:blur(.5px)}
+  .crate-sand{position:absolute;inset:0;z-index:0;color:#5C5C54;pointer-events:none;filter:blur(0.5px)}
   .crate-player > .crate-sand{z-index:0}
   /* the queue is translucent so the plate shows through it (Jackson 09-19) */
   .cs:not(.on){opacity:.5}
@@ -570,6 +570,7 @@
   <img class="ja-mark" data-art="a180" alt="JA Studio mark"></div>
 </footer>
 
+<script>window.__SAND={"name":"factory","audio":{"fft":1024,"smoothing":0.5,"floorDb":-85,"ceilDb":-8,"floorHz":43,"xoverHz":[129,474,1981,7967],"beat":{"flux":0.045,"ratio":1.04,"floor":0.25,"refractoryMs":200,"avg":0.06}},"env":{"band":0.32,"rms":0.3,"base":0.015,"peak":0.996,"gate":0.015},"kick":{"burst":0.7,"decay":0.8},"figure":{"spokes":{"base":3,"centroid":4,"mid":4,"midHit":2,"min":3,"max":10},"rings":{"base":2,"high":3,"highHit":1.5,"min":2,"max":6},"wobble":{"base":12,"mid":28,"high":30,"max":70},"starAt":0.6,"reread":0.12,"dwell":0.4,"morph":0.35,"families":{"rings":true,"wheel":true,"star":true,"mixed":true,"curvy":true}},"spin":{"base":0.02,"high":0.2,"kick":0.08},"shake":{"base":0.3,"rms":1.7,"kick":1.8,"bass":1.25},"sand":{"n":36000,"size":0.9,"spread":0.24,"alpha":[0.42,0.62,0.82],"ink":"#5C5C54","blur":0.5,"pull":3,"jitter":2,"jitterAmp":1.2,"gain":1.9,"grid":8,"exclude":0.48,"cap":7,"kick":1.6},"float":{"shake":0.4,"pull":0.12,"jitter":1.0,"flow":0.3,"morph":2.4,"every":7}};</script>
 <script>/*!
  * GSAP 3.12.5
  * https://gsap.com
@@ -886,19 +887,34 @@
   const SILENT = {rms: 0, bass: 0, lowmid: 0, mid: 0, high: 0, centroid: 0.3, beat: false};
   window.__audioLevel = () => {
     if (!ANA || AU.paused) return SILENT;
+    // INPUT stage of the Chladni patch (tuner 2026-09-20): analyser range,
+    // fft, smoothing and the band crossovers (Hz -> bins at the context's
+    // sample rate) are read live; the factory values are the 09-19 constants
+    const ap = (window.__SAND || {}).audio || {};
+    if (ap.fft && ANA.fftSize !== ap.fft) { try { ANA.fftSize = ap.fft; FD = new Uint8Array(ANA.frequencyBinCount); } catch (e) {} }
+    if (ap.ceilDb != null && (ANA.maxDecibels !== ap.ceilDb || ANA.minDecibels !== ap.floorDb)) { try { ANA.minDecibels = -200; ANA.maxDecibels = ap.ceilDb; ANA.minDecibels = Math.min(ap.floorDb, ap.ceilDb - 1); } catch (e) {} }
+    if (ap.smoothing != null && ANA.smoothingTimeConstant !== ap.smoothing) ANA.smoothingTimeConstant = ap.smoothing;
     ANA.getByteFrequencyData(FD);
+    const hzb = ((ACX && ACX.sampleRate) || 44100) / ANA.fftSize, top = FD.length - 1;
+    const bin = hz => Math.max(1, Math.min(top, Math.round(hz / hzb)));
+    const lo = ap.floorHz != null ? bin(ap.floorHz) : 1;
+    const X = ap.xoverHz ? ap.xoverHz.map(bin) : [3, 11, 46, 185];
+    X[0] = Math.max(X[0], lo); for (let i = 1; i < 4; i++) X[i] = Math.max(X[i], X[i - 1] + 1);
+    const hi = Math.min(top, X[3]);
     const band = (a, b) => { let s = 0; for (let i = a; i <= b; i++) s += FD[i]; return s / 255 / (b - a + 1); };
     let s = 0, wsum = 0, w = 0;
-    for (let i = 1; i < 186; i++) { const v = FD[i] / 255; s += v * v; wsum += Math.log2(i + 1) * v; w += v; }
-    const rms = Math.sqrt(s / 185);
-    const centroid = w > 0 ? Math.min(1, Math.max(0, (wsum / w - 1) / (Math.log2(186) - 1))) : 0.3;
-    const bass = band(1, 3), lowmid = band(4, 11), mid = band(12, 46), high = band(47, 185);
+    for (let i = lo; i <= hi; i++) { const v = FD[i] / 255; s += v * v; wsum += Math.log2(i + 1) * v; w += v; }
+    const rms = Math.sqrt(s / (hi - lo + 1));
+    const l0 = Math.log2(lo + 1), l1 = Math.log2(hi + 1);
+    const centroid = w > 0 ? Math.min(1, Math.max(0, (wsum / w - l0) / (l1 - l0))) : 0.3;
+    const bass = band(lo, X[0]), lowmid = band(X[0] + 1, X[1]), mid = band(X[1] + 1, X[2]), high = band(X[2] + 1, hi);
     // a kick = bass rising sharply frame to frame (spectral flux), not bass
     // being loud (it always is in this music)
+    const bt = ap.beat || {flux: 0.045, ratio: 1.04, floor: 0.25, refractoryMs: 200, avg: 0.06};
     const flux = bass - prevBass; prevBass = bass;
-    bassAvg = bassAvg * 0.94 + bass * 0.06;
+    bassAvg = bassAvg * (1 - bt.avg) + bass * bt.avg;
     const now = performance.now(); let beat = false;
-    if (flux > 0.045 && bass > bassAvg * 1.04 && bass > 0.25 && now - lastBeat > 200) { beat = true; lastBeat = now; window.__beats++; }
+    if (flux > bt.flux && bass > bassAvg * bt.ratio && bass > bt.floor && now - lastBeat > bt.refractoryMs) { beat = true; lastBeat = now; window.__beats++; }
     return {rms, bass, lowmid, mid, high, centroid, beat};
   };
   const pvNext = btn => {
@@ -1092,10 +1108,11 @@
       const c2 = cv.getContext('2d');
       const rnd = opt.rng || Math.random;
       const pick = arr => arr[Math.floor(rnd() * arr.length)];
-      const G = 8, FIRST_HOLD = 5, HOLD = 3.5, LOOSEN = 1.4, MORPH = 2.6;   // hold -> loosen -> morph
+      let G = 8; const FIRST_HOLD = 5, HOLD = 3.5, LOOSEN = 1.4, MORPH = 2.6;   // hold -> loosen -> morph (G = field grid, a patch knob for the crate plates)
       let geo = null, sand = null, modes = null, modesNext = null, modeT0 = 0, lastType = '';
       let rIn = 300, rOut = 1100, field = null, fW = 0, fH = 0, fieldDirty = true, first = true;
       let running = false, settleT0 = 0, inkc = '#121212', phase = 'on', phaseT0 = 0;
+      let dens = null;   // grains per field cell (opt.spread only)
       const newModes = () => {
         let type; do { type = pick(['star', 'wheel', 'wheel', 'rings', 'rings', 'curvy', 'curvy', 'mixed']); } while (type === lastType);
         lastType = type;
@@ -1167,8 +1184,9 @@
         fieldDirty = false;
       };
       const seed = () => {
-        sand = new Float32Array(opt.n * 2);
-        for (let i = 0; i < opt.n; i++) { const p = spawn(); sand[i * 2] = p[0]; sand[i * 2 + 1] = p[1]; }
+        const N = opt.p ? opt.p.sand.n : opt.n;   // the crate plates take their grain count from the patch
+        sand = new Float32Array(N * 2);
+        for (let i = 0; i < N; i++) { const p = spawn(); sand[i * 2] = p[0]; sand[i * 2 + 1] = p[1]; }
         rIn = geo.pr + 6;
         rOut = Math.max(Math.hypot(geo.cx, geo.cy), Math.hypot(geo.w - geo.cx, geo.cy), Math.hypot(geo.cx, geo.h - geo.cy), Math.hypot(geo.w - geo.cx, geo.h - geo.cy));
         if (opt.drift || !modes) modes = newModes();
@@ -1177,6 +1195,12 @@
       const simulate = (now, shakeIn) => {
         const t = now / 1000;
         let driftK = 1, jitterK = 0, sm = 0, shake = shakeIn, flowK = 0, r = null;
+        // MATERIAL knobs of the patch (crate plates only; the hero keeps the
+        // literals): pull down the gradient, base + amplitude jitter, field
+        // gain, and the field grid (a grid change rebuilds the field)
+        const PS = opt.p ? opt.p.sand : null;
+        const DK = PS ? PS.pull : 3.0, JB = PS ? PS.jitter : 2.0, JA = PS ? PS.jitterAmp : 1.2, GN = PS ? PS.gain : 1.9;
+        if (PS && PS.grid >= 3 && PS.grid !== G) { G = PS.grid; fieldDirty = true; }
         // REACTIVE drive (crate plates, 2026-09-19): opt.react(t) returns the
         // shake for this frame (from the playing record's loudness) and a beat
         // flag that throws the plate into a quick loosen -> morph to a new figure
@@ -1216,15 +1240,35 @@
         // the grains keep drifting instead of settling onto the lines
         if (r && r.pull != null) { driftK *= r.pull; jitterK += r.jitter || 0; flowK = r.flow || 0; }
         const {cx, cy, w, h, pr} = geo, n = sand.length;
+        // SPREAD (crate plates, Jackson 09-19/20): the lines were piling up into
+        // solid clumps. Grains are counted per field cell each frame; in a cell
+        // over the cap they are pushed down the density gradient and kicked, so
+        // the dense zones keep space and visible motion inside them
+        const SP = opt.spread;
+        if (SP) {
+          if (!dens || dens.length !== fW * fH) dens = new Uint16Array(fW * fH); else dens.fill(0);
+          for (let i = 0; i < n; i += 2) {
+            const gx = Math.min(fW - 2, Math.max(1, (sand[i] / G) | 0)), gy = Math.min(fH - 2, Math.max(1, (sand[i + 1] / G) | 0));
+            dens[gy * fW + gx]++;
+          }
+        }
         for (let i = 0; i < n; i += 2) {
           let x = sand[i], y = sand[i + 1];
           const gx = Math.min(fW - 2, Math.max(1, (x / G) | 0)), gy = Math.min(fH - 2, Math.max(1, (y / G) | 0));
           const k = gy * fW + gx, a = field[k];
           const dax = field[k + 1] - field[k - 1], day = field[k + fW] - field[k - fW];
-          const gl = Math.hypot(dax, day) + 1e-6, v = Math.min(1, a * 1.9);
-          const drift = 3.0 * v * driftK * shake, j = ((2.0 + 1.2 * v) + jitterK) * shake;
+          const gl = Math.hypot(dax, day) + 1e-6, v = Math.min(1, a * GN);
+          const drift = DK * v * driftK * shake, j = ((JB + JA * v) + jitterK) * shake;
           x -= dax / gl * drift; y -= day / gl * drift;
           x += (Math.random() - 0.5) * j; y += (Math.random() - 0.5) * j;
+          if (SP) {
+            const c = dens[k], o = c > SP.cap ? (c - SP.cap) / SP.cap : 0;
+            if (o) {
+              const dgx = dens[k + 1] - dens[k - 1], dgy = dens[k + fW] - dens[k - fW], gm = Math.abs(dgx) + Math.abs(dgy) + 1;
+              const kk = SP.kick * Math.min(2, o);
+              x -= kk * dgx / gm + (Math.random() - 0.5) * kk; y -= kk * dgy / gm + (Math.random() - 0.5) * kk;
+            }
+          }
           if (flowK) { x += flowK * (Math.sin(y * 0.006 + t * 0.35) + 0.5 * Math.sin(x * 0.011 - t * 0.21)); y += flowK * (Math.cos(x * 0.006 + t * 0.29) + 0.5 * Math.cos(y * 0.013 + t * 0.17)); }
           const kp = keep(x, y);
           if (x < 0 || x > w || y < 0 || y > h || kp === 0 || (kp < 1 && Math.random() > kp + 0.85) || Math.hypot(x - cx, y - cy) < pr + 4) { const p = spawn(); x = p[0]; y = p[1]; }
@@ -1235,13 +1279,15 @@
         const {dpr, w, h} = geo, n = sand.length;
         c2.setTransform(dpr, 0, 0, dpr, 0, 0);
         c2.clearRect(0, 0, w, h);
-        c2.fillStyle = inkc;
-        const AL = opt.alpha || [0.34, 0.52, 0.7], GS = opt.grain || 1;   // crate plates: denser, bolder material
+        const PS = opt.p ? opt.p.sand : null;
+        c2.fillStyle = PS && PS.ink ? PS.ink : inkc;
+        // crate plates: denser, bolder material - size, spread and the three alphas from the patch
+        const AL = PS ? PS.alpha : (opt.alpha || [0.34, 0.52, 0.7]), GS = PS ? PS.size : (opt.grain || 1), SPR = PS ? PS.spread : 0.24;
         const bands = [[0, n / 3, AL[0]], [n / 3, 2 * n / 3, AL[1]], [2 * n / 3, n, AL[2]]];
         for (const [i0, i1, al] of bands) {
           c2.globalAlpha = al;
           for (let i = (i0 | 0) & ~1; i < i1; i += 2) {
-            const g = (1.3 + ((i >> 1) % 9) * 0.24) * GS;
+            const g = (1.3 + ((i >> 1) % 9) * SPR) * GS;
             c2.fillRect(sand[i] - g / 2, sand[i + 1] - g / 2, g, g);
           }
         }
@@ -1661,7 +1707,7 @@ if (!new URLSearchParams(location.search).has('ledger')
         const r = player.getBoundingClientRect(), on = platter.getBoundingClientRect();
         return {w: Math.round(r.width), h: Math.round(r.height),
                 cx: on ? on.left - r.left + on.width / 2 : r.width * 0.5, cy: on ? on.top - r.top + on.height / 2 : r.height * 0.5,
-                pr: on ? on.width * 0.48 : 0};   // no grains wasted under the record: they gather around it, like the hero's platter
+                pr: on ? on.width * window.__SAND.sand.exclude : 0};   // no grains wasted under the record: they gather around it, like the hero's platter
       };
       // spectrum -> figure. A dub techno spectrum barely moves in absolute
       // terms (bass sits near full scale), so each band is read as its
@@ -1673,19 +1719,48 @@ if (!new URLSearchParams(location.search).has('ledger')
       // baseline picks the figure family (bass -> rings, mids -> wheel,
       // highs -> star/mixed). Loudness sets how hard the grains shake; a kick
       // throws them and snaps the rotation a notch.
+      // EVERY constant here is a knob of the CHLADNI PATCH (window.__SAND =
+      // data/chladni.json, dialled in on :8933/?tune, 2026-09-20), read live
+      // so a knob turn shows on the plate the same frame. The factory patch
+      // = the 09-19 numbers ("fast spectral, tamed ~30%").
+      const P = () => window.__SAND;
       const E = {rms: 0, bass: 0, lowmid: 0, mid: 0, high: 0, centroid: 0.3};
       const BASE = {bass: 0.5, lowmid: 0.3, mid: 0.2, high: 0.15};
       const PEAK = {bass: 0.3, lowmid: 0.1, mid: 0.05, high: 0.04};     // per-band auto-gain: mids/highs are tiny next to the bass
-      let rot = Math.random() * Math.PI, lastT = 0, burst = 0, target = null, lastFig = 0, sign = 1, pulse = 0, cand = null, candN = 0;
-      // FLOAT figures: with nothing to hear the plate wanders through the four
-      // hero families on its own, a new one every ~7s
+      let rot = Math.random() * Math.PI, lastT = 0, burst = 0, target = null, lastFig = 0, sign = 1;
+      // FLOAT figures: with nothing to hear the plate wanders through the
+      // hero families on its own, a new one every float.every seconds
       let wander = null, wanderT0 = -1e9;
-      // tuning knobs for the float (review only): ?fs shake ?fp pull ?fj jitter ?ff flow ?fm morph-seconds ?fe seconds-per-figure
-      const FQ = new URLSearchParams(location.search), fq = (k, d) => { const v = parseFloat(FQ.get(k)); return isNaN(v) ? d : v; };
-      // Jackson's pick 09-19: the gentler cloud (pull .12, jitter 1.0)
-      const FLOAT = {shake: fq('fs', 0.4), pull: fq('fp', 0.12), jitter: fq('fj', 1.0), flow: fq('ff', 0.3), morph: fq('fm', 2.4), every: fq('fe', 7)};
+      // EVERY TRACK IS ITS OWN PLATE (Jackson 09-20: 'completely change for each
+      // new track ... not one long flow'). A track's key seeds a personality:
+      // which family each band-lead calls for, spoke/ring/wobble offsets, spin
+      // direction and a home rotation. On a track change the envelopes,
+      // baselines and peaks start over, the grains are thrown (a big burst)
+      // and the figure is re-read at once, so the plate visibly resets.
+      let PERS = null, lastTrack = null, BASE0 = null, PEAK0 = null;
+      const newTrack = key => {
+        let h = 2166136261; for (let i = 0; i < key.length; i++) { h ^= key.charCodeAt(i); h = Math.imul(h, 16777619); }
+        const rnd = () => { h |= 0; h = h + 0x6D2B79F5 | 0; let q = Math.imul(h ^ h >>> 15, 1 | h); q = q + Math.imul(q ^ q >>> 7, 61 | q) ^ q; return ((q ^ q >>> 14) >>> 0) / 4294967296; };
+        const tag = (h >>> 0).toString(16).slice(0, 4) + ':';   // in every figure key, so a new track always re-reads
+        const fams = ['rings', 'wheel', 'star', 'mixed', 'curvy'];   // curvy = the hero's hyperbolic pair, a fifth voice (09-20: 'more variance')
+        for (let i = fams.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [fams[i], fams[j]] = [fams[j], fams[i]]; }
+        // geometry that is fixed per track (09-20, 'individuality with each new
+        // song'): ring phase, the second mode's weight/phase/count/offset, the
+        // wobble gain, spin speed + direction, how long a figure dwells
+        PERS = {key, tag, fam: {b: fams[0], m: fams[1], h: fams[2]},
+                mOff: Math.floor(rnd() * 6) - 2, nOff: Math.floor(rnd() * 4) - 1, wobK: 0.5 + rnd() * 1.3, wobOff: Math.floor(rnd() * 5) * 6,
+                ph: rnd() * Math.PI, ph2: rnd() * Math.PI, w2: 0.35 + rnd() * 0.65, n2: 1 + Math.floor(rnd() * 3), m2Off: 1 + Math.floor(rnd() * 6), rot2K: 0.3 + rnd() * 1.1,
+                spin: (rnd() < 0.5 ? -1 : 1) * (0.5 + rnd() * 1.1), dwellK: 0.6 + rnd() * 1.4, rot0: rnd() * Math.PI};
+        rot = PERS.rot0; sign = rnd() < 0.5 ? -1 : 1;
+        if (BASE0) { for (const k in BASE) BASE[k] = BASE0[k]; for (const k in PEAK) PEAK[k] = PEAK0[k]; }
+        for (const k in E) E[k] = k === 'centroid' ? 0.3 : 0;
+        lastTrack = key; lastFig = -1e9; wanderT0 = -1e9; target = null; wander = null;
+        crate.__pers = PERS;
+      };
+      const FAM = ['rings', 'wheel', 'mixed', 'star'];
+      const allowed = type => { const f = P().figure.families; return f[type] ? type : (FAM.find(k => f[k]) || 'rings'); };
       const randomFigure = () => {
-        const type = ['rings', 'wheel', 'star', 'mixed'][Math.floor(Math.random() * 4)];
+        const type = allowed(FAM[Math.floor(Math.random() * 4)]);
         const m = 3 + Math.floor(Math.random() * 7), n = 2 + Math.floor(Math.random() * 4), wob = 12 + 6 * Math.floor(Math.random() * 9);
         return {type, m, n, s: sign, lam: 120, m2: m + 4, wob, rot, rot2: rot * 0.7, ph: 0, ph2: 0, w2: 0.8, n2: 1, key: 'w' + type + m + '/' + n + '/' + wob};
       };
@@ -1693,62 +1768,70 @@ if (!new URLSearchParams(location.search).has('ledger')
       const nm = k => clamp(E[k] / (PEAK[k] + 0.005), 0, 1);                    // band at 0..1 of its own recent peak
       const xs = k => clamp((E[k] - BASE[k]) / (BASE[k] + 0.01), -1, 2.5);      // band above its own baseline (a hit)
       const figureFor = () => {
+        const F = P().figure, SP = F.spokes, RG = F.rings, WB = F.wobble;
         const xb = xs('bass'), xm = xs('mid'), xh = xs('high');
-        const m = Math.round(clamp(3 + 4 * E.centroid + 4 * nm('mid') + 2 * xm, 3, 10));
-        const n = Math.round(clamp(2 + 3 * nm('high') + 1.5 * xh, 2, 6));
-        const wob = Math.round(clamp(12 + 28 * nm('mid') + 30 * nm('high'), 12, 70) / 6) * 6;
+        const m = Math.round(clamp(SP.base + SP.centroid * E.centroid + SP.mid * nm('mid') + SP.midHit * xm, SP.min, SP.max));
+        const n = Math.round(clamp(RG.base + RG.high * nm('high') + RG.highHit * xh, RG.min, RG.max));
+        const wob = Math.round(clamp(WB.base + WB.mid * nm('mid') + WB.high * nm('high'), WB.base, WB.max) / 6) * 6;
         const lead = xb >= xm && xb >= xh ? 'b' : xm >= xh ? 'm' : 'h';
-        // the family: bass-led passages sit on the square plate (the 1787
-        // figures) or rings, mid-led on wheels or the hexagonal rosette,
-        // high-led on the pentagonal rosette or stars; the centroid tips each pair
-        // happy medium (Jackson 09-19: the lattices read "too complicated and
-        // distracting"): the centered families carry it; the square plate
-        // appears only in its simplest modes (1-3); the hex/penta rosettes
-        // stay in the engine but are not called for
-        // back to the original concept (Jackson 09-19: the mirrored plate
-        // figures read "over done"): the four centered hero families only
-        const type = lead === 'b' ? 'rings'
-                   : lead === 'm' ? 'wheel'
-                   : (E.centroid > 0.6 ? 'star' : 'mixed');
-        let pm = Math.round(clamp(1 + 2 * nm('mid'), 1, 3)), pn = Math.round(clamp(1 + 2 * E.centroid + xh, 1, 3));
-        if (pm === pn) pn = pn < 3 ? pn + 1 : pn - 1;
-        const lam = Math.round(clamp(210 - 150 * E.centroid - 40 * nm('high'), 56, 220) / 8) * 8;   // finer lattice for brighter sound
-        const key = type + (type === 'plate' ? pm + '/' + pn + '/' + sign : type === 'hex' || type === 'penta' ? lam : m + '/' + n + '/' + wob);
-        return {type, m: type === 'plate' ? pm : m, n: type === 'plate' ? pn : n, s: sign, lam, m2: m + 4, wob, rot, rot2: rot * 0.7, ph: 0, ph2: 0, w2: 0.8, n2: 1, key};
+        SCOPE.lead = lead;
+        // the four centered hero families only (Jackson 09-19: the mirrored
+        // plate figures read "over done", the hex/penta lattices "too
+        // complicated"); a family switched off in the patch falls to the next
+        // the track's personality picks the family for each lead and shifts the
+        // counts, so two tracks with the same spectrum still read differently
+        const want = PERS ? PERS.fam[lead] : (lead === 'b' ? 'rings' : lead === 'm' ? 'wheel' : (E.centroid > F.starAt ? 'star' : 'mixed'));
+        const type = allowed(want);
+        const mm = PERS ? clamp(m + PERS.mOff, SP.min, SP.max) : m, nn = PERS ? clamp(n + PERS.nOff, RG.min, RG.max) : n;
+        const ww = Math.round(wob * (PERS ? PERS.wobK : 1) + (PERS ? PERS.wobOff : 0));
+        const Q = PERS || {tag: '', ph: 0, ph2: 0, w2: 0.8, n2: 1, m2Off: 4, rot2K: 0.7};
+        return {type, m: mm, n: nn, s: sign, lam: 120, m2: mm + Q.m2Off, wob: ww, rot, rot2: rot * Q.rot2K, ph: Q.ph, ph2: Q.ph2, w2: Q.w2, n2: Q.n2, key: Q.tag + type + mm + '/' + nn + '/' + ww};
       };
+      // the tuner's scope reads this every frame: raw bands, envelopes,
+      // baselines, peaks, burst, shake and the figure the sound calls for
+      const SCOPE = crate.__scope = {a: null, E, BASE, PEAK, burst: 0, shake: 0, silent: true, key: '', rot: 0, beat: -1, t: 0, lead: ''};
+      (window.__crates = window.__crates || []).push(crate);
       // substance (Jackson 09-19: "not enough sand doing the movement"): 2.6x the
-      // grains, a third bigger, a notch brighter — still far back
-      sand = window.__makeSand(cv, {n: 36000, grain: 1.3, alpha: [0.42, 0.62, 0.82], drift: true, size: true, geo: geoOf,
+      // grains, a third bigger, a notch brighter - still far back. The counts
+      // and alphas in this literal are fallbacks; the patch's sand block wins.
+      sand = window.__makeSand(cv, {n: 36000, grain: 1.3, alpha: [0.42, 0.62, 0.82], drift: true, size: true, geo: geoOf, get p() { return window.__SAND; },
+        // anti-clump (Jackson 09-19): grains per field cell over sand.cap get pushed apart by sand.kick px; read live from the patch, factory 7 / 1.6 with grain size .9 (Jackson 09-20: 'too thick', 30% finer)
+        get spread() { const sd = (window.__SAND || {}).sand || {}; return {cap: sd.cap != null ? sd.cap : 7, kick: sd.kick != null ? sd.kick : 1.6}; },
         react: (t) => {
+          const p = P(), EN = p.env, KK = p.kick, SPN = p.spin, SH = p.shake, F = p.figure, FL = p.float;
           const a = window.__audioLevel ? window.__audioLevel() : E;
+          if (!BASE0) { BASE0 = {...BASE}; PEAK0 = {...PEAK}; }
+          const tk = (rows[idx] && rows[idx].dataset.key) || String(idx);
+          if (tk !== lastTrack) { newTrack(tk); burst = KK.burst * 2.5; SCOPE.beat = t; }
           const dt = lastT ? Math.min(0.1, t - lastT) : 0.016; lastT = t;
           // the fast spectral drive, ~30% more subtle than its first cut
           // (Jackson 09-19): envelopes a touch slower, kick bursts and gains
           // at 70%, the figure re-read every 120ms and held at least 0.4s
-          for (const k in E) E[k] += (a[k] - E[k]) * (k === 'rms' ? 0.3 : 0.32);
-          for (const k in BASE) BASE[k] += (a[k] - BASE[k]) * 0.015;
-          for (const k in PEAK) PEAK[k] = a[k] > PEAK[k] ? a[k] : PEAK[k] * 0.996;
-          rot += dt * (0.02 + 0.2 * E.high);
-          if (a.beat) { burst = 0.7; rot += 0.08; }
-          burst *= 0.8;
-          const silent = !(a.rms > 0.015);
-          if (t - lastFig > 0.12) {
+          for (const k in E) E[k] += (a[k] - E[k]) * (k === 'rms' ? EN.rms : EN.band);
+          for (const k in BASE) BASE[k] += (a[k] - BASE[k]) * EN.base;
+          for (const k in PEAK) PEAK[k] = a[k] > PEAK[k] ? a[k] : PEAK[k] * EN.peak;
+          rot += dt * (SPN.base + SPN.high * E.high) * (PERS ? PERS.spin : 1);
+          if (a.beat) { burst = KK.burst; rot += SPN.kick; SCOPE.beat = t; }
+          burst *= KK.decay;
+          const silent = !(a.rms > EN.gate);
+          if (t - lastFig > F.reread) {
             lastFig = t;
             if (!silent) target = figureFor();
-            else { if (t - wanderT0 > FLOAT.every) { wanderT0 = t; wander = randomFigure(); } target = wander; }
+            else { if (t - wanderT0 > FL.every) { wanderT0 = t; wander = randomFigure(); } target = wander; }
           }
+          SCOPE.a = a; SCOPE.burst = burst; SCOPE.silent = silent; SCOPE.key = target ? target.key : ''; SCOPE.rot = rot; SCOPE.t = t;
           if (!silent) {
-            const shake = 0.3 + 1.7 * E.rms + 1.8 * burst + 1.25 * Math.max(0, xs('bass'));
-            crate.__shake = shake; crate.__float = false;
-            return {shake, modes: target, dwell: 0.4};
+            const shake = SH.base + SH.rms * E.rms + SH.kick * burst + SH.bass * Math.max(0, xs('bass'));
+            crate.__shake = SCOPE.shake = shake; crate.__float = false;
+            return {shake, modes: target, dwell: F.dwell * (PERS ? PERS.dwellK : 1), morph: F.morph};
           }
           // FLOAT (Jackson 09-19): a Bandcamp strip (or a pause) gives the plate
           // nothing to hear. The old 0.08 shake let the grains congeal into one
           // static figure; now they keep drifting in space - a weak pull toward
           // the lines, extra wander, a slow flow, and the figure itself drifts to
-          // a new one every ~7s over a 2.4s crossfade
-          crate.__shake = FLOAT.shake; crate.__float = true;
-          return {shake: FLOAT.shake, modes: target, dwell: 0.4, pull: FLOAT.pull, jitter: FLOAT.jitter, flow: FLOAT.flow, morph: FLOAT.morph};
+          // a new one every few seconds over a slow crossfade
+          crate.__shake = SCOPE.shake = FL.shake; crate.__float = true;
+          return {shake: FL.shake, modes: target, dwell: F.dwell, pull: FL.pull, jitter: FL.jitter, flow: FL.flow, morph: FL.morph};
         }});
       crate.__sand = sand;
       addEventListener('resize', () => { if (sand.live) sand.fit(); });
@@ -1986,5 +2069,6 @@ if (!new URLSearchParams(location.search).has('ledger')
   }
 }
 </script>
+<script>if(/[?&]tune(=|&|$)/.test(location.search)&&['localhost','127.0.0.1'].includes(location.hostname)){const s=document.createElement('script');s.src='/tuner.js?'+Date.now();document.body.appendChild(s);}</script>
 
 </html>
