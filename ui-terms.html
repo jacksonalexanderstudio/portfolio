@@ -179,7 +179,7 @@ button,input{font:inherit;color:inherit}
 .fig .otext{fill:none;stroke:var(--ink);stroke-width:.9;font-family:var(--sans);font-weight:600}
 .fig .acct{fill:var(--hi);font-family:var(--sans);font-weight:400}
 .fig .barink{fill:var(--ink)}
-.e .fig{cursor:pointer}
+.e{cursor:default}
 
 /* ---------- figure motion: plays on hover (tap on touch) ----------
    universal: orange strokes draw in after the grey context; orange fills fade in.
@@ -291,7 +291,7 @@ button,input{font:inherit;color:inherit}
       <div class="count"><span id="count"></span><button id="clear" type="button" hidden>Clear</button></div>
     </div>
     <nav aria-label="Categories"><ul class="idx" id="idx"><li><button type="button" data-cat="" aria-current="true"><span class="n">00</span><span class="name">All</span><span class="c">370</span></button></li><li class="grp" aria-hidden="true">Foundations</li><li><button type="button" data-cat="01"><span class="n">01</span><span class="name">Layout</span><span class="c" data-count="01">27</span></button></li><li><button type="button" data-cat="02"><span class="n">02</span><span class="name">Space</span><span class="c" data-count="02">14</span></button></li><li><button type="button" data-cat="03"><span class="n">03</span><span class="name">Type</span><span class="c" data-count="03">26</span></button></li><li><button type="button" data-cat="04"><span class="n">04</span><span class="name">Color</span><span class="c" data-count="04">22</span></button></li><li><button type="button" data-cat="05"><span class="n">05</span><span class="name">Image</span><span class="c" data-count="05">16</span></button></li><li class="grp" aria-hidden="true">Interface</li><li><button type="button" data-cat="06"><span class="n">06</span><span class="name">Components</span><span class="c" data-count="06">27</span></button></li><li><button type="button" data-cat="07"><span class="n">07</span><span class="name">States</span><span class="c" data-count="07">22</span></button></li><li class="grp" aria-hidden="true">Motion</li><li><button type="button" data-cat="08"><span class="n">08</span><span class="name">Motion</span><span class="c" data-count="08">21</span></button></li><li><button type="button" data-cat="09"><span class="n">09</span><span class="name">Scroll</span><span class="c" data-count="09">26</span></button></li><li><button type="button" data-cat="10"><span class="n">10</span><span class="name">Type effects</span><span class="c" data-count="10">37</span></button></li><li class="grp" aria-hidden="true">Working</li><li><button type="button" data-cat="11"><span class="n">11</span><span class="name">Direction</span><span class="c" data-count="11">28</span></button></li><li><button type="button" data-cat="12"><span class="n">12</span><span class="name">Bugs</span><span class="c" data-count="12">39</span></button></li><li><button type="button" data-cat="13"><span class="n">13</span><span class="name">Build</span><span class="c" data-count="13">25</span></button></li><li class="grp" aria-hidden="true">Audio</li><li><button type="button" data-cat="14"><span class="n">14</span><span class="name">Audio</span><span class="c" data-count="14">40</span></button></li></ul></nav>
-    <div class="foot"><kbd>/</kbd> focuses search · <kbd>esc</kbd> clears · the index follows your scroll; click a chapter to jump · hover a figure to play it</div>
+    <div class="foot"><kbd>/</kbd> focuses search · <kbd>esc</kbd> clears · the index follows your scroll; click a chapter to jump · hover an entry to play its figure</div>
   </aside>
   <main class="main" id="main">
 <section class="cat" id="c01" data-cat="01">
@@ -4546,14 +4546,14 @@ document.addEventListener('keydown',ev=>{
   else if(ev.key==='Escape'&&document.activeElement===q){q.value='';apply()}
 });
 apply();
-/* figures animate on hover (mouse); tap on touch; static for reduced motion */
+/* a figure animates while the pointer is anywhere over its entry (tap the entry on touch); static for reduced motion */
 const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
 if(!reduce){
-  const isFig=el=>el&&el.classList&&el.classList.contains('fig')&&!el.classList.contains('fig-none');
+  const figOf=el=>{const e=el&&el.closest?el.closest('.e'):null;return e?e.querySelector('.fig:not(.fig-none)'):null};
   const replay=f=>{f.classList.remove('play');void f.offsetWidth;f.classList.add('play')};
-  main.addEventListener('pointerenter',ev=>{if(isFig(ev.target)&&ev.pointerType!=='touch')replay(ev.target)},true);
-  main.addEventListener('pointerleave',ev=>{if(isFig(ev.target))ev.target.classList.remove('play')},true);
-  main.addEventListener('click',ev=>{const f=ev.target.closest('.fig');if(isFig(f))replay(f)});
+  main.addEventListener('pointerenter',ev=>{if(ev.target.classList&&ev.target.classList.contains('e')&&ev.pointerType!=='touch'){const f=figOf(ev.target);if(f)replay(f)}},true);
+  main.addEventListener('pointerleave',ev=>{if(ev.target.classList&&ev.target.classList.contains('e')){const f=figOf(ev.target);if(f)f.classList.remove('play')}},true);
+  main.addEventListener('click',ev=>{if(ev.target.closest('button'))return;const f=figOf(ev.target);if(f)replay(f)});
 }
 if(location.hash){const el=document.getElementById(location.hash.slice(1));if(el)el.scrollIntoView({block:'center'})}
 </script>
