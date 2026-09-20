@@ -8,7 +8,7 @@
     --body:'Newsreader',Georgia,serif;
     --util:'Instrument Sans',Helvetica,Arial,sans-serif;
   }
-  /* Semantic grounds: white = reading · black = records · orange = maps */
+  /* Semantic grounds: white = reading · black = records · grey = maps (09-19, was orange) */
   .band{--g:#FBFBFA;--ink:#121212;--dim:#74736F;--acc:#121212;--linec:#E3E2DF}
   *{box-sizing:border-box;margin:0;padding:0}
   /* overflow-anchor off: Chrome's scroll anchoring fights ScrollTrigger's
@@ -81,8 +81,16 @@
   .essay a.xref:hover{text-decoration-color:var(--acc)}
   .essay.cols{max-width:min(69vw,1360px);column-count:2;column-gap:clamp(56px,7vw,104px)}
   .sidenote{font-family:var(--util);font-size:15px;line-height:24px;max-width:56ch;margin-top:8px}
+  /* long notes (>700ch) split into two columns like the essays; paragraph
+     gap = one full 24px line so the columns share the baseline (09-19) */
+  .sidenote.cols{max-width:min(69vw,1360px);column-count:2;column-gap:clamp(56px,7vw,104px)}
+  .sidenote.cols p+p{margin-top:24px}
+  /* two-column text: a paragraph never splits across the gutter, so the
+     second column starts with a whole paragraph at the top instead of the
+     tail of one (Jackson 09-20: 'locked to the top of the first paragraph') */
+  .essay.cols p,.sidenote.cols p{break-inside:avoid;page-break-inside:avoid}
   .sidenote p+p{margin-top:12px}
-  @media (max-width:900px){.essay.cols{column-count:1;max-width:64ch}}
+  @media (max-width:900px){.essay.cols,.sidenote.cols{column-count:1;max-width:64ch}}
   .essay.lede{margin-top:44px}
   .sec-title{font-family:var(--disp);font-size:clamp(24px,3.2vw,34px);font-weight:400;margin:72px 0 10px;max-width:30ch;text-wrap:balance;letter-spacing:.012em}
   .sec-title::before{content:"— ";color:#E8481C}
@@ -91,19 +99,7 @@
     min-height:clamp(200px,26vh,320px);display:flex;align-items:center;gap:20px}
   .subnote h3{font-family:var(--disp);font-size:clamp(24px,3.2vw,34px);font-weight:400;
     letter-spacing:.012em;max-width:34ch;text-wrap:balance;margin:0}
-  .subchapter{--g:#D6D4CF;--ink:#141414;--dim:#5F5D58;--linec:#BDBBB5;
-    background:var(--g);color:var(--ink);
-    margin:0 calc(var(--pad) * -1);padding:clamp(88px,11vh,150px) var(--pad) 0}
-  .subchapter .sub-numeral{position:static;font-size:clamp(44px,6.5vw,88px);margin-top:0}
-  .subchapter .era-line{margin-bottom:10px}
-  .subchapter .era-title{font-size:clamp(24px,3.4vw,40px)}
-  /* the 01.2 stage curtain: a wide banner that unfurls once the title has
-     landed, then closes with the scroll as the text takes the stage */
-  .sub-curtain{display:none;position:relative;height:0;width:100%;
-    overflow:hidden;margin-top:18px}
-  .sub-curtain.on{display:block}
-  .sub-curtain img{position:absolute;left:0;top:0;width:100%;height:38vh;object-fit:cover;
-    clip-path:inset(0 0 100% 0)}
+  /* 01.2 sub-chapter card + curtain retired 2026-09-19 (Jackson): its note now closes the chapter-01 essay */
   .era-title .tw{display:inline-block;margin-right:.3em}
   .era-title .tw:last-child{margin-right:0}
   .subnote+.ledger{margin-top:0}
@@ -190,29 +186,115 @@
 
   /* crate view (pilot, ?crate): horizontal record-bin for a chapter's list */
   .crate{--g:#101010;--ink:#F2F1EE;--dim:#8B8B88;--acc:#F2F1EE;--linec:#2A2A2A;
+    position:relative;isolation:isolate;
     background:var(--g);color:var(--ink);margin:0 calc(var(--pad) * -1);
-    padding:28px var(--pad) 44px;overflow:hidden;
+    padding:56px var(--pad) 56px;overflow:hidden;   /* equal breath top/bottom (Jackson 09-19: "hugging the margin") */
     display:flex;flex-direction:column;justify-content:flex-start}
-  .crate-view{overflow:visible;min-width:0}
+  .crate-view{overflow:visible;min-width:0;perspective:1400px;perspective-origin:50% 38%}
+  /* CHLADNI PLATE (Jackson 09-19): the hero's sand engine behind every crate,
+     driven by the playing record's loudness and beats; far back, under
+     everything, never in the way */
+  .crate-sand{position:absolute;inset:0;z-index:0;color:#5C5C54;pointer-events:none;filter:blur(0.5px)}
+  .crate-player > .crate-sand{z-index:0}
+  /* the queue is translucent so the plate shows through it (Jackson 09-19) */
+  .cs:not(.on){opacity:.5}
+  .cs::after{opacity:.3}
   /* crate inherits the ledger's rhythm: full breath after editorial text,
      tighter after a blurb title, flush after grey/orange slabs */
   .essay+.crate,.sidenote+.crate{margin-top:clamp(88px,11vh,150px)}
   .sec-title+.crate{margin-top:44px}
   .subnote+.crate,.diagram+.crate{margin-top:0}
-  .crate-rail{display:flex;gap:16px;align-items:center;cursor:grab;
+  .crate-rail{position:relative;height:var(--csw);transform-style:preserve-3d;cursor:grab;
     touch-action:pan-y;
     transition:transform .5s cubic-bezier(.22,.9,.24,1)}
   .crate-rail.drag{transition:none;cursor:grabbing}
   /* one plane, one gridline: identical squares hugging the slab top,
      ~3/4 of the box; the LEFTMOST cover is always the active one */
-  .cs{flex:none;width:clamp(380px,62vh,700px);margin:0;opacity:.45;cursor:pointer;
-    transition:opacity .5s,border-radius .5s}
+  /* the queue stacks like the old iTunes flow (Jackson 09-18): each record
+     overlaps the previous by a quarter and sits behind it, scaled down a
+     touch per step back in the queue (--s/--z set per figure on seat()) */
+  .crate{--csw:clamp(380px,62vh,700px)}
+  /* COVER FLOW (Jackson 09-18, after the iTunes reference): the active
+     record flat and forward at center, both sides angled in perspective and
+     stacked, mirrored on the black floor. seat() places each record by its
+     distance d from the active (--x/--zt/--ry/--z); records beyond +-5 are
+     not rendered (.far) and sleeping crates keep only the active one, so
+     the angled covers never pile up GPU layers. */
+  .cs{position:absolute;left:50%;top:0;width:var(--csw);margin:0;cursor:pointer;
+    z-index:var(--z,1);backface-visibility:hidden;
+    transform:translateX(calc(-50% + var(--x,0px))) translateZ(var(--zt,0px)) rotateY(var(--ry,0deg));
+    transition:border-radius .5s,transform .55s cubic-bezier(.22,.9,.24,1)}
+  /* floor reflection tried 09-18 and set aside (Jackson: keep it clean; may
+     come back): -webkit-box-reflect:below 2px linear-gradient(rgba(0,0,0,.42),transparent 48%) */
+  .cs.far{display:none}
+  .crate.asleep .cs:not(.on){display:none}
+  /* queued records dim under an OPAQUE veil (not opacity: overlapped covers
+     would double-expose); the active one is clear */
+  .cs::after{content:'';position:absolute;inset:0;background:#101010;opacity:.55;pointer-events:none;
+    transition:opacity .5s}
+  .cs.on::after{opacity:0}
   .cs img,.cs .cs-blank{width:100%;aspect-ratio:1;display:block;object-fit:cover}
   .cs .cs-blank{background:#1C1C1C}
   .cs.on{opacity:1}
+  .cs.hov:not(.on)::after{opacity:.25}
+  .cs.hov:not(.on){transform:translateX(calc(-50% + var(--x,0px))) translateZ(calc(var(--zt,0px) + 40px)) rotateY(var(--ry,0deg))}
+  .cs.on.playing::after{border-radius:50%}
   .cs.on.playing img{border-radius:50%;animation:platter 4s linear infinite}
-  .crate-side{margin-top:0}
-  .crate-nav{display:flex;align-items:center;gap:20px;margin:36px 0 0}
+  /* the nav + info + player column hangs centered under the active record,
+     the record's width wide (Jackson 09-18); text left-aligned within it */
+  .crate-side{margin:0 auto;width:var(--csw);max-width:100%}
+  /* TRACKLIST + PLAYER (Jackson 09-19): the chapter's records as a text
+     list with their sleeves down the LEFT quarter; the right three quarters
+     are THE PLAYER — the active record as a platter over the Chladni plate,
+     an expanded info panel beside it, prev/next beneath. The list frame is
+     the player's full height. One 18px leading unit. */
+  .crate.list{display:grid;grid-template-columns:minmax(200px,1fr) minmax(0,3fr);column-gap:28px;align-items:stretch}
+  .crate.list .crate-list-wrap{grid-column:1;grid-row:1;position:relative;min-height:var(--csw)}
+  .crate-player{grid-column:2;grid-row:1;position:relative;min-height:var(--csw);overflow:clip}
+  /* the record sits centered between the tracklist and the info (Jackson
+     09-19): the player splits in two halves, the platter centered in the
+     left one, the info filling the right one */
+  .cp-inner{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:0;align-items:start}
+  .cp-platter{grid-column:1;grid-row:1;margin:0 auto;width:min(84%,var(--csw));aspect-ratio:1;position:relative;left:-14px}   /* -half the list gap: equal air to the list and to the info */
+  .crate.list .crate-side{padding-right:clamp(16px,2vw,40px)}
+  .cp-disc{display:block;width:100%;height:100%;object-fit:cover;transition:border-radius .5s;box-shadow:0 0 0 1px rgba(242,241,238,.08)}
+  .cp-platter.blank .cp-disc{display:none}
+  .cp-platter.blank .cp-blank{display:block;width:100%;height:100%;background:#1C1C1C}
+  .cp-blank{display:none}
+  .cp-platter.playing .cp-disc{border-radius:50%;animation:platter 4s linear infinite}
+  .crate.list .crate-side{grid-column:2;grid-row:1;min-width:0}
+  /* the nav spans the album art pixel for pixel (Jackson 09-19): same grid track, same width formula, same -14px shift as .cp-platter */
+  .crate.list .crate-nav{grid-column:1;grid-row:2;width:min(84%,var(--csw));margin:48px auto 0;position:relative;left:-14px;max-width:none}
+  .crate.list .crate-panel.row{margin-top:0;padding:0}
+  /* the preview timeline is its own element under the controls (Jackson
+     09-20): 28px of air below the play button, a full-width track line, the
+     progress fill riding on it - no longer glued to the button's edge */
+  .crate.list .crate-panel.row:has(.pvbar){padding-bottom:28px;border-bottom:2px solid rgba(242,241,238,.18)}
+  .crate.list .crate-panel .pvbar{max-width:none;bottom:-2px}
+  .crate.list .crate-panel .release{font-size:clamp(28px,3vw,44px)}
+  .crate.list .crate-panel .note{max-width:62ch;font-size:14.5px;line-height:22px;margin-top:16px}
+  .crate.list .crate-panel .playwrap,.crate.list .crate-panel .playwrap iframe{max-width:560px}
+  .crate-list{position:absolute;inset:0;overflow-y:auto;overscroll-behavior:contain;
+    scrollbar-width:thin;scrollbar-color:#2A2A2A transparent;padding:0 8px 64px 0;
+    -webkit-mask-image:linear-gradient(#000 calc(100% - 40px),transparent);mask-image:linear-gradient(#000 calc(100% - 40px),transparent)}
+  .tl-row{display:grid;grid-template-columns:48px minmax(0,1fr) auto;gap:0 14px;align-items:center;
+    padding:14px 0;border-bottom:1px solid var(--linec);cursor:pointer}
+  .tl-row:first-child{padding-top:0}          /* first row's art sits ON the platter's top edge */
+  .tl-art{width:48px;height:48px;object-fit:cover;display:block;transition:border-radius .45s}
+  .tl-art.blank{background:#1C1C1C}
+  .tl-row.playing .tl-art{border-radius:50%;animation:platter 4s linear infinite}
+  .tl-text{min-width:0}
+  .tl-artist{display:block;font-family:var(--util);font-size:13px;font-weight:500;line-height:18px;color:var(--dim)}
+  .tl-release{display:block;font-family:var(--util);font-weight:600;font-size:14px;line-height:18px;color:var(--ink)}
+  .tl-row.on .tl-artist{color:var(--ink)}
+  .tl-play{font-family:var(--util);font-size:11px;line-height:18px;color:var(--ink);background:none;
+    border:1px solid var(--linec);border-radius:50%;width:32px;height:32px;padding:0;margin-top:2px;
+    cursor:pointer;justify-self:end;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
+  .tl-play:hover{background:var(--ink);color:var(--g);border-color:var(--ink)}
+  a.tl-play.mute{opacity:.4;border-color:transparent}
+  a.tl-play.mute:hover{opacity:1;background:none;color:var(--ink)}
+  .tl-row.playing .tl-play{background:#E8481C;border-color:#E8481C;color:#fff}
+  .crate-nav{display:flex;flex-wrap:wrap;align-items:center;column-gap:20px;row-gap:10px;margin:64px 0 0}   /* = the 64px below the player: block sits equidistant in the slab (09-18) */
   .crate-nav button{font-family:var(--util);font-size:16px;line-height:20px;color:var(--ink);
     background:none;border:1px solid var(--dim);padding:10px 20px;cursor:pointer;flex:none;
     transition:background .15s,color .15s}
@@ -222,7 +304,9 @@
     background:rgba(242,241,238,.18)}
   .cn-fill{position:absolute;left:0;top:9px;height:2px;width:0;background:#E8481C;
     transition:width .3s}
-  .cn-count{font-family:var(--util);font-size:12px;line-height:20px;color:var(--dim);flex:none;
+  /* the count sits under the line on its own row (09-19): the row above is
+     the arrows + line only, so its two ends are the arrows' outer edges */
+  .cn-count{font-family:var(--util);font-size:12px;line-height:20px;color:var(--dim);flex:0 0 100%;text-align:center;
     font-variant-numeric:tabular-nums}
   /* bottom band: text, then the player pinned bottom flush-left — the
      slab auto-flexes to each record's content */
@@ -339,15 +423,17 @@
   .era-open .numeral{position:sticky;top:84px;z-index:4;pointer-events:none;width:max-content}
   @media (prefers-reduced-motion: reduce){.fl,.gm svg,.gm svg *,.hw-spin,.hw-br,.hero-platter .pd-cyc,.row.playing img.sleeve,.hero-wash{animation:none}}
 
-  .diagram{--ink:#FDF6F1;--dim:rgba(253,246,241,.8);
-    background:#E8481C;color:#1A1510;
+  /* year maps: grey ground (Jackson 09-19, was plate orange); a full-bleed
+     slab whose map fills the content width between the band's side pads */
+  .diagram{--g:#D6D4CF;--ink:#141414;--dim:#5F5D58;
+    background:var(--g);color:var(--ink);
     margin:clamp(80px,10vh,130px) calc(var(--pad) * -1) 0;
     padding:clamp(56px,8vh,100px) var(--pad) clamp(44px,6vh,72px);
     overflow-x:auto}
   .diagram svg{width:100%;height:auto;max-width:940px;min-width:640px;display:block;margin:0 auto}
   .dia-title{font-family:var(--disp);font-size:clamp(26px,3.4vw,38px);font-weight:400;
-    letter-spacing:.015em;color:#FDF6F1;margin:0 auto clamp(28px,4vh,46px);text-align:center;max-width:940px}
-  .diagram text{font-family:var(--util);font-size:13px;fill:#FDF6F1}
+    letter-spacing:.015em;color:var(--ink);margin:0 auto clamp(28px,4vh,46px);text-align:center;max-width:940px}
+  .diagram text{font-family:var(--util);font-size:13px;fill:var(--ink)}
   .diagram svg.dg-wide{max-width:1140px}
   .diagram svg.dg-wide text{font-size:15.5px}
   .diagram svg.dg-wide .dm{font-size:14px}
@@ -359,6 +445,28 @@
   .diagram figcaption{font-family:var(--body);font-style:italic;font-size:14.5px;color:var(--dim);margin:18px auto 0;max-width:62ch;text-align:center}
   .diagram .key{font-family:var(--util);font-style:normal;font-size:11px;display:table;margin:14px auto 0;padding:6px 12px;border:1px solid var(--ink);color:var(--ink)}
 
+  /* record maps: one column per year, sleeves stacked in their year */
+  .rmap{overflow-x:auto}
+  /* one grid track per year across the FULL content width (fluid, Jackson
+     09-19): a sleeve fills its track minus an 8px gutter, capped at 160px so
+     the 320px thumb tier stays crisp on 2x screens; under a 36px track the
+     plate scrolls sideways instead of shrinking the sleeves further */
+  .rm{display:grid;grid-template-columns:repeat(var(--n),minmax(36px,1fr));align-items:end;width:100%;
+    font-family:var(--util);color:var(--ink);border-bottom:1px solid #1A1510}
+  .rm-col{min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;position:relative}
+  .rm-gap{min-width:0}
+  .rm-col::after{content:'';position:absolute;left:50%;bottom:-7px;width:1px;height:6px;background:#1A1510}
+  .rm-stack{display:flex;flex-direction:column-reverse;gap:6px;padding-bottom:12px;width:calc(100% - 8px);max-width:160px}
+  .rm-year{font-size:11px;line-height:16px;opacity:.85;position:absolute;top:100%;margin-top:10px;left:50%;transform:translateX(-50%)}
+  .rm-col.und{border-left:1px dashed rgba(26,21,16,.5)}
+  .rm-rec{width:100%;padding:0;border:0;background:none;cursor:pointer;display:block}
+  .rm-sl{display:block;width:100%;height:auto;aspect-ratio:1;object-fit:cover;box-shadow:0 0 0 1px #1A1510;transition:transform .25s;position:relative}
+  .rm-sl.blank{background:#1A1510;opacity:.35}
+  .rm-rec:hover .rm-sl{transform:scale(1.6);z-index:3}
+  .rm-rec.playing .rm-sl{border-radius:50%;animation:platter 4s linear infinite}
+  .rmap figcaption{margin-top:44px;max-width:76ch}
+  .rmap [data-reveal]{opacity:0;transform:translateY(8px);transition:opacity .5s ease,transform .5s ease}
+  .rmap [data-reveal].in{opacity:1;transform:none}
   .tease-note{font-family:var(--body);font-style:italic;font-size:15.5px;color:var(--dim);margin-top:22px}
 
   .colophon{padding-top:clamp(72px,10vh,130px) !important;padding-bottom:clamp(48px,7vh,90px) !important}
@@ -516,10 +624,11 @@ const pb=document.querySelector("img.pd-base"); if(pb) pb.src=A0;
       const c2 = cv.getContext('2d');
       const rnd = opt.rng || Math.random;
       const pick = arr => arr[Math.floor(rnd() * arr.length)];
-      const G = 8, FIRST_HOLD = 5, HOLD = 3.5, LOOSEN = 1.4, MORPH = 2.6;   // hold -> loosen -> morph
+      let G = 8; const FIRST_HOLD = 5, HOLD = 3.5, LOOSEN = 1.4, MORPH = 2.6;   // hold -> loosen -> morph (G = field grid, a patch knob for the crate plates)
       let geo = null, sand = null, modes = null, modesNext = null, modeT0 = 0, lastType = '';
       let rIn = 300, rOut = 1100, field = null, fW = 0, fH = 0, fieldDirty = true, first = true;
       let running = false, settleT0 = 0, inkc = '#121212', phase = 'on', phaseT0 = 0;
+      let dens = null;   // grains per field cell (opt.spread only)
       const newModes = () => {
         let type; do { type = pick(['star', 'wheel', 'wheel', 'rings', 'rings', 'curvy', 'curvy', 'mixed']); } while (type === lastType);
         lastType = type;
@@ -535,6 +644,22 @@ const pb=document.querySelector("img.pd-base"); if(pb) pb.src=A0;
       const amp = (x, y, sh) => {
         const dx = x - geo.cx, dy = y - geo.cy, r = Math.hypot(dx, dy), th = Math.atan2(dy, dx);
         switch (sh.type) {
+          // CHLADNI'S SQUARE PLATE (1787): cos(m pi u) cos(n pi v) +- cos(n pi u) cos(m pi v)
+          // over a rotated square of half-side D — the catalogue figures with
+          // their curved diagonals; the field tiles beyond the plate
+          case 'plate': {
+            const cr = Math.cos(sh.rot), sr = Math.sin(sh.rot), D = sh.D || 0.42 * Math.min(geo.w, geo.h);
+            const u = (dx * cr + dy * sr) / D, v = (-dx * sr + dy * cr) / D;
+            return 0.5 * (Math.cos(sh.m * Math.PI * u) * Math.cos(sh.n * Math.PI * v) + sh.s * Math.cos(sh.n * Math.PI * u) * Math.cos(sh.m * Math.PI * v));
+          }
+          // ROSETTES: k plane waves at equal angles interfere — 3 give the
+          // hexagonal lattice, 5 the pentagonal quasi-lattice (the sacred
+          // geometry end of the catalogue); lam = wavelength in px
+          case 'hex': case 'penta': {
+            const k = sh.type === 'hex' ? 3 : 5, K = 2 * Math.PI / (sh.lam || 120); let s = 0;
+            for (let i = 0; i < k; i++) { const a = sh.rot + i * Math.PI / k; s += Math.cos(K * (dx * Math.cos(a) + dy * Math.sin(a))); }
+            return s / k;
+          }
           case 'star':  return S(sh.m, th, sh.rot);
           case 'wheel': return S(sh.m, th, sh.rot) * C(sh.n, r, sh.ph);
           case 'rings': return C(sh.n, r + sh.wob * Math.cos(sh.m * (th - sh.rot)), sh.ph);
@@ -575,46 +700,92 @@ const pb=document.querySelector("img.pd-base"); if(pb) pb.src=A0;
         fieldDirty = false;
       };
       const seed = () => {
-        sand = new Float32Array(opt.n * 2);
-        for (let i = 0; i < opt.n; i++) { const p = spawn(); sand[i * 2] = p[0]; sand[i * 2 + 1] = p[1]; }
+        const N = opt.p ? opt.p.sand.n : opt.n;   // the crate plates take their grain count from the patch
+        sand = new Float32Array(N * 2);
+        for (let i = 0; i < N; i++) { const p = spawn(); sand[i * 2] = p[0]; sand[i * 2 + 1] = p[1]; }
         rIn = geo.pr + 6;
         rOut = Math.max(Math.hypot(geo.cx, geo.cy), Math.hypot(geo.w - geo.cx, geo.cy), Math.hypot(geo.cx, geo.h - geo.cy), Math.hypot(geo.w - geo.cx, geo.h - geo.cy));
         if (opt.drift || !modes) modes = newModes();
         modesNext = null; modeT0 = performance.now() / 1000; fieldDirty = true; first = true; settleT0 = performance.now(); phase = 'on';
       };
-      const simulate = (now, shake) => {
+      const simulate = (now, shakeIn) => {
         const t = now / 1000;
-        let driftK = 1, jitterK = 0, sm = 0;
+        let driftK = 1, jitterK = 0, sm = 0, shake = shakeIn, flowK = 0, r = null;
+        // MATERIAL knobs of the patch (crate plates only; the hero keeps the
+        // literals): pull down the gradient, base + amplitude jitter, field
+        // gain, and the field grid (a grid change rebuilds the field)
+        const PS = opt.p ? opt.p.sand : null;
+        const DK = PS ? PS.pull : 3.0, JB = PS ? PS.jitter : 2.0, JA = PS ? PS.jitterAmp : 1.2, GN = PS ? PS.gain : 1.9;
+        if (PS && PS.grid >= 3 && PS.grid !== G) { G = PS.grid; fieldDirty = true; }
+        // REACTIVE drive (crate plates, 2026-09-19): opt.react(t) returns the
+        // shake for this frame (from the playing record's loudness) and a beat
+        // flag that throws the plate into a quick loosen -> morph to a new figure
+        const LO = LOOSEN; let MO = opt.react ? 0.35 : MORPH;
+        if (opt.react) {
+          // the figure FOLLOWS THE SPECTRUM (Jackson 09-19: the fast spectral
+          // version, "tamed ~30%"): react() hands back the figure the sound
+          // calls for; when it differs from the one on the plate, and the
+          // current one has held for a beat, the field crossfades to it in
+          // ~0.35s. The shake from the loudness carries the agitation.
+          r = opt.react(t); shake = r.shake; if (r.morph) MO = r.morph;
+          if (r.modes && phase === 'on' && r.modes.key !== modes.key && t - modeT0 > (r.dwell || 0)) { modesNext = r.modes; phase = 'morph'; phaseT0 = t; }
+        }
         if (opt.drift) {
           // hold -> LOOSEN: the pull drops to ~a tenth and the shake ramps up,
           // so every line spreads into a soft cloud that still traces its
           // figure -> MORPH: the field crossfades to the next figure while
           // the pull returns and the cloud refines into it -> hold. The
           // sand never goes shapeless after the initial settle.
-          const hold = first ? FIRST_HOLD : HOLD;
+          const hold = opt.react ? Infinity : (first ? FIRST_HOLD : HOLD);
           if (phase === 'on' && t - modeT0 > hold) { phase = 'loosen'; phaseT0 = t; modesNext = newModes(); }
           if (phase === 'loosen') {
-            const u = Math.min(1, (t - phaseT0) / LOOSEN), e = u * u * (3 - 2 * u);
-            driftK = 1 - 0.88 * e; jitterK = 7.5 * e;
+            const u = Math.min(1, (t - phaseT0) / LO), e = u * u * (3 - 2 * u);
+            driftK = 1 - 0.88 * e; jitterK = (opt.react ? 4.5 : 7.5) * e;
             if (u >= 1) { phase = 'morph'; phaseT0 = t; }
           }
           if (phase === 'morph') {
-            const u = Math.min(1, (t - phaseT0) / MORPH); sm = u * u * (3 - 2 * u);
-            driftK = 0.12 + 0.88 * sm; jitterK = 7.5 * (1 - sm); fieldDirty = true;
+            const u = Math.min(1, (t - phaseT0) / MO); sm = u * u * (3 - 2 * u);
+            if (!opt.react) { driftK = 0.12 + 0.88 * sm; jitterK = 7.5 * (1 - sm); }
+            fieldDirty = true;
             if (u >= 1) { modes = modesNext; modesNext = null; phase = 'on'; modeT0 = t; first = false; sm = 0; fieldDirty = true; }
           }
           if (fieldDirty || !field) buildField(sm);
         } else if (fieldDirty || !field) buildField(0);
+        // FLOAT (crate plates, Jackson 09-19): with nothing to hear the driver
+        // asks for a weak pull, extra wander and a slow flow through space, so
+        // the grains keep drifting instead of settling onto the lines
+        if (r && r.pull != null) { driftK *= r.pull; jitterK += r.jitter || 0; flowK = r.flow || 0; }
         const {cx, cy, w, h, pr} = geo, n = sand.length;
+        // SPREAD (crate plates, Jackson 09-19/20): the lines were piling up into
+        // solid clumps. Grains are counted per field cell each frame; in a cell
+        // over the cap they are pushed down the density gradient and kicked, so
+        // the dense zones keep space and visible motion inside them
+        const SP = opt.spread;
+        if (SP) {
+          if (!dens || dens.length !== fW * fH) dens = new Uint16Array(fW * fH); else dens.fill(0);
+          for (let i = 0; i < n; i += 2) {
+            const gx = Math.min(fW - 2, Math.max(1, (sand[i] / G) | 0)), gy = Math.min(fH - 2, Math.max(1, (sand[i + 1] / G) | 0));
+            dens[gy * fW + gx]++;
+          }
+        }
         for (let i = 0; i < n; i += 2) {
           let x = sand[i], y = sand[i + 1];
           const gx = Math.min(fW - 2, Math.max(1, (x / G) | 0)), gy = Math.min(fH - 2, Math.max(1, (y / G) | 0));
           const k = gy * fW + gx, a = field[k];
           const dax = field[k + 1] - field[k - 1], day = field[k + fW] - field[k - fW];
-          const gl = Math.hypot(dax, day) + 1e-6, v = Math.min(1, a * 1.9);
-          const drift = 3.0 * v * driftK * shake, j = ((2.0 + 1.2 * v) + jitterK) * shake;
+          const gl = Math.hypot(dax, day) + 1e-6, v = Math.min(1, a * GN);
+          const drift = DK * v * driftK * shake, j = ((JB + JA * v) + jitterK) * shake;
           x -= dax / gl * drift; y -= day / gl * drift;
           x += (Math.random() - 0.5) * j; y += (Math.random() - 0.5) * j;
+          if (SP) {
+            const c = dens[k], o = c > SP.cap ? (c - SP.cap) / SP.cap : 0;
+            if (o) {
+              const dgx = dens[k + 1] - dens[k - 1], dgy = dens[k + fW] - dens[k - fW], gm = Math.abs(dgx) + Math.abs(dgy) + 1;
+              const kk = SP.kick * Math.min(2, o);
+              x -= kk * dgx / gm + (Math.random() - 0.5) * kk; y -= kk * dgy / gm + (Math.random() - 0.5) * kk;
+            }
+          }
+          if (flowK) { x += flowK * (Math.sin(y * 0.006 + t * 0.35) + 0.5 * Math.sin(x * 0.011 - t * 0.21)); y += flowK * (Math.cos(x * 0.006 + t * 0.29) + 0.5 * Math.cos(y * 0.013 + t * 0.17)); }
           const kp = keep(x, y);
           if (x < 0 || x > w || y < 0 || y > h || kp === 0 || (kp < 1 && Math.random() > kp + 0.85) || Math.hypot(x - cx, y - cy) < pr + 4) { const p = spawn(); x = p[0]; y = p[1]; }
           sand[i] = x; sand[i + 1] = y;
@@ -624,12 +795,15 @@ const pb=document.querySelector("img.pd-base"); if(pb) pb.src=A0;
         const {dpr, w, h} = geo, n = sand.length;
         c2.setTransform(dpr, 0, 0, dpr, 0, 0);
         c2.clearRect(0, 0, w, h);
-        c2.fillStyle = inkc;
-        const bands = [[0, n / 3, 0.34], [n / 3, 2 * n / 3, 0.52], [2 * n / 3, n, 0.7]];
+        const PS = opt.p ? opt.p.sand : null;
+        c2.fillStyle = PS && PS.ink ? PS.ink : inkc;
+        // crate plates: denser, bolder material - size, spread and the three alphas from the patch
+        const AL = PS ? PS.alpha : (opt.alpha || [0.34, 0.52, 0.7]), GS = PS ? PS.size : (opt.grain || 1), SPR = PS ? PS.spread : 0.24;
+        const bands = [[0, n / 3, AL[0]], [n / 3, 2 * n / 3, AL[1]], [2 * n / 3, n, AL[2]]];
         for (const [i0, i1, al] of bands) {
           c2.globalAlpha = al;
           for (let i = (i0 | 0) & ~1; i < i1; i += 2) {
-            const g = 1.3 + ((i >> 1) % 9) * 0.24;
+            const g = (1.3 + ((i >> 1) % 9) * SPR) * GS;
             c2.fillRect(sand[i] - g / 2, sand[i + 1] - g / 2, g, g);
           }
         }
@@ -660,10 +834,12 @@ const pb=document.querySelector("img.pd-base"); if(pb) pb.src=A0;
         stop() { running = false; },
         release() { running = false; sand = null; field = null; if (opt.size) { cv.width = 0; cv.height = 0; } },
         get live() { return !!sand; },
+        get grains() { return sand; },
         get figure() { return modes; }
       };
       return api;
     };
+    window.__makeSand = makeSand; window.__STILL = STILL;   // the crate plates reuse the engine
     // hero instance: drifting figures, the text window kept clear, the record excluded
     const sandHero = makeSand(hwc, {n: innerWidth < 900 ? 12000 : 28000, drift: true, size: false, geo: () => geo && Object.assign({}, geo, {cut: cut && Object.assign({pad: 44}, cut)})});
     if (CHLADNI) hwc.classList.add('sand');
