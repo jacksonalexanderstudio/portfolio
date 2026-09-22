@@ -287,6 +287,7 @@ body.paused .cell svg,body.paused .b-preview svg{animation-play-state:paused}
       <div class="slider"><label for="sPh">Phase</label><input type="range" id="sPh" min="0" max="1" step="0.01"><output id="oPh"></output></div>
       <div class="b-btns" style="margin-top:24px">
         <button class="b-btn" id="btnRevert">Takeoff</button>
+        <button class="b-btn" id="btnAll">Apply to all</button>
         <button class="b-btn b-hide" id="btnSave">Save</button>
       </div>
     </div>
@@ -627,6 +628,33 @@ document.getElementById('btnRevert').addEventListener('click',function(){
   if(!sel)return;var e=byId[sel];
   e.cur=JSON.parse(JSON.stringify(e.take));
   select(sel);touch();
+});
+
+/* apply the selected drawing's settings to the whole archive —
+   two-step arm so a stray click can't rewrite 200 drawings; each
+   drawing keeps its own phase so the sheet stays staggered */
+var btnAll=document.getElementById('btnAll'), allArmT=null;
+btnAll.addEventListener('click',function(){
+  if(!sel)return;
+  if(!btnAll.classList.contains('armed')){
+    btnAll.classList.add('armed');
+    btnAll.textContent='All '+entries.length+' — sure?';
+    allArmT=setTimeout(function(){
+      btnAll.classList.remove('armed');btnAll.textContent='Apply to all';
+    },3500);
+    return;
+  }
+  clearTimeout(allArmT);
+  btnAll.classList.remove('armed');btnAll.textContent='Apply to all';
+  var src=byId[sel].cur;
+  entries.forEach(function(e){
+    var ph=('ph' in e.cur)?e.cur.ph:e.take.ph;
+    e.cur=JSON.parse(JSON.stringify(src));e.cur.ph=ph;
+    dirty[e.id]=true;
+    if(cells[e.id]) applyMotion(cells[e.id]);
+  });
+  if(bench.rec) applyMotion(bench.rec);
+  updateSaveBtn();
 });
 document.getElementById('benchClose').addEventListener('click',function(){benchEl.classList.remove('open');});
 
