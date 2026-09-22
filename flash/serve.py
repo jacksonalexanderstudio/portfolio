@@ -80,8 +80,14 @@ class H(SimpleHTTPRequestHandler):
             with open(tmp, 'w') as f:
                 json.dump(db, f, separators=(',', ':'))
             os.replace(tmp, DB)
+            baked = True
+            try:
+                import bake
+                bake.bake_all(quiet=True)   # portfolio sheet SVGs follow every save
+            except Exception:
+                baked = False
             self._json(200, {'ok': True, 'saved': saved,
-                             'updated': db['updated']})
+                             'baked': baked, 'updated': db['updated']})
         except Exception as ex:
             self._json(500, {'ok': False, 'error': str(ex)})
 

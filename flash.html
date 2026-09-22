@@ -4,11 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Flash Index — Jackson Alexander Studio</title>
-<meta name="description" content="An indexed archive of the studio's flash sheet drawings — every mark vectorized from the original sheets, each moving to its own habit.">
+<meta name="description" content="Flash sheets — Jackson Alexander Studio.">
 <link rel="canonical" href="https://jacksonalexanderstudio.com/flash.html">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Flash Index — Jackson Alexander Studio">
-<meta property="og:description" content="An indexed archive of the studio's flash sheet drawings.">
+<meta property="og:description" content="Flash sheets — Jackson Alexander Studio.">
 <meta property="og:image" content="https://jacksonalexanderstudio.com/og-image.jpg">
 <meta property="og:site_name" content="Jackson Alexander Studio">
 <meta name="author" content="Jackson Alexander">
@@ -58,7 +58,14 @@ input,select{font:inherit;color:inherit}
 .page-head{padding:200px 52px 56px;border-bottom:1px solid var(--br)}
 .page-head h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-style:italic;font-size:clamp(24px,3vw,39px);letter-spacing:.04em;margin-bottom:24px}
 .page-head p{font:300 13px/24px var(--sf);color:var(--dim);max-width:600px;letter-spacing:.02em}
-.link-line{display:flex;align-items:center;gap:10px;margin-top:32px;font:400 10px/16px var(--fn);letter-spacing:.18em;text-transform:uppercase;color:var(--faint)}
+/* public copies carry layout + motion + numbers only; names, prose and the
+   bench appear when the local editor daemon answers (body.editor) */
+.page-head p,#bench,.fi-search{display:none}
+body.editor .page-head p{display:block}
+body.editor #bench{display:block}
+body.editor .fi-search{display:block}
+.link-line{display:none;align-items:center;gap:10px;margin-top:32px;font:400 10px/16px var(--fn);letter-spacing:.18em;text-transform:uppercase;color:var(--faint)}
+body.editor .link-line{display:flex}
 .link-dot{width:6px;height:6px;border-radius:50%;background:var(--faint);flex-shrink:0;transition:background .4s}
 .link-line.live .link-dot{background:var(--accent);animation:dotpulse 2.6s ease-in-out infinite}
 .link-line.live{color:var(--dim)}
@@ -374,7 +381,7 @@ function buildSvg(e, idPrefix){
   var svg=document.createElementNS(SVGNS,'svg');
   svg.setAttribute('viewBox',e.vb.join(' '));
   svg.setAttribute('role','img');
-  svg.setAttribute('aria-label',e.n);
+  svg.setAttribute('aria-label',editor?e.n:'drawing '+e.id);
   var g=document.createElementNS(SVGNS,'g');
   e.p.forEach(function(pp){
     var path=document.createElementNS(SVGNS,'path');
@@ -446,7 +453,7 @@ function makeCell(e){
   b.svg.style.width=drawScale(e)+'%';
   d.appendChild(b.svg);
   var cap=document.createElement('div');
-  cap.className='cap';cap.textContent=e.id+' — '+e.n;
+  cap.className='cap';cap.textContent=editor?(e.id+' — '+e.n):e.id;
   d.appendChild(cap);
   var rec={entry:e,svg:b.svg,g:b.g,fid:b.fid,el:d,cap:cap,seed:parseInt(e.id,10)*37%9973,next:0,filter:null,turb:null,disp:null};
   d._rec=rec;cells[e.id]=rec;
@@ -482,7 +489,7 @@ function renderGrid(){
     DB.sheets.forEach(function(s){
       var group=bySheet[s.id];if(!group)return;
       var h=document.createElement('div');h.className='sh-head';
-      h.innerHTML='<span class="sh-num">'+s.id+'</span><span class="sh-title">'+s.title+'</span><span class="sh-count">'+group.length+'</span>';
+      h.innerHTML='<span class="sh-num">'+s.id+'</span>'+(editor?'<span class="sh-title">'+s.title+'</span>':'')+'<span class="sh-count">'+group.length+'</span>';
       sheetEl.appendChild(h);
       var g=document.createElement('div');g.className='fgrid';
       group.forEach(function(e){g.appendChild(makeCell(e));});
@@ -523,16 +530,18 @@ function rowBtn(num,label,count,onclick,key){
 }
 function renderSidebar(){
   fiRows.innerHTML='';
-  var counts={};entries.forEach(function(e){counts[e.cat]=(counts[e.cat]||0)+1;});
   fiRows.appendChild(rowBtn('00','All drawings',entries.length,function(){setFilter('all',null);},'all'));
   var gap=document.createElement('div');gap.className='fi-gap';fiRows.appendChild(gap);
-  DB.cats.forEach(function(c,i){
-    fiRows.appendChild(rowBtn(String(i+1).padStart(2,'0'),CAT_LABEL[c]||c,counts[c]||0,function(){setFilter('cat',c);},'cat:'+c));
-  });
-  var gap2=document.createElement('div');gap2.className='fi-gap';fiRows.appendChild(gap2);
+  if(editor){
+    var counts={};entries.forEach(function(e){counts[e.cat]=(counts[e.cat]||0)+1;});
+    DB.cats.forEach(function(c,i){
+      fiRows.appendChild(rowBtn(String(i+1).padStart(2,'0'),CAT_LABEL[c]||c,counts[c]||0,function(){setFilter('cat',c);},'cat:'+c));
+    });
+    var gap2=document.createElement('div');gap2.className='fi-gap';fiRows.appendChild(gap2);
+  }
   DB.sheets.forEach(function(s){
     var n=entries.filter(function(e){return e.sh===s.id;}).length;
-    fiRows.appendChild(rowBtn('S'+s.id,s.title,n,function(){setFilter('sheet',s.id);},'sheet:'+s.id));
+    fiRows.appendChild(rowBtn('S'+s.id,editor?s.title:('Sheet '+s.id),n,function(){setFilter('sheet',s.id);},'sheet:'+s.id));
   });
   markActive();
 }
@@ -579,6 +588,7 @@ function select(id){
   var e=byId[id];if(!e)return;
   if(cells[id]) cells[id].el.classList.add('sel');
   history.replaceState(null,'','#'+id);
+  if(!editor) return;   /* public: highlight only — the bench is local */
   /* preview */
   bPrev.innerHTML='';
   var b=buildSvg(e,'P');
@@ -597,7 +607,7 @@ function select(id){
     s.value=e.cur[k];
     document.getElementById(sliders[k][1]).textContent=sliders[k][2](+e.cur[k]);
   }
-  if(window.innerWidth<=1180) benchEl.classList.add('open');
+  if(editor&&window.innerWidth<=1180) benchEl.classList.add('open');
 }
 
 function touch(){
@@ -711,15 +721,14 @@ fetch('flash/flash-db.json').then(function(r){return r.json();}).then(function(d
 fetch('/api/ping').then(function(r){return r.json();}).then(function(j){
   if(j&&j.editor){
     editor=true;
+    document.body.classList.add('editor');
     document.getElementById('linkLine').classList.add('live');
     document.getElementById('linkText').textContent='editor linked — saves write to flash-db.json';
     btnSave.classList.remove('b-hide');
     document.getElementById('bNote').textContent='linked. cmd+s saves all touched drawings.';
+    if(DB){renderSidebar();renderGrid();if(sel)select(sel);}
   }
-}).catch(function(){
-  document.getElementById('linkText').textContent='read only — parameters play here, saving lives on the studio machine';
-  bName.disabled=true;bCat.disabled=true;
-});
+}).catch(function(){/* public: layout, motion and numbers only */});
 
 /* header scroll state */
 window.addEventListener('scroll',function(){
