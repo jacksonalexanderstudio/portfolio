@@ -27,3 +27,6 @@ typography/
 
 # Local Netlify folder
 .netlify
+
+# Flash Index editor daemon backups (local)
+flash/backups/
