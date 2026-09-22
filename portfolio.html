@@ -187,7 +187,10 @@ body.img-hover #cur{filter:invert(1)}
 .gl .wi,.gm .wi,.gp .wi{aspect-ratio:1/1;background:transparent;overflow:hidden;transition:transform .4s ease,box-shadow .4s ease}
 .gm .wi:hover,.gp .wi:hover{transform:translateY(-4px)}
 .gl .wi img,.gm .wi img,.gp .wi img{width:100%;height:100%;object-fit:cover;display:block}
-.gm .wi.fx-sheet img{object-fit:contain;background:#fff}
+.gf{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding:0 52px;align-items:start}
+.gf .wi{aspect-ratio:1293/821;background:transparent;overflow:hidden;transition:transform .4s ease,box-shadow .4s ease}
+.gf .wi:hover{transform:translateY(-4px)}
+.gf .wi img{width:100%;height:100%;object-fit:contain;display:block}
 /* Logos: contain with generous inner padding for breathing room */
 .gl .wi{background:transparent}
 .gl .wi img{object-fit:contain;padding:20px}
@@ -268,6 +271,7 @@ body.img-hover #cur{filter:invert(1)}
   #wi.nav-open .wir{display:flex}
   .hi,.sc2,.cta-i,.fi2{padding-left:16px;padding-right:16px}
   .gl,.gm,.gp{grid-template-columns:repeat(2,1fr);gap:12px;padding:0 8px}
+  .gf{grid-template-columns:1fr;gap:12px;padding:0 8px}
   .fi2{grid-template-columns:1fr;gap:12px;text-align:center}
   .fr{justify-content:center}
   .wd{display:none}
@@ -311,10 +315,11 @@ body.img-hover #cur{filter:invert(1)}
         <div class="nd">
           <a href="portfolio.html#logos"><span class="dn">01</span>Logos</a>
           <a href="portfolio.html#illustration"><span class="dn">02</span>Illustration / Graphic</a>
-          <a href="portfolio.html#craft"><span class="dn">03</span>Fabrication</a>
-          <a href="portfolio.html#styling"><span class="dn">04</span>Creative Direction</a>
-          <a href="portfolio.html#garden"><span class="dn">05</span>Jack&#39;s Garden</a>
-          <a href="portfolio.html#production"><span class="dn">06</span>Production</a>
+          <a href="portfolio.html#flash"><span class="dn">03</span>Flash Sheets</a>
+          <a href="portfolio.html#craft"><span class="dn">04</span>Fabrication</a>
+          <a href="portfolio.html#styling"><span class="dn">05</span>Creative Direction</a>
+          <a href="portfolio.html#garden"><span class="dn">06</span>Jack&#39;s Garden</a>
+          <a href="portfolio.html#production"><span class="dn">07</span>Production</a>
         </div>
       </div>
       <a href="case-studies.html">Case Studies</a>
@@ -380,7 +385,8 @@ body.img-hover #cur{filter:invert(1)}
       <a href="#illustration" class="wi-sub-link" data-client="david-brown">David Brown, MD</a>
       <a href="#illustration" class="wi-sub-link" data-client="bis">Breakfast is Swerved</a>
     </div>
-    <a href="#typelayout" class="wir" data-target="typelayout"><span class="wn">03</span><span class="wt">Type / Layout</span><span class="wir-toggle">+</span></a>
+    <a href="#flash" class="wir" data-target="flash"><span class="wn">03</span><span class="wt">Flash Sheets</span></a>
+    <a href="#typelayout" class="wir" data-target="typelayout"><span class="wn">04</span><span class="wt">Type / Layout</span><span class="wir-toggle">+</span></a>
     <div class="wi-sub sub-collapsed" data-section="typelayout">
       <a href="#typelayout" class="wi-sub-link" data-client="peyote-bird">Peyote Bird</a>
       <a href="#typelayout" class="wi-sub-link" data-client="talweg-creative">Talweg Creative</a>
@@ -388,20 +394,20 @@ body.img-hover #cur{filter:invert(1)}
       <a href="#typelayout" class="wi-sub-link" data-client="jacks-garden">Jacks Garden</a>
       <a href="#typelayout" class="wi-sub-link" data-client="hutton-films">Hutton Films</a>
     </div>
-    <a href="#craft" class="wir" data-target="craft"><span class="wn">04</span><span class="wt">Fabrication</span><span class="wir-toggle">+</span></a>
+    <a href="#craft" class="wir" data-target="craft"><span class="wn">05</span><span class="wt">Fabrication</span><span class="wir-toggle">+</span></a>
     <div class="wi-sub sub-collapsed" data-section="craft">
       <a href="#craft" class="wi-sub-link" data-client="signage">Signage</a>
       <a href="#craft" class="wi-sub-link" data-client="carvings">Carvings</a>
       <a href="#craft" class="wi-sub-link" data-client="jewelry-design">Jewelry Design</a>
       <a href="#craft" class="wi-sub-link" data-client="display">Display</a>
     </div>
-    <a href="#styling" class="wir" data-target="styling"><span class="wn">05</span><span class="wt">Creative Direction</span><span class="wir-toggle">+</span></a>
+    <a href="#styling" class="wir" data-target="styling"><span class="wn">06</span><span class="wt">Creative Direction</span><span class="wir-toggle">+</span></a>
     <div class="wi-sub sub-collapsed" data-section="styling">
       <a href="#styling" class="wi-sub-link" data-client="peyote-bird">Peyote Bird</a>
       <a href="#styling" class="wi-sub-link" data-client="ja-studio">JA Studio</a>
     </div>
-    <a href="#garden" class="wir" data-target="garden"><span class="wn">06</span><span class="wt">Jack&#39;s Garden</span></a>
-    <a href="#production" class="wir" data-target="production"><span class="wn">07</span><span class="wt">Production</span></a>
+    <a href="#garden" class="wir" data-target="garden"><span class="wn">07</span><span class="wt">Jack&#39;s Garden</span></a>
+    <a href="#production" class="wir" data-target="production"><span class="wn">08</span><span class="wt">Production</span></a>
   </div>
 </aside>
 <div class="work-main">
@@ -469,42 +475,52 @@ body.img-hover #cur{filter:invert(1)}
 <div class="wi" data-section="illustration" data-client="rocket-ramps" data-title="Illustration" data-category="2025" data-seclabel="Illustration / Graphic"><img src="sq-images/Screenshot-2025-05-19-at-5.32.25-PM.png" alt="Illustration" loading="lazy"><div class="ov"><div class="ov-num">028</div><div class="ov-sec">Illustration / Graphic</div></div></div>
 <div class="wi" data-section="illustration" data-client="ja-studio" data-title="Geometric" data-category="Illustration" data-seclabel="Illustration / Graphic"><img src="Illustration/geometric_web-18.png" alt="Geometric" loading="lazy"><div class="ov"><div class="ov-num">029</div><div class="ov-sec">Illustration / Graphic</div></div></div>
 <div class="wi" data-section="illustration" data-client="ja-studio" data-title="Rocket Ramps" data-category="Brand Identity, 2025" data-seclabel="Illustration / Graphic"><img src="sq-images/Screenshot-2026-02-17-at-8.27.41-PM.jpg" alt="Rocket Ramps" loading="lazy"><div class="ov"><div class="ov-num">030</div><div class="ov-sec">Illustration / Graphic</div></div></div>
-<div class="wi fx-sheet" data-section="illustration" data-client="ja-studio" data-title="Flash Sheet" data-category="Illustration" data-seclabel="Illustration / Graphic"><img src="flash/sheet-01.svg" alt="Flash Sheet" loading="lazy"><div class="ov"><div class="ov-num">031</div><div class="ov-sec">Illustration / Graphic</div></div></div>
-<div class="wi fx-sheet" data-section="illustration" data-client="ja-studio" data-title="Flash Sheet" data-category="Illustration" data-seclabel="Illustration / Graphic"><img src="flash/sheet-02.svg" alt="Flash Sheet" loading="lazy"><div class="ov"><div class="ov-num">032</div><div class="ov-sec">Illustration / Graphic</div></div></div>
-<div class="wi fx-sheet" data-section="illustration" data-client="ja-studio" data-title="Flash Sheet" data-category="Illustration" data-seclabel="Illustration / Graphic"><img src="flash/sheet-03.svg" alt="Flash Sheet" loading="lazy"><div class="ov"><div class="ov-num">033</div><div class="ov-sec">Illustration / Graphic</div></div></div>
-<div class="wi fx-sheet" data-section="illustration" data-client="ja-studio" data-title="Flash Sheet" data-category="Illustration" data-seclabel="Illustration / Graphic"><img src="flash/sheet-04.svg" alt="Flash Sheet" loading="lazy"><div class="ov"><div class="ov-num">034</div><div class="ov-sec">Illustration / Graphic</div></div></div>
-<div class="wi fx-sheet" data-section="illustration" data-client="ja-studio" data-title="Flash Sheet" data-category="Illustration" data-seclabel="Illustration / Graphic"><img src="flash/sheet-05.svg" alt="Flash Sheet" loading="lazy"><div class="ov"><div class="ov-num">035</div><div class="ov-sec">Illustration / Graphic</div></div></div>
-<div class="wi fx-sheet" data-section="illustration" data-client="ja-studio" data-title="Flash Sheet" data-category="Illustration" data-seclabel="Illustration / Graphic"><img src="flash/sheet-06.svg" alt="Flash Sheet" loading="lazy"><div class="ov"><div class="ov-num">036</div><div class="ov-sec">Illustration / Graphic</div></div></div>
-<div class="wi fx-sheet" data-section="illustration" data-client="ja-studio" data-title="Flash Sheet" data-category="Illustration" data-seclabel="Illustration / Graphic"><img src="flash/sheet-07.svg" alt="Flash Sheet" loading="lazy"><div class="ov"><div class="ov-num">037</div><div class="ov-sec">Illustration / Graphic</div></div></div>
-<div class="wi fx-sheet" data-section="illustration" data-client="ja-studio" data-title="Flash Sheet" data-category="Illustration" data-seclabel="Illustration / Graphic"><img src="flash/sheet-08.svg" alt="Flash Sheet" loading="lazy"><div class="ov"><div class="ov-num">038</div><div class="ov-sec">Illustration / Graphic</div></div></div>
-<div class="wi fx-sheet" data-section="illustration" data-client="ja-studio" data-title="Flash Sheet" data-category="Illustration" data-seclabel="Illustration / Graphic"><img src="flash/sheet-09.svg" alt="Flash Sheet" loading="lazy"><div class="ov"><div class="ov-num">039</div><div class="ov-sec">Illustration / Graphic</div></div></div>
-<div class="wi" data-section="illustration" data-client="david-brown" data-title="Illustration" data-category="Archive" data-seclabel="Illustration / Graphic"><img src="sq-images/IMG_3259.jpg" alt="Illustration" loading="lazy"><div class="ov"><div class="ov-num">040</div><div class="ov-sec">Illustration / Graphic</div></div></div>
-<div class="wi" data-section="illustration" data-client="ja-studio" data-title="Faces" data-category="Illustration" data-seclabel="Illustration / Graphic"><img src="Illustration/faces_web-15.png" alt="Faces" loading="lazy"><div class="ov"><div class="ov-num">041</div><div class="ov-sec">Illustration / Graphic</div></div></div>
-<div class="wi" data-section="illustration" data-client="ja-studio" data-title="Graphic Work" data-category="2026" data-seclabel="Illustration / Graphic"><img src="sq-images/Screenshot-2026-02-16-at-9.05.34-PM.png" alt="Graphic Work" loading="lazy"><div class="ov"><div class="ov-num">042</div><div class="ov-sec">Illustration / Graphic</div></div></div>
-<div class="wi" data-section="illustration" data-client="rocket-ramps" data-title="Illustration" data-category="2025" data-seclabel="Illustration / Graphic"><img src="sq-images/Screenshot-2025-05-26-at-12.23.20-PM.jpg" alt="Illustration" loading="lazy"><div class="ov"><div class="ov-num">043</div><div class="ov-sec">Illustration / Graphic</div></div></div>
-<div class="wi" data-section="illustration" data-client="ja-studio" data-title="Illustration" data-category="2026" data-seclabel="Illustration / Graphic"><img src="sq-images/Screenshot-2026-02-17-at-9.46.48-AM.jpg" alt="Illustration" loading="lazy"><div class="ov"><div class="ov-num">044</div><div class="ov-sec">Illustration / Graphic</div></div></div>
-<div class="wi" data-section="illustration" data-client="ja-studio" data-title="Petroglyphs" data-category="Illustration" data-seclabel="Illustration / Graphic"><img src="sq-images/Screenshot-2026-02-17-at-2.38.29-PM.jpg" alt="Petroglyphs" loading="lazy"><div class="ov"><div class="ov-num">045</div><div class="ov-sec">Illustration / Graphic</div></div></div>
-<div class="wi" data-section="illustration" data-client="ja-studio" data-title="Print Work" data-category="2023" data-seclabel="Illustration / Graphic"><img src="sq-images/Screen-Shot-2023-10-09-at-2.06.17-PM.png" alt="Print Work" loading="lazy"><div class="ov"><div class="ov-num">046</div><div class="ov-sec">Illustration / Graphic</div></div></div>
-<div class="wi" data-section="illustration" data-client="ja-studio" data-title="Flash Sheets" data-category="Illustration" data-seclabel="Illustration / Graphic"><img src="sq-images/Flash-sheet-001.jpg" alt="Flash Sheets" loading="lazy"><div class="ov"><div class="ov-num">047</div><div class="ov-sec">Illustration / Graphic</div></div></div>
-<div class="wi" data-section="illustration" data-client="ja-studio" data-title="Rocket Ramps" data-category="Print" data-seclabel="Illustration / Graphic"><img src="sq-images/Screenshot-2026-02-17-at-8.28.24-PM.jpg" alt="Rocket Ramps" loading="lazy"><div class="ov"><div class="ov-num">048</div><div class="ov-sec">Illustration / Graphic</div></div></div>
-<div class="wi" data-section="illustration" data-client="ja-studio" data-title="Archive" data-category="Illustration" data-seclabel="Illustration / Graphic"><img src="sq-images/IMG_5919.jpg" alt="Archive" loading="lazy"><div class="ov"><div class="ov-num">049</div><div class="ov-sec">Illustration / Graphic</div></div></div>
-<div class="wi" data-section="illustration" data-client="peyote-bird" data-title="Graphic Work" data-category="2026" data-seclabel="Illustration / Graphic"><img src="sq-images/Screenshot-2026-02-15-at-8.30.02-PM.png" alt="Graphic Work" loading="lazy"><div class="ov"><div class="ov-num">050</div><div class="ov-sec">Illustration / Graphic</div></div></div>
-<div class="wi" data-section="illustration" data-client="ja-studio" data-title="Petroglyphs" data-category="Illustration" data-seclabel="Illustration / Graphic"><img src="sq-images/Screenshot-2026-02-17-at-2.27.50-PM.jpg" alt="Petroglyphs" loading="lazy"><div class="ov"><div class="ov-num">051</div><div class="ov-sec">Illustration / Graphic</div></div></div>
-<div class="wi" data-section="illustration" data-client="ja-studio" data-title="Artwork" data-category="2026" data-seclabel="Illustration / Graphic"><img src="sq-images/Jack-27s-Artwork_20260216_0002.jpg" alt="Artwork" loading="lazy"><div class="ov"><div class="ov-num">052</div><div class="ov-sec">Illustration / Graphic</div></div></div>
-<div class="wi" data-section="illustration" data-client="ja-studio" data-title="Graphic Work" data-category="2026" data-seclabel="Illustration / Graphic"><img src="sq-images/Screenshot-2026-02-16-at-11.56.18-AM.jpg" alt="Graphic Work" loading="lazy"><div class="ov"><div class="ov-num">053</div><div class="ov-sec">Illustration / Graphic</div></div></div>
-<div class="wi" data-section="illustration" data-client="ja-studio" data-title="Faces" data-category="Illustration, 2026" data-seclabel="Illustration / Graphic"><img src="Illustration/faces_web-16b.jpg" alt="Faces" loading="lazy"><div class="ov"><div class="ov-num">054</div><div class="ov-sec">Illustration / Graphic</div></div></div>
-<div class="wi" data-section="illustration" data-client="ja-studio" data-title="Print" data-category="Archive" data-seclabel="Illustration / Graphic"><img src="sq-images/02-copy.jpg" alt="Print" loading="lazy"><div class="ov"><div class="ov-num">055</div><div class="ov-sec">Illustration / Graphic</div></div></div>
-<div class="wi" data-section="illustration" data-client="ja-studio" data-title="Rocket Ramps" data-category="Print" data-seclabel="Illustration / Graphic"><img src="sq-images/Screenshot-2026-02-17-at-8.27.14-PM.jpg" alt="Rocket Ramps" loading="lazy"><div class="ov"><div class="ov-num">056</div><div class="ov-sec">Illustration / Graphic</div></div></div>
-<div class="wi" data-section="illustration" data-client="ja-studio" data-title="Illustration" data-category="2026" data-seclabel="Illustration / Graphic"><img src="sq-images/illust-screenshot-2026-02-16-at-9.05.23-pm.jpg" alt="Illustration" loading="lazy"><div class="ov"><div class="ov-num">057</div><div class="ov-sec">Illustration / Graphic</div></div></div>
-<div class="wi" data-section="illustration" data-client="ja-studio" data-title="Petroglyphs" data-category="Illustration" data-seclabel="Illustration / Graphic"><img src="sq-images/Screenshot-2026-02-17-at-2.27.41-PM.jpg" alt="Petroglyphs" loading="lazy"><div class="ov"><div class="ov-num">058</div><div class="ov-sec">Illustration / Graphic</div></div></div>
-<div class="wi" data-section="illustration" data-client="ja-studio" data-title="Faces" data-category="Illustration" data-seclabel="Illustration / Graphic"><img src="Illustration/faces_web-13.png" alt="Faces" loading="lazy"><div class="ov"><div class="ov-num">059</div><div class="ov-sec">Illustration / Graphic</div></div></div>
+<div class="wi" data-section="illustration" data-client="david-brown" data-title="Illustration" data-category="Archive" data-seclabel="Illustration / Graphic"><img src="sq-images/IMG_3259.jpg" alt="Illustration" loading="lazy"><div class="ov"><div class="ov-num">031</div><div class="ov-sec">Illustration / Graphic</div></div></div>
+<div class="wi" data-section="illustration" data-client="ja-studio" data-title="Faces" data-category="Illustration" data-seclabel="Illustration / Graphic"><img src="Illustration/faces_web-15.png" alt="Faces" loading="lazy"><div class="ov"><div class="ov-num">032</div><div class="ov-sec">Illustration / Graphic</div></div></div>
+<div class="wi" data-section="illustration" data-client="ja-studio" data-title="Graphic Work" data-category="2026" data-seclabel="Illustration / Graphic"><img src="sq-images/Screenshot-2026-02-16-at-9.05.34-PM.png" alt="Graphic Work" loading="lazy"><div class="ov"><div class="ov-num">033</div><div class="ov-sec">Illustration / Graphic</div></div></div>
+<div class="wi" data-section="illustration" data-client="rocket-ramps" data-title="Illustration" data-category="2025" data-seclabel="Illustration / Graphic"><img src="sq-images/Screenshot-2025-05-26-at-12.23.20-PM.jpg" alt="Illustration" loading="lazy"><div class="ov"><div class="ov-num">034</div><div class="ov-sec">Illustration / Graphic</div></div></div>
+<div class="wi" data-section="illustration" data-client="ja-studio" data-title="Illustration" data-category="2026" data-seclabel="Illustration / Graphic"><img src="sq-images/Screenshot-2026-02-17-at-9.46.48-AM.jpg" alt="Illustration" loading="lazy"><div class="ov"><div class="ov-num">035</div><div class="ov-sec">Illustration / Graphic</div></div></div>
+<div class="wi" data-section="illustration" data-client="ja-studio" data-title="Petroglyphs" data-category="Illustration" data-seclabel="Illustration / Graphic"><img src="sq-images/Screenshot-2026-02-17-at-2.38.29-PM.jpg" alt="Petroglyphs" loading="lazy"><div class="ov"><div class="ov-num">036</div><div class="ov-sec">Illustration / Graphic</div></div></div>
+<div class="wi" data-section="illustration" data-client="ja-studio" data-title="Print Work" data-category="2023" data-seclabel="Illustration / Graphic"><img src="sq-images/Screen-Shot-2023-10-09-at-2.06.17-PM.png" alt="Print Work" loading="lazy"><div class="ov"><div class="ov-num">037</div><div class="ov-sec">Illustration / Graphic</div></div></div>
+<div class="wi" data-section="illustration" data-client="ja-studio" data-title="Flash Sheets" data-category="Illustration" data-seclabel="Illustration / Graphic"><img src="sq-images/Flash-sheet-001.jpg" alt="Flash Sheets" loading="lazy"><div class="ov"><div class="ov-num">038</div><div class="ov-sec">Illustration / Graphic</div></div></div>
+<div class="wi" data-section="illustration" data-client="ja-studio" data-title="Rocket Ramps" data-category="Print" data-seclabel="Illustration / Graphic"><img src="sq-images/Screenshot-2026-02-17-at-8.28.24-PM.jpg" alt="Rocket Ramps" loading="lazy"><div class="ov"><div class="ov-num">039</div><div class="ov-sec">Illustration / Graphic</div></div></div>
+<div class="wi" data-section="illustration" data-client="ja-studio" data-title="Archive" data-category="Illustration" data-seclabel="Illustration / Graphic"><img src="sq-images/IMG_5919.jpg" alt="Archive" loading="lazy"><div class="ov"><div class="ov-num">040</div><div class="ov-sec">Illustration / Graphic</div></div></div>
+<div class="wi" data-section="illustration" data-client="peyote-bird" data-title="Graphic Work" data-category="2026" data-seclabel="Illustration / Graphic"><img src="sq-images/Screenshot-2026-02-15-at-8.30.02-PM.png" alt="Graphic Work" loading="lazy"><div class="ov"><div class="ov-num">041</div><div class="ov-sec">Illustration / Graphic</div></div></div>
+<div class="wi" data-section="illustration" data-client="ja-studio" data-title="Petroglyphs" data-category="Illustration" data-seclabel="Illustration / Graphic"><img src="sq-images/Screenshot-2026-02-17-at-2.27.50-PM.jpg" alt="Petroglyphs" loading="lazy"><div class="ov"><div class="ov-num">042</div><div class="ov-sec">Illustration / Graphic</div></div></div>
+<div class="wi" data-section="illustration" data-client="ja-studio" data-title="Artwork" data-category="2026" data-seclabel="Illustration / Graphic"><img src="sq-images/Jack-27s-Artwork_20260216_0002.jpg" alt="Artwork" loading="lazy"><div class="ov"><div class="ov-num">043</div><div class="ov-sec">Illustration / Graphic</div></div></div>
+<div class="wi" data-section="illustration" data-client="ja-studio" data-title="Graphic Work" data-category="2026" data-seclabel="Illustration / Graphic"><img src="sq-images/Screenshot-2026-02-16-at-11.56.18-AM.jpg" alt="Graphic Work" loading="lazy"><div class="ov"><div class="ov-num">044</div><div class="ov-sec">Illustration / Graphic</div></div></div>
+<div class="wi" data-section="illustration" data-client="ja-studio" data-title="Faces" data-category="Illustration, 2026" data-seclabel="Illustration / Graphic"><img src="Illustration/faces_web-16b.jpg" alt="Faces" loading="lazy"><div class="ov"><div class="ov-num">045</div><div class="ov-sec">Illustration / Graphic</div></div></div>
+<div class="wi" data-section="illustration" data-client="ja-studio" data-title="Print" data-category="Archive" data-seclabel="Illustration / Graphic"><img src="sq-images/02-copy.jpg" alt="Print" loading="lazy"><div class="ov"><div class="ov-num">046</div><div class="ov-sec">Illustration / Graphic</div></div></div>
+<div class="wi" data-section="illustration" data-client="ja-studio" data-title="Rocket Ramps" data-category="Print" data-seclabel="Illustration / Graphic"><img src="sq-images/Screenshot-2026-02-17-at-8.27.14-PM.jpg" alt="Rocket Ramps" loading="lazy"><div class="ov"><div class="ov-num">047</div><div class="ov-sec">Illustration / Graphic</div></div></div>
+<div class="wi" data-section="illustration" data-client="ja-studio" data-title="Illustration" data-category="2026" data-seclabel="Illustration / Graphic"><img src="sq-images/illust-screenshot-2026-02-16-at-9.05.23-pm.jpg" alt="Illustration" loading="lazy"><div class="ov"><div class="ov-num">048</div><div class="ov-sec">Illustration / Graphic</div></div></div>
+<div class="wi" data-section="illustration" data-client="ja-studio" data-title="Petroglyphs" data-category="Illustration" data-seclabel="Illustration / Graphic"><img src="sq-images/Screenshot-2026-02-17-at-2.27.41-PM.jpg" alt="Petroglyphs" loading="lazy"><div class="ov"><div class="ov-num">049</div><div class="ov-sec">Illustration / Graphic</div></div></div>
+<div class="wi" data-section="illustration" data-client="ja-studio" data-title="Faces" data-category="Illustration" data-seclabel="Illustration / Graphic"><img src="Illustration/faces_web-13.png" alt="Faces" loading="lazy"><div class="ov"><div class="ov-num">050</div><div class="ov-sec">Illustration / Graphic</div></div></div>
 </div>
+</section></div>
+
+<div class="sw"><section class="sc2" id="flash">
+  <div class="sr"></div>
+  <div class="shrow">
+    <div class="sh swp"><span class="sn">03</span><span class="sdv">&#8212;</span><h2 class="st">Flash Sheets</h2></div>
+    <p class="sdesc swp-d">The flash sheets serve as an ever-growing archive,<br>the result of revisiting a lifetime of drawings and doodles<br>and assembling them into a digital collection.</p>
+  </div>
+  <div class="gf fi">
+<div class="wi fx-sheet" data-section="flash" data-client="ja-studio" data-title="Flash Sheet" data-category="Illustration" data-seclabel="Flash Sheets"><img src="flash/sheet-01.svg" alt="Flash Sheet" loading="lazy"><div class="ov"><div class="ov-num">001</div><div class="ov-sec">Flash Sheets</div></div></div>
+<div class="wi fx-sheet" data-section="flash" data-client="ja-studio" data-title="Flash Sheet" data-category="Illustration" data-seclabel="Flash Sheets"><img src="flash/sheet-02.svg" alt="Flash Sheet" loading="lazy"><div class="ov"><div class="ov-num">002</div><div class="ov-sec">Flash Sheets</div></div></div>
+<div class="wi fx-sheet" data-section="flash" data-client="ja-studio" data-title="Flash Sheet" data-category="Illustration" data-seclabel="Flash Sheets"><img src="flash/sheet-03.svg" alt="Flash Sheet" loading="lazy"><div class="ov"><div class="ov-num">003</div><div class="ov-sec">Flash Sheets</div></div></div>
+<div class="wi fx-sheet" data-section="flash" data-client="ja-studio" data-title="Flash Sheet" data-category="Illustration" data-seclabel="Flash Sheets"><img src="flash/sheet-04.svg" alt="Flash Sheet" loading="lazy"><div class="ov"><div class="ov-num">004</div><div class="ov-sec">Flash Sheets</div></div></div>
+<div class="wi fx-sheet" data-section="flash" data-client="ja-studio" data-title="Flash Sheet" data-category="Illustration" data-seclabel="Flash Sheets"><img src="flash/sheet-05.svg" alt="Flash Sheet" loading="lazy"><div class="ov"><div class="ov-num">005</div><div class="ov-sec">Flash Sheets</div></div></div>
+<div class="wi fx-sheet" data-section="flash" data-client="ja-studio" data-title="Flash Sheet" data-category="Illustration" data-seclabel="Flash Sheets"><img src="flash/sheet-06.svg" alt="Flash Sheet" loading="lazy"><div class="ov"><div class="ov-num">006</div><div class="ov-sec">Flash Sheets</div></div></div>
+<div class="wi fx-sheet" data-section="flash" data-client="ja-studio" data-title="Flash Sheet" data-category="Illustration" data-seclabel="Flash Sheets"><img src="flash/sheet-07.svg" alt="Flash Sheet" loading="lazy"><div class="ov"><div class="ov-num">007</div><div class="ov-sec">Flash Sheets</div></div></div>
+<div class="wi fx-sheet" data-section="flash" data-client="ja-studio" data-title="Flash Sheet" data-category="Illustration" data-seclabel="Flash Sheets"><img src="flash/sheet-08.svg" alt="Flash Sheet" loading="lazy"><div class="ov"><div class="ov-num">008</div><div class="ov-sec">Flash Sheets</div></div></div>
+<div class="wi fx-sheet" data-section="flash" data-client="ja-studio" data-title="Flash Sheet" data-category="Illustration" data-seclabel="Flash Sheets"><img src="flash/sheet-09.svg" alt="Flash Sheet" loading="lazy"><div class="ov"><div class="ov-num">009</div><div class="ov-sec">Flash Sheets</div></div></div>
+  </div>
 </section></div>
 
 <div class="sw"><section class="sc2" id="typelayout">
   <div class="sr"></div>
   <div class="shrow">
-    <div class="sh swp"><span class="sn">03</span><span class="sdv">&#8212;</span><h2 class="st">Type / Layout</h2></div>
+    <div class="sh swp"><span class="sn">04</span><span class="sdv">&#8212;</span><h2 class="st">Type / Layout</h2></div>
     <p class="sdesc swp-d">Typography, editorial layout, email campaigns, and print design for brands across the Southwest and beyond.</p>
   </div>
   <div class="gm fi"><div class="wi" data-section="typelayout" data-client="peyote-bird" data-title="Peyote Bird Trade Shows" data-category="Print Design" data-seclabel="Type / Layout"><img src="sq-images/typo-TS-web-08.jpg" alt="Peyote Bird Trade Shows" loading="lazy"><div class="ov"><div class="ov-num">001</div><div class="ov-sec">Type / Layout</div></div></div>
@@ -525,7 +541,7 @@ body.img-hover #cur{filter:invert(1)}
 <div class="sw alt"><section class="sc2" id="craft">
   <div class="sr"></div>
   <div class="shrow">
-    <div class="sh swp"><span class="sn">04</span><span class="sdv">&#8212;</span><h2 class="st">Fabrication</h2></div>
+    <div class="sh swp"><span class="sn">05</span><span class="sdv">&#8212;</span><h2 class="st">Fabrication</h2></div>
     <p class="sdesc swp-d">Objects, signage, and various sculptural works<br>made by hand in Santa Fe.<br>Working primarily with found wood and stones,<br>each piece is crafted start to finish<br>in the studio.</p>
   </div>
   <div class="gm fi"><div class="wi" data-section="craft" data-client="signage" data-title="Woodwork" data-category="Handcraft" data-seclabel="Fabrication"><img src="sq-images/75840073777__62D7BF84-1C94-4FE9-9ACB-B2D040AF928E.jpeg" alt="Woodwork" loading="lazy"><div class="ov"><div class="ov-num">001</div><div class="ov-sec">Fabrication</div></div></div>
@@ -558,7 +574,7 @@ body.img-hover #cur{filter:invert(1)}
 <div class="sw"><section class="sc2" id="styling">
   <div class="sr"></div>
   <div class="shrow">
-    <div class="sh swp"><span class="sn">05</span><span class="sdv">&#8212;</span><h2 class="st">Creative Direction</h2></div>
+    <div class="sh swp"><span class="sn">06</span><span class="sdv">&#8212;</span><h2 class="st">Creative Direction</h2></div>
     <p class="sdesc swp-d">Styling, producing, sourcing<br>for fashion, editorial, and brand campaigns.</p>
   </div>
   <div class="gm fi"><div class="wi" data-section="styling" data-client="peyote-bird" data-title="Summer &#39;22" data-category="Editorial" data-seclabel="Creative Direction"><img src="sq-images/2022_07_25_peyote_bird_2111-16.jpeg" alt="Summer &#39;22" loading="lazy"><div class="ov"><div class="ov-num">001</div><div class="ov-sec">Creative Direction</div></div></div>
@@ -621,7 +637,7 @@ body.img-hover #cur{filter:invert(1)}
 <div class="sw alt"><section class="sc2" id="garden">
   <div class="sr"></div>
   <div class="shrow">
-    <div class="sh swp"><span class="sn">06</span><span class="sdv">&#8212;</span><h2 class="st">Jack&#39;s Garden</h2></div>
+    <div class="sh swp"><span class="sn">07</span><span class="sdv">&#8212;</span><h2 class="st">Jack&#39;s Garden</h2></div>
     <p class="sdesc swp-d">An ever evolving meditation on life and growth<br>through the lens of a simple backyard garden<br>in Santa Fe &#8212; flowers, vegetables, native species,<br>insects, dirt, water and patience all working together<br>in perfect harmony. This one remains a lifelong<br>case study and the archive serves as a helpful<br>reminder of seasons past.</p>
   </div>
   <div class="gm fi"><div class="wi" data-section="garden" data-title="Garden" data-category="2022" data-seclabel="Jack's Garden"><img src="sq-images/2022_06_30_jacks_garden_santa_fe_9099-4.jpg" alt="Garden" loading="lazy"><div class="ov"><div class="ov-num">001</div><div class="ov-sec">Jack&#39;s Garden</div></div></div>
@@ -661,7 +677,7 @@ body.img-hover #cur{filter:invert(1)}
 <div class="sw"><section class="sc2" id="production">
   <div class="sr"></div>
   <div class="shrow">
-    <div class="sh swp"><span class="sn">07</span><span class="sdv">&#8212;</span><h2 class="st">Production</h2></div>
+    <div class="sh swp"><span class="sn">08</span><span class="sdv">&#8212;</span><h2 class="st">Production</h2></div>
     <p class="sdesc swp-d">Film production for brand and editorial clients.<br>Highlighted below is Cheyenne Turquoise,<br>a documentary short produced for Peyote Bird<br>and Sundance &#8212; shot in Nevada, 2019.</p>
   </div>
   <div class="gp fi">
