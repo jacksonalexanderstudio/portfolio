@@ -241,11 +241,22 @@ button,input{font:inherit;color:inherit}
 @media (prefers-reduced-motion:reduce){.fig.play *{animation:none!important;stroke-dasharray:none!important;stroke-dashoffset:0!important}}
 
 
+/* ---------- bibliography ---------- */
+.bib{margin-top:calc(var(--u)*14);border-top:1px solid var(--rule);padding-top:calc(var(--u)*4);font-size:11px;line-height:16px;color:var(--stone-70);max-width:64em}
+.bib h4{margin:0 0 calc(var(--u)*2);font-size:11px;line-height:16px;font-weight:500;color:var(--ink)}
+.bib p{margin:0 0 calc(var(--u)*1)}
+.bib a{color:var(--ink);text-decoration:none}
+.bib a:hover{text-decoration:underline}
+.bib span{color:var(--stone-70)}
+
 /* ---------- empty ---------- */
 .empty{display:none;padding-top:calc(var(--u)*4);border-top:1px solid var(--rule);max-width:36em}
 .empty.on{display:block}
 .empty p{margin:0}
 .empty p+p{margin-top:calc(var(--u)*2);color:var(--stone-70);font-size:13px;line-height:20px}
+
+/* ---------- colophon ---------- */
+.colophon{margin:calc(var(--u)*20) 0 0;font-size:11px;line-height:16px;color:var(--stone-70);max-width:64em}
 
 /* ---------- responsive ---------- */
 @media (max-width:1400px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
@@ -297,112 +308,112 @@ button,input{font:inherit;color:inherit}
   <div class="grid"><article class="e" id="e01-01" data-cat="01">
   <div class="fig" title="Replay"><svg viewBox="0 0 120 80" aria-hidden="true"><rect x="34" y="-6" width="52" height="92" class="ctx" /><rect x="40" y="4" width="40" height="2" class="bar"/><rect x="40" y="10" width="40" height="2" class="bar"/><rect x="40" y="16" width="40" height="2" class="bar"/><rect x="40" y="22" width="40" height="2" class="bar"/><rect x="40" y="28" width="40" height="2" class="bar"/><rect x="40" y="34" width="40" height="2" class="bar"/><rect x="40" y="40" width="40" height="2" class="bar"/><rect x="40" y="46" width="40" height="2" class="bar"/><rect x="40" y="52" width="40" height="2" class="bar"/><rect x="40" y="58" width="40" height="2" class="bar"/><rect x="40" y="64" width="40" height="2" class="bar"/><rect x="40" y="70" width="40" height="2" class="bar"/><rect x="40" y="76" width="40" height="2" class="bar"/><rect x="40" y="82" width="25" height="2" class="bar"/><rect x="22" y="20" width="76" height="40" class="ln2" pathLength="1" /></svg></div>
   <h3>Viewport</h3>
-  <p class="def">The area of the page visible in the browser window at one moment. The page itself can be far taller.</p>
+  <p class="def">“In web browser terms, it refers to the part of the document being viewed in the browser window (or on-screen, if the document is being viewed on a mobile browser or a desktop browser in full-screen mode).”</p>
   <p class="also">also: window, screen</p>
   
 </article>
 <article class="e" id="e01-02" data-cat="01">
   <div class="fig" title="Replay"><svg viewBox="0 0 120 80" aria-hidden="true"><rect x="8" y="8" width="104" height="64" class="ln" /><rect x="30" y="16" width="60" height="48" class="ctx" /><rect x="34" y="22" width="52" height="2" class="bar"/><rect x="34" y="28" width="52" height="2" class="bar"/><rect x="34" y="34" width="52" height="2" class="bar"/><rect x="34" y="40" width="52" height="2" class="bar"/><rect x="34" y="46" width="52" height="2" class="bar"/><rect x="34" y="52" width="32" height="2" class="bar"/><line x1="30" y1="70" x2="90" y2="70" class="dim" pathLength="1"/><line x1="30" y1="67" x2="30" y2="73" class="dim" pathLength="1"/><line x1="90" y1="67" x2="90" y2="73" class="dim" pathLength="1"/></svg></div>
   <h3>Container</h3>
-  <p class="def">The centered column that holds content at a fixed maximum width, leaving the viewport’s sides empty on wide screens.</p>
+  <p class="def">The type area of the page: in Müller-Brockmann’s system, the field inside the margins that carries text and image. On screen, a centred column held to a maximum width so that measure and grid keep their proportions on wide displays.</p>
   <p class="also">also: wrapper, content column, max-width</p>
   
 </article>
 <article class="e" id="e01-03" data-cat="01">
   <div class="fig" title="Replay"><svg viewBox="0 0 120 80" aria-hidden="true"><rect x="8" y="8" width="104" height="64" class="ln" /><rect x="30" y="16" width="60" height="48" class="ctx" /><line x1="9" y1="40" x2="30" y2="40" class="dim" pathLength="1"/><line x1="9" y1="37" x2="9" y2="43" class="dim" pathLength="1"/><line x1="30" y1="37" x2="30" y2="43" class="dim" pathLength="1"/><line x1="90" y1="40" x2="111" y2="40" class="dim" pathLength="1"/><line x1="90" y1="37" x2="90" y2="43" class="dim" pathLength="1"/><line x1="111" y1="37" x2="111" y2="43" class="dim" pathLength="1"/></svg></div>
   <h3>Page margin</h3>
-  <p class="def">The space between the container’s edge and the viewport’s edge. At phone width it is the only thing keeping text off the glass.</p>
+  <p class="def">The unprinted space between the type area and the edge of the format. Müller-Brockmann and Bringhurst treat the margins as proportions of the page rather than leftovers: the margins fix the type area, and the type area fixes the columns.</p>
   <p class="also">also: outer margin, side gutter</p>
   
 </article>
 <article class="e" id="e01-04" data-cat="01">
   <div class="fig" title="Replay"><svg viewBox="0 0 120 80" aria-hidden="true"><rect x="8" y="8" width="104" height="64" class="ln" /><rect x="14" y="14" width="12.8" height="52" class="ctx" /><rect x="29.8" y="14" width="12.8" height="52" class="ctx" /><rect x="45.7" y="14" width="12.8" height="52" class="ctx" /><rect x="61.5" y="14" width="12.8" height="52" class="ctx" /><rect x="77.3" y="14" width="12.8" height="52" class="ctx" /><rect x="93.2" y="14" width="12.8" height="52" class="ctx" /><rect x="14" y="14" width="44.3" height="52" class="hi" pathLength="1" /></svg></div>
   <h3>Column grid</h3>
-  <p class="def">The division of the container into equal vertical columns with gutters between, which every element aligns to. Twelve columns divide evenly by 2, 3, 4 and 6.</p>
+  <p class="def">A system of vertical fields and gutters dividing the type area, to which every element on the page is aligned. Müller-Brockmann builds the grid from the leading of the body type, so that every field is a whole number of lines. “Like tables, grid layout enables an author to align elements into columns and rows.”</p>
   <p class="also">also: 12-column grid, grid system, columns</p>
   
 </article>
 <article class="e" id="e01-05" data-cat="01">
   <div class="fig" title="Replay"><svg viewBox="0 0 120 80" aria-hidden="true"><rect x="8" y="10" width="44" height="50" class="ctx" /><rect x="68" y="10" width="44" height="50" class="ctx" /><line x1="52" y1="35" x2="68" y2="35" class="dim" pathLength="1"/><line x1="52" y1="32" x2="52" y2="38" class="dim" pathLength="1"/><line x1="68" y1="32" x2="68" y2="38" class="dim" pathLength="1"/><line x1="52" y1="10" x2="52" y2="60" class="hdash" /><line x1="68" y1="10" x2="68" y2="60" class="hdash" /><text x="6" y="76" class="lbl" font-size="7.5" >gutter · 32px between columns</text></svg></div>
   <h3>Gutter</h3>
-  <p class="def">The fixed space between two columns of the grid. Content never sits in it.</p>
+  <p class="def">“Gutters or alleys are spacing between content tracks.”</p>
   <p class="also">also: column gap</p>
   
 </article>
 <article class="e" id="e01-06" data-cat="01">
   <div class="fig" title="Replay"><svg viewBox="0 0 120 80" aria-hidden="true"><rect x="12" y="16" width="13.5" height="48" class="ctx" /><rect x="28.5" y="16" width="13.5" height="48" class="ctx" /><rect x="45" y="16" width="13.5" height="48" class="ctx" /><rect x="61.5" y="16" width="13.5" height="48" class="ctx" /><rect x="78" y="16" width="13.5" height="48" class="ctx" /><rect x="94.5" y="16" width="13.5" height="48" class="ctx" /><rect x="28.5" y="26" width="63" height="28" class="hi" pathLength="1" /></svg></div>
   <h3>Span</h3>
-  <p class="def">The number of grid columns an element occupies. On twelve columns: halves are 6, thirds 4, quarters 3.</p>
+  <p class="def">“A grid column is a vertical track in a CSS grid layout, and is the space between two vertical grid lines.” A span is the number of such tracks an item occupies.</p>
   <p class="also">also: column span</p>
   
 </article>
 <article class="e" id="e01-07" data-cat="01">
   <div class="fig" title="Replay"><svg viewBox="0 0 120 80" aria-hidden="true"><rect x="12" y="12" width="96" height="14" class="ctx" /><rect x="12" y="33" width="96" height="14" class="hi" pathLength="1" /><rect x="12" y="54" width="96" height="14" class="ctx" /><line x1="116" y1="33" x2="116" y2="47" class="dim" pathLength="1"/><line x1="113" y1="33" x2="119" y2="33" class="dim" pathLength="1"/><line x1="113" y1="47" x2="119" y2="47" class="dim" pathLength="1"/></svg></div>
   <h3>Row</h3>
-  <p class="def">One horizontal band of the grid. Rows stack; the layout’s height is the sum of them.</p>
+  <p class="def">“A grid row is a horizontal track in a CSS grid layout, that is the space between two horizontal grid lines.”</p>
   <p class="also">also: band</p>
   
 </article>
 <article class="e" id="e01-08" data-cat="01">
   <div class="fig" title="Replay"><svg viewBox="0 0 120 80" aria-hidden="true"><rect x="8" y="8" width="104" height="64" class="ln" /><rect x="9" y="9" width="102" height="8" class="ctx2" /><rect x="9" y="17" width="102" height="16" class="ctx" /><rect x="9" y="33" width="102" height="22" class="hi" pathLength="1" /><rect x="9" y="55" width="102" height="16" class="ctx" /></svg></div>
   <h3>Section</h3>
-  <p class="def">A full-width horizontal region of the page with one purpose: hero, work grid, contact. Sections stack top to bottom.</p>
+  <p class="def">“The <section> HTML element represents a generic standalone section of a document, which doesn't have a more specific semantic element to represent it. Sections should always have a heading, with very few exceptions.”</p>
   <p class="also">also: band, block, strip</p>
   
 </article>
 <article class="e" id="e01-09" data-cat="01">
   <div class="fig" title="Replay"><svg viewBox="0 0 120 80" aria-hidden="true"><rect x="8" y="8" width="104" height="64" class="ln" /><rect x="9" y="9" width="102" height="8" class="ctx2" /><rect x="9" y="17" width="102" height="34" class="hi" pathLength="1" /><rect x="16" y="24" width="50" height="2" class="paper"/><rect x="16" y="30" width="50" height="2" class="paper"/><rect x="16" y="36" width="31" height="2" class="paper"/><rect x="16" y="56" width="88" height="2" class="bar"/><rect x="16" y="62" width="55" height="2" class="bar"/></svg></div>
   <h3>Hero</h3>
-  <p class="def">The first section, sized and typeset to carry the page’s thesis in one look.</p>
+  <p class="def">Nielsen Norman Group’s name for the large image or banner placed at the top of a page as the first thing a visitor sees, usually carrying the page’s main message.</p>
   <p class="also">also: opener, lead</p>
   
 </article>
 <article class="e" id="e01-10" data-cat="01">
   <div class="fig" title="Replay"><svg viewBox="0 0 120 80" aria-hidden="true"><rect x="8" y="8" width="104" height="64" class="ln" /><rect x="9" y="9" width="102" height="10" class="hi" pathLength="1" /><rect x="13" y="13" width="14" height="2" class="paper" /><rect x="80" y="13" width="6" height="2" class="paper" /><rect x="90" y="13" width="6" height="2" class="paper" /><rect x="100" y="13" width="6" height="2" class="paper" /><rect x="9" y="19" width="102" height="52" class="ctx" /></svg></div>
   <h3>Header</h3>
-  <p class="def">The strip across the top of every page carrying identity and primary navigation.</p>
+  <p class="def">“The <header> HTML element represents introductory content, typically a group of introductory or navigational aids. It may contain some heading elements but also a logo, a search form, an author name, and other elements.”</p>
   <p class="also">also: masthead, top bar, site header</p>
   
 </article>
 <article class="e" id="e01-11" data-cat="01">
   <div class="fig" title="Replay"><svg viewBox="0 0 120 80" aria-hidden="true"><rect x="8" y="8" width="104" height="64" class="ln" /><rect x="9" y="9" width="102" height="8" class="ctx2" /><rect x="80" y="12" width="6" height="2" class="hi" pathLength="1" /><rect x="90" y="12" width="6" height="2" class="hi" pathLength="1" /><rect x="100" y="12" width="6" height="2" class="hi" pathLength="1" /><rect x="9" y="17" width="102" height="54" class="ctx" /></svg></div>
   <h3>Nav</h3>
-  <p class="def">The set of links that move between pages or sections. May live in the header, a sidebar, or the footer.</p>
+  <p class="def">“The <nav> HTML element represents a section of a page whose purpose is to provide navigation links, either within the current document or to other documents. Common examples of navigation sections are menus, tables of contents, and indexes.”</p>
   <p class="also">also: navigation, menu</p>
   
 </article>
 <article class="e" id="e01-12" data-cat="01">
   <div class="fig" title="Replay"><svg viewBox="0 0 120 80" aria-hidden="true"><rect x="8" y="8" width="104" height="64" class="ln" /><rect x="9" y="9" width="28" height="62" class="hi" pathLength="1" /><rect x="13" y="15" width="16" height="2" class="paper"/><rect x="13" y="21" width="16" height="2" class="paper"/><rect x="13" y="27" width="16" height="2" class="paper"/><rect x="13" y="33" width="16" height="2" class="paper"/><rect x="13" y="39" width="10" height="2" class="paper"/><rect x="44" y="16" width="60" height="2" class="bar"/><rect x="44" y="22" width="60" height="2" class="bar"/><rect x="44" y="28" width="60" height="2" class="bar"/><rect x="44" y="34" width="60" height="2" class="bar"/><rect x="44" y="40" width="60" height="2" class="bar"/><rect x="44" y="46" width="60" height="2" class="bar"/><rect x="44" y="52" width="37" height="2" class="bar"/></svg></div>
   <h3>Sidebar</h3>
-  <p class="def">A narrow vertical column beside the main content, holding navigation, an index, or notes.</p>
+  <p class="def">“This example uses <aside> to mark up a paragraph in an article.” The sidebar is the column beside the main content that carries navigation, an index, or related material.</p>
   <p class="also">also: rail, side column</p>
   
 </article>
 <article class="e" id="e01-13" data-cat="01">
   <div class="fig" title="Replay"><svg viewBox="0 0 120 80" aria-hidden="true"><rect x="8" y="8" width="104" height="64" class="ln" /><rect x="9" y="9" width="102" height="8" class="ctx2" /><rect x="9" y="17" width="102" height="42" class="ctx" /><rect x="9" y="59" width="102" height="12" class="hi" pathLength="1" /><rect x="13" y="64" width="20" height="2" class="paper" /><rect x="90" y="64" width="16" height="2" class="paper" /></svg></div>
   <h3>Footer</h3>
-  <p class="def">The strip at the bottom of every page: contact, colophon, secondary links.</p>
+  <p class="def">“The <footer> HTML element represents a footer for its nearest ancestor sectioning content or sectioning root element. A <footer> typically contains information about the author of the section, copyright data or links to related documents.”</p>
   <p class="also">also: page foot</p>
   
 </article>
 <article class="e" id="e01-14" data-cat="01">
   <div class="fig" title="Replay"><svg viewBox="0 0 120 80" aria-hidden="true"><rect x="14" y="16" width="56" height="2" class="bar"/><rect x="14" y="22" width="56" height="2" class="bar"/><rect x="14" y="28" width="56" height="2" class="bar"/><rect x="14" y="34" width="56" height="2" class="bar"/><rect x="14" y="40" width="56" height="2" class="bar"/><rect x="14" y="46" width="56" height="2" class="bar"/><rect x="14" y="52" width="56" height="2" class="bar"/><rect x="14" y="58" width="56" height="2" class="bar"/><rect x="14" y="64" width="35" height="2" class="bar"/><rect x="80" y="22" width="28" height="24" class="ctx" /><rect x="84" y="27" width="20" height="2" class="barhi"/><rect x="84" y="32" width="20" height="2" class="barhi"/><rect x="84" y="37" width="12" height="2" class="barhi"/></svg></div>
   <h3>Aside</h3>
-  <p class="def">A block of related but secondary content placed beside the main flow, often in the margin.</p>
+  <p class="def">“The <aside> HTML element represents a portion of a document whose content is only indirectly related to the document's main content.”</p>
   <p class="also">also: sidenote, marginal note, callout</p>
   
 </article>
 <article class="e" id="e01-15" data-cat="01">
   <div class="fig" title="Replay"><svg viewBox="0 0 120 80" aria-hidden="true"><rect x="30" y="-6" width="60" height="92" class="ctx" /><rect x="36" y="4" width="48" height="2" class="bar"/><rect x="36" y="10" width="48" height="2" class="bar"/><rect x="36" y="16" width="48" height="2" class="bar"/><rect x="36" y="22" width="48" height="2" class="bar"/><rect x="36" y="28" width="48" height="2" class="bar"/><rect x="36" y="34" width="30" height="2" class="bar"/><rect x="36" y="40" width="22" height="14" class="ctx2" /><rect x="62" y="40" width="22" height="14" class="ctx2" /><rect x="36" y="58" width="22" height="14" class="ctx2" /><rect x="62" y="58" width="22" height="14" class="ctx2" /><line x1="12" y1="46" x2="108" y2="46" class="dash" /><text x="96" y="43" class="lbl" font-size="8" >fold</text></svg></div>
   <h3>Fold</h3>
-  <p class="def">The bottom edge of the first viewport. What sits above it is seen without scrolling.</p>
+  <p class="def">Nielsen’s term, borrowed from the newspaper fold, for the bottom edge of the first screen: what sits above it is seen without scrolling, and his eyetracking studies found that readers spend most of their viewing time there.</p>
   <p class="also">also: above the fold, below the fold</p>
   
 </article>
 <article class="e" id="e01-16" data-cat="01">
   <div class="fig" title="Replay"><svg viewBox="0 0 120 80" aria-hidden="true"><rect x="8" y="8" width="104" height="64" class="ln" /><rect x="30" y="14" width="60" height="12" class="ctx" /><rect x="9" y="30" width="102" height="24" class="hi" pathLength="1" /><rect x="30" y="58" width="60" height="10" class="ctx" /></svg></div>
   <h3>Full-bleed</h3>
-  <p class="def">An element that runs to the viewport edges, ignoring the container’s margins.</p>
+  <p class="def">Bleed: a printed image that runs past the trim edge of the page so that no margin shows after cutting. On screen, an element that runs to the viewport edges, ignoring the container.</p>
   <p class="also">also: edge-to-edge, bleed</p>
   
 </article>
@@ -423,21 +434,21 @@ button,input{font:inherit;color:inherit}
 <article class="e" id="e01-19" data-cat="01">
   <div class="fig" title="Replay"><svg viewBox="0 0 120 80" aria-hidden="true"><rect x="20" y="10" width="64" height="44" class="ctx" /><path d="M20,10 L84,54 M84,10 L20,54" class="hair"/><rect x="48" y="36" width="56" height="30" class="hi" pathLength="1" /><rect x="54" y="42" width="40" height="2" class="paper"/><rect x="54" y="48" width="40" height="2" class="paper"/><rect x="54" y="54" width="25" height="2" class="paper"/></svg></div>
   <h3>Overlap</h3>
-  <p class="def">Elements sharing the same space, ordered front to back. Order is set by z-index inside a stacking context.</p>
+  <p class="def">“The z-index CSS property sets the z-order of a positioned element and its descendants or flex and grid items. Overlapping elements with a larger z-index cover those with a smaller one.”</p>
   <p class="also">also: layering, stacking, z-order</p>
   
 </article>
 <article class="e" id="e01-20" data-cat="01">
   <div class="fig" title="Replay"><svg viewBox="0 0 120 80" aria-hidden="true"><rect x="2" y="6" width="52" height="54" class="hair" /><rect x="6" y="10" width="44" height="6" class="ctx2" /><rect x="6" y="20" width="44" height="2" class="bar"/><rect x="6" y="26" width="44" height="2" class="bar"/><rect x="6" y="32" width="44" height="2" class="bar"/><rect x="6" y="38" width="44" height="2" class="bar"/><rect x="6" y="44" width="44" height="2" class="bar"/><rect x="6" y="50" width="27" height="2" class="bar"/><line x1="56" y1="33" x2="64" y2="33" class="dim" pathLength="1"/><path d="M64,33 L60.5,31.1 M64,33 L60.5,34.9" class="dim" pathLength="1"/><rect x="66" y="6" width="52" height="54" class="hair" /><g data-a="scroll"><rect x="70" y="4" width="44" height="2" class="bar"/><rect x="70" y="10" width="44" height="2" class="bar"/><rect x="70" y="16" width="44" height="2" class="bar"/><rect x="70" y="22" width="44" height="2" class="bar"/><rect x="70" y="28" width="44" height="2" class="bar"/><rect x="70" y="34" width="44" height="2" class="bar"/><rect x="70" y="40" width="44" height="2" class="bar"/><rect x="70" y="46" width="44" height="2" class="bar"/><rect x="70" y="52" width="27" height="2" class="bar"/></g><rect x="70" y="10" width="44" height="6" class="mask" /><rect x="70" y="10" width="44" height="6" class="hi" pathLength="1" /><line x1="114" y1="52" x2="114" y2="20" class="dim" pathLength="1"/><path d="M114,20 L112.1,23.5 M114,20 L115.9,23.5" class="dim" pathLength="1"/><text x="2" y="72" class="lbl2" font-size="7" >in flow</text><text x="66" y="72" class="lbl" font-size="7" >stuck at the top</text></svg></div>
   <h3>Sticky</h3>
-  <p class="def">Scrolls with the page until it reaches an edge, then holds there while its parent is in view.</p>
+  <p class="def">“The element is positioned according to the normal flow of the document, and then offset relative to its nearest scrolling ancestor and containing block (nearest block-level ancestor), including table-related elements, based on the values of top, right, bottom, and left.”</p>
   <p class="also">also: pinned on scroll</p>
   
 </article>
 <article class="e" id="e01-21" data-cat="01">
   <div class="fig" title="Replay"><svg viewBox="0 0 120 80" aria-hidden="true"><rect x="8" y="8" width="104" height="64" class="ln" /><g data-a="scroll"><rect x="16" y="14" width="60" height="2" class="bar"/><rect x="16" y="20" width="60" height="2" class="bar"/><rect x="16" y="26" width="60" height="2" class="bar"/><rect x="16" y="32" width="60" height="2" class="bar"/><rect x="16" y="38" width="60" height="2" class="bar"/><rect x="16" y="44" width="60" height="2" class="bar"/><rect x="16" y="50" width="60" height="2" class="bar"/><rect x="16" y="56" width="60" height="2" class="bar"/><rect x="16" y="62" width="60" height="2" class="bar"/><rect x="16" y="68" width="37" height="2" class="bar"/></g><rect x="9" y="61" width="102" height="10" class="mask" /><rect x="9" y="61" width="102" height="10" class="hi" pathLength="1" /><line x1="100" y1="52" x2="100" y2="22" class="dim" pathLength="1"/><path d="M100,22 L98.1,25.5 M100,22 L101.9,25.5" class="dim" pathLength="1"/></svg></div>
   <h3>Fixed</h3>
-  <p class="def">Anchored to the viewport regardless of scrolling. A fixed bar never moves.</p>
+  <p class="def">“The element is removed from the normal document flow, and no space is created for the element in the page layout. The element is positioned relative to its initial containing block, which is the viewport in the case of visual media.”</p>
   <p class="also">also: pinned, locked</p>
   
 </article>
@@ -458,115 +469,116 @@ button,input{font:inherit;color:inherit}
 <article class="e" id="e01-24" data-cat="01">
   <div class="fig" title="Replay"><svg viewBox="0 0 120 80" aria-hidden="true"><rect x="8" y="20" width="30" height="30" class="ctx" /><text x="8" y="60" class="lbl" font-size="8" >1:1</text><rect x="44" y="20" width="36" height="24" class="ctx" /><text x="44" y="60" class="lbl" font-size="8" >3:2</text><rect x="86" y="20" width="32" height="18" class="ctx" /><text x="86" y="60" class="lbl" font-size="8" >16:9</text></svg></div>
   <h3>Aspect ratio</h3>
-  <p class="def">Width to height of a box, written width:height. 1:1 square, 3:2 photographic, 16:9 video, 4:5 portrait.</p>
+  <p class="def">“The aspect-ratio CSS property allows you to define the desired width-to-height ratio of an element's box.” Common ratios: 1:1, 3:2, 16:9, 4:5.</p>
   <p class="also">also: proportion, ratio</p>
   
 </article>
 <article class="e" id="e01-25" data-cat="01">
   <div class="fig" title="Replay"><svg viewBox="0 0 120 80" aria-hidden="true"><rect x="6" y="14" width="56" height="52" class="ln" /><rect x="10" y="18" width="14" height="44" class="ctx" /><rect x="27" y="18" width="14" height="44" class="ctx" /><rect x="44" y="18" width="14" height="44" class="ctx" /><rect x="68" y="14" width="30" height="52" class="ln" /><rect x="71" y="18" width="10.5" height="44" class="ctx" /><rect x="84.5" y="18" width="10.5" height="44" class="ctx" /><rect x="104" y="14" width="12" height="52" class="ln" /><rect x="106" y="18" width="8" height="44" class="ctx" /></svg></div>
   <h3>Breakpoint</h3>
-  <p class="def">The viewport width at which the layout changes rules: columns drop, the sidebar stacks, type steps down.</p>
+  <p class="def">“The points at which a media query is introduced, and the layout changes, are known as breakpoints.”</p>
   <p class="also">also: media query</p>
   
 </article>
 <article class="e" id="e01-26" data-cat="01">
   <div class="fig" title="Replay"><svg viewBox="0 0 120 80" aria-hidden="true"><rect x="6" y="20" width="44" height="40" class="ln" /><rect x="10" y="28" width="36" height="10" class="hi" pathLength="1" /><rect x="58" y="12" width="56" height="56" class="ln" /><rect x="63" y="22" width="46" height="14" class="hi" pathLength="1" /><line x1="52" y1="40" x2="56" y2="40" class="dim" pathLength="1"/><path d="M56,40 L52.5,38.1 M56,40 L52.5,41.9" class="dim" pathLength="1"/></svg></div>
   <h3>Fluid</h3>
-  <p class="def">Sizing that scales continuously with the viewport rather than stepping at breakpoints, usually in percentages or viewport units.</p>
+  <p class="def">“The term responsive design, coined by Ethan Marcotte in 2010, described using fluid grids, fluid images, and media queries to create responsive content.”</p>
   <p class="also">also: responsive, elastic</p>
   
 </article>
 <article class="e" id="e01-27" data-cat="01">
   <div class="fig" title="Replay"><svg viewBox="0 0 120 80" aria-hidden="true"><rect x="12" y="10" width="28" height="30" class="ctx" /><rect x="12" y="44" width="28" height="26" class="ctx" /><rect x="46" y="10" width="28" height="18" class="ctx" /><rect x="46" y="32" width="28" height="38" class="ctx" /><rect x="80" y="10" width="28" height="40" class="ctx" /><rect x="80" y="54" width="28" height="16" class="ctx" /></svg></div>
   <h3>Masonry</h3>
-  <p class="def">A grid whose items keep their own heights and pack upward into columns, leaving no fixed rows.</p>
+  <p class="def">“Grid lanes layout is a layout method where one axis uses a strict grid layout and the other uses a stacking algorithm. Each item is placed into the lane with the most available space, producing a tightly packed layout without strict tracks on the stacking axis.”</p>
   <p class="also">also: Pinterest grid</p>
   
 </article></div>
+  <div class="bib"><h4>Sources</h4><p><a href="https://developer.mozilla.org" rel="noopener">MDN Web Docs. Mozilla Contributors. Reference and glossary entries, reproduced under CC BY-SA 2.5.</a> <span>Viewport, Column grid, Gutter, Span, Row, Section, Header, Nav, Sidebar, Footer, Aside, Overlap, Sticky, Fixed, Aspect ratio, Breakpoint, Fluid, Masonry</span></p><p>Müller-Brockmann, Josef. Grid Systems in Graphic Design. Niggli, 1981. <span>Container, Page margin, Column grid</span></p><p>Bringhurst, Robert. The Elements of Typographic Style. Hartley &amp; Marks, 1992; 4th ed. 2012. <span>Page margin</span></p><p><a href="https://www.nngroup.com/articles/" rel="noopener">Nielsen, Jakob, and Nielsen Norman Group. Alertbox articles on web usability, 1995–.</a> <span>Hero, Fold</span></p><p>Pocket Pal: A Graphic Arts Production Handbook. International Paper, 1934; 20th ed. 2007. <span>Full-bleed</span></p><p><a href="https://alistapart.com/article/responsive-web-design/" rel="noopener">Marcotte, Ethan. “Responsive Web Design.” A List Apart, 25 May 2010.</a> <span>Fluid</span></p></div>
 </section>
 <section class="cat" id="c02" data-cat="02">
   <div class="cat-head"><div class="num">02</div><div><h2>Space</h2><p>Distances, rhythms, and the grids that make them regular.</p></div></div>
   <div class="grid"><article class="e" id="e02-01" data-cat="02">
   <div class="fig" title="Replay"><svg viewBox="0 0 120 80" aria-hidden="true"><rect x="20" y="12" width="80" height="56" class="ln" /><rect x="32" y="22" width="56" height="36" class="hi" pathLength="1" /><line x1="20" y1="40" x2="32" y2="40" class="dim" pathLength="1"/><line x1="20" y1="37" x2="20" y2="43" class="dim" pathLength="1"/><line x1="32" y1="37" x2="32" y2="43" class="dim" pathLength="1"/><line x1="60" y1="12" x2="60" y2="22" class="dim" pathLength="1"/><line x1="57" y1="12" x2="63" y2="12" class="dim" pathLength="1"/><line x1="57" y1="22" x2="63" y2="22" class="dim" pathLength="1"/></svg></div>
   <h3>Padding</h3>
-  <p class="def">Space inside an element, between its edge and its content. Part of the element: a background fills it.</p>
+  <p class="def">“An element's padding area is the space between its content and its border.”</p>
   <p class="also">also: inner spacing, inset spacing</p>
   
 </article>
 <article class="e" id="e02-02" data-cat="02">
   <div class="fig" title="Replay"><svg viewBox="0 0 120 80" aria-hidden="true"><rect x="12" y="12" width="96" height="20" class="ctx" /><rect x="12" y="48" width="96" height="20" class="hi" pathLength="1" /><line x1="116" y1="32" x2="116" y2="48" class="dim" pathLength="1"/><line x1="113" y1="32" x2="119" y2="32" class="dim" pathLength="1"/><line x1="113" y1="48" x2="119" y2="48" class="dim" pathLength="1"/></svg></div>
   <h3>Margin</h3>
-  <p class="def">Space outside an element, between its edge and its neighbours. Empty: no background fills it. Vertical margins can collapse into each other.</p>
+  <p class="def">“Margin box: The margin is the outermost layer, wrapping the content, padding, and border as whitespace between this box and other elements; size it using margin and related properties.” “The top and bottom margins of blocks are sometimes combined (collapsed) into a single margin whose size is the largest of the individual margins (or just one of them, if they are equal), a behavior known as margin collapsing.”</p>
   <p class="also">also: outer spacing</p>
   
 </article>
 <article class="e" id="e02-03" data-cat="02">
   <div class="fig" title="Replay"><svg viewBox="0 0 120 80" aria-hidden="true"><rect x="10" y="20" width="26.7" height="40" class="ctx" /><rect x="46.7" y="20" width="26.7" height="40" class="ctx" /><rect x="83.3" y="20" width="26.7" height="40" class="ctx" /><line x1="36.7" y1="40" x2="46.7" y2="40" class="dim" pathLength="1"/><line x1="36.7" y1="37" x2="36.7" y2="43" class="dim" pathLength="1"/><line x1="46.7" y1="37" x2="46.7" y2="43" class="dim" pathLength="1"/><line x1="73.3" y1="40" x2="83.3" y2="40" class="dim" pathLength="1"/><line x1="73.3" y1="37" x2="73.3" y2="43" class="dim" pathLength="1"/><line x1="83.3" y1="37" x2="83.3" y2="43" class="dim" pathLength="1"/></svg></div>
   <h3>Gap</h3>
-  <p class="def">Space between siblings in a grid or flex row, set once on the parent instead of as margins on each child.</p>
+  <p class="def">“The gap CSS shorthand property sets the gaps (also called gutters) between rows and columns on multi-column, flex, and grid containers.”</p>
   <p class="also">also: grid gap, spacing between items</p>
   
 </article>
 <article class="e" id="e02-04" data-cat="02">
   <div class="fig" title="Replay"><svg viewBox="0 0 120 80" aria-hidden="true"><rect x="64" y="44" width="32" height="20" class="hi" pathLength="1" /></svg></div>
   <h3>Whitespace</h3>
-  <p class="def">The unmarked area of a layout. Structural, not leftover: it groups, separates and ranks without a single line.</p>
+  <p class="def">The unprinted area of the composition. In Müller-Brockmann’s grid systems empty space is an active element of the design with the same standing as type and image, not what remains after they are placed.</p>
   <p class="also">also: negative space, empty space, air</p>
   
 </article>
 <article class="e" id="e02-05" data-cat="02">
   <div class="fig" title="Replay"><svg viewBox="0 0 120 80" aria-hidden="true"><line x1="8" y1="8" x2="112" y2="8" class="hdash" /><line x1="8" y1="16" x2="112" y2="16" class="hdash" /><line x1="8" y1="24" x2="112" y2="24" class="hdash" /><line x1="8" y1="32" x2="112" y2="32" class="hdash" /><line x1="8" y1="40" x2="112" y2="40" class="hdash" /><line x1="8" y1="48" x2="112" y2="48" class="hdash" /><line x1="8" y1="56" x2="112" y2="56" class="hdash" /><line x1="8" y1="64" x2="112" y2="64" class="hdash" /><line x1="8" y1="72" x2="112" y2="72" class="hdash" /><rect x="14" y="14" width="40" height="2" class="barhi"/><rect x="14" y="22" width="40" height="2" class="barhi"/><rect x="14" y="30" width="40" height="2" class="barhi"/><rect x="14" y="38" width="40" height="2" class="barhi"/><rect x="14" y="46" width="40" height="2" class="barhi"/><rect x="14" y="54" width="40" height="2" class="barhi"/><rect x="14" y="62" width="40" height="2" class="barhi"/><rect x="14" y="70" width="25" height="2" class="barhi"/><rect x="64" y="14" width="40" height="4" class="hi" pathLength="1" /><rect x="64" y="30" width="40" height="2" class="barhi"/><rect x="64" y="38" width="40" height="2" class="barhi"/><rect x="64" y="46" width="40" height="2" class="barhi"/><rect x="64" y="54" width="25" height="2" class="barhi"/></svg></div>
   <h3>Baseline grid</h3>
-  <p class="def">Horizontal lines at a fixed interval that every leading and block space is a multiple of, so text in neighbouring columns shares baselines.</p>
+  <p class="def">In Müller-Brockmann’s method the leading of the body text sets a horizontal grid across the whole type area. Every line of every column sits on it, so lines register across columns and every field of the grid is a whole number of lines tall.</p>
   <p class="also">also: 4px grid, 8px grid, vertical grid</p>
   
 </article>
 <article class="e" id="e02-06" data-cat="02">
   <div class="fig" title="Replay"><svg viewBox="0 0 120 80" aria-hidden="true"><rect x="12" y="12" width="4" height="6" class="hi" pathLength="1" /><rect x="12" y="22" width="8" height="6" class="hi" pathLength="1" /><rect x="12" y="32" width="16" height="6" class="hi" pathLength="1" /><rect x="12" y="42" width="24" height="6" class="hi" pathLength="1" /><rect x="12" y="52" width="32" height="6" class="hi" pathLength="1" /><rect x="12" y="62" width="48" height="6" class="hi" pathLength="1" /><text x="70" y="18" class="lbl2" font-size="8" >4</text><text x="70" y="28" class="lbl2" font-size="8" >8</text><text x="70" y="38" class="lbl2" font-size="8" >16</text><text x="70" y="48" class="lbl2" font-size="8" >24</text><text x="70" y="58" class="lbl2" font-size="8" >32</text><text x="70" y="68" class="lbl2" font-size="8" >48</text></svg></div>
   <h3>Spacing scale</h3>
-  <p class="def">The fixed set of distances used everywhere: 4, 8, 12, 16, 24, 32, 48, 64. No value outside the set.</p>
+  <p class="def">Material Design’s spacing method: every measurement is taken from an 8 dp grid, with a 4 dp grid for small elements, so that spacing is chosen from a fixed set rather than case by case.</p>
   <p class="also">also: spacing tokens, space system</p>
   
 </article>
 <article class="e" id="e02-07" data-cat="02">
   <div class="fig" title="Replay"><svg viewBox="0 0 120 80" aria-hidden="true"><text x="10" y="60" class="lbl" font-size="14" >A</text><text x="24" y="60" class="lbl" font-size="19" >A</text><text x="42" y="60" class="lbl" font-size="25" >A</text><text x="64" y="60" class="lbl" font-size="33" >A</text><text x="90" y="60" class="lbl" font-size="44" >A</text></svg></div>
   <h3>Modular scale</h3>
-  <p class="def">Type sizes derived from one base by a ratio: 15 × 1.25 gives 15, 19, 23, 29, 37. The ratio, not taste, sets each step.</p>
+  <p class="def">“A modular scale is a sequence of numbers that relate to one another in a meaningful way.”</p>
   <p class="also">also: type scale, ratio</p>
   
 </article>
 <article class="e" id="e02-08" data-cat="02">
   <div class="fig" title="Replay"><svg viewBox="0 0 120 80" aria-hidden="true"><line x1="8" y1="8" x2="112" y2="8" class="hdash" /><line x1="8" y1="16" x2="112" y2="16" class="hdash" /><line x1="8" y1="24" x2="112" y2="24" class="hdash" /><line x1="8" y1="32" x2="112" y2="32" class="hdash" /><line x1="8" y1="40" x2="112" y2="40" class="hdash" /><line x1="8" y1="48" x2="112" y2="48" class="hdash" /><line x1="8" y1="56" x2="112" y2="56" class="hdash" /><line x1="8" y1="64" x2="112" y2="64" class="hdash" /><line x1="8" y1="72" x2="112" y2="72" class="hdash" /><rect x="14" y="16" width="40" height="8" class="hi" pathLength="1" /><rect x="14" y="32" width="40" height="2" class="barhi"/><rect x="14" y="40" width="40" height="2" class="barhi"/><rect x="14" y="48" width="40" height="2" class="barhi"/><rect x="14" y="56" width="25" height="2" class="barhi"/><rect x="64" y="16" width="40" height="8" class="ctx2" /><rect x="64" y="29" width="40" height="2" class="bar"/><rect x="64" y="37" width="40" height="2" class="bar"/><rect x="64" y="45" width="40" height="2" class="bar"/><rect x="64" y="53" width="25" height="2" class="bar"/></svg></div>
   <h3>Vertical rhythm</h3>
-  <p class="def">The regular pulse of a page from top to bottom, produced when every leading and every block space sits on the baseline grid.</p>
+  <p class="def">Rutter: “vertical rhythm – the spacing and arrangement of text as the reader descends the page – is contributed to by three factors: font size, line height and margin or padding.” Bringhurst: “Space in typography is like time in music.”</p>
   <p class="also">also: rhythm</p>
   
 </article>
 <article class="e" id="e02-09" data-cat="02">
   <div class="fig" title="Replay"><svg viewBox="0 0 120 80" aria-hidden="true"><rect x="30" y="10" width="60" height="60" class="ln" /><line x1="30" y1="40" x2="90" y2="40" class="hdash" /><circle cx="60" cy="37" r="8" class="hi" pathLength="1" /></svg></div>
   <h3>Optical centering</h3>
-  <p class="def">Placing something slightly above true center, where the eye reads it as centered. Mathematically centered marks look low.</p>
+  <p class="def">Arnheim’s observation that the perceptual centre of a field lies above its geometric centre: an element placed at the mathematical middle reads as sitting low.</p>
   <p class="also">also: optical vs mathematical</p>
   
 </article>
 <article class="e" id="e02-10" data-cat="02">
   <div class="fig" title="Replay"><svg viewBox="0 0 120 80" aria-hidden="true"><rect x="10" y="12" width="44" height="2" class="bar"/><rect x="10" y="17.5" width="44" height="2" class="bar"/><rect x="10" y="23" width="44" height="2" class="bar"/><rect x="10" y="28.5" width="44" height="2" class="bar"/><rect x="10" y="34" width="44" height="2" class="bar"/><rect x="10" y="39.5" width="44" height="2" class="bar"/><rect x="10" y="45" width="44" height="2" class="bar"/><rect x="10" y="50.5" width="44" height="2" class="bar"/><rect x="10" y="56" width="44" height="2" class="bar"/><rect x="10" y="61.5" width="27" height="2" class="bar"/><rect x="66" y="14" width="44" height="2" class="bar"/><rect x="66" y="25" width="44" height="2" class="bar"/><rect x="66" y="36" width="44" height="2" class="bar"/><rect x="66" y="47" width="44" height="2" class="bar"/><rect x="66" y="58" width="27" height="2" class="bar"/></svg></div>
   <h3>Density</h3>
-  <p class="def">How much content sits in a given area. Set by the spacing scale, not by shrinking type. Dense reads as effortful or lazy depending on order; airy reads as calm.</p>
+  <p class="def">Material Design’s term for how much content a component fits into a given area; higher density fits more, lower density gives more room.</p>
   <p class="also">also: tight, loose, airy</p>
   
 </article>
 <article class="e" id="e02-11" data-cat="02">
   <div class="fig" title="Replay"><svg viewBox="0 0 120 80" aria-hidden="true"><line x1="30" y1="6" x2="30" y2="74" class="dash" /><rect x="30" y="10" width="60" height="30" class="ctx" /><path d="M30,10 L90,40 M90,10 L30,40" class="hair"/><rect x="30" y="46" width="40" height="3" class="barhi" /><rect x="30" y="54" width="56" height="2" class="bar" /><rect x="30" y="60" width="48" height="2" class="bar" /></svg></div>
   <h3>Registration</h3>
-  <p class="def">Several elements sharing one edge or baseline. What the grid exists to produce.</p>
+  <p class="def">Register: in printing, the exact alignment of successive impressions or colours with one another. In layout, elements sharing a common edge.</p>
   <p class="also">also: alignment edge, shared edge</p>
   
 </article>
 <article class="e" id="e02-12" data-cat="02">
   <div class="fig" title="Replay"><svg viewBox="0 0 120 80" aria-hidden="true"><line x1="36" y1="6" x2="36" y2="74" class="dash" /><rect x="22" y="16" width="8" height="3" class="barhi" /><rect x="36" y="16" width="70" height="2" class="bar"/><rect x="36" y="22" width="70" height="2" class="bar"/><rect x="36" y="28" width="43" height="2" class="bar"/><rect x="22" y="40" width="8" height="3" class="barhi" /><rect x="36" y="40" width="70" height="2" class="bar"/><rect x="36" y="46" width="70" height="2" class="bar"/><rect x="36" y="52" width="43" height="2" class="bar"/></svg></div>
   <h3>Hang</h3>
-  <p class="def">Letting an element extend past the alignment edge so the text it belongs to stays registered: a bullet, a quotation mark, an index number.</p>
+  <p class="def">Bringhurst’s hanging indent and hanging punctuation: setting a first line, a bullet, or a quotation mark past the left margin so that the text block itself keeps a clean edge.</p>
   <p class="also">also: outdent, hanging</p>
   
 </article>
@@ -580,195 +592,197 @@ button,input{font:inherit;color:inherit}
 <article class="e" id="e02-14" data-cat="02">
   <div class="fig" title="Replay"><svg viewBox="0 0 120 80" aria-hidden="true"><rect x="14" y="12" width="24" height="3" class="barhi" /><rect x="14" y="19" width="90" height="10" class="ln" /><rect x="14" y="44" width="24" height="3" class="barhi" /><rect x="14" y="51" width="90" height="10" class="ln" /></svg></div>
   <h3>Proximity</h3>
-  <p class="def">Items closer to each other than to anything else read as one group. The cheapest way to group without lines or boxes.</p>
+  <p class="def">The Gestalt law of proximity (Wertheimer, 1923): elements close to one another are perceived as a group. Robin Williams’s first principle of design: group related items together.</p>
   <p class="also">also: grouping</p>
   
 </article></div>
+  <div class="bib"><h4>Sources</h4><p><a href="https://developer.mozilla.org" rel="noopener">MDN Web Docs. Mozilla Contributors. Reference and glossary entries, reproduced under CC BY-SA 2.5.</a> <span>Padding, Margin, Gap</span></p><p>Müller-Brockmann, Josef. Grid Systems in Graphic Design. Niggli, 1981. <span>Whitespace, Baseline grid</span></p><p><a href="https://m3.material.io" rel="noopener">Material Design guidelines. Google, 2014–. Text under CC BY 4.0.</a> <span>Spacing scale, Density</span></p><p><a href="https://alistapart.com/article/more-meaningful-typography/" rel="noopener">Brown, Tim. “More Meaningful Typography.” A List Apart, 3 May 2011.</a> <span>Modular scale</span></p><p><a href="https://24ways.org/2006/compose-to-a-vertical-rhythm/" rel="noopener">Rutter, Richard. “Compose to a Vertical Rhythm.” 24 ways, 2006.</a> <span>Vertical rhythm</span></p><p>Bringhurst, Robert. The Elements of Typographic Style. Hartley &amp; Marks, 1992; 4th ed. 2012. <span>Vertical rhythm, Hang</span></p><p>Arnheim, Rudolf. Art and Visual Perception. University of California Press, 1954; rev. 1974. <span>Optical centering</span></p><p>Pocket Pal: A Graphic Arts Production Handbook. International Paper, 1934; 20th ed. 2007. <span>Registration</span></p><p>Wertheimer, Max. “Untersuchungen zur Lehre von der Gestalt II.” Psychologische Forschung 4, 1923. <span>Proximity</span></p><p>Williams, Robin. The Non-Designer’s Design Book. Peachpit, 1994. <span>Proximity</span></p></div>
 </section>
 <section class="cat" id="c03" data-cat="03">
   <div class="cat-head"><div class="num">03</div><div><h2>Type</h2><p>Letters, lines, and the measurements between them.</p></div></div>
   <div class="grid"><article class="e" id="e03-01" data-cat="03">
   <div class="fig" title="Replay"><svg viewBox="0 0 120 80" aria-hidden="true"><text x="10" y="56" class="thin" font-size="34" >Aa</text><text x="48" y="56" class="lbl" font-size="34" >Aa</text><text x="86" y="56" class="bold" font-size="34" >Aa</text></svg></div>
   <h3>Typeface vs font</h3>
-  <p class="def">A typeface is the design: Instrument Sans. A font is one cut of it: Instrument Sans Medium at 15px. Name a typeface; specify a font.</p>
+  <p class="def">Lupton draws the line: a typeface is the design of the letterforms; a font is the software (or once, the metal) that delivers it. In CSS, font-family names the typeface.</p>
   <p class="also">also: family, face, cut</p>
   
 </article>
 <article class="e" id="e03-02" data-cat="03">
   <div class="fig" title="Replay"><svg viewBox="0 0 120 80" aria-hidden="true"><text x="10" y="50" class="thin" font-size="30" >Ag</text><text x="48" y="50" class="lbl" font-size="30" >Ag</text><text x="86" y="50" class="bold" font-size="30" >Ag</text><text x="10" y="68" class="lbl2" font-size="8" >400</text><text x="48" y="68" class="lbl2" font-size="8" >500</text><text x="86" y="68" class="lbl2" font-size="8" >700</text></svg></div>
   <h3>Weight</h3>
-  <p class="def">The stroke thickness of a cut, on a scale from 100 (Thin) to 900 (Black). 400 is Regular, 700 is Bold.</p>
+  <p class="def">“The font-weight CSS property sets the weight (or boldness) of the font. The weights available depend on the font-family that is currently set.” The CSS scale runs 100 to 900; 400 is normal, 700 is bold.</p>
   <p class="also">also: thin, light, regular</p>
   
 </article>
 <article class="e" id="e03-03" data-cat="03">
   <div class="fig" title="Replay"><svg viewBox="0 0 120 80" aria-hidden="true"><rect x="26" y="12" width="50" height="56" class="hair" /><text x="30" y="52" class="lbl" font-size="40" >Ag</text><line x1="86" y1="12" x2="86" y2="68" class="dim" pathLength="1"/><line x1="83" y1="12" x2="89" y2="12" class="dim" pathLength="1"/><line x1="83" y1="68" x2="89" y2="68" class="dim" pathLength="1"/><text x="92" y="42" class="lbl2" font-size="8" >em</text></svg></div>
   <h3>Size</h3>
-  <p class="def">The height of the em box, not of any letter. Two faces at 15px can read as different sizes because their x-heights differ.</p>
+  <p class="def">“The font-size CSS property sets the size of the font.” In Bringhurst’s terms the size is the body of the type, the em, not the height of any letter.</p>
   <p class="also">also: point size, px</p>
   
 </article>
 <article class="e" id="e03-04" data-cat="03">
   <div class="fig" title="Replay"><svg viewBox="0 0 120 80" aria-hidden="true"><rect x="8" y="18" width="70" height="3" class="bar"/><rect x="8" y="34" width="70" height="3" class="bar"/><rect x="8" y="50" width="43" height="3" class="bar"/><line x1="8" y1="21" x2="78" y2="21" class="hdash" /><line x1="8" y1="37" x2="78" y2="37" class="hdash" /><line x1="92" y1="21" x2="92" y2="37" class="dim" pathLength="1"/><line x1="89" y1="21" x2="95" y2="21" class="dim" pathLength="1"/><line x1="89" y1="37" x2="95" y2="37" class="dim" pathLength="1"/><text x="97" y="32" class="lbl" font-size="8" >24</text><text x="6" y="76" class="lbl" font-size="7.5" >leading · baseline to baseline</text></svg></div>
   <h3>Leading</h3>
-  <p class="def">The distance from one baseline to the next. Named for the strips of lead set between lines of metal type. Written as a ratio (1.5) or a length (24px).</p>
+  <p class="def">“In typography, leading is an amount of space included above and below text to provide spacing between lines. Historically, in physical typesetting, pieces of actual lead were used to implement this spacing, which is where the name comes from.”</p>
   <p class="also">also: line-height, line spacing</p>
   
 </article>
 <article class="e" id="e03-05" data-cat="03">
   <div class="fig" title="Replay"><svg viewBox="0 0 120 80" aria-hidden="true"><text x="12" y="34" class="lbl" font-size="16" >TRACK</text><text x="12" y="64" class="lbl" font-size="16" letter-spacing="6">TRACK</text><text x="100" y="34" class="lbl2" font-size="8" >0</text><text x="100" y="64" class="lbl2" font-size="8" >.1</text></svg></div>
   <h3>Tracking</h3>
-  <p class="def">Uniform space added between every letter of a run. Set in em (.04em) so it scales with the size.</p>
+  <p class="def">“The letter-spacing CSS property sets the spacing between text characters. This value is added to the natural spacing between characters while rendering the text.”</p>
   <p class="also">also: letter-spacing</p>
   
 </article>
 <article class="e" id="e03-06" data-cat="03">
   <div class="fig" title="Replay"><svg viewBox="0 0 120 80" aria-hidden="true"><text x="28" y="58" class="lbl" font-size="44" >A</text><text x="64" y="58" class="lbl" font-size="44" >V</text><line x1="56" y1="66" x2="66" y2="66" class="dim" pathLength="1"/><line x1="56" y1="63" x2="56" y2="69" class="dim" pathLength="1"/><line x1="66" y1="63" x2="66" y2="69" class="dim" pathLength="1"/></svg></div>
   <h3>Kerning</h3>
-  <p class="def">The adjustment of space between one specific pair of letters, such as AV or To, so their gap matches the rest. Fonts carry kerning tables; the browser applies them when font-kerning is on.</p>
+  <p class="def">“Kerning affects how letters are spaced. In well-kerned fonts, this feature makes character spacing more uniform and pleasant to read by reducing white space between certain character combinations.”</p>
   <p class="also">also: pair spacing</p>
   
 </article>
 <article class="e" id="e03-07" data-cat="03">
   <div class="fig" title="Replay"><svg viewBox="0 0 120 80" aria-hidden="true"><rect x="14" y="18" width="84" height="2" class="bar"/><rect x="14" y="24" width="84" height="2" class="bar"/><rect x="14" y="30" width="84" height="2" class="bar"/><rect x="14" y="36" width="84" height="2" class="bar"/><rect x="14" y="42" width="84" height="2" class="bar"/><rect x="14" y="48" width="84" height="2" class="bar"/><rect x="14" y="54" width="52" height="2" class="bar"/><line x1="14" y1="64" x2="98" y2="64" class="dim" pathLength="1"/><line x1="14" y1="61" x2="14" y2="67" class="dim" pathLength="1"/><line x1="98" y1="61" x2="98" y2="67" class="dim" pathLength="1"/><text x="50" y="74" class="lbl2" font-size="8" >66 ch</text></svg></div>
   <h3>Measure</h3>
-  <p class="def">The length of a line of text, counted in characters. 45 to 75 reads comfortably; 66 is the classic target.</p>
+  <p class="def">Bringhurst’s guidance: 45 to 75 characters per line is satisfactory for a single column of text; 66 characters, counting letters and spaces, is widely regarded as ideal.</p>
   <p class="also">also: line length, column width</p>
   
 </article>
 <article class="e" id="e03-08" data-cat="03">
   <div class="fig" title="Replay"><svg viewBox="0 0 120 80" aria-hidden="true"><text x="14" y="50" class="lbl" font-size="36" >Agp</text><text x="80" y="50" class="lbl" font-size="18" >xy</text><line x1="8" y1="50" x2="112" y2="50" class="dash" /></svg></div>
   <h3>Baseline</h3>
-  <p class="def">The invisible line the letters sit on. Descenders hang below it. Baselines, not box edges, are what the eye aligns.</p>
+  <p class="def">“A baseline is an imaginary line along the inline axis of a line box along which individual glyphs of text are aligned.”</p>
   <p class="also">also: base line</p>
   
 </article>
 <article class="e" id="e03-09" data-cat="03">
   <div class="fig" title="Replay"><svg viewBox="0 0 120 80" aria-hidden="true"><text x="20" y="56" class="lbl" font-size="40" >Hx</text><line x1="12" y1="56" x2="78" y2="56" class="dash" /><line x1="12" y1="27" x2="78" y2="27" class="hdash" /><line x1="12" y1="38" x2="78" y2="38" class="hdash" /><line x1="88" y1="27" x2="88" y2="56" class="dim" pathLength="1"/><line x1="85" y1="27" x2="91" y2="27" class="dim" pathLength="1"/><line x1="85" y1="56" x2="91" y2="56" class="dim" pathLength="1"/><line x1="104" y1="38" x2="104" y2="56" class="dim" pathLength="1"/><line x1="101" y1="38" x2="107" y2="38" class="dim" pathLength="1"/><line x1="101" y1="56" x2="107" y2="56" class="dim" pathLength="1"/></svg></div>
   <h3>x-height / cap height</h3>
-  <p class="def">x-height is the height of a lowercase x; cap height is the height of an H. Together they set how large a face reads at a given size.</p>
+  <p class="def">In Bringhurst’s glossary the x-height is the height of the lowercase letters without ascenders or descenders, taken from the x; the cap height is the height of the capitals.</p>
   <p class="also">also: x-height, cap height</p>
   
 </article>
 <article class="e" id="e03-10" data-cat="03">
   <div class="fig" title="Replay"><svg viewBox="0 0 120 80" aria-hidden="true"><text x="24" y="50" class="lbl" font-size="40" >bgp</text><line x1="12" y1="50" x2="100" y2="50" class="dash" /><line x1="12" y1="30" x2="100" y2="30" class="hdash" /><line x1="12" y1="60" x2="100" y2="60" class="hdash" /></svg></div>
   <h3>Ascender / descender</h3>
-  <p class="def">Strokes rising above the x-height (b, d, k) and dropping below the baseline (g, p, y). Tight leading lets descenders touch the next line’s ascenders.</p>
+  <p class="def">Bringhurst: ascenders are the strokes of lowercase letters that rise above the x-height (b, d, k); descenders are the strokes that fall below the baseline (g, p, y).</p>
   <p class="also">also: ascender, descender</p>
   
 </article>
 <article class="e" id="e03-11" data-cat="03">
   <div class="fig" title="Replay"><svg viewBox="0 0 120 80" aria-hidden="true"><text x="10" y="52" class="lbl" font-size="26" >Aa</text><text x="48" y="52" class="lbl" font-size="26" >AA</text><text x="88" y="52" class="lbl" font-size="26" >aa</text></svg></div>
   <h3>Case</h3>
-  <p class="def">Which letters are capitalized. Sentence case capitalizes the first word; Title Case Every Major Word; ALL CAPS everything; small caps use capital forms at x-height.</p>
+  <p class="def">“The text-transform CSS property specifies how to capitalize an element's text. It can be used to make text appear in all-uppercase or all-lowercase, or with each word capitalized.”</p>
   <p class="also">also: uppercase, lowercase, sentence case</p>
   
 </article>
 <article class="e" id="e03-12" data-cat="03">
   <div class="fig" title="Replay"><svg viewBox="0 0 120 80" aria-hidden="true"><rect x="10" y="18" width="30" height="2" class="bar"/><rect x="10" y="25" width="30" height="2" class="bar"/><rect x="10" y="32" width="30" height="2" class="bar"/><rect x="10" y="39" width="30" height="2" class="bar"/><rect x="10" y="46" width="30" height="2" class="bar"/><rect x="10" y="53" width="19" height="2" class="bar"/><rect x="52" y="18" width="16" height="2" class="bar" /><rect x="48" y="25" width="24" height="2" class="bar" /><rect x="50" y="32" width="20" height="2" class="bar" /><rect x="47" y="39" width="26" height="2" class="bar" /><rect x="53" y="46" width="14" height="2" class="bar" /><rect x="82" y="18" width="30" height="2" class="bar"/><rect x="82" y="25" width="30" height="2" class="bar"/><rect x="82" y="32" width="30" height="2" class="bar"/><rect x="82" y="39" width="30" height="2" class="bar"/><rect x="82" y="46" width="30" height="2" class="bar"/><rect x="82" y="53" width="19" height="2" class="bar"/><rect x="82" y="53" width="30" height="2" class="bar" /></svg></div>
   <h3>Alignment</h3>
-  <p class="def">How lines relate to an edge. Flush left with a ragged right is the reading default; justified squares both edges and can open rivers; centered is for short display lines.</p>
+  <p class="def">“The text-align CSS property sets the horizontal alignment of the inline-level content inside a block element or table-cell box.” Bringhurst prefers flush left with a ragged right for continuous text.</p>
   <p class="also">also: flush left, ragged right, centered</p>
   
 </article>
 <article class="e" id="e03-13" data-cat="03">
   <div class="fig" title="Replay"><svg viewBox="0 0 120 80" aria-hidden="true"><rect x="12" y="16" width="40" height="2" class="bar" /><rect x="12" y="23" width="32" height="2" class="bar" /><rect x="12" y="30" width="36" height="2" class="bar" /><rect x="12" y="37" width="26" height="2" class="bar" /><rect x="12" y="44" width="38" height="2" class="bar" /><rect x="12" y="51" width="30" height="2" class="bar" /><rect x="68" y="16" width="42" height="2" class="barhi" /><rect x="68" y="23" width="38" height="2" class="barhi" /><rect x="68" y="30" width="34" height="2" class="barhi" /><rect x="68" y="37" width="30" height="2" class="barhi" /><rect x="68" y="44" width="26" height="2" class="barhi" /><rect x="68" y="51" width="22" height="2" class="barhi" /></svg></div>
   <h3>Rag</h3>
-  <p class="def">The uneven right edge of flush-left text. A good rag alternates long and short lines without making a shape; a bad rag makes stairs or a hole.</p>
+  <p class="def">The uneven right-hand edge of unjustified text. Bringhurst asks for a rag that is soft and unpatterned: no shapes, steps, or holes.</p>
   <p class="also">also: ragged edge</p>
   
 </article>
 <article class="e" id="e03-14" data-cat="03">
   <div class="fig" title="Replay"><svg viewBox="0 0 120 80" aria-hidden="true"><rect x="14" y="16" width="90" height="2" class="bar"/><rect x="14" y="23" width="90" height="2" class="bar"/><rect x="14" y="30" width="90" height="2" class="bar"/><rect x="14" y="37" width="90" height="2" class="bar"/><rect x="14" y="44" width="56" height="2" class="bar"/><rect x="14" y="44" width="90" height="2" class="bar" /><rect x="14" y="51" width="10" height="2" class="barhi" /></svg></div>
   <h3>Widow / orphan</h3>
-  <p class="def">A widow is the last line of a paragraph alone at the top of a column; an orphan is a single word alone on the last line. Both are fixed by rebreaking or changing the measure.</p>
+  <p class="def">“In typography, an orphan is the first line of a paragraph that appears alone at the bottom of a page.” “In typography, a widow is the last line of a paragraph that appears alone at the top of a page.”</p>
   <p class="also">also: widow, orphan</p>
   
 </article>
 <article class="e" id="e03-15" data-cat="03">
   <div class="fig" title="Replay"><svg viewBox="0 0 120 80" aria-hidden="true"><rect x="12" y="12" width="60" height="8" class="hi" pathLength="1" /><rect x="12" y="26" width="44" height="4" class="ctx2" /><rect x="12" y="36" width="96" height="2" class="bar"/><rect x="12" y="42" width="96" height="2" class="bar"/><rect x="12" y="48" width="96" height="2" class="bar"/><rect x="12" y="54" width="60" height="2" class="bar"/><rect x="12" y="62" width="30" height="2" class="bar" /></svg></div>
   <h3>Hierarchy</h3>
-  <p class="def">The ranked sizes and weights that tell a reader what to read first: display, heading, subhead, body, caption. Three levels usually suffice.</p>
+  <p class="def">Lupton: typographic hierarchy expresses the organisation of content, emphasising some elements and subordinating others, through size, weight, placement, and space.</p>
   <p class="also">also: type scale, levels</p>
   
 </article>
 <article class="e" id="e03-16" data-cat="03">
   <div class="fig" title="Replay"><svg viewBox="0 0 120 80" aria-hidden="true"><text x="10" y="50" class="bold" font-size="40" >Aa</text><rect x="64" y="22" width="44" height="2" class="bar"/><rect x="64" y="28" width="44" height="2" class="bar"/><rect x="64" y="34" width="44" height="2" class="bar"/><rect x="64" y="40" width="44" height="2" class="bar"/><rect x="64" y="46" width="44" height="2" class="bar"/><rect x="64" y="52" width="27" height="2" class="bar"/></svg></div>
   <h3>Display vs text</h3>
-  <p class="def">Display sizes (above about 24px) carry personality and take tight tracking; text sizes (13 to 17px) need even color and open spacing. Some families ship separate optical cuts.</p>
+  <p class="def">“The font-optical-sizing CSS property sets whether text rendering is optimized for viewing at different sizes.” Bringhurst: display sizes want tighter fit and finer detail; text sizes want sturdier strokes and open spacing.</p>
   <p class="also">also: headline face, reading face, optical size</p>
   
 </article>
 <article class="e" id="e03-17" data-cat="03">
   <div class="fig" title="Replay"><svg viewBox="0 0 120 80" aria-hidden="true"><rect x="14" y="22" width="22" height="2" class="barhi" /><rect x="14" y="30" width="80" height="8" class="hi" pathLength="1" /><rect x="14" y="46" width="90" height="2" class="bar"/><rect x="14" y="52" width="90" height="2" class="bar"/><rect x="14" y="58" width="56" height="2" class="bar"/></svg></div>
   <h3>Eyebrow</h3>
-  <p class="def">A short line set above a headline, usually small, uppercase and tracked, naming a category or context.</p>
+  <p class="def">Harrower: in newspaper make-up a kicker is a short line set above the main headline. On the web the same device is called an eyebrow or overline.</p>
   <p class="also">also: kicker, overline, superhead</p>
   <p class="xref">see <button type="button" data-go="11.14">Anchor / scaffolding</button></p>
 </article>
 <article class="e" id="e03-18" data-cat="03">
   <div class="fig" title="Replay"><svg viewBox="0 0 120 80" aria-hidden="true"><rect x="14" y="16" width="80" height="8" class="hi" pathLength="1" /><rect x="14" y="30" width="64" height="4" class="ctx2" /><rect x="14" y="42" width="90" height="2" class="bar"/><rect x="14" y="48" width="90" height="2" class="bar"/><rect x="14" y="54" width="90" height="2" class="bar"/><rect x="14" y="60" width="56" height="2" class="bar"/></svg></div>
   <h3>Dek</h3>
-  <p class="def">The line beneath a headline that expands it in one sentence. Larger than body, lighter than the head.</p>
+  <p class="def">Harrower: a deck is a smaller headline set below the main headline, expanding it in a sentence.</p>
   <p class="also">also: subhead, standfirst, deck</p>
   
 </article>
 <article class="e" id="e03-19" data-cat="03">
   <div class="fig" title="Replay"><svg viewBox="0 0 120 80" aria-hidden="true"><rect x="14" y="14" width="90" height="2" class="bar"/><rect x="14" y="20" width="90" height="2" class="bar"/><rect x="14" y="26" width="56" height="2" class="bar"/><line x1="14" y1="36" x2="106" y2="36" class="ln" /><rect x="14" y="44" width="90" height="2" class="bar"/><rect x="14" y="50" width="90" height="2" class="bar"/><rect x="14" y="56" width="56" height="2" class="bar"/><line x1="14" y1="66" x2="106" y2="66" class="hair" /></svg></div>
   <h3>Rule</h3>
-  <p class="def">A drawn line that separates or groups. A hairline is the thinnest rule that will render, usually 1px.</p>
+  <p class="def">A rule is a printed line. A hairline is the finest rule a process will render.</p>
   <p class="also">also: hairline, divider, separator</p>
   
 </article>
 <article class="e" id="e03-20" data-cat="03">
   <div class="fig" title="Replay"><svg viewBox="0 0 120 80" aria-hidden="true"><rect x="26" y="14" width="78" height="2" class="bar" /><rect x="14" y="20" width="90" height="2" class="bar"/><rect x="14" y="26" width="90" height="2" class="bar"/><rect x="14" y="32" width="56" height="2" class="bar"/><rect x="14" y="44" width="90" height="2" class="bar" /><rect x="26" y="50" width="78" height="2" class="bar"/><rect x="26" y="56" width="78" height="2" class="bar"/><rect x="26" y="62" width="48" height="2" class="bar"/></svg></div>
   <h3>Indent</h3>
-  <p class="def">A first-line indent pushes a paragraph’s opening in; a hanging indent pushes every line but the first; an outdent pulls something past the margin.</p>
+  <p class="def">“The text-indent CSS property sets the length of empty space (indentation) that is put before lines of text in a block.”</p>
   <p class="also">also: first-line indent, hanging indent, outdent</p>
   
 </article>
 <article class="e" id="e03-21" data-cat="03">
   <div class="fig" title="Replay"><svg viewBox="0 0 120 80" aria-hidden="true"><text x="14" y="36" class="mono" font-size="14" >1,204</text><text x="14" y="58" class="mono" font-size="14" >   88</text><text x="70" y="36" class="lbl" font-size="14" >1,204</text><text x="70" y="58" class="lbl" font-size="14" >88</text><line x1="60" y1="20" x2="60" y2="66" class="hdash" /></svg></div>
   <h3>Figures</h3>
-  <p class="def">Lining figures stand cap height; oldstyle figures dip like lowercase. Tabular figures share one width so columns align; proportional figures fit naturally in prose.</p>
+  <p class="def">“The font-variant-numeric CSS property controls the usage of alternate glyphs for numbers, fractions, and ordinal markers.” Bringhurst’s terms: lining figures stand on the baseline at cap height; text (old-style) figures rise and fall like lowercase; tabular figures share one width, proportional figures do not.</p>
   <p class="also">also: numerals, lining, oldstyle</p>
   
 </article>
 <article class="e" id="e03-22" data-cat="03">
   <div class="fig" title="Replay"><svg viewBox="0 0 120 80" aria-hidden="true"><line x1="30" y1="10" x2="30" y2="70" class="dash" /><text x="20" y="30" class="lbl" font-size="22" >“</text><rect x="30" y="20" width="76" height="2" class="bar"/><rect x="30" y="27" width="76" height="2" class="bar"/><rect x="30" y="34" width="76" height="2" class="bar"/><rect x="30" y="41" width="76" height="2" class="bar"/><rect x="30" y="48" width="76" height="2" class="bar"/><rect x="30" y="55" width="47" height="2" class="bar"/></svg></div>
   <h3>Optical alignment</h3>
-  <p class="def">Aligning by what the eye sees rather than the glyph box: quotation marks hang outside the margin, round letters overshoot the baseline.</p>
+  <p class="def">“The hanging-punctuation CSS property specifies whether a punctuation mark should hang at the start or end of a line of text. Hanging punctuation may be placed outside the line box.”</p>
   <p class="also">also: hanging punctuation, optical margin</p>
   
 </article>
 <article class="e" id="e03-23" data-cat="03">
   <div class="fig" title="Replay"><svg viewBox="0 0 120 80" aria-hidden="true"><text x="12" y="54" class="lbl" font-size="36" >a</text><text x="46" y="54" class="serif" font-size="36" >a</text><text x="82" y="54" class="mono" font-size="36" >a</text></svg></div>
   <h3>Classification</h3>
-  <p class="def">Sans families by construction: grotesk (19th-century roots, slightly irregular: Instrument Sans), geometric (circles and lines: Futura), humanist (pen-formed: Gill). Serifs by era: old-style, transitional, modern, slab.</p>
+  <p class="def">Vox’s 1954 system, adopted by ATypI, groups typefaces by historical form: humanist, garalde, transitional, and didone serifs; mechanistic (slab) serifs; and the lineals, the sans serifs, divided into grotesque, neo-grotesque, geometric, and humanist.</p>
   <p class="also">also: grotesk, geometric, humanist</p>
   
 </article>
 <article class="e" id="e03-24" data-cat="03">
   <div class="fig" title="Replay"><svg viewBox="0 0 120 80" aria-hidden="true"><text x="12" y="38" class="bold" font-size="34" >A</text><rect x="38" y="16" width="66" height="2" class="bar"/><rect x="38" y="22" width="66" height="2" class="bar"/><rect x="38" y="28" width="66" height="2" class="bar"/><rect x="38" y="34" width="41" height="2" class="bar"/><rect x="12" y="42" width="92" height="2" class="bar"/><rect x="12" y="48" width="92" height="2" class="bar"/><rect x="12" y="54" width="92" height="2" class="bar"/><rect x="12" y="60" width="57" height="2" class="bar"/></svg></div>
   <h3>Drop cap / pull quote</h3>
-  <p class="def">A drop cap is an enlarged opening letter set into the first lines; a pull quote is a line lifted from the text and set large beside it.</p>
+  <p class="def">“The initial-letter CSS property sets the size and sink for dropped, raised, and sunken initial letters.” Harrower: a pull quote is a line lifted from the story and set in larger type to draw the reader in.</p>
   <p class="also">also: drop cap, pull quote, initial</p>
   
 </article>
 <article class="e" id="e03-25" data-cat="03">
   <div class="fig" title="Replay"><svg viewBox="0 0 120 80" aria-hidden="true"><rect x="20" y="8" width="80" height="64" class="ln" /><rect x="26" y="14" width="22" height="2" class="barhi" /><text x="88" y="17" class="lbl" font-size="8" >12</text><rect x="26" y="24" width="68" height="2" class="bar"/><rect x="26" y="30" width="68" height="2" class="bar"/><rect x="26" y="36" width="68" height="2" class="bar"/><rect x="26" y="42" width="68" height="2" class="bar"/><rect x="26" y="48" width="68" height="2" class="bar"/><rect x="26" y="54" width="68" height="2" class="bar"/><rect x="26" y="60" width="42" height="2" class="bar"/></svg></div>
   <h3>Running head / folio</h3>
-  <p class="def">The small line at the top of every page naming the section (running head) and the page number (folio). Print terms that carry into long web documents.</p>
+  <p class="def">Bringhurst’s glossary: the running head is the line at the head of each page repeating the title or chapter; the folio is the page number.</p>
   <p class="also">also: running head, folio, page furniture</p>
   
 </article>
 <article class="e" id="e03-26" data-cat="03">
   <div class="fig" title="Replay"><svg viewBox="0 0 120 80" aria-hidden="true"><rect x="14" y="18" width="60" height="2" class="bar"/><rect x="14" y="25" width="60" height="2" class="bar"/><rect x="14" y="32" width="37" height="2" class="bar"/><rect x="14" y="39" width="58" height="2" class="bar" /><rect x="74" y="39" width="3" height="2" class="barhi" /><rect x="14" y="46" width="60" height="2" class="bar"/><rect x="14" y="53" width="60" height="2" class="bar"/><rect x="14" y="60" width="37" height="2" class="bar"/></svg></div>
   <h3>Hyphenation</h3>
-  <p class="def">Breaking a word across lines at a syllable to improve the rag or the justification. Off by default on the web.</p>
+  <p class="def">“The hyphens CSS property specifies how words should be hyphenated when text wraps across multiple lines.”</p>
   <p class="also">also: hyphens, word break</p>
   
 </article></div>
+  <div class="bib"><h4>Sources</h4><p>Lupton, Ellen. Thinking with Type. Princeton Architectural Press, 2004; 2nd ed. 2010. <span>Typeface vs font, Hierarchy</span></p><p><a href="https://developer.mozilla.org" rel="noopener">MDN Web Docs. Mozilla Contributors. Reference and glossary entries, reproduced under CC BY-SA 2.5.</a> <span>Weight, Size, Leading, Tracking, Kerning, Baseline, Case, Alignment, Widow / orphan, Display vs text, Indent, Figures, Optical alignment, Drop cap / pull quote, Hyphenation</span></p><p>Bringhurst, Robert. The Elements of Typographic Style. Hartley &amp; Marks, 1992; 4th ed. 2012. <span>Size, Measure, x-height / cap height, Ascender / descender, Alignment, Rag, Display vs text, Figures, Running head / folio</span></p><p>Harrower, Tim. The Newspaper Designer’s Handbook. McGraw-Hill, 1991; 6th ed. 2007. <span>Eyebrow, Dek, Drop cap / pull quote</span></p><p>Pocket Pal: A Graphic Arts Production Handbook. International Paper, 1934; 20th ed. 2007. <span>Rule</span></p><p>Vox, Maximilien. Classification des caractères, 1954; adopted by the Association Typographique Internationale, 1962. <span>Classification</span></p></div>
 </section>
 <section class="cat" id="c04" data-cat="04">
   <div class="cat-head"><div class="num">04</div><div><h2>Color</h2><p>Hue, value, contrast, and the layers that carry them.</p></div></div>
@@ -926,6 +940,7 @@ button,input{font:inherit;color:inherit}
   <p class="also">also: grain, noise, texture</p>
   
 </article></div>
+  
 </section>
 <section class="cat" id="c05" data-cat="05">
   <div class="cat-head"><div class="num">05</div><div><h2>Image</h2><p>Framing, fitting, and the treatments an image can take.</p></div></div>
@@ -1041,6 +1056,7 @@ button,input{font:inherit;color:inherit}
   <p class="also">also: frame, static image</p>
   
 </article></div>
+  
 </section>
 <section class="cat" id="c06" data-cat="06">
   <div class="cat-head"><div class="num">06</div><div><h2>Components</h2><p>Named parts of an interface: what each is, and what its neighbours are.</p></div></div>
@@ -1233,6 +1249,7 @@ button,input{font:inherit;color:inherit}
   <p class="also">also: form</p>
   
 </article></div>
+  
 </section>
 <section class="cat" id="c07" data-cat="07">
   <div class="cat-head"><div class="num">07</div><div><h2>States</h2><p>What a control looks like at rest and under the hand, and how pointing and scrolling behave.</p></div></div>
@@ -1390,6 +1407,7 @@ button,input{font:inherit;color:inherit}
   <p class="also">also: remember, saved state</p>
   
 </article></div>
+  
 </section>
 <section class="cat" id="c08" data-cat="08">
   <div class="cat-head"><div class="num">08</div><div><h2>Motion</h2><p>Time, curves, and the choreography of change.</p></div></div>
@@ -1540,6 +1558,7 @@ button,input{font:inherit;color:inherit}
   <p class="also">also: prefers-reduced-motion</p>
   
 </article></div>
+  
 </section>
 <section class="cat" id="c09" data-cat="09">
   <div class="cat-head"><div class="num">09</div><div><h2>Scroll</h2><p>Scroll-driven choreography: triggers, pins, scrubs, timelines, beats, and holds.</p></div></div>
@@ -1725,6 +1744,7 @@ button,input{font:inherit;color:inherit}
   <p class="also">also: come to rest, land, resting state</p>
   <p class="xref">see <button type="button" data-go="08.05">Easing</button>, <button type="button" data-go="08.06">Spring</button></p>
 </article></div>
+  
 </section>
 <section class="cat" id="c10" data-cat="10">
   <div class="cat-head"><div class="num">10</div><div><h2>Type effects</h2><p>Typography in motion and text as surface: how letters arrive, move, and take treatments beyond a plain fill.</p></div></div>
@@ -1987,6 +2007,7 @@ button,input{font:inherit;color:inherit}
   <p class="also">also: shine sweep, skeleton shimmer, light band</p>
   
 </article></div>
+  
 </section>
 <section class="cat" id="c11" data-cat="11">
   <div class="cat-head"><div class="num">11</div><div><h2>Direction</h2><p>The verbs of feedback: what each one asks to change, and by how much.</p></div></div>
@@ -2186,6 +2207,7 @@ button,input{font:inherit;color:inherit}
   <p class="also">also: specification, redline</p>
   
 </article></div>
+  
 </section>
 <section class="cat" id="c12" data-cat="12">
   <div class="cat-head"><div class="num">12</div><div><h2>Bugs</h2><p>Naming what is wrong precisely: the shape of a report, the kinds of failure, where they come from, and what to do about them.</p></div></div>
@@ -2462,6 +2484,7 @@ button,input{font:inherit;color:inherit}
   <p class="also">also: changed the wrong thing, applied everywhere, selector too broad</p>
   
 </article></div>
+  
 </section>
 <section class="cat" id="c13" data-cat="13">
   <div class="cat-head"><div class="num">13</div><div><h2>Build</h2><p>Words for the code and the pipeline, so the mechanics can be named without reading them.</p></div></div>
@@ -2640,6 +2663,7 @@ button,input{font:inherit;color:inherit}
   <p class="also">also: handoff doc, notes</p>
   
 </article></div>
+  
 </section>
 <section class="cat" id="c14" data-cat="14">
   <div class="cat-head"><div class="num">14</div><div><h2>Audio</h2><p>Words for plug-in and DAW work: formats, hosts, signal, time, control, and the interface conventions instruments use.</p></div></div>
@@ -2923,8 +2947,10 @@ button,input{font:inherit;color:inherit}
   <p class="also">also: trial, license key, activation</p>
   
 </article></div>
+  
 </section>
     <div class="empty" id="empty"><p></p><p>Try the effect rather than the name: “space between lines”, “stays at the top when scrolling”, “greyed out”.</p></div>
+    <p class="colophon">Definitions in quotation marks are reproduced from openly licensed sources named under each chapter: MDN Web Docs (CC BY-SA 2.5), W3C specifications (W3C Document License), Material Design guidelines (CC BY 4.0). Unquoted definitions follow the cited works in their own terms.</p>
   </main>
 </div>
 <script>
@@ -2959,146 +2985,186 @@ const CATS=[];
 const GROUPS=[['Foundations',['01','02','03','04','05']],['Interface',['06','07']],['Motion',['08','09','10']],['Working',['11','12','13']],['Audio',['14']]];
 const cat=(n,name,scope,items)=>CATS.push({n,name,scope,items});
 
+/* bibliography: cited per chapter, never on the card. Quoted text (in “ ”) is reproduced verbatim from openly licensed sources; unquoted definitions follow the cited work in its own terms. */
+const SOURCES={
+  mdn:{cite:'MDN Web Docs. Mozilla Contributors. Reference and glossary entries, reproduced under CC BY-SA 2.5.',url:'https://developer.mozilla.org'},
+  w3c:{cite:'W3C specifications (CSS, HTML, WAI-ARIA, WCAG). Quoted under the W3C Document License.',url:'https://www.w3.org/TR/'},
+  mb:{cite:'Müller-Brockmann, Josef. Grid Systems in Graphic Design. Niggli, 1981.'},
+  bringhurst:{cite:'Bringhurst, Robert. The Elements of Typographic Style. Hartley & Marks, 1992; 4th ed. 2012.'},
+  lupton:{cite:'Lupton, Ellen. Thinking with Type. Princeton Architectural Press, 2004; 2nd ed. 2010.'},
+  vignelli:{cite:'Vignelli, Massimo. The Vignelli Canon. Lars Müller, 2010.'},
+  vox:{cite:'Vox, Maximilien. Classification des caractères, 1954; adopted by the Association Typographique Internationale, 1962.'},
+  harrower:{cite:'Harrower, Tim. The Newspaper Designer’s Handbook. McGraw-Hill, 1991; 6th ed. 2007.'},
+  pocketpal:{cite:'Pocket Pal: A Graphic Arts Production Handbook. International Paper, 1934; 20th ed. 2007.'},
+  nng:{cite:'Nielsen, Jakob, and Nielsen Norman Group. Alertbox articles on web usability, 1995–.',url:'https://www.nngroup.com/articles/'},
+  marcotte:{cite:'Marcotte, Ethan. “Responsive Web Design.” A List Apart, 25 May 2010.',url:'https://alistapart.com/article/responsive-web-design/'},
+  brown:{cite:'Brown, Tim. “More Meaningful Typography.” A List Apart, 3 May 2011.',url:'https://alistapart.com/article/more-meaningful-typography/'},
+  rutter:{cite:'Rutter, Richard. “Compose to a Vertical Rhythm.” 24 ways, 2006.',url:'https://24ways.org/2006/compose-to-a-vertical-rhythm/'},
+  arnheim:{cite:'Arnheim, Rudolf. Art and Visual Perception. University of California Press, 1954; rev. 1974.'},
+  wertheimer:{cite:'Wertheimer, Max. “Untersuchungen zur Lehre von der Gestalt II.” Psychologische Forschung 4, 1923.'},
+  williams:{cite:'Williams, Robin. The Non-Designer’s Design Book. Peachpit, 1994.'},
+  material:{cite:'Material Design guidelines. Google, 2014–. Text under CC BY 4.0.',url:'https://m3.material.io'},
+  norman:{cite:'Norman, Donald A. The Design of Everyday Things. Basic Books, 1988; rev. 2013.'},
+  gibson:{cite:'Gibson, James J. The Ecological Approach to Visual Perception. Houghton Mifflin, 1979.'},
+  itten:{cite:'Itten, Johannes. The Art of Color. Reinhold, 1961.'},
+  albers:{cite:'Albers, Josef. Interaction of Color. Yale University Press, 1963.'},
+  munsell:{cite:'Munsell, Albert H. A Color Notation. Ellis, 1905.'},
+  thomas:{cite:'Thomas, Frank, and Ollie Johnston. The Illusion of Life: Disney Animation. Abbeville, 1981.'},
+  bordwell:{cite:'Bordwell, David, and Kristin Thompson. Film Art: An Introduction. McGraw-Hill, 1979; 12th ed. 2019.'},
+  roads:{cite:'Roads, Curtis. The Computer Music Tutorial. MIT Press, 1996.'},
+  zolzer:{cite:'Zölzer, Udo, ed. DAFX: Digital Audio Effects. Wiley, 2002; 2nd ed. 2011.'},
+  steinberg:{cite:'Steinberg Media Technologies. VST 3 Developer Portal. 2008–.',url:'https://steinbergmedia.github.io/vst3_dev_portal/'},
+  juce:{cite:'JUCE Framework documentation. Raw Material Software, 2004–.',url:'https://docs.juce.com'},
+  ableton:{cite:'Ableton Reference Manual. Ableton AG, 2001–.'},
+  midi:{cite:'MIDI 1.0 Detailed Specification. MIDI Manufacturers Association, 1983; rev. 1996.'},
+  gsap:{cite:'GSAP ScrollTrigger documentation. GreenSock, 2020–.',url:'https://gsap.com/docs/v3/Plugins/ScrollTrigger/'},
+  git:{cite:'Chacon, Scott, and Ben Straub. Pro Git. Apress, 2nd ed. 2014. CC BY-NC-SA 3.0.',url:'https://git-scm.com/book'},
+  istqb:{cite:'ISTQB Glossary of Testing Terms. International Software Testing Qualifications Board, v4.0, 2023.',url:'https://glossary.istqb.org'},
+  dondis:{cite:'Dondis, Donis A. A Primer of Visual Literacy. MIT Press, 1973.'},
+  buxton:{cite:'Buxton, Bill. Sketching User Experiences. Morgan Kaufmann, 2007.'},
+  tufte:{cite:'Tufte, Edward R. The Visual Display of Quantitative Information. Graphics Press, 1983.'},
+};
+
 cat('01','Layout','The bones of a page: regions, columns, edges, and how they hold when the width changes.',[
-{t:'Viewport',a:['window','screen'],k:["visible area", "what fits on screen", "without scrolling", "window size", "screen size", "the browser window"],d:'The area of the page visible in the browser window at one moment. The page itself can be far taller.',x:'the <b>page</b> (which scrolls past it) or the <b>container</b> (which is narrower).',s:'Let the hero fill the viewport and the next section start just inside it.',
+{t:'Viewport',a:['window','screen'],k:["visible area", "what fits on screen", "without scrolling", "window size", "screen size", "the browser window"],src:["mdn"],d:'“In web browser terms, it refers to the part of the document being viewed in the browser window (or on-screen, if the document is being viewed on a mobile browser or a desktop browser in full-screen mode).”',x:'the <b>page</b> (which scrolls past it) or the <b>container</b> (which is narrower).',s:'Let the hero fill the viewport and the next section start just inside it.',
  f:H.r(34,-6,52,92,'ctx')+H.tx(40,4,40,14,6)+H.r(22,20,76,40,'ln2')},
-{t:'Container',a:['wrapper','content column','max-width'],k:["centered column", "content width", "how wide the content goes", "max width", "wrapper", "the middle column"],d:'The centered column that holds content at a fixed maximum width, leaving the viewport’s sides empty on wide screens.',x:'the <b>viewport</b> (the window) or a <b>card</b> (one contained unit).',s:'Cap the container at 1200 and center it.',
+{t:'Container',a:['wrapper','content column','max-width'],k:["centered column", "content width", "how wide the content goes", "max width", "wrapper", "the middle column"],src:["mb"],d:'The type area of the page: in Müller-Brockmann’s system, the field inside the margins that carries text and image. On screen, a centred column held to a maximum width so that measure and grid keep their proportions on wide displays.',x:'the <b>viewport</b> (the window) or a <b>card</b> (one contained unit).',s:'Cap the container at 1200 and center it.',
  f:V()+H.r(30,16,60,48,'ctx')+H.tx(34,22,52,6,6)+H.dh(30,90,70)},
-{t:'Page margin',a:['outer margin','side gutter'],k:["space at the edges", "distance from the edge of the screen", "side space", "edge padding", "off the glass"],d:'The space between the container’s edge and the viewport’s edge. At phone width it is the only thing keeping text off the glass.',x:'the <b>gutter</b> (between columns) or <b>padding</b> (inside a box).',s:'Hold a 24px page margin at phone width.',
+{t:'Page margin',a:['outer margin','side gutter'],k:["space at the edges", "distance from the edge of the screen", "side space", "edge padding", "off the glass"],src:["mb", "bringhurst"],d:'The unprinted space between the type area and the edge of the format. Müller-Brockmann and Bringhurst treat the margins as proportions of the page rather than leftovers: the margins fix the type area, and the type area fixes the columns.',x:'the <b>gutter</b> (between columns) or <b>padding</b> (inside a box).',s:'Hold a 24px page margin at phone width.',
  f:V()+H.r(30,16,60,48,'ctx')+H.dh(9,30,40)+H.dh(90,111,40)},
-{t:'Column grid',a:['12-column grid','grid system','columns'],k:["divide into columns", "line things up", "twelve columns", "grid system", "the underlying grid", "column structure"],d:'The division of the container into equal vertical columns with gutters between, which every element aligns to. Twelve columns divide evenly by 2, 3, 4 and 6.',x:'a <b>card grid</b> (a layout of items) or the <b>baseline grid</b> (vertical rhythm).',s:'Put it on the 12-column grid: text spanning 7, image spanning 5.',
+{t:'Column grid',a:['12-column grid','grid system','columns'],k:["divide into columns", "line things up", "twelve columns", "grid system", "the underlying grid", "column structure"],src:["mb", "mdn"],d:'A system of vertical fields and gutters dividing the type area, to which every element on the page is aligned. Müller-Brockmann builds the grid from the leading of the body type, so that every field is a whole number of lines. “Like tables, grid layout enables an author to align elements into columns and rows.”',x:'a <b>card grid</b> (a layout of items) or the <b>baseline grid</b> (vertical rhythm).',s:'Put it on the 12-column grid: text spanning 7, image spanning 5.',
  f:V()+H.cols(6,3,14,14,92,52,'ctx')+H.r(14,14,44.3,52,'hi')},
-{t:'Gutter',a:['column gap'],k:["space between columns", "column spacing", "gap between columns"],d:'The fixed space between two columns of the grid. Content never sits in it.',x:'<b>margin</b> (outside the container) or <b>padding</b> (inside an element).',s:'Widen the gutters to 32 so the columns stop touching.',
+{t:'Gutter',a:['column gap'],k:["space between columns", "column spacing", "gap between columns"],src:["mdn"],d:'“Gutters or alleys are spacing between content tracks.”',x:'<b>margin</b> (outside the container) or <b>padding</b> (inside an element).',s:'Widen the gutters to 32 so the columns stop touching.',
  f:H.r(8,10,44,50,'ctx')+H.r(68,10,44,50,'ctx')+H.dh(52,68,35)+H.ln(52,10,52,60,'hdash')+H.ln(68,10,68,60,'hdash')+LBL('gutter · 32px between columns')},
-{t:'Span',a:['column span'],k:["stretch across columns", "take up half the width", "how many columns wide", "two thirds wide"],d:'The number of grid columns an element occupies. On twelve columns: halves are 6, thirds 4, quarters 3.',x:'a width in pixels; a span is counted in columns.',s:'Let the quote span 8 columns starting at column 3.',
+{t:'Span',a:['column span'],k:["stretch across columns", "take up half the width", "how many columns wide", "two thirds wide"],src:["mdn"],d:'“A grid column is a vertical track in a CSS grid layout, and is the space between two vertical grid lines.” A span is the number of such tracks an item occupies.',x:'a width in pixels; a span is counted in columns.',s:'Let the quote span 8 columns starting at column 3.',
  f:H.cols(6,3,12,16,96,48,'ctx')+H.r(28.5,26,63,28,'hi')},
-{t:'Row',a:['band'],k:["horizontal strip", "row height", "one line of the grid", "band across"],d:'One horizontal band of the grid. Rows stack; the layout’s height is the sum of them.',x:'a <b>section</b> (a semantic region that may hold many rows).',s:'Give the ledger 56px rows.',
+{t:'Row',a:['band'],k:["horizontal strip", "row height", "one line of the grid", "band across"],src:["mdn"],d:'“A grid row is a horizontal track in a CSS grid layout, that is the space between two horizontal grid lines.”',x:'a <b>section</b> (a semantic region that may hold many rows).',s:'Give the ledger 56px rows.',
  f:H.r(12,12,96,14,'ctx')+H.r(12,33,96,14,'hi')+H.r(12,54,96,14,'ctx')+H.dv(33,47,116)},
-{t:'Section',a:['band','block','strip'],k:["a part of the page", "chunk of the page", "full-width area", "block of content", "the next part down"],d:'A full-width horizontal region of the page with one purpose: hero, work grid, contact. Sections stack top to bottom.',x:'a <b>card</b> or a <b>row</b>; a section usually holds several of each.',s:'Add a section between the work grid and the footer for the shop.',
+{t:'Section',a:['band','block','strip'],k:["a part of the page", "chunk of the page", "full-width area", "block of content", "the next part down"],src:["mdn"],d:'“The <section> HTML element represents a generic standalone section of a document, which doesn\'t have a more specific semantic element to represent it. Sections should always have a heading, with very few exceptions.”',x:'a <b>card</b> or a <b>row</b>; a section usually holds several of each.',s:'Add a section between the work grid and the footer for the shop.',
  f:V()+HD()+H.r(9,17,102,16,'ctx')+H.r(9,33,102,22,'hi')+H.r(9,55,102,16,'ctx')},
-{t:'Hero',a:['opener','lead'],k:["the big first thing", "top of the page", "opening image", "first screen", "the intro area", "banner at the top"],d:'The first section, sized and typeset to carry the page’s thesis in one look.',x:'the <b>header</b> (the thin identity strip above it). Not necessarily full-viewport.',s:'Size the hero to its content, not to the viewport.',
+{t:'Hero',a:['opener','lead'],k:["the big first thing", "top of the page", "opening image", "first screen", "the intro area", "banner at the top"],src:["nng"],d:'Nielsen Norman Group’s name for the large image or banner placed at the top of a page as the first thing a visitor sees, usually carrying the page’s main message.',x:'the <b>header</b> (the thin identity strip above it). Not necessarily full-viewport.',s:'Size the hero to its content, not to the viewport.',
  f:V()+HD()+H.r(9,17,102,34,'hi')+H.tx(16,24,50,3,6,'paper')+H.tx(16,56,88,2,6)},
-{t:'Header',a:['masthead','top bar','site header'],k:["the strip at the top", "logo and links at the top", "top bar", "site header", "the top of every page"],d:'The strip across the top of every page carrying identity and primary navigation.',x:'the <b>hero</b> (the first content section) or a section <b>heading</b>.',s:'Keep the header 56px and let it go transparent over the hero.',
+{t:'Header',a:['masthead','top bar','site header'],k:["the strip at the top", "logo and links at the top", "top bar", "site header", "the top of every page"],src:["mdn"],d:'“The <header> HTML element represents introductory content, typically a group of introductory or navigational aids. It may contain some heading elements but also a logo, a search form, an author name, and other elements.”',x:'the <b>hero</b> (the first content section) or a section <b>heading</b>.',s:'Keep the header 56px and let it go transparent over the hero.',
  f:V()+H.r(9,9,102,10,'hi')+H.r(13,13,14,2,'paper')+H.r(80,13,6,2,'paper')+H.r(90,13,6,2,'paper')+H.r(100,13,6,2,'paper')+H.r(9,19,102,52,'ctx')},
-{t:'Nav',a:['navigation','menu'],k:["the links at the top", "menu", "links to other pages", "navigation bar", "the menu items"],d:'The set of links that move between pages or sections. May live in the header, a sidebar, or the footer.',x:'the <b>header</b> itself; the header holds the nav.',s:'Move the nav into a left sidebar, index style.',
+{t:'Nav',a:['navigation','menu'],k:["the links at the top", "menu", "links to other pages", "navigation bar", "the menu items"],src:["mdn"],d:'“The <nav> HTML element represents a section of a page whose purpose is to provide navigation links, either within the current document or to other documents. Common examples of navigation sections are menus, tables of contents, and indexes.”',x:'the <b>header</b> itself; the header holds the nav.',s:'Move the nav into a left sidebar, index style.',
  f:V()+HD()+H.r(80,12,6,2,'hi')+H.r(90,12,6,2,'hi')+H.r(100,12,6,2,'hi')+H.r(9,17,102,54,'ctx')},
-{t:'Sidebar',a:['rail','side column'],k:["column on the side", "left panel", "side navigation", "the index on the left", "side rail"],d:'A narrow vertical column beside the main content, holding navigation, an index, or notes.',x:'an <b>aside</b> (a content block that can sit anywhere) or a <b>drawer</b> (which slides in).',s:'Make the sidebar sticky so the index stays in view.',
+{t:'Sidebar',a:['rail','side column'],k:["column on the side", "left panel", "side navigation", "the index on the left", "side rail"],src:["mdn"],d:'“This example uses <aside> to mark up a paragraph in an article.” The sidebar is the column beside the main content that carries navigation, an index, or related material.',x:'an <b>aside</b> (a content block that can sit anywhere) or a <b>drawer</b> (which slides in).',s:'Make the sidebar sticky so the index stays in view.',
  f:V()+H.r(9,9,28,62,'hi')+H.tx(13,15,16,5,6,'paper')+H.tx(44,16,60,7,6)},
-{t:'Footer',a:['page foot'],k:["the bottom of the page", "contact at the bottom", "bottom strip", "the very end of the page"],d:'The strip at the bottom of every page: contact, colophon, secondary links.',x:'a <b>section</b>; the footer repeats on every page.',s:'Collapse the footer to one line at phone width.',
+{t:'Footer',a:['page foot'],k:["the bottom of the page", "contact at the bottom", "bottom strip", "the very end of the page"],src:["mdn"],d:'“The <footer> HTML element represents a footer for its nearest ancestor sectioning content or sectioning root element. A <footer> typically contains information about the author of the section, copyright data or links to related documents.”',x:'a <b>section</b>; the footer repeats on every page.',s:'Collapse the footer to one line at phone width.',
  f:V()+HD()+H.r(9,17,102,42,'ctx')+H.r(9,59,102,12,'hi')+H.r(13,64,20,2,'paper')+H.r(90,64,16,2,'paper')},
-{t:'Aside',a:['sidenote','marginal note','callout'],k:["note in the margin", "side note next to the text", "callout box", "related info beside"],d:'A block of related but secondary content placed beside the main flow, often in the margin.',x:'the <b>sidebar</b> (site furniture) or a <b>pull quote</b> (lifted from the text itself).',s:'Put the material list in an aside beside the essay.',
+{t:'Aside',a:['sidenote','marginal note','callout'],k:["note in the margin", "side note next to the text", "callout box", "related info beside"],src:["mdn"],d:'“The <aside> HTML element represents a portion of a document whose content is only indirectly related to the document\'s main content.”',x:'the <b>sidebar</b> (site furniture) or a <b>pull quote</b> (lifted from the text itself).',s:'Put the material list in an aside beside the essay.',
  f:H.tx(14,16,56,9,6)+H.r(80,22,28,24,'ctx')+H.tx(84,27,20,3,5,'barhi')},
-{t:'Fold',a:['above the fold','below the fold'],k:["what you see before scrolling", "first screen", "above the scroll", "the cutoff of the first view"],d:'The bottom edge of the first viewport. What sits above it is seen without scrolling.',x:'a fixed pixel height; the fold moves with the window.',s:'Get the first three tiles above the fold.',
+{t:'Fold',a:['above the fold','below the fold'],k:["what you see before scrolling", "first screen", "above the scroll", "the cutoff of the first view"],src:["nng"],d:'Nielsen’s term, borrowed from the newspaper fold, for the bottom edge of the first screen: what sits above it is seen without scrolling, and his eyetracking studies found that readers spend most of their viewing time there.',x:'a fixed pixel height; the fold moves with the window.',s:'Get the first three tiles above the fold.',
  f:H.r(30,-6,60,92,'ctx')+H.tx(36,4,48,6,6)+H.cols(2,4,36,40,48,14,'ctx2')+H.cols(2,4,36,58,48,14,'ctx2')+H.ln(12,46,108,46,'dash')+H.t(96,43,'fold','lbl',8)},
-{t:'Full-bleed',a:['edge-to-edge','bleed'],k:["touch the edges", "no margin", "all the way across", "goes to the edge", "wall to wall", "wider than the content"],d:'An element that runs to the viewport edges, ignoring the container’s margins.',x:'a wide <b>container</b>; a bleed has no margin at all.',s:'Let the image go full-bleed but keep the caption in the container.',
+{t:'Full-bleed',a:['edge-to-edge','bleed'],k:["touch the edges", "no margin", "all the way across", "goes to the edge", "wall to wall", "wider than the content"],src:["pocketpal"],d:'Bleed: a printed image that runs past the trim edge of the page so that no margin shows after cutting. On screen, an element that runs to the viewport edges, ignoring the container.',x:'a wide <b>container</b>; a bleed has no margin at all.',s:'Let the image go full-bleed but keep the caption in the container.',
  f:V()+H.r(30,14,60,12,'ctx')+H.r(9,30,102,24,'hi')+H.r(30,58,60,10,'ctx')},
 {t:'Inset',a:['set in','indented'],k:["pushed in from the edges", "set inside", "with space around it", "indented box", "not touching the edge"],d:'Positioned inward from its parent’s edges by a fixed distance on every side.',x:'<b>padding</b> (space inside a box), though the result looks the same; inset describes placement.',s:'Inset the video 24px inside the tile.',
  f:H.r(16,12,88,56,'ctx')+H.r(28,20,64,40,'hi')+H.dh(16,28,40)+H.dv(12,20,60)},
 {t:'Offset',a:['shifted','nudged','staggered'],k:["move it down a bit", "push it over", "shifted", "staggered", "not lined up on purpose", "nudged"],d:'Moved from its natural grid position by a deliberate distance, usually to break alignment on purpose.',x:'<b>misaligned</b> (accidental) or <b>inset</b> (moved inward on every side).',s:'Offset the second column down by one row.',
  f:H.r(16,12,40,44,'ctx')+H.r(64,24,40,44,'hi')+H.ln(64,12,64,24,'dash')+H.dv(12,24,110)},
-{t:'Overlap',a:['layering','stacking','z-order'],k:["on top of", "behind", "in front of", "layered over", "stacked on top", "sitting over the image"],d:'Elements sharing the same space, ordered front to back. Order is set by z-index inside a stacking context.',x:'an <b>overlay</b> (a translucent layer over an image) or a <b>modal</b> (a layer over the whole page).',s:'Let the title overlap the image’s bottom edge by half its height.',
+{t:'Overlap',a:['layering','stacking','z-order'],k:["on top of", "behind", "in front of", "layered over", "stacked on top", "sitting over the image"],src:["mdn"],d:'“The z-index CSS property sets the z-order of a positioned element and its descendants or flex and grid items. Overlapping elements with a larger z-index cover those with a smaller one.”',x:'an <b>overlay</b> (a translucent layer over an image) or a <b>modal</b> (a layer over the whole page).',s:'Let the title overlap the image’s bottom edge by half its height.',
  f:H.img(20,10,64,44,'ctx')+H.r(48,36,56,30,'hi')+H.tx(54,42,40,3,6,'paper')},
-{t:'Sticky',a:['pinned on scroll'],k:["stays when I scroll", "follows me", "sticks to the top", "stays in view", "pinned while scrolling", "locks at the top"],d:'Scrolls with the page until it reaches an edge, then holds there while its parent is in view.',x:'<b>fixed</b> (never in the flow at all).',s:'Make the section title sticky at the top while its grid scrolls past.',
+{t:'Sticky',a:['pinned on scroll'],k:["stays when I scroll", "follows me", "sticks to the top", "stays in view", "pinned while scrolling", "locks at the top"],src:["mdn"],d:'“The element is positioned according to the normal flow of the document, and then offset relative to its nearest scrolling ancestor and containing block (nearest block-level ancestor), including table-related elements, based on the values of top, right, bottom, and left.”',x:'<b>fixed</b> (never in the flow at all).',s:'Make the section title sticky at the top while its grid scrolls past.',
  f:FR2(H.r(6,10,44,6,'ctx2')+H.tx(6,20,44,6,6),H.g('data-a="scroll"',H.tx(70,4,44,9,6))+H.r(70,10,44,6,'mask')+H.r(70,10,44,6,'hi')+H.arr(114,52,114,20,'dim'),'in flow','stuck at the top')},
-{t:'Fixed',a:['pinned','locked'],k:["always there", "does not move when scrolling", "stays put", "locked to the screen", "floating bar", "pinned"],d:'Anchored to the viewport regardless of scrolling. A fixed bar never moves.',x:'<b>sticky</b> (which starts in the flow).',s:'Fix the nav to the bottom edge on phones.',
+{t:'Fixed',a:['pinned','locked'],k:["always there", "does not move when scrolling", "stays put", "locked to the screen", "floating bar", "pinned"],src:["mdn"],d:'“The element is removed from the normal document flow, and no space is created for the element in the page layout. The element is positioned relative to its initial containing block, which is the viewport in the case of visual media.”',x:'<b>sticky</b> (which starts in the flow).',s:'Fix the nav to the bottom edge on phones.',
  f:V()+H.g('data-a="scroll"',H.tx(16,14,60,10,6))+H.r(9,61,102,10,'mask')+H.r(9,61,102,10,'hi')+H.arr(100,52,100,22)},
 {t:'Stack',a:['vertical stack','stacked'],k:["one under another", "in a column", "pile up vertically", "on top of each other", "stack on mobile"],d:'Items placed one under another in a single column with a set gap. The default when a row wraps at phone width.',x:'a <b>list</b> (items of one kind) or <b>overlap</b> (shared space).',s:'Stack the two panes at tablet width.',
  f:H.r(24,10,72,16,'ctx')+H.r(24,32,72,16,'ctx')+H.r(24,54,72,16,'ctx')+H.dv(26,32,104)},
 {t:'Split',a:['two-up','50/50','side by side','three-up'],k:["half and half", "side by side", "next to each other", "two panes", "left and right", "sixty forty"],d:'Two or more panes sharing a row. A 60/40 split leans one side; two-up and three-up name the count.',x:'<b>columns</b> of one text; the panes hold different things.',s:'Make it a 60/40 split with the image on the left.',
  f:H.img(12,12,56,56,'ctx')+H.r(72,12,36,56,'ctx')+H.tx(76,18,28,7,6)+H.dh(12,68,74)+H.dh(72,108,74)},
-{t:'Aspect ratio',a:['proportion','ratio'],k:["shape of the box", "square", "widescreen", "portrait or landscape", "sixteen by nine", "proportions", "tall or wide"],d:'Width to height of a box, written width:height. 1:1 square, 3:2 photographic, 16:9 video, 4:5 portrait.',x:'size; boxes of any size can share a ratio.',s:'Hold every tile at 3:2 and let the image crop to it.',
+{t:'Aspect ratio',a:['proportion','ratio'],k:["shape of the box", "square", "widescreen", "portrait or landscape", "sixteen by nine", "proportions", "tall or wide"],src:["mdn"],d:'“The aspect-ratio CSS property allows you to define the desired width-to-height ratio of an element\'s box.” Common ratios: 1:1, 3:2, 16:9, 4:5.',x:'size; boxes of any size can share a ratio.',s:'Hold every tile at 3:2 and let the image crop to it.',
  f:H.r(8,20,30,30,'ctx')+H.t(8,60,'1:1','lbl',8)+H.r(44,20,36,24,'ctx')+H.t(44,60,'3:2','lbl',8)+H.r(86,20,32,18,'ctx')+H.t(86,60,'16:9','lbl',8)},
-{t:'Breakpoint',a:['media query'],k:["when it changes for phone", "mobile version", "tablet size", "the width where it switches", "responsive point"],d:'The viewport width at which the layout changes rules: columns drop, the sidebar stacks, type steps down.',x:'a device; a breakpoint is a width.',s:'Add a breakpoint at 860 where the sidebar stacks above the grid.',
+{t:'Breakpoint',a:['media query'],k:["when it changes for phone", "mobile version", "tablet size", "the width where it switches", "responsive point"],src:["mdn"],d:'“The points at which a media query is introduced, and the layout changes, are known as breakpoints.”',x:'a device; a breakpoint is a width.',s:'Add a breakpoint at 860 where the sidebar stacks above the grid.',
  f:H.r(6,14,56,52,'ln')+H.cols(3,3,10,18,48,44,'ctx')+H.r(68,14,30,52,'ln')+H.cols(2,3,71,18,24,44,'ctx')+H.r(104,14,12,52,'ln')+H.r(106,18,8,44,'ctx')},
-{t:'Fluid',a:['responsive','elastic'],k:["scales with the window", "smoothly resizes", "stretches to fit", "grows with the screen", "percentage width"],d:'Sizing that scales continuously with the viewport rather than stepping at breakpoints, usually in percentages or viewport units.',x:'<b>adaptive</b> (which steps at breakpoints).',s:'Make the hero type fluid between 32 and 72.',
+{t:'Fluid',a:['responsive','elastic'],k:["scales with the window", "smoothly resizes", "stretches to fit", "grows with the screen", "percentage width"],src:["mdn", "marcotte"],d:'“The term responsive design, coined by Ethan Marcotte in 2010, described using fluid grids, fluid images, and media queries to create responsive content.”',x:'<b>adaptive</b> (which steps at breakpoints).',s:'Make the hero type fluid between 32 and 72.',
  f:H.r(6,20,44,40,'ln')+H.r(10,28,36,10,'hi')+H.r(58,12,56,56,'ln')+H.r(63,22,46,14,'hi')+H.arr(52,40,56,40)},
-{t:'Masonry',a:['Pinterest grid'],k:["uneven grid", "different heights packed", "pinterest style", "staggered tiles", "no straight rows"],d:'A grid whose items keep their own heights and pack upward into columns, leaving no fixed rows.',x:'a <b>card grid</b> (equal rows).',s:'Not masonry; keep the rows even.',
+{t:'Masonry',a:['Pinterest grid'],k:["uneven grid", "different heights packed", "pinterest style", "staggered tiles", "no straight rows"],src:["mdn"],d:'“Grid lanes layout is a layout method where one axis uses a strict grid layout and the other uses a stacking algorithm. Each item is placed into the lane with the most available space, producing a tightly packed layout without strict tracks on the stacking axis.”',x:'a <b>card grid</b> (equal rows).',s:'Not masonry; keep the rows even.',
  f:H.r(12,10,28,30,'ctx')+H.r(12,44,28,26,'ctx')+H.r(46,10,28,18,'ctx')+H.r(46,32,28,38,'ctx')+H.r(80,10,28,40,'ctx')+H.r(80,54,28,16,'ctx')},
 ]);
 
 cat('02','Space','Distances, rhythms, and the grids that make them regular.',[
-{t:'Padding',a:['inner spacing','inset spacing'],k:["space inside", "room inside the box", "breathing room inside the button", "inner spacing", "text touching the edge of the box"],d:'Space inside an element, between its edge and its content. Part of the element: a background fills it.',x:'<b>margin</b> (outside the edge).',s:'Give the cards 24px padding on all sides.',
+{t:'Padding',a:['inner spacing','inset spacing'],k:["space inside", "room inside the box", "breathing room inside the button", "inner spacing", "text touching the edge of the box"],src:["mdn"],d:'“An element\'s padding area is the space between its content and its border.”',x:'<b>margin</b> (outside the edge).',s:'Give the cards 24px padding on all sides.',
  f:H.r(20,12,80,56,'ln')+H.r(32,22,56,36,'hi')+H.dh(20,32,40)+H.dv(12,22,60)},
-{t:'Margin',a:['outer spacing'],k:["space outside", "push it away from the next thing", "gap around", "outer spacing", "distance between blocks"],d:'Space outside an element, between its edge and its neighbours. Empty: no background fills it. Vertical margins can collapse into each other.',x:'<b>padding</b> (inside).',s:'Add 48px margin above each section heading.',
+{t:'Margin',a:['outer spacing'],k:["space outside", "push it away from the next thing", "gap around", "outer spacing", "distance between blocks"],src:["mdn"],d:'“Margin box: The margin is the outermost layer, wrapping the content, padding, and border as whitespace between this box and other elements; size it using margin and related properties.” “The top and bottom margins of blocks are sometimes combined (collapsed) into a single margin whose size is the largest of the individual margins (or just one of them, if they are equal), a behavior known as margin collapsing.”',x:'<b>padding</b> (inside).',s:'Add 48px margin above each section heading.',
  f:H.r(12,12,96,20,'ctx')+H.r(12,48,96,20,'hi')+H.dv(32,48,116)},
-{t:'Gap',a:['grid gap','spacing between items'],k:["space between the tiles", "grid spacing", "distance between items", "tile spacing", "column and row gaps"],d:'Space between siblings in a grid or flex row, set once on the parent instead of as margins on each child.',x:'<b>gutter</b> (the grid-system term), though the two coincide in a column grid.',s:'Set the tile grid gap to 32.',
+{t:'Gap',a:['grid gap','spacing between items'],k:["space between the tiles", "grid spacing", "distance between items", "tile spacing", "column and row gaps"],src:["mdn"],d:'“The gap CSS shorthand property sets the gaps (also called gutters) between rows and columns on multi-column, flex, and grid containers.”',x:'<b>gutter</b> (the grid-system term), though the two coincide in a column grid.',s:'Set the tile grid gap to 32.',
  f:H.cols(3,10,10,20,100,40,'ctx')+H.dh(36.7,46.7,40)+H.dh(73.3,83.3,40)},
-{t:'Whitespace',a:['negative space','empty space','air'],k:["empty area", "blank space", "negative space", "air", "room around things", "nothing there on purpose"],d:'The unmarked area of a layout. Structural, not leftover: it groups, separates and ranks without a single line.',x:'white; the ground can be any color.',s:'More whitespace between sections; the page reads cramped.',
+{t:'Whitespace',a:['negative space','empty space','air'],k:["empty area", "blank space", "negative space", "air", "room around things", "nothing there on purpose"],src:["mb"],d:'The unprinted area of the composition. In Müller-Brockmann’s grid systems empty space is an active element of the design with the same standing as type and image, not what remains after they are placed.',x:'white; the ground can be any color.',s:'More whitespace between sections; the page reads cramped.',
  f:H.r(64,44,32,20,'hi')},
-{t:'Baseline grid',a:['4px grid','8px grid','vertical grid'],k:["lines that all the text sits on", "vertical grid", "text lines up across columns", "four pixel grid", "eight pixel grid"],d:'Horizontal lines at a fixed interval that every leading and block space is a multiple of, so text in neighbouring columns shares baselines.',x:'the <b>column grid</b> (vertical divisions).',s:'Everything on a 4px baseline grid; leadings at 20, 24 and 32.',
+{t:'Baseline grid',a:['4px grid','8px grid','vertical grid'],k:["lines that all the text sits on", "vertical grid", "text lines up across columns", "four pixel grid", "eight pixel grid"],src:["mb"],d:'In Müller-Brockmann’s method the leading of the body text sets a horizontal grid across the whole type area. Every line of every column sits on it, so lines register across columns and every field of the grid is a whole number of lines tall.',x:'the <b>column grid</b> (vertical divisions).',s:'Everything on a 4px baseline grid; leadings at 20, 24 and 32.',
  f:[8,16,24,32,40,48,56,64,72].map(y=>H.ln(8,y,112,y,'hdash')).join('')+H.tx(14,14,40,8,8,'barhi')+H.r(64,14,40,4,'hi')+H.tx(64,30,40,4,8,'barhi')},
-{t:'Spacing scale',a:['spacing tokens','space system'],k:["set of spacing values", "steps", "consistent spacing", "spacing system", "the next size up"],d:'The fixed set of distances used everywhere: 4, 8, 12, 16, 24, 32, 48, 64. No value outside the set.',x:'“a little more”; every step is named.',s:'Use the next step on the spacing scale: 32, not 28.',
+{t:'Spacing scale',a:['spacing tokens','space system'],k:["set of spacing values", "steps", "consistent spacing", "spacing system", "the next size up"],src:["material"],d:'Material Design’s spacing method: every measurement is taken from an 8 dp grid, with a 4 dp grid for small elements, so that spacing is chosen from a fixed set rather than case by case.',x:'“a little more”; every step is named.',s:'Use the next step on the spacing scale: 32, not 28.',
  f:H.r(12,12,4,6,'hi')+H.r(12,22,8,6,'hi')+H.r(12,32,16,6,'hi')+H.r(12,42,24,6,'hi')+H.r(12,52,32,6,'hi')+H.r(12,62,48,6,'hi')+H.t(70,18,'4','lbl2',8)+H.t(70,28,'8','lbl2',8)+H.t(70,38,'16','lbl2',8)+H.t(70,48,'24','lbl2',8)+H.t(70,58,'32','lbl2',8)+H.t(70,68,'48','lbl2',8)},
-{t:'Modular scale',a:['type scale','ratio'],k:["sizes that grow by a ratio", "type sizes", "size steps", "how the sizes relate", "scale of sizes"],d:'Type sizes derived from one base by a ratio: 15 × 1.25 gives 15, 19, 23, 29, 37. The ratio, not taste, sets each step.',x:'the <b>spacing scale</b>; this one governs size.',s:'Derive the headings from a 1.333 scale off 15.',
+{t:'Modular scale',a:['type scale','ratio'],k:["sizes that grow by a ratio", "type sizes", "size steps", "how the sizes relate", "scale of sizes"],src:["brown"],d:'“A modular scale is a sequence of numbers that relate to one another in a meaningful way.”',x:'the <b>spacing scale</b>; this one governs size.',s:'Derive the headings from a 1.333 scale off 15.',
  f:H.t(10,60,'A','lbl',14)+H.t(24,60,'A','lbl',19)+H.t(42,60,'A','lbl',25)+H.t(64,60,'A','lbl',33)+H.t(90,60,'A','lbl',44)},
-{t:'Vertical rhythm',a:['rhythm'],k:["even spacing down the page", "consistent up and down", "the beat of the page", "regular spacing"],d:'The regular pulse of a page from top to bottom, produced when every leading and every block space sits on the baseline grid.',x:'consistent margins alone; rhythm needs the grid.',s:'The rhythm breaks at the ledger; its rows are off-grid.',
+{t:'Vertical rhythm',a:['rhythm'],k:["even spacing down the page", "consistent up and down", "the beat of the page", "regular spacing"],src:["rutter", "bringhurst"],d:'Rutter: “vertical rhythm – the spacing and arrangement of text as the reader descends the page – is contributed to by three factors: font size, line height and margin or padding.” Bringhurst: “Space in typography is like time in music.”',x:'consistent margins alone; rhythm needs the grid.',s:'The rhythm breaks at the ledger; its rows are off-grid.',
  f:[8,16,24,32,40,48,56,64,72].map(y=>H.ln(8,y,112,y,'hdash')).join('')+H.r(14,16,40,8,'hi')+H.tx(14,32,40,4,8,'barhi')+H.r(64,16,40,8,'ctx2')+H.tx(64,29,40,4,8,'bar')},
-{t:'Optical centering',a:['optical vs mathematical'],k:["looks off center even though it is centered", "sits too low", "visually centered", "center by eye"],d:'Placing something slightly above true center, where the eye reads it as centered. Mathematically centered marks look low.',x:'misalignment.',s:'Optically center the mark in the tile; it is sitting low.',
+{t:'Optical centering',a:['optical vs mathematical'],k:["looks off center even though it is centered", "sits too low", "visually centered", "center by eye"],src:["arnheim"],d:'Arnheim’s observation that the perceptual centre of a field lies above its geometric centre: an element placed at the mathematical middle reads as sitting low.',x:'misalignment.',s:'Optically center the mark in the tile; it is sitting low.',
  f:H.r(30,10,60,60,'ln')+H.ln(30,40,90,40,'hdash')+H.c(60,37,8,'hi')},
-{t:'Density',a:['tight','loose','airy','dense','compact'],k:["too much packed in", "too spread out", "tight", "airy", "compact", "loose", "how much is on screen"],d:'How much content sits in a given area. Set by the spacing scale, not by shrinking type. Dense reads as effortful or lazy depending on order; airy reads as calm.',x:'<b>size</b>; a dense layout can have large type.',s:'Too dense; move every spacing value up one step.',
+{t:'Density',a:['tight','loose','airy','dense','compact'],k:["too much packed in", "too spread out", "tight", "airy", "compact", "loose", "how much is on screen"],src:["material"],d:'Material Design’s term for how much content a component fits into a given area; higher density fits more, lower density gives more room.',x:'<b>size</b>; a dense layout can have large type.',s:'Too dense; move every spacing value up one step.',
  f:H.tx(10,12,44,10,5.5)+H.tx(66,14,44,5,11)},
-{t:'Registration',a:['alignment edge','shared edge'],k:["they do not line up", "line them up", "share an edge", "same left edge", "align the edges"],d:'Several elements sharing one edge or baseline. What the grid exists to produce.',x:'<b>centering</b>.',s:'Register the caption’s left edge with the image’s.',
+{t:'Registration',a:['alignment edge','shared edge'],k:["they do not line up", "line them up", "share an edge", "same left edge", "align the edges"],src:["pocketpal"],d:'Register: in printing, the exact alignment of successive impressions or colours with one another. In layout, elements sharing a common edge.',x:'<b>centering</b>.',s:'Register the caption’s left edge with the image’s.',
  f:H.ln(30,6,30,74,'dash')+H.img(30,10,60,30,'ctx')+H.r(30,46,40,3,'barhi')+H.r(30,54,56,2,'bar')+H.r(30,60,48,2,'bar')},
-{t:'Hang',a:['outdent','hanging'],k:["stick out into the margin", "bullets outside the text", "numbers in the margin", "outdent"],d:'Letting an element extend past the alignment edge so the text it belongs to stays registered: a bullet, a quotation mark, an index number.',x:'an <b>offset</b> (which breaks alignment on purpose).',s:'Hang the index numbers in the margin.',
+{t:'Hang',a:['outdent','hanging'],k:["stick out into the margin", "bullets outside the text", "numbers in the margin", "outdent"],src:["bringhurst"],d:'Bringhurst’s hanging indent and hanging punctuation: setting a first line, a bullet, or a quotation mark past the left margin so that the text block itself keeps a clean edge.',x:'an <b>offset</b> (which breaks alignment on purpose).',s:'Hang the index numbers in the margin.',
  f:H.ln(36,6,36,74,'dash')+H.r(22,16,8,3,'barhi')+H.tx(36,16,70,3,6)+H.r(22,40,8,3,'barhi')+H.tx(36,40,70,3,6)},
 {t:'Breathing room',a:['air','room'],k:["give it room", "let it breathe", "too tight", "more air", "claustrophobic", "needs space"],d:'Spacing generous enough that elements read as separate objects at rest. In this studio the floors are 16px gaps, 18 to 24px card padding, and 36px above section heads.',x:'whitespace as decoration; the floor is functional.',s:'Let the form breathe; double the row height.',
  f:H.r(36,24,48,32,'hi')+H.dh(8,36,40)+H.dh(84,112,40)+H.dv(4,24,60)+H.dv(56,76,60)},
-{t:'Proximity',a:['grouping'],k:["things near each other look related", "group by closeness", "label close to its field", "which things belong together"],d:'Items closer to each other than to anything else read as one group. The cheapest way to group without lines or boxes.',x:'a <b>border</b>.',s:'Use proximity: pull the label toward its field, away from the previous one.',
+{t:'Proximity',a:['grouping'],k:["things near each other look related", "group by closeness", "label close to its field", "which things belong together"],src:["wertheimer", "williams"],d:'The Gestalt law of proximity (Wertheimer, 1923): elements close to one another are perceived as a group. Robin Williams’s first principle of design: group related items together.',x:'a <b>border</b>.',s:'Use proximity: pull the label toward its field, away from the previous one.',
  f:H.r(14,12,24,3,'barhi')+H.r(14,19,90,10,'ln')+H.r(14,44,24,3,'barhi')+H.r(14,51,90,10,'ln')},
 ]);
 
 cat('03','Type','Letters, lines, and the measurements between them.',[
-{t:'Typeface vs font',a:['family','face','cut'],k:["the font", "change the font", "which typeface", "font family", "the type"],d:'A typeface is the design: Instrument Sans. A font is one cut of it: Instrument Sans Medium at 15px. Name a typeface; specify a font.',x:'interchangeable in a brief; “change the font” may mean the weight or the family.',s:'Keep the typeface, change the font: Medium instead of Regular.',
+{t:'Typeface vs font',a:['family','face','cut'],k:["the font", "change the font", "which typeface", "font family", "the type"],src:["lupton"],d:'Lupton draws the line: a typeface is the design of the letterforms; a font is the software (or once, the metal) that delivers it. In CSS, font-family names the typeface.',x:'interchangeable in a brief; “change the font” may mean the weight or the family.',s:'Keep the typeface, change the font: Medium instead of Regular.',
  f:H.t(10,56,'Aa','thin',34)+H.t(48,56,'Aa','lbl',34)+H.t(86,56,'Aa','bold',34)},
-{t:'Weight',a:['thin','light','regular','medium','semibold','bold','black'],k:["heavier", "thicker", "lighter type", "darker text", "bolder", "too bold", "too thin"],d:'The stroke thickness of a cut, on a scale from 100 (Thin) to 900 (Black). 400 is Regular, 700 is Bold.',x:'<b>size</b> or <b>tracking</b>; a heavier weight at the same size darkens the block.',s:'Drop the headings from 700 to 500.',
+{t:'Weight',a:['thin','light','regular','medium','semibold','bold','black'],k:["heavier", "thicker", "lighter type", "darker text", "bolder", "too bold", "too thin"],src:["mdn"],d:'“The font-weight CSS property sets the weight (or boldness) of the font. The weights available depend on the font-family that is currently set.” The CSS scale runs 100 to 900; 400 is normal, 700 is bold.',x:'<b>size</b> or <b>tracking</b>; a heavier weight at the same size darkens the block.',s:'Drop the headings from 700 to 500.',
  f:H.t(10,50,'Ag','thin',30)+H.t(48,50,'Ag','lbl',30)+H.t(86,50,'Ag','bold',30)+H.t(10,68,'400','lbl2',8)+H.t(48,68,'500','lbl2',8)+H.t(86,68,'700','lbl2',8)},
-{t:'Size',a:['point size','px'],k:["bigger text", "smaller text", "font size", "point size", "too small to read"],d:'The height of the em box, not of any letter. Two faces at 15px can read as different sizes because their x-heights differ.',x:'<b>cap height</b> or <b>x-height</b> (the visible measures).',s:'Bump the body to 16 and hold the leading at 24.',
+{t:'Size',a:['point size','px'],k:["bigger text", "smaller text", "font size", "point size", "too small to read"],src:["mdn", "bringhurst"],d:'“The font-size CSS property sets the size of the font.” In Bringhurst’s terms the size is the body of the type, the em, not the height of any letter.',x:'<b>cap height</b> or <b>x-height</b> (the visible measures).',s:'Bump the body to 16 and hold the leading at 24.',
  f:H.r(26,12,50,56,'hair')+H.t(30,52,'Ag','lbl',40)+H.dv(12,68,86)+H.t(92,42,'em','lbl2',8)},
-{t:'Leading',a:['line-height','line spacing'],k:["space between lines", "lines too close", "lines too far apart", "cramped lines", "line spacing", "double spaced", "open up the lines"],d:'The distance from one baseline to the next. Named for the strips of lead set between lines of metal type. Written as a ratio (1.5) or a length (24px).',x:'<b>tracking</b> (between letters) or <b>paragraph spacing</b> (between blocks).',s:'Open the body leading from 1.4 to 1.6.',
+{t:'Leading',a:['line-height','line spacing'],k:["space between lines", "lines too close", "lines too far apart", "cramped lines", "line spacing", "double spaced", "open up the lines"],src:["mdn"],d:'“In typography, leading is an amount of space included above and below text to provide spacing between lines. Historically, in physical typesetting, pieces of actual lead were used to implement this spacing, which is where the name comes from.”',x:'<b>tracking</b> (between letters) or <b>paragraph spacing</b> (between blocks).',s:'Open the body leading from 1.4 to 1.6.',
  f:H.tx(8,18,70,3,16,'bar',3)+H.ln(8,21,78,21,'hdash')+H.ln(8,37,78,37,'hdash')+H.dv(21,37,92)+H.t(97,32,'24','lbl',8)+LBL('leading · baseline to baseline')},
-{t:'Tracking',a:['letter-spacing'],k:["space between letters", "spread the letters", "letters too tight", "loosen the letters", "letter spacing", "spaced out caps"],d:'Uniform space added between every letter of a run. Set in em (.04em) so it scales with the size.',x:'<b>kerning</b> (one pair) or <b>word spacing</b>.',s:'Track the caption out .04em and leave the body at zero.',
+{t:'Tracking',a:['letter-spacing'],k:["space between letters", "spread the letters", "letters too tight", "loosen the letters", "letter spacing", "spaced out caps"],src:["mdn"],d:'“The letter-spacing CSS property sets the spacing between text characters. This value is added to the natural spacing between characters while rendering the text.”',x:'<b>kerning</b> (one pair) or <b>word spacing</b>.',s:'Track the caption out .04em and leave the body at zero.',
  f:H.t(12,34,'TRACK','lbl',16)+H.t(12,64,'TRACK','lbl',16,'letter-spacing="6"')+H.t(100,34,'0','lbl2',8)+H.t(100,64,'.1','lbl2',8)},
-{t:'Kerning',a:['pair spacing'],k:["gap between two letters", "the A and V look far apart", "two letters too close", "uneven letter gaps", "pair spacing"],d:'The adjustment of space between one specific pair of letters, such as AV or To, so their gap matches the rest. Fonts carry kerning tables; the browser applies them when font-kerning is on.',x:'<b>tracking</b>, which applies to every pair.',s:'The W and A are gapping in the wordmark; kern them in.',
+{t:'Kerning',a:['pair spacing'],k:["gap between two letters", "the A and V look far apart", "two letters too close", "uneven letter gaps", "pair spacing"],src:["mdn"],d:'“Kerning affects how letters are spaced. In well-kerned fonts, this feature makes character spacing more uniform and pleasant to read by reducing white space between certain character combinations.”',x:'<b>tracking</b>, which applies to every pair.',s:'The W and A are gapping in the wordmark; kern them in.',
  f:H.t(28,58,'A','lbl',44)+H.t(64,58,'V','lbl',44)+H.dh(56,66,66)},
-{t:'Measure',a:['line length','column width'],k:["lines too long", "too many words per line", "column too wide to read", "line length", "narrow the text"],d:'The length of a line of text, counted in characters. 45 to 75 reads comfortably; 66 is the classic target.',x:'the container width; measure is counted in characters at the set size.',s:'Cap the essay’s measure at 68 characters.',
+{t:'Measure',a:['line length','column width'],k:["lines too long", "too many words per line", "column too wide to read", "line length", "narrow the text"],src:["bringhurst"],d:'Bringhurst’s guidance: 45 to 75 characters per line is satisfactory for a single column of text; 66 characters, counting letters and spaces, is widely regarded as ideal.',x:'the container width; measure is counted in characters at the set size.',s:'Cap the essay’s measure at 68 characters.',
  f:H.tx(14,18,84,7,6)+H.dh(14,98,64)+H.t(50,74,'66 ch','lbl2',8)},
-{t:'Baseline',a:['base line'],k:["the line the letters sit on", "text not lining up", "bottoms of the letters", "align the text bottoms"],d:'The invisible line the letters sit on. Descenders hang below it. Baselines, not box edges, are what the eye aligns.',x:'the bottom of the text box.',s:'Align the caption’s baseline to the heading’s, not the boxes.',
+{t:'Baseline',a:['base line'],k:["the line the letters sit on", "text not lining up", "bottoms of the letters", "align the text bottoms"],src:["mdn"],d:'“A baseline is an imaginary line along the inline axis of a line box along which individual glyphs of text are aligned.”',x:'the bottom of the text box.',s:'Align the caption’s baseline to the heading’s, not the boxes.',
  f:H.t(14,50,'Agp','lbl',36)+H.t(80,50,'xy','lbl',18)+H.ln(8,50,112,50,'dash')},
-{t:'x-height / cap height',a:['x-height','cap height'],k:["how tall the lowercase is", "height of capitals", "looks small for its size", "short letters"],d:'x-height is the height of a lowercase x; cap height is the height of an H. Together they set how large a face reads at a given size.',x:'<b>size</b>; a large x-height reads bigger at the same px.',s:'Pick a face with a taller x-height so 14px reads.',
+{t:'x-height / cap height',a:['x-height','cap height'],k:["how tall the lowercase is", "height of capitals", "looks small for its size", "short letters"],src:["bringhurst"],d:'In Bringhurst’s glossary the x-height is the height of the lowercase letters without ascenders or descenders, taken from the x; the cap height is the height of the capitals.',x:'<b>size</b>; a large x-height reads bigger at the same px.',s:'Pick a face with a taller x-height so 14px reads.',
  f:H.t(20,56,'Hx','lbl',40)+H.ln(12,56,78,56,'dash')+H.ln(12,27,78,27,'hdash')+H.ln(12,38,78,38,'hdash')+H.dv(27,56,88)+H.dv(38,56,104)},
-{t:'Ascender / descender',a:['ascender','descender'],k:["the tails of letters hanging down", "the tall parts of letters", "the g hangs below", "letters touching the next line"],d:'Strokes rising above the x-height (b, d, k) and dropping below the baseline (g, p, y). Tight leading lets descenders touch the next line’s ascenders.',x:'part of the cap height; ascenders often rise past it.',s:'Not enough leading; the descenders are hitting the caps below.',
+{t:'Ascender / descender',a:['ascender','descender'],k:["the tails of letters hanging down", "the tall parts of letters", "the g hangs below", "letters touching the next line"],src:["bringhurst"],d:'Bringhurst: ascenders are the strokes of lowercase letters that rise above the x-height (b, d, k); descenders are the strokes that fall below the baseline (g, p, y).',x:'part of the cap height; ascenders often rise past it.',s:'Not enough leading; the descenders are hitting the caps below.',
  f:H.t(24,50,'bgp','lbl',40)+H.ln(12,50,100,50,'dash')+H.ln(12,30,100,30,'hdash')+H.ln(12,60,100,60,'hdash')},
-{t:'Case',a:['uppercase','lowercase','sentence case','title case','all caps','small caps'],k:["capital letters", "capitalize", "all caps", "lowercase everything", "small capitals", "first letter capital"],d:'Which letters are capitalized. Sentence case capitalizes the first word; Title Case Every Major Word; ALL CAPS everything; small caps use capital forms at x-height.',x:'a font change; set it with text-transform.',s:'Set the nav in sentence case, not title case.',
+{t:'Case',a:['uppercase','lowercase','sentence case','title case','all caps','small caps'],k:["capital letters", "capitalize", "all caps", "lowercase everything", "small capitals", "first letter capital"],src:["mdn"],d:'“The text-transform CSS property specifies how to capitalize an element\'s text. It can be used to make text appear in all-uppercase or all-lowercase, or with each word capitalized.”',x:'a font change; set it with text-transform.',s:'Set the nav in sentence case, not title case.',
  f:H.t(10,52,'Aa','lbl',26)+H.t(48,52,'AA','lbl',26)+H.t(88,52,'aa','lbl',26)},
-{t:'Alignment',a:['flush left','ragged right','centered','justified','flush right','left-aligned'],k:["line up the text to the left", "center the text", "justify", "even edges both sides", "right aligned", "ragged"],d:'How lines relate to an edge. Flush left with a ragged right is the reading default; justified squares both edges and can open rivers; centered is for short display lines.',x:'the alignment of boxes on the grid; that is <b>registration</b>.',s:'Flush-left the intro; no centering.',
+{t:'Alignment',a:['flush left','ragged right','centered','justified','flush right','left-aligned'],k:["line up the text to the left", "center the text", "justify", "even edges both sides", "right aligned", "ragged"],src:["mdn", "bringhurst"],d:'“The text-align CSS property sets the horizontal alignment of the inline-level content inside a block element or table-cell box.” Bringhurst prefers flush left with a ragged right for continuous text.',x:'the alignment of boxes on the grid; that is <b>registration</b>.',s:'Flush-left the intro; no centering.',
  f:H.tx(10,18,30,6,7)+H.r(52,18,16,2,'bar')+H.r(48,25,24,2,'bar')+H.r(50,32,20,2,'bar')+H.r(47,39,26,2,'bar')+H.r(53,46,14,2,'bar')+H.tx(82,18,30,6,7)+H.r(82,53,30,2,'bar')},
-{t:'Rag',a:['ragged edge'],k:["uneven right edge", "looks like stairs", "jagged edge of the text", "shape of the line ends"],d:'The uneven right edge of flush-left text. A good rag alternates long and short lines without making a shape; a bad rag makes stairs or a hole.',x:'<b>justification</b>, which removes the rag.',s:'The rag in the intro makes a staircase; rebreak it.',
+{t:'Rag',a:['ragged edge'],k:["uneven right edge", "looks like stairs", "jagged edge of the text", "shape of the line ends"],src:["bringhurst"],d:'The uneven right-hand edge of unjustified text. Bringhurst asks for a rag that is soft and unpatterned: no shapes, steps, or holes.',x:'<b>justification</b>, which removes the rag.',s:'The rag in the intro makes a staircase; rebreak it.',
  f:H.r(12,16,40,2,'bar')+H.r(12,23,32,2,'bar')+H.r(12,30,36,2,'bar')+H.r(12,37,26,2,'bar')+H.r(12,44,38,2,'bar')+H.r(12,51,30,2,'bar')+H.r(68,16,42,2,'barhi')+H.r(68,23,38,2,'barhi')+H.r(68,30,34,2,'barhi')+H.r(68,37,30,2,'barhi')+H.r(68,44,26,2,'barhi')+H.r(68,51,22,2,'barhi')},
-{t:'Widow / orphan',a:['widow','orphan'],k:["one word alone on the last line", "single line at the top", "lonely last word", "stranded line"],d:'A widow is the last line of a paragraph alone at the top of a column; an orphan is a single word alone on the last line. Both are fixed by rebreaking or changing the measure.',x:'a synonym pair; the widow is a line, the orphan a word.',s:'Kill the orphan on the second paragraph.',
+{t:'Widow / orphan',a:['widow','orphan'],k:["one word alone on the last line", "single line at the top", "lonely last word", "stranded line"],src:["mdn"],d:'“In typography, an orphan is the first line of a paragraph that appears alone at the bottom of a page.” “In typography, a widow is the last line of a paragraph that appears alone at the top of a page.”',x:'a synonym pair; the widow is a line, the orphan a word.',s:'Kill the orphan on the second paragraph.',
  f:H.tx(14,16,90,5,7)+H.r(14,44,90,2,'bar')+H.r(14,51,10,2,'barhi')},
-{t:'Hierarchy',a:['type scale','levels'],k:["what should be read first", "heading sizes", "levels of importance", "everything looks the same size", "title subtitle body"],d:'The ranked sizes and weights that tell a reader what to read first: display, heading, subhead, body, caption. Three levels usually suffice.',x:'decoration; every level must encode a real rank.',s:'Flatten the hierarchy to three levels.',
+{t:'Hierarchy',a:['type scale','levels'],k:["what should be read first", "heading sizes", "levels of importance", "everything looks the same size", "title subtitle body"],src:["lupton"],d:'Lupton: typographic hierarchy expresses the organisation of content, emphasising some elements and subordinating others, through size, weight, placement, and space.',x:'decoration; every level must encode a real rank.',s:'Flatten the hierarchy to three levels.',
  f:H.r(12,12,60,8,'hi')+H.r(12,26,44,4,'ctx2')+H.tx(12,36,96,4,6)+H.r(12,62,30,2,'bar')},
-{t:'Display vs text',a:['headline face','reading face','optical size'],k:["big type versus small type", "headline font", "reading font", "poster size", "body size"],d:'Display sizes (above about 24px) carry personality and take tight tracking; text sizes (13 to 17px) need even color and open spacing. Some families ship separate optical cuts.',x:'just big and small; the setting rules differ.',s:'Use the display cut above 40 and the text cut below.',
+{t:'Display vs text',a:['headline face','reading face','optical size'],k:["big type versus small type", "headline font", "reading font", "poster size", "body size"],src:["mdn", "bringhurst"],d:'“The font-optical-sizing CSS property sets whether text rendering is optimized for viewing at different sizes.” Bringhurst: display sizes want tighter fit and finer detail; text sizes want sturdier strokes and open spacing.',x:'just big and small; the setting rules differ.',s:'Use the display cut above 40 and the text cut below.',
  f:H.t(10,50,'Aa','bold',40)+H.tx(64,22,44,6,6)},
-{t:'Eyebrow',a:['kicker','overline','superhead'],k:["the little label above the title", "small caps line on top", "category label above", "tiny tracked label"],d:'A short line set above a headline, usually small, uppercase and tracked, naming a category or context.',x:'a <b>dek</b> (below the headline). In this studio it counts as scaffolding in creative work.',s:'Cut the eyebrows; let the headings self-introduce.',r:['11.14'],
+{t:'Eyebrow',a:['kicker','overline','superhead'],k:["the little label above the title", "small caps line on top", "category label above", "tiny tracked label"],src:["harrower"],d:'Harrower: in newspaper make-up a kicker is a short line set above the main headline. On the web the same device is called an eyebrow or overline.',x:'a <b>dek</b> (below the headline). In this studio it counts as scaffolding in creative work.',s:'Cut the eyebrows; let the headings self-introduce.',r:['11.14'],
  f:H.r(14,22,22,2,'barhi')+H.r(14,30,80,8,'hi')+H.tx(14,46,90,3,6)},
-{t:'Dek',a:['subhead','standfirst','deck','subtitle'],k:["the line under the headline", "subtitle", "intro sentence under the title", "summary line"],d:'The line beneath a headline that expands it in one sentence. Larger than body, lighter than the head.',x:'an <b>eyebrow</b> (above) or a <b>caption</b> (under an image).',s:'Add a one-sentence dek under the case study title.',
+{t:'Dek',a:['subhead','standfirst','deck','subtitle'],k:["the line under the headline", "subtitle", "intro sentence under the title", "summary line"],src:["harrower"],d:'Harrower: a deck is a smaller headline set below the main headline, expanding it in a sentence.',x:'an <b>eyebrow</b> (above) or a <b>caption</b> (under an image).',s:'Add a one-sentence dek under the case study title.',
  f:H.r(14,16,80,8,'hi')+H.r(14,30,64,4,'ctx2')+H.tx(14,42,90,4,6)},
-{t:'Rule',a:['hairline','divider','separator','line'],k:["a line between things", "thin line", "divider line", "underline between sections", "horizontal line"],d:'A drawn line that separates or groups. A hairline is the thinnest rule that will render, usually 1px.',x:'a <b>border</b> (which wraps a box) or a <b>gap</b>.',s:'Replace the card borders with a single hairline above each.',
+{t:'Rule',a:['hairline','divider','separator','line'],k:["a line between things", "thin line", "divider line", "underline between sections", "horizontal line"],src:["pocketpal"],d:'A rule is a printed line. A hairline is the finest rule a process will render.',x:'a <b>border</b> (which wraps a box) or a <b>gap</b>.',s:'Replace the card borders with a single hairline above each.',
  f:H.tx(14,14,90,3,6)+H.ln(14,36,106,36,'ln')+H.tx(14,44,90,3,6)+H.ln(14,66,106,66,'hair')},
-{t:'Indent',a:['first-line indent','hanging indent','outdent'],k:["push the first line in", "first line spacing", "hanging bullet", "tab in the paragraph"],d:'A first-line indent pushes a paragraph’s opening in; a hanging indent pushes every line but the first; an outdent pulls something past the margin.',x:'<b>padding</b>.',s:'Use a 1.5em first-line indent instead of paragraph spacing.',
+{t:'Indent',a:['first-line indent','hanging indent','outdent'],k:["push the first line in", "first line spacing", "hanging bullet", "tab in the paragraph"],src:["mdn"],d:'“The text-indent CSS property sets the length of empty space (indentation) that is put before lines of text in a block.”',x:'<b>padding</b>.',s:'Use a 1.5em first-line indent instead of paragraph spacing.',
  f:H.r(26,14,78,2,'bar')+H.tx(14,20,90,3,6)+H.r(14,44,90,2,'bar')+H.tx(26,50,78,3,6)},
-{t:'Figures',a:['numerals','lining','oldstyle','tabular','proportional'],k:["numbers that line up in columns", "numerals", "digits look uneven", "old style numbers", "table numbers"],d:'Lining figures stand cap height; oldstyle figures dip like lowercase. Tabular figures share one width so columns align; proportional figures fit naturally in prose.',x:'“numbers” as quantities; this is their drawing.',s:'Switch the ledger to tabular lining figures.',
+{t:'Figures',a:['numerals','lining','oldstyle','tabular','proportional'],k:["numbers that line up in columns", "numerals", "digits look uneven", "old style numbers", "table numbers"],src:["mdn", "bringhurst"],d:'“The font-variant-numeric CSS property controls the usage of alternate glyphs for numbers, fractions, and ordinal markers.” Bringhurst’s terms: lining figures stand on the baseline at cap height; text (old-style) figures rise and fall like lowercase; tabular figures share one width, proportional figures do not.',x:'“numbers” as quantities; this is their drawing.',s:'Switch the ledger to tabular lining figures.',
  f:H.t(14,36,'1,204','mono',14)+H.t(14,58,'   88','mono',14)+H.t(70,36,'1,204','lbl',14)+H.t(70,58,'88','lbl',14)+H.ln(60,20,60,66,'hdash')},
-{t:'Optical alignment',a:['hanging punctuation','optical margin'],k:["the quote marks stick out", "looks misaligned but is not", "hang the punctuation", "align by eye"],d:'Aligning by what the eye sees rather than the glyph box: quotation marks hang outside the margin, round letters overshoot the baseline.',x:'a bug; the mathematically aligned version is what looks wrong.',s:'Hang the opening quote outside the margin.',
+{t:'Optical alignment',a:['hanging punctuation','optical margin'],k:["the quote marks stick out", "looks misaligned but is not", "hang the punctuation", "align by eye"],src:["mdn"],d:'“The hanging-punctuation CSS property specifies whether a punctuation mark should hang at the start or end of a line of text. Hanging punctuation may be placed outside the line box.”',x:'a bug; the mathematically aligned version is what looks wrong.',s:'Hang the opening quote outside the margin.',
  f:H.ln(30,10,30,70,'dash')+H.t(20,30,'“','lbl',22)+H.tx(30,20,76,6,7)},
-{t:'Classification',a:['grotesk','geometric','humanist','neo-grotesque','serif','slab','mono'],k:["what kind of font", "type of typeface", "sans versus serif", "geometric", "grotesque", "humanist", "monospace"],d:'Sans families by construction: grotesk (19th-century roots, slightly irregular: Instrument Sans), geometric (circles and lines: Futura), humanist (pen-formed: Gill). Serifs by era: old-style, transitional, modern, slab.',x:'brand names; a classification describes structure.',s:'Swap the geometric for a grotesk; it is reading too soft.',
+{t:'Classification',a:['grotesk','geometric','humanist','neo-grotesque','serif','slab','mono'],k:["what kind of font", "type of typeface", "sans versus serif", "geometric", "grotesque", "humanist", "monospace"],src:["vox"],d:'Vox’s 1954 system, adopted by ATypI, groups typefaces by historical form: humanist, garalde, transitional, and didone serifs; mechanistic (slab) serifs; and the lineals, the sans serifs, divided into grotesque, neo-grotesque, geometric, and humanist.',x:'brand names; a classification describes structure.',s:'Swap the geometric for a grotesk; it is reading too soft.',
  f:H.t(12,54,'a','lbl',36)+H.t(46,54,'a','serif',36)+H.t(82,54,'a','mono',36)},
-{t:'Drop cap / pull quote',a:['drop cap','pull quote','initial'],k:["big first letter", "a quote pulled out big", "large opening letter", "highlighted quote in the text"],d:'A drop cap is an enlarged opening letter set into the first lines; a pull quote is a line lifted from the text and set large beside it.',x:'a <b>heading</b>.',s:'Pull one line from the essay as a quote at 32px.',
+{t:'Drop cap / pull quote',a:['drop cap','pull quote','initial'],k:["big first letter", "a quote pulled out big", "large opening letter", "highlighted quote in the text"],src:["mdn", "harrower"],d:'“The initial-letter CSS property sets the size and sink for dropped, raised, and sunken initial letters.” Harrower: a pull quote is a line lifted from the story and set in larger type to draw the reader in.',x:'a <b>heading</b>.',s:'Pull one line from the essay as a quote at 32px.',
  f:H.t(12,38,'A','bold',34)+H.tx(38,16,66,4,6)+H.tx(12,42,92,4,6)},
-{t:'Running head / folio',a:['running head','folio','page furniture'],k:["the small text at the top of each page", "page number", "chapter name at the top", "page header"],d:'The small line at the top of every page naming the section (running head) and the page number (folio). Print terms that carry into long web documents.',x:'the <b>header</b> (site identity and nav).',s:'Add a running head with the chapter title.',
+{t:'Running head / folio',a:['running head','folio','page furniture'],k:["the small text at the top of each page", "page number", "chapter name at the top", "page header"],src:["bringhurst"],d:'Bringhurst’s glossary: the running head is the line at the head of each page repeating the title or chapter; the folio is the page number.',x:'the <b>header</b> (site identity and nav).',s:'Add a running head with the chapter title.',
  f:H.r(20,8,80,64,'ln')+H.r(26,14,22,2,'barhi')+H.t(88,17,'12','lbl',8)+H.tx(26,24,68,7,6)},
-{t:'Hyphenation',a:['hyphens','word break'],k:["break words at the end of the line", "hyphens", "split the word", "word breaks"],d:'Breaking a word across lines at a syllable to improve the rag or the justification. Off by default on the web.',x:'a dash used as punctuation.',s:'Turn on hyphenation for the narrow column.',
+{t:'Hyphenation',a:['hyphens','word break'],k:["break words at the end of the line", "hyphens", "split the word", "word breaks"],src:["mdn"],d:'“The hyphens CSS property specifies how words should be hyphenated when text wraps across multiple lines.”',x:'a dash used as punctuation.',s:'Turn on hyphenation for the narrow column.',
  f:H.tx(14,18,60,3,7)+H.r(14,39,58,2,'bar')+H.r(74,39,3,2,'barhi')+H.tx(14,46,60,3,7)},
 ]);
 
@@ -3744,9 +3810,12 @@ function entry(e){
   ${e.a&&e.a.length?`<p class="also">also: ${e.a.slice(0,3).map(esc).join(', ')}</p>`:''}
   ${e.r?`<p class="xref">see ${e.r.map(n=>`<button type="button" data-go="${n}">${esc(byN[n]?byN[n].t:n)}</button>`).join(', ')}</p>`:''}
 </article>`}
+const bibHTML=c=>{const used={};c.items.forEach(e=>(e.src||[]).forEach(id=>{(used[id]=used[id]||[]).push(e.t)}));const ids=Object.keys(used).filter(id=>SOURCES[id]);if(!ids.length)return '';
+  return `<div class="bib"><h4>Sources</h4>${ids.map(id=>{const s=SOURCES[id];return `<p>${s.url?`<a href="${s.url}" rel="noopener">${esc(s.cite)}</a>`:esc(s.cite)} <span>${used[id].map(esc).join(', ')}</span></p>`}).join('')}</div>`};
 const sectionsHTML=()=>CATS.map(c=>`<section class="cat" id="c${c.n}" data-cat="${c.n}">
   <div class="cat-head"><div class="num">${c.n}</div><div><h2>${esc(c.name)}</h2><p>${esc(c.scope)}</p></div></div>
   <div class="grid">${c.items.map(entry).join('\n')}</div>
+  ${bibHTML(c)}
 </section>`).join('\n');
 const catBtn=c=>`<li><button type="button" data-cat="${c.n}"><span class="n">${c.n}</span><span class="name">${esc(c.name)}</span><span class="c" data-count="${c.n}">${c.items.length}</span></button></li>`;
 const idxHTML=()=>`<li><button type="button" data-cat="" aria-current="true"><span class="n">00</span><span class="name">All</span><span class="c">${ALL.length}</span></button></li>`+
