@@ -203,13 +203,13 @@ body.img-hover #cur{filter:invert(1)}
 /* Logos: contain with generous inner padding for breathing room */
 .gl .wi{background:transparent}
 .gl .wi img{object-fit:contain;padding:20px}
-/* MASONRY (Illustration, 2026-09-23): column count, gap and side padding stay with the grid rules
+/* MASONRY (sections flagged data-masonry on their .gm: Illustration, Type / Layout; 2026-09-23): column count, gap and side padding stay with the grid rules
    above; the script below places each piece absolutely into the shortest column, at its own
    proportion (stamped on the item), in source order - DOM order is untouched so the lightbox
    and the client filters keep working */
-#illustration .gm{position:relative}
-#illustration .gm.masonry .wi{position:absolute;top:0;left:0}
-#illustration .gm.masonry .wi img{height:auto;object-fit:contain}
+.gm[data-masonry]{position:relative}
+.gm[data-masonry].masonry .wi{position:absolute;top:0;left:0}
+.gm[data-masonry].masonry .wi img{height:auto;object-fit:contain}
 .gl .wi video,.gm .wi video,.gp .wi video{width:100%;height:100%;object-fit:cover;display:block}
 .gl .wi iframe{width:100%;height:100%;border:0;display:block;pointer-events:none}
 
@@ -461,7 +461,7 @@ body.img-hover #cur{filter:invert(1)}
     <div class="sh swp"><span class="sn">02</span><span class="sdv">&#8212;</span><h2 class="st">Illustration / Graphic</h2></div>
     <p class="sdesc swp-d">Original illustration and graphics<br>across print and digital media &#8212;<br>work ranges from hand-drawn flash sheets<br>to editorial campaigns<br>to brand iconography.</p>
   </div>
-  <div class="gm fi"><div class="wi" style="aspect-ratio:1442/838" data-section="illustration" data-client="ja-studio" data-title="Illustration" data-category="2026" data-seclabel="Illustration / Graphic"><img src="sq-images/Screenshot-2026-02-17-at-10.06.23-PM.jpg" alt="Illustration" loading="lazy"><div class="ov"><div class="ov-num">001</div><div class="ov-sec">Illustration / Graphic</div></div></div>
+  <div class="gm fi" data-masonry><div class="wi" style="aspect-ratio:1442/838" data-section="illustration" data-client="ja-studio" data-title="Illustration" data-category="2026" data-seclabel="Illustration / Graphic"><img src="sq-images/Screenshot-2026-02-17-at-10.06.23-PM.jpg" alt="Illustration" loading="lazy"><div class="ov"><div class="ov-num">001</div><div class="ov-sec">Illustration / Graphic</div></div></div>
 <div class="wi" style="aspect-ratio:800/800" data-section="illustration" data-client="ja-studio" data-title="Faces" data-category="Illustration" data-seclabel="Illustration / Graphic"><img src="sq-images/illust-faces_01-01.jpg" alt="Faces" loading="lazy"><div class="ov"><div class="ov-num">002</div><div class="ov-sec">Illustration / Graphic</div></div></div>
 <div class="wi" style="aspect-ratio:800/600" data-section="illustration" data-client="ja-studio" data-title="Illustration" data-category="Illustration" data-seclabel="Illustration / Graphic"><img src="sq-images/illust-64956865587__7121626f-2d7d-4603-872f-464edbee378c.jpg" alt="Illustration" loading="lazy"><div class="ov"><div class="ov-num">003</div><div class="ov-sec">Illustration / Graphic</div></div></div>
 <div class="wi" style="aspect-ratio:1610/734" data-section="illustration" data-client="ja-studio" data-title="Rocket Ramps" data-category="Brand Identity" data-seclabel="Illustration / Graphic"><img src="sq-images/Screenshot-2026-02-17-at-8.27.49-PM.jpg" alt="Rocket Ramps" loading="lazy"><div class="ov"><div class="ov-num">004</div><div class="ov-sec">Illustration / Graphic</div></div></div>
@@ -532,19 +532,19 @@ body.img-hover #cur{filter:invert(1)}
     <div class="sh swp"><span class="sn">04</span><span class="sdv">&#8212;</span><h2 class="st">Type / Layout</h2></div>
     <p class="sdesc swp-d">Typography, editorial layout, email campaigns, and print design for brands across the Southwest and beyond.</p>
   </div>
-  <div class="gm fi"><div class="wi" data-section="typelayout" data-client="peyote-bird" data-title="Peyote Bird Trade Shows" data-category="Print Design" data-seclabel="Type / Layout"><img src="sq-images/typo-TS-web-08.jpg" alt="Peyote Bird Trade Shows" loading="lazy"><div class="ov"><div class="ov-num">001</div><div class="ov-sec">Type / Layout</div></div></div>
-<div class="wi" data-section="typelayout" data-client="peyote-bird" data-title="Fred Harvey Email Campaign" data-category="Email Design" data-seclabel="Type / Layout"><img src="sq-images/typo-fred-harvey-email-final.jpg" alt="Fred Harvey Email Campaign" loading="lazy"><div class="ov"><div class="ov-num">002</div><div class="ov-sec">Type / Layout</div></div></div>
-<div class="wi" data-section="typelayout" data-client="talweg-creative" data-title="The Ballad of Pecos Hank" data-category="Film Poster" data-seclabel="Type / Layout"><img src="sq-images/typo-pecos-hank-01.jpg" alt="The Ballad of Pecos Hank" loading="lazy"><div class="ov"><div class="ov-num">003</div><div class="ov-sec">Type / Layout</div></div></div>
-<div class="wi" data-section="typelayout" data-client="peyote-bird" data-title="Father&#39;s Day Campaign" data-category="Email Design" data-seclabel="Type / Layout"><img src="sq-images/typo-fathers-day-campaign.jpg" alt="Father's Day Campaign" loading="lazy"><div class="ov"><div class="ov-num">004</div><div class="ov-sec">Type / Layout</div></div></div>
-<div class="wi" data-section="typelayout" data-client="studio-bose" data-title="studio|BOSE Proposal" data-category="Document Design" data-seclabel="Type / Layout"><img src="sq-images/typo-studioBOSE---proposal-mockup.jpg" alt="studio|BOSE Proposal" loading="lazy"><div class="ov"><div class="ov-num">005</div><div class="ov-sec">Type / Layout</div></div></div>
-<div class="wi" data-section="typelayout" data-client="studio-bose" data-title="studio|BOSE Proposal Floor" data-category="Document Design" data-seclabel="Type / Layout"><img src="sq-images/typo-studioBOSE---proposal-mockup---conc-floor.jpg" alt="studio|BOSE Proposal Floor" loading="lazy"><div class="ov"><div class="ov-num">006</div><div class="ov-sec">Type / Layout</div></div></div>
-<div class="wi" data-section="typelayout" data-client="jacks-garden" data-title="Jack&#39;s Garden Brand Collage" data-category="Brand Identity" data-seclabel="Type / Layout"><img src="sq-images/typo-IMG_8851.jpeg" alt="Jack's Garden Brand Collage" loading="lazy"><div class="ov"><div class="ov-num">007</div><div class="ov-sec">Type / Layout</div></div></div>
-<div class="wi" data-section="typelayout" data-client="peyote-bird" data-title="Pins Collection Page" data-category="Web Design" data-seclabel="Type / Layout"><img src="sq-images/typo-IMG_8848.JPG" alt="Pins Collection Page" loading="lazy"><div class="ov"><div class="ov-num">008</div><div class="ov-sec">Type / Layout</div></div></div>
-<div class="wi" data-section="typelayout" data-client="hutton-films" data-title="Zozobra 100" data-category="Print Design" data-seclabel="Type / Layout"><img src="sq-images/typo-zozobra-hutton7.jpg" alt="Zozobra 100" loading="lazy"><div class="ov"><div class="ov-num">009</div><div class="ov-sec">Type / Layout</div></div></div>
-<div class="wi" data-section="typelayout" data-client="" data-title="Type / Layout" data-category="Layout Design" data-seclabel="Type / Layout"><img src="sq-images/typo-type-layout-1.jpg" alt="Type / Layout" loading="lazy"><div class="ov"><div class="ov-num">010</div><div class="ov-sec">Type / Layout</div></div></div>
-<div class="wi" data-section="typelayout" data-client="" data-title="Type / Layout" data-category="Layout Design" data-seclabel="Type / Layout"><img src="sq-images/typo-type-layout-2.jpg" alt="Type / Layout" loading="lazy"><div class="ov"><div class="ov-num">011</div><div class="ov-sec">Type / Layout</div></div></div>
-<div class="wi" data-section="typelayout" data-client="" data-title="Type / Layout" data-category="Layout Design" data-seclabel="Type / Layout"><img src="sq-images/typo-type-layout-3.jpg" alt="Type / Layout" loading="lazy"><div class="ov"><div class="ov-num">012</div><div class="ov-sec">Type / Layout</div></div></div>
-<div class="wi" data-section="typelayout" data-client="" data-title="Type / Layout" data-category="Layout Design" data-seclabel="Type / Layout"><img src="sq-images/typo-type-layout-4.jpg" alt="Type / Layout" loading="lazy"><div class="ov"><div class="ov-num">013</div><div class="ov-sec">Type / Layout</div></div></div></div>
+  <div class="gm fi" data-masonry><div class="wi" style="aspect-ratio:1143/1600" data-section="typelayout" data-client="peyote-bird" data-title="Peyote Bird Trade Shows" data-category="Print Design" data-seclabel="Type / Layout"><img src="sq-images/typo-TS-web-08.jpg" alt="Peyote Bird Trade Shows" loading="lazy"><div class="ov"><div class="ov-num">001</div><div class="ov-sec">Type / Layout</div></div></div>
+<div class="wi" style="aspect-ratio:378/1600" data-section="typelayout" data-client="peyote-bird" data-title="Fred Harvey Email Campaign" data-category="Email Design" data-seclabel="Type / Layout"><img src="sq-images/typo-fred-harvey-email-final.jpg" alt="Fred Harvey Email Campaign" loading="lazy"><div class="ov"><div class="ov-num">002</div><div class="ov-sec">Type / Layout</div></div></div>
+<div class="wi" style="aspect-ratio:1080/1600" data-section="typelayout" data-client="talweg-creative" data-title="The Ballad of Pecos Hank" data-category="Film Poster" data-seclabel="Type / Layout"><img src="sq-images/typo-pecos-hank-01.jpg" alt="The Ballad of Pecos Hank" loading="lazy"><div class="ov"><div class="ov-num">003</div><div class="ov-sec">Type / Layout</div></div></div>
+<div class="wi" style="aspect-ratio:716/1600" data-section="typelayout" data-client="peyote-bird" data-title="Father&#39;s Day Campaign" data-category="Email Design" data-seclabel="Type / Layout"><img src="sq-images/typo-fathers-day-campaign.jpg" alt="Father's Day Campaign" loading="lazy"><div class="ov"><div class="ov-num">004</div><div class="ov-sec">Type / Layout</div></div></div>
+<div class="wi" style="aspect-ratio:1066/1600" data-section="typelayout" data-client="studio-bose" data-title="studio|BOSE Proposal" data-category="Document Design" data-seclabel="Type / Layout"><img src="sq-images/typo-studioBOSE---proposal-mockup.jpg" alt="studio|BOSE Proposal" loading="lazy"><div class="ov"><div class="ov-num">005</div><div class="ov-sec">Type / Layout</div></div></div>
+<div class="wi" style="aspect-ratio:1120/1600" data-section="typelayout" data-client="studio-bose" data-title="studio|BOSE Proposal Floor" data-category="Document Design" data-seclabel="Type / Layout"><img src="sq-images/typo-studioBOSE---proposal-mockup---conc-floor.jpg" alt="studio|BOSE Proposal Floor" loading="lazy"><div class="ov"><div class="ov-num">006</div><div class="ov-sec">Type / Layout</div></div></div>
+<div class="wi" style="aspect-ratio:907/1600" data-section="typelayout" data-client="jacks-garden" data-title="Jack&#39;s Garden Brand Collage" data-category="Brand Identity" data-seclabel="Type / Layout"><img src="sq-images/typo-IMG_8851.jpeg" alt="Jack's Garden Brand Collage" loading="lazy"><div class="ov"><div class="ov-num">007</div><div class="ov-sec">Type / Layout</div></div></div>
+<div class="wi" style="aspect-ratio:441/1599" data-section="typelayout" data-client="peyote-bird" data-title="Pins Collection Page" data-category="Web Design" data-seclabel="Type / Layout"><img src="sq-images/typo-IMG_8848.JPG" alt="Pins Collection Page" loading="lazy"><div class="ov"><div class="ov-num">008</div><div class="ov-sec">Type / Layout</div></div></div>
+<div class="wi" style="aspect-ratio:1113/1600" data-section="typelayout" data-client="hutton-films" data-title="Zozobra 100" data-category="Print Design" data-seclabel="Type / Layout"><img src="sq-images/typo-zozobra-hutton7.jpg" alt="Zozobra 100" loading="lazy"><div class="ov"><div class="ov-num">009</div><div class="ov-sec">Type / Layout</div></div></div>
+<div class="wi" style="aspect-ratio:1460/1600" data-section="typelayout" data-client="" data-title="Type / Layout" data-category="Layout Design" data-seclabel="Type / Layout"><img src="sq-images/typo-type-layout-1.jpg" alt="Type / Layout" loading="lazy"><div class="ov"><div class="ov-num">010</div><div class="ov-sec">Type / Layout</div></div></div>
+<div class="wi" style="aspect-ratio:1600/1186" data-section="typelayout" data-client="" data-title="Type / Layout" data-category="Layout Design" data-seclabel="Type / Layout"><img src="sq-images/typo-type-layout-2.jpg" alt="Type / Layout" loading="lazy"><div class="ov"><div class="ov-num">011</div><div class="ov-sec">Type / Layout</div></div></div>
+<div class="wi" style="aspect-ratio:1600/1600" data-section="typelayout" data-client="" data-title="Type / Layout" data-category="Layout Design" data-seclabel="Type / Layout"><img src="sq-images/typo-type-layout-3.jpg" alt="Type / Layout" loading="lazy"><div class="ov"><div class="ov-num">012</div><div class="ov-sec">Type / Layout</div></div></div>
+<div class="wi" style="aspect-ratio:1600/1600" data-section="typelayout" data-client="" data-title="Type / Layout" data-category="Layout Design" data-seclabel="Type / Layout"><img src="sq-images/typo-type-layout-4.jpg" alt="Type / Layout" loading="lazy"><div class="ov"><div class="ov-num">013</div><div class="ov-sec">Type / Layout</div></div></div></div>
 </section></div>
 
 <div class="sw alt"><section class="sc2" id="craft">
@@ -1033,10 +1033,9 @@ body.img-hover #cur{filter:invert(1)}
     });
   });
 
-  // ── MASONRY (Illustration) ── shortest-column placement in source order; the
-  // grid's own responsive rules supply the column count, gap and padding
-  (function() {
-    var g = document.querySelector('#illustration .gm'); if (!g) return;
+  // ── MASONRY ── every .gm flagged data-masonry: shortest-column placement in
+  // source order; the grid's own responsive rules supply columns, gap, padding
+  Array.prototype.forEach.call(document.querySelectorAll('.gm[data-masonry]'), function(g) {
     var items = Array.from(g.querySelectorAll('.wi'));
     function ratio(it) {
       var p = (it.style.aspectRatio || '').split('/'), ar = parseFloat(p[0]) / (parseFloat(p[1]) || 1);
@@ -1063,7 +1062,7 @@ body.img-hover #cur{filter:invert(1)}
     var t; addEventListener('resize', function() { clearTimeout(t); t = setTimeout(relayout, 80); });
     document.addEventListener('click', function(e) { if (e.target.closest('.wi-sub-link')) setTimeout(relayout, 0); });
     addEventListener('load', relayout);
-  })();
+  });
 
   // ── RENUMBER IMAGES LEFT-TO-RIGHT ──
   // CSS columns flow top-to-bottom; this renumbers overlays to read left-to-right per row
