@@ -259,6 +259,9 @@ body.img-hover #cur{filter:invert(1)}
 /* endlessly wide — live cover: the frame is 2x and scaled to half, so the site lays out at a full 3:1 viewport and draws crisp */
 .un-live{position:relative;aspect-ratio:3/1;overflow:hidden;background:#FBFBFA}
 .cs-hero-live{position:absolute;inset:0;width:200%;height:200%;border:0;pointer-events:none;background:#FBFBFA;transform:scale(.5);transform-origin:0 0}
+.cs-live-panel{position:relative;margin-top:48px;overflow:hidden;background:#101010}
+.cs-live-panel iframe{display:block;border:0;width:100%;height:600px;background:#101010;transform-origin:0 0}
+@media(max-width:720px){.cs-live-panel{display:none}}
 .cs-hero-link{display:block}.cs-hero-link:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 </style>
 </head>
@@ -420,6 +423,7 @@ body.img-hover #cur{filter:invert(1)}
         <iframe class="cs-live-tile" src="endlessly-wide-cs/rack.html" title="animated instrument rack" loading="lazy" scrolling="no"></iframe>
         <iframe class="cs-live-tile" src="endlessly-wide-cs/beam.html" title="chapter title-card transition" loading="lazy" scrolling="no"></iframe>
       </div>
+      <div class="cs-live-panel"><iframe class="cs-live-player" src="endlessly-wide-cs/player.html" title="endlessly wide &mdash; chapter 01 playlist over its Chladni plate" loading="lazy" scrolling="no"></iframe></div>
     </div>
 
   </div>
@@ -1271,6 +1275,32 @@ body.img-hover #cur{filter:invert(1)}
     fr.addEventListener('load', setup);
     if (fr.contentDocument && fr.contentDocument.readyState === 'complete') setup(); // already loaded
     window.addEventListener('resize', fit);
+  })();
+
+  // ── ENDLESSLY WIDE PLAYER PANEL ── chapter 01's tracklist + player over its
+  // Chladni plate, live (endlessly-wide-cs/player.html). The embed reports the
+  // crate's height (postMessage {ewPlayerH}) and the panel takes it, so nothing
+  // is cropped; columns under 960px scale the whole player down (the site's
+  // crate needs >=900px to mount); off-screen the plate's rAF loop is parked
+  // through the same wake/sleep hook the playground room uses.
+  (function() {
+    var panel = document.querySelector('.cs-live-panel'), fr = panel && panel.querySelector('iframe');
+    if (!fr) return;
+    var crateH = 600;
+    function layout() {
+      var w = panel.clientWidth; if (!w) return;
+      var k = w < 960 ? 960 / w : 1;
+      fr.style.width = Math.round(w * k) + 'px';
+      fr.style.height = crateH + 'px';
+      fr.style.transform = k > 1 ? 'scale(' + (1 / k) + ')' : '';
+      panel.style.height = Math.round(crateH / k) + 'px';
+    }
+    addEventListener('message', function(e) { if (e.data && e.data.ewPlayerH) { crateH = e.data.ewPlayerH; layout(); } });
+    addEventListener('resize', layout); layout();
+    function post(m) { try { fr.contentWindow.postMessage({ ew: m }, '*'); } catch (e) {} }
+    if ('IntersectionObserver' in window) new IntersectionObserver(function(es) {
+      es.forEach(function(e) { post(e.isIntersecting ? 'wake' : 'sleep'); });
+    }, { rootMargin: '120px 0px' }).observe(panel);
   })();
 
   // ── NAV DROPDOWN TOGGLE (mobile click) ──

@@ -1,0 +1,1709 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,400&family=Instrument+Sans:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --disp:'Instrument Serif',Georgia,serif;
+    --body:'Newsreader',Georgia,serif;
+    --util:'Instrument Sans',Helvetica,Arial,sans-serif;
+  }
+  /* Semantic grounds: white = reading · black = records · grey = maps (09-19, was orange) */
+  .band{--g:#FBFBFA;--ink:#121212;--dim:#74736F;--acc:#121212;--linec:#E3E2DF}
+  *{box-sizing:border-box;margin:0;padding:0}
+  /* overflow-anchor off: Chrome's scroll anchoring fights ScrollTrigger's
+     unpin (fixed->flow swap) and yanks the page backwards right as a card
+     completes; nothing on this page shifts layout, so anchoring buys nothing */
+  /* scroll-behavior stays AUTO (2026-09-13): under CSS smooth, ScrollTrigger
+     .refresh()'s internal scroll-to-0 animates and every pin start comes out
+     offset by -scrollY whenever a refresh runs while scrolled (mid-page
+     reload restore, resize, the late re-measure) - cards then fire thousands
+     of px early. In-page anchors smooth-scroll via JS instead (see nav). */
+  html{scroll-behavior:auto;overflow-anchor:none}
+  body{background:#FBFBFA;color:#121212;font-family:var(--body);line-height:1.5;overflow-x:clip}
+
+  /* sticky era nav */
+  nav{position:sticky;top:0;z-index:10;display:flex;gap:2px;justify-content:center;
+    padding:12px 16px;font-family:var(--util);font-size:12.5px;
+    background:color-mix(in srgb, var(--g) 88%, transparent);backdrop-filter:blur(10px);color:var(--ink)}
+  nav{--g:#FBFBFA;--ink:#121212;--dim:#74736F;--acc:#121212}
+  nav a{color:var(--dim);text-decoration:none;padding:4px 12px}
+  nav a.on{color:var(--acc)}
+  nav .mast{margin-right:auto;color:var(--ink);font-family:var(--disp);font-style:italic;font-size:15px}
+  nav .spacer{margin-left:auto}
+
+  .band{--pad:clamp(24px,6vw,90px);position:relative;background:var(--g);color:var(--ink);padding:clamp(48px,8vw,110px) var(--pad) 0}
+  .vwrap{position:absolute;top:0;bottom:0;right:14px;display:flex;flex-direction:column;
+    justify-content:flex-end;padding-bottom:64px;pointer-events:none;z-index:5}
+  .vmark{position:sticky;bottom:36px;writing-mode:vertical-rl;font-family:var(--disp);
+    font-size:clamp(30px,4.6vw,52px);line-height:1;letter-spacing:.015em;color:#101010;
+    white-space:nowrap;opacity:0;transition:opacity .5s}
+  .vmark .vm-b{position:absolute;inset:0;color:#FBFBFA}
+  .vmark.on{opacity:1}
+  .found{font-family:var(--body);font-style:italic;font-size:16px;color:var(--dim)}
+  .numeral{font-family:var(--disp);font-style:italic;font-size:clamp(96px,16vw,190px);line-height:.95;margin-top:26px}
+  .era-line{display:flex;flex-wrap:wrap;gap:8px 20px;align-items:baseline;margin-top:8px}
+  .era-title{font-family:var(--disp);font-size:clamp(30px,4.6vw,52px);line-height:1.05;letter-spacing:.015em}
+  .era-sub{font-family:var(--body);font-style:italic;font-size:15.5px;line-height:24px;color:var(--dim)}
+
+  /* site hero */
+  /* basement light: three slow blurred beams staining the paper — the
+     lumen wash architecture translated to a white ground (multiply, low
+     opacity, 3am drift) */
+  .hero-washes{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+  .hero-wash{position:absolute;width:130%;height:30%;filter:blur(48px);
+    mix-blend-mode:multiply;opacity:.22}
+  /* dub palette sunk to the floor: near-black ember, abyss petrol, void slate */
+  .hw1{background:linear-gradient(90deg,transparent,#4a1f12 35%,#2b130c 60%,transparent);
+    top:4%;left:-18%;transform:rotate(-14deg);animation:hwd1 23s ease-in-out infinite alternate}
+  .hw2{background:linear-gradient(90deg,transparent,#0f2b29 40%,#0a1c22 65%,transparent);
+    top:38%;left:-12%;transform:rotate(8deg);animation:hwd2 29s ease-in-out infinite alternate}
+  .hw3{background:linear-gradient(90deg,transparent,#181c30 45%,#0e101d 70%,transparent);
+    top:66%;left:-20%;transform:rotate(-22deg);animation:hwd3 34s ease-in-out infinite alternate}
+  @keyframes hwd1{to{transform:rotate(-10deg) translateX(5%)}}
+  @keyframes hwd2{to{transform:rotate(11deg) translateX(-4%)}}
+  @keyframes hwd3{to{transform:rotate(-25deg) translateX(6%)}}
+  .hero-text{position:relative;z-index:1}
+  .hero{min-height:88vh;display:flex;flex-direction:column;justify-content:center}
+  .hero h1{font-family:var(--disp);font-weight:400;font-size:clamp(52px,9vw,128px);line-height:1;margin-top:22px;font-style:italic;letter-spacing:.015em}
+  .hero .thesis{font-size:clamp(17px,2vw,21px);color:var(--dim);max-width:44ch;margin-top:26px}
+  .hero .thesis b{color:var(--ink);font-weight:500}
+  .hero .credit{font-family:var(--body);font-style:italic;font-size:14.5px;line-height:24px;color:var(--dim);margin-top:16px}
+
+  /* chapter */
+  /* 4px baseline unit: every leading is a multiple; paragraph spacing in
+     column text = one full line so side-by-side baselines register */
+  .essay{max-width:64ch;font-size:18px;font-weight:300;line-height:28px}
+  .essay p+p{margin-top:28px}
+  .essay a.xref{color:inherit;text-decoration:underline;text-decoration-thickness:1px;
+    text-underline-offset:3.5px;text-decoration-color:color-mix(in srgb,currentColor 30%,transparent);
+    transition:text-decoration-color .25s}
+  .essay a.xref:hover{text-decoration-color:var(--acc)}
+  .essay.cols{max-width:min(69vw,1360px);column-count:2;column-gap:clamp(56px,7vw,104px)}
+  .sidenote{font-family:var(--util);font-size:15px;line-height:24px;max-width:56ch;margin-top:8px}
+  /* long notes (>700ch) split into two columns like the essays; paragraph
+     gap = one full 24px line so the columns share the baseline (09-19) */
+  .sidenote.cols{max-width:min(69vw,1360px);column-count:2;column-gap:clamp(56px,7vw,104px)}
+  .sidenote.cols p+p{margin-top:24px}
+  /* two-column text: a paragraph never splits across the gutter, so the
+     second column starts with a whole paragraph at the top instead of the
+     tail of one (Jackson 09-20: 'locked to the top of the first paragraph') */
+  .essay.cols p,.sidenote.cols p{break-inside:avoid;page-break-inside:avoid}
+  .sidenote p+p{margin-top:12px}
+  @media (max-width:900px){.essay.cols,.sidenote.cols{column-count:1;max-width:64ch}}
+  .essay.lede{margin-top:44px}
+  .sec-title{font-family:var(--disp);font-size:clamp(24px,3.2vw,34px);font-weight:400;margin:72px 0 10px;max-width:30ch;text-wrap:balance;letter-spacing:.012em}
+  .sec-title::before{content:"— ";color:#E8481C}
+  .subnote{--g:#D6D4CF;--ink:#141414;background:var(--g);color:var(--ink);
+    margin:0 calc(var(--pad) * -1);padding:clamp(40px,6vh,72px) var(--pad);
+    min-height:clamp(200px,26vh,320px);display:flex;align-items:center;gap:20px}
+  .subnote h3{font-family:var(--disp);font-size:clamp(24px,3.2vw,34px);font-weight:400;
+    letter-spacing:.012em;max-width:34ch;text-wrap:balance;margin:0}
+  /* 01.2 sub-chapter card + curtain retired 2026-09-19 (Jackson): its note now closes the chapter-01 essay */
+  .era-title .tw{display:inline-block;margin-right:.3em}
+  .era-title .tw:last-child{margin-right:0}
+  .subnote+.ledger{margin-top:0}
+  .divider{font-family:var(--disp);font-size:clamp(22px,3vw,30px);font-weight:400;color:var(--ink);margin:84px 0 0;border-top:1px solid var(--linec);padding-top:26px;max-width:30ch;text-wrap:balance;letter-spacing:.012em}
+  .essay+.ledger{margin-top:clamp(88px,11vh,150px)}
+  .sec-title+.ledger{margin-top:44px}
+  .diagram+.ledger{margin-top:0}
+  .ledger+.diagram{margin-top:0}
+  .sec-title+.essay{margin-top:16px}
+  /* blurb sits centered between a plate and its slab: same symmetry token
+     above the title as the essay->ledger gap below */
+  .diagram+.sec-title{margin-top:clamp(88px,11vh,150px)}
+
+  .ledger{--g:#101010;--ink:#F2F1EE;--dim:#8B8B88;--acc:#F2F1EE;--linec:#2A2A2A;
+    background:var(--g);color:var(--ink);
+    margin-left:calc(var(--pad) * -1);margin-right:calc(var(--pad) * -1);
+    padding:clamp(40px,6vh,72px) var(--pad)}
+  .ledger + .ledger{margin-top:0;padding-top:0}
+  .row{display:grid;grid-template-columns:26px 84px minmax(190px,270px) 1fr auto;gap:8px 18px;
+    align-items:center;padding:12px 0;border-bottom:1px solid var(--linec);max-width:1180px;position:relative}
+  .pvbar{position:absolute;left:0;bottom:-1px;height:2px;width:0;background:var(--acc)}
+  .sleeve{width:84px;height:84px;object-fit:cover;display:block;transition:border-radius .45s}
+  .row.playing img.sleeve{border-radius:50%;animation:platter 4s linear infinite}
+  span.sleeve{height:auto}
+  .dot{color:var(--acc);font-size:11px}
+  button.dot{background:none;border:0;padding:14px;margin:-14px;cursor:pointer;font-family:var(--util);
+    font-size:11px;color:var(--acc);line-height:1;text-align:left}
+  button.dot.mute{color:var(--ink);opacity:.4}
+  /* the trail speaks in one color: plate orange marks every start-here row */
+  .row.pri .dot{color:#E8481C}
+  .who{display:flex;flex-direction:column;gap:2px}
+  .artist{font-family:var(--util);font-size:14px;font-weight:500;line-height:20px}
+  .release{font-family:var(--disp);font-size:18px;font-style:italic;color:var(--ink);line-height:24px}
+  .note{font-family:var(--util);font-size:13.5px;color:var(--ink);line-height:20px;max-width:58ch}
+  .bc{font-family:var(--body);font-style:italic;font-size:14px;color:var(--acc);text-decoration:none;white-space:nowrap;
+    grid-column:-2;justify-self:end;background:none;border:0;cursor:pointer;padding:15px 12px;margin:-15px -12px}
+  .bc:hover{text-decoration:underline;text-underline-offset:3px}
+  .ls{grid-column:-2;justify-self:end;display:flex;flex-direction:column;gap:2px;align-items:flex-end}
+  .playwrap{grid-column:2/-1;margin:6px 0 4px;display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap}
+  .playwrap iframe{width:100%;max-width:640px;height:120px;border:0;display:block;flex:1 1 320px}
+  #npbar{position:fixed;right:96px;bottom:20px;z-index:80;display:flex;align-items:center;gap:12px;
+    background:#FBFBFA;color:#101010;border:1px solid rgba(16,16,16,.22);padding:10px 16px;
+    width:min(440px,calc(100vw - 132px));opacity:0;pointer-events:none;transform:translateY(8px);
+    transition:opacity .28s,transform .28s}
+  #npbar.on{opacity:1;pointer-events:auto;transform:none}
+  #npbar .np-gl{color:#E8481C;font-size:11px;flex:none;background:none;border:0;
+    font-family:inherit;padding:10px;margin:-10px;cursor:default}
+  #npbar.pv .np-gl{cursor:pointer}
+  #npbar .np-mid{flex:1 1 auto;min-width:0}
+  #npbar .np-sub{display:none;align-items:center;gap:10px}
+  #npbar.pv .np-sub{display:flex}
+  #npbar .np-tl{flex:1 1 auto;position:relative;height:14px;cursor:pointer}
+  #npbar .np-time{font-family:var(--util);font-size:11px;line-height:20px;color:var(--dim);flex:none;
+    font-variant-numeric:tabular-nums}
+  /* volume speaks the same hairline language as the seek bar; ink fill so
+     it never reads as progress */
+  #npbar .np-vl{position:relative;width:56px;height:14px;flex:none;cursor:pointer;touch-action:none}
+  #npbar .np-vl::before{content:'';position:absolute;left:0;right:0;top:6px;height:2px;
+    background:rgba(16,16,16,.16)}
+  #npbar .np-vf{position:absolute;left:0;top:6px;height:2px;width:80%;background:#101010}
+  #npbar .np-nx{display:none;font-family:var(--util);font-size:11.5px;line-height:20px;color:var(--dim);
+    margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #npbar.pv .np-nx.on{display:block}
+  .playwrap button.alb{font-family:var(--util);font-size:12px;line-height:20px;color:var(--ink);
+    background:none;border:1px solid var(--dim);padding:8px 16px;cursor:pointer;flex:none;
+    white-space:nowrap;transition:background .15s,color .15s}
+  .playwrap button.alb:hover{background:var(--ink);color:var(--g);border-color:var(--ink)}
+  #npbar .np-tl::before{content:'';position:absolute;left:0;right:0;top:6px;height:2px;background:rgba(16,16,16,.16)}
+  #npbar .np-tf{position:absolute;left:0;top:6px;height:2px;width:0;background:#E8481C}
+  #npbar .np-fl{font-family:var(--body);font-style:italic;font-size:12.5px;line-height:20px;color:var(--dim);
+    text-decoration:none;flex:none}
+  #npbar .np-fl:hover{text-decoration:underline}
+  #npbar .np-t{display:block;min-width:0;cursor:pointer;text-align:left;background:none;border:0;padding:0;color:inherit}
+  #npbar .np-a{display:block;font-family:var(--util);font-size:13px;line-height:20px;font-weight:500;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #npbar .np-r{display:block;font-family:var(--disp);font-style:italic;font-size:15px;line-height:20px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #npbar .np-t:hover .np-r{text-decoration:underline;text-underline-offset:3px}
+  #npbar .np-x{background:none;border:0;color:#101010;opacity:.55;cursor:pointer;font-size:11px;
+    padding:10px;margin:-10px;flex:none}
+  #npbar .np-x:hover{opacity:1}
+  .playwrap a{font-family:var(--body);font-style:italic;font-size:12.5px;color:var(--dim);text-decoration:none;display:inline-block;margin-top:6px}
+  .playwrap a:hover{text-decoration:underline}
+
+  /* crate view (pilot, ?crate): horizontal record-bin for a chapter's list */
+  .crate{--g:#101010;--ink:#F2F1EE;--dim:#8B8B88;--acc:#F2F1EE;--linec:#2A2A2A;
+    position:relative;isolation:isolate;
+    background:var(--g);color:var(--ink);margin:0 calc(var(--pad) * -1);
+    padding:56px var(--pad) 56px;overflow:hidden;   /* equal breath top/bottom (Jackson 09-19: "hugging the margin") */
+    display:flex;flex-direction:column;justify-content:flex-start}
+  .crate-view{overflow:visible;min-width:0;perspective:1400px;perspective-origin:50% 38%}
+  /* CHLADNI PLATE (Jackson 09-19): the hero's sand engine behind every crate,
+     driven by the playing record's loudness and beats; far back, under
+     everything, never in the way */
+  .crate-sand{position:absolute;inset:0;z-index:0;color:#5C5C54;pointer-events:none;filter:blur(0.5px)}
+  .crate-player > .crate-sand{z-index:0}
+  /* the queue is translucent so the plate shows through it (Jackson 09-19) */
+  .cs:not(.on){opacity:.5}
+  .cs::after{opacity:.3}
+  /* crate inherits the ledger's rhythm: full breath after editorial text,
+     tighter after a blurb title, flush after grey/orange slabs */
+  .essay+.crate,.sidenote+.crate{margin-top:clamp(88px,11vh,150px)}
+  .sec-title+.crate{margin-top:44px}
+  .subnote+.crate,.diagram+.crate{margin-top:0}
+  .crate-rail{position:relative;height:var(--csw);transform-style:preserve-3d;cursor:grab;
+    touch-action:pan-y;
+    transition:transform .5s cubic-bezier(.22,.9,.24,1)}
+  .crate-rail.drag{transition:none;cursor:grabbing}
+  /* one plane, one gridline: identical squares hugging the slab top,
+     ~3/4 of the box; the LEFTMOST cover is always the active one */
+  /* the queue stacks like the old iTunes flow (Jackson 09-18): each record
+     overlaps the previous by a quarter and sits behind it, scaled down a
+     touch per step back in the queue (--s/--z set per figure on seat()) */
+  .crate{--csw:clamp(380px,62vh,700px)}
+  /* COVER FLOW (Jackson 09-18, after the iTunes reference): the active
+     record flat and forward at center, both sides angled in perspective and
+     stacked, mirrored on the black floor. seat() places each record by its
+     distance d from the active (--x/--zt/--ry/--z); records beyond +-5 are
+     not rendered (.far) and sleeping crates keep only the active one, so
+     the angled covers never pile up GPU layers. */
+  .cs{position:absolute;left:50%;top:0;width:var(--csw);margin:0;cursor:pointer;
+    z-index:var(--z,1);backface-visibility:hidden;
+    transform:translateX(calc(-50% + var(--x,0px))) translateZ(var(--zt,0px)) rotateY(var(--ry,0deg));
+    transition:border-radius .5s,transform .55s cubic-bezier(.22,.9,.24,1)}
+  /* floor reflection tried 09-18 and set aside (Jackson: keep it clean; may
+     come back): -webkit-box-reflect:below 2px linear-gradient(rgba(0,0,0,.42),transparent 48%) */
+  .cs.far{display:none}
+  .crate.asleep .cs:not(.on){display:none}
+  /* queued records dim under an OPAQUE veil (not opacity: overlapped covers
+     would double-expose); the active one is clear */
+  .cs::after{content:'';position:absolute;inset:0;background:#101010;opacity:.55;pointer-events:none;
+    transition:opacity .5s}
+  .cs.on::after{opacity:0}
+  .cs img,.cs .cs-blank{width:100%;aspect-ratio:1;display:block;object-fit:cover}
+  .cs .cs-blank{background:#1C1C1C}
+  .cs.on{opacity:1}
+  .cs.hov:not(.on)::after{opacity:.25}
+  .cs.hov:not(.on){transform:translateX(calc(-50% + var(--x,0px))) translateZ(calc(var(--zt,0px) + 40px)) rotateY(var(--ry,0deg))}
+  .cs.on.playing::after{border-radius:50%}
+  .cs.on.playing img{border-radius:50%;animation:platter 4s linear infinite}
+  /* the nav + info + player column hangs centered under the active record,
+     the record's width wide (Jackson 09-18); text left-aligned within it */
+  .crate-side{margin:0 auto;width:var(--csw);max-width:100%}
+  /* TRACKLIST + PLAYER (Jackson 09-19): the chapter's records as a text
+     list with their sleeves down the LEFT quarter; the right three quarters
+     are THE PLAYER — the active record as a platter over the Chladni plate,
+     an expanded info panel beside it, prev/next beneath. The list frame is
+     the player's full height. One 18px leading unit. */
+  .crate.list{display:grid;grid-template-columns:minmax(200px,1fr) minmax(0,3fr);column-gap:28px;align-items:stretch}
+  .crate.list .crate-list-wrap{grid-column:1;grid-row:1;position:relative;min-height:var(--csw)}
+  .crate-player{grid-column:2;grid-row:1;position:relative;min-height:var(--csw);overflow:clip}
+  /* the record sits centered between the tracklist and the info (Jackson
+     09-19): the player splits in two halves, the platter centered in the
+     left one, the info filling the right one */
+  .cp-inner{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:0;align-items:start}
+  .cp-platter{grid-column:1;grid-row:1;margin:0 auto;width:min(84%,var(--csw));aspect-ratio:1;position:relative;left:-14px}   /* -half the list gap: equal air to the list and to the info */
+  .crate.list .crate-side{padding-right:clamp(16px,2vw,40px)}
+  .cp-disc{display:block;width:100%;height:100%;object-fit:cover;transition:border-radius .5s;box-shadow:0 0 0 1px rgba(242,241,238,.08)}
+  .cp-platter.blank .cp-disc{display:none}
+  .cp-platter.blank .cp-blank{display:block;width:100%;height:100%;background:#1C1C1C}
+  .cp-blank{display:none}
+  .cp-platter.playing .cp-disc{border-radius:50%;animation:platter 4s linear infinite}
+  .crate.list .crate-side{grid-column:2;grid-row:1;min-width:0}
+  /* the nav spans the album art pixel for pixel (Jackson 09-19): same grid track, same width formula, same -14px shift as .cp-platter */
+  .crate.list .crate-nav{grid-column:1;grid-row:2;width:min(84%,var(--csw));margin:48px auto 0;position:relative;left:-14px;max-width:none}
+  .crate.list .crate-panel.row{margin-top:0;padding:0}
+  /* the preview timeline is its own element under the controls (Jackson
+     09-20): 28px of air below the play button, a full-width track line, the
+     progress fill riding on it - no longer glued to the button's edge */
+  .crate.list .crate-panel.row:has(.pvbar){padding-bottom:28px;border-bottom:2px solid rgba(242,241,238,.18)}
+  .crate.list .crate-panel .pvbar{max-width:none;bottom:-2px}
+  .crate.list .crate-panel .release{font-size:clamp(28px,3vw,44px)}
+  .crate.list .crate-panel .note{max-width:62ch;font-size:14.5px;line-height:22px;margin-top:16px}
+  .crate.list .crate-panel .playwrap,.crate.list .crate-panel .playwrap iframe{max-width:560px}
+  .crate-list{position:absolute;inset:0;overflow-y:auto;overscroll-behavior:contain;
+    scrollbar-width:thin;scrollbar-color:#2A2A2A transparent;padding:0 8px 64px 0;
+    -webkit-mask-image:linear-gradient(#000 calc(100% - 40px),transparent);mask-image:linear-gradient(#000 calc(100% - 40px),transparent)}
+  .tl-row{display:grid;grid-template-columns:48px minmax(0,1fr) auto;gap:0 14px;align-items:center;
+    padding:14px 0;border-bottom:1px solid var(--linec);cursor:pointer}
+  .tl-row:first-child{padding-top:0}          /* first row's art sits ON the platter's top edge */
+  .tl-art{width:48px;height:48px;object-fit:cover;display:block;transition:border-radius .45s}
+  .tl-art.blank{background:#1C1C1C}
+  .tl-row.playing .tl-art{border-radius:50%;animation:platter 4s linear infinite}
+  .tl-text{min-width:0}
+  .tl-artist{display:block;font-family:var(--util);font-size:13px;font-weight:500;line-height:18px;color:var(--dim)}
+  .tl-release{display:block;font-family:var(--util);font-weight:600;font-size:14px;line-height:18px;color:var(--ink)}
+  .tl-row.on .tl-artist{color:var(--ink)}
+  .tl-play{font-family:var(--util);font-size:11px;line-height:18px;color:var(--ink);background:none;
+    border:1px solid var(--linec);border-radius:50%;width:32px;height:32px;padding:0;margin-top:2px;
+    cursor:pointer;justify-self:end;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
+  .tl-play:hover{background:var(--ink);color:var(--g);border-color:var(--ink)}
+  a.tl-play.mute{opacity:.4;border-color:transparent}
+  a.tl-play.mute:hover{opacity:1;background:none;color:var(--ink)}
+  .tl-row.playing .tl-play{background:#E8481C;border-color:#E8481C;color:#fff}
+  .crate-nav{display:flex;flex-wrap:wrap;align-items:center;column-gap:20px;row-gap:10px;margin:64px 0 0}   /* = the 64px below the player: block sits equidistant in the slab (09-18) */
+  .crate-nav button{font-family:var(--util);font-size:16px;line-height:20px;color:var(--ink);
+    background:none;border:1px solid var(--dim);padding:10px 20px;cursor:pointer;flex:none;
+    transition:background .15s,color .15s}
+  .crate-nav button:hover{background:var(--ink);color:var(--g);border-color:var(--ink)}
+  .cn-track{flex:1;position:relative;height:20px;cursor:pointer}
+  .cn-track::before{content:'';position:absolute;left:0;right:0;top:9px;height:2px;
+    background:rgba(242,241,238,.18)}
+  .cn-fill{position:absolute;left:0;top:9px;height:2px;width:0;background:#E8481C;
+    transition:width .3s}
+  /* the count sits under the line on its own row (09-19): the row above is
+     the arrows + line only, so its two ends are the arrows' outer edges */
+  .cn-count{font-family:var(--util);font-size:12px;line-height:20px;color:var(--dim);flex:0 0 100%;text-align:center;
+    font-variant-numeric:tabular-nums}
+  /* bottom band: text, then the player pinned bottom flush-left — the
+     slab auto-flexes to each record's content */
+  .crate-panel.row{display:block;border:0;padding:0 0 20px;max-width:none;position:relative;margin-top:24px}
+  .crate-panel .pvbar{max-width:520px}
+  .crate-panel .artist{font-size:15px}
+  .crate-panel .release{font-size:clamp(24px,2.6vw,36px);line-height:1.15;display:block;margin-top:4px}
+  .crate-panel .dot{font-size:12px;display:block;margin-bottom:12px}
+  .crate-panel .note{margin-top:12px;max-width:56ch}
+  .crate-panel .playwrap{display:block;margin:24px 0 0;width:100%;max-width:520px}
+  .crate-panel .playwrap iframe{max-width:520px}
+  .crate .crate-panel button.alb{display:none}
+  .crate-panel button.dot.pv{display:block;font-size:22px;padding:12px 20px;margin:24px 0 0;
+    border:1px solid var(--dim)}
+  .crate-panel a.bc{display:block;padding:0;margin:24px 0 0;justify-self:start;grid-column:auto}
+  .crate-panel .ls{display:block;margin:24px 0 0;grid-column:auto;justify-self:start}
+  @media (max-width:900px){.crate{min-height:auto}}
+
+  .collage{position:relative;margin-top:52px}
+  .collage img{position:absolute;display:block;height:auto}
+  .collage img:nth-child(1){width:34%;left:0;top:0;z-index:2}
+  .collage img:nth-child(2){width:21%;left:29%;top:42%;z-index:3}
+  .collage img:nth-child(3){width:26%;left:47%;top:5%;z-index:1}
+  .collage img:nth-child(4){width:16%;left:73%;top:0;z-index:2}
+  .collage img:nth-child(5){width:23%;left:65%;top:44%;z-index:2}
+  .collage img:nth-child(6){width:15%;left:11%;top:64%;z-index:3}
+
+  .gm{color:var(--dim)}
+  .gm svg{display:block;width:100%;height:auto}
+  .gm svg{overflow:visible;display:block;width:100%;height:auto}
+  .gm .ind{transform-box:view-box;transform-origin:50% 53.3%;animation:knobturn 8s cubic-bezier(.6,0,.3,1) var(--ad,0s) infinite}
+  .gm .cap{animation:fadermove 9s ease-in-out var(--ad,0s) infinite}
+  .gm .c1{animation:fadermove 7s ease-in-out var(--ad,0s) infinite}
+  .gm .c2{animation:fadermove 10s ease-in-out calc(var(--ad,0s) - 3s) infinite reverse}
+  .gm .c3{animation:fadermove 8.5s ease-in-out calc(var(--ad,0s) - 6s) infinite}
+  .gm .crv{stroke-dasharray:100;animation:ringdraw 11s ease-in-out var(--ad,0s) infinite}
+  .gm .cut{offset-path:path('M6 22 H30 Q40 22 46 50');animation:ride 6s ease-in-out var(--ad,0s) infinite alternate}
+  .gm .cone{transform-box:fill-box;transform-origin:center;animation:bump 1.92s ease-out var(--ad,0s) infinite}
+  .gm .ping{transform-box:fill-box;transform-origin:center;animation:ping 3.84s ease-out var(--ad,0s) infinite}
+  .gm .tp{animation:tapeflow 2.4s linear var(--ad,0s) infinite}
+  .gm .reelL{transform-box:fill-box;transform-origin:center;animation:slowspin 4.8s linear var(--ad,0s) infinite}
+  .gm .reelR{transform-box:fill-box;transform-origin:center;animation:slowspin 3.2s linear var(--ad,0s) infinite}
+  .gm .ndl{transform-box:view-box;transform-origin:50% 76.6%;animation:vujump 2.4s cubic-bezier(.3,1.7,.4,1) var(--ad,0s) infinite}
+  .gm .st{fill-opacity:0;animation:stepon 2.4s linear var(--ad,0s) infinite}
+  .gm .st:nth-of-type(2){animation-delay:calc(var(--ad,0s) + .48s)}
+  .gm .st:nth-of-type(3){animation-delay:calc(var(--ad,0s) + .96s)}
+  .gm .st:nth-of-type(4){animation-delay:calc(var(--ad,0s) + 1.44s)}
+  .gm .st:nth-of-type(5){animation-delay:calc(var(--ad,0s) + 1.92s)}
+  .gm .cbl{animation:tapeflow 1.9s linear var(--ad,0s) infinite reverse}
+  .collage img.spin{border-radius:50%;animation:platter 5.5s linear infinite}
+  .panel{position:absolute;z-index:3;display:grid;grid-template-columns:repeat(6,1fr);
+    background:var(--g);border-top:1px solid var(--ink);border-left:1px solid var(--ink)}
+  .panel .cell{aspect-ratio:1;display:flex;align-items:center;justify-content:center;
+    border-right:1px solid var(--ink);border-bottom:1px solid var(--ink);color:var(--ink)}
+  .panel .cell svg{width:58%;height:auto}
+  .panel.v{grid-template-columns:1fr}
+  .gm .sn{animation:tapeflow 2.6s linear var(--ad,0s) infinite reverse}
+  .gm .xcap{animation:xmove 8s ease-in-out var(--ad,0s) infinite}
+  .gm .spr{transform-box:fill-box;transform-origin:left center;animation:boing 3.4s cubic-bezier(.3,1.8,.4,1) var(--ad,0s) infinite}
+  .gm .pd{fill-opacity:0;animation:stepon 1.92s linear var(--ad,0s) infinite}
+  .gm .pd:nth-of-type(2){animation-delay:calc(var(--ad,0s) + .7s)}
+  .gm .pd:nth-of-type(3){animation-delay:calc(var(--ad,0s) + .2s)}
+  .gm .pd:nth-of-type(4){animation-delay:calc(var(--ad,0s) + 1.1s)}
+  .gm .pd:nth-of-type(5){animation-delay:calc(var(--ad,0s) + .4s)}
+  .gm .pd:nth-of-type(6){animation-delay:calc(var(--ad,0s) + 1.5s)}
+  .gm .pd:nth-of-type(7){animation-delay:calc(var(--ad,0s) + .9s)}
+  .gm .pd:nth-of-type(8){animation-delay:calc(var(--ad,0s) + .3s)}
+  .gm .pd:nth-of-type(9){animation-delay:calc(var(--ad,0s) + 1.3s)}
+  .gm .plg{animation:plug 5s ease-in-out var(--ad,0s) infinite}
+  .gm .scp{animation:tapeflow 2.2s linear var(--ad,0s) infinite}
+  @keyframes xmove{0%,16%{transform:translateX(0)}42%,58%{transform:translateX(32px)}84%,100%{transform:translateX(6px)}}
+  @keyframes boing{0%,70%,100%{transform:scaleX(1)}12%{transform:scaleX(1.18)}30%{transform:scaleX(.92)}45%{transform:scaleX(1.06)}}
+  @keyframes plug{0%,18%{transform:translateX(0)}45%,62%{transform:translateX(7px)}88%,100%{transform:translateX(0)}}
+  @keyframes knobturn{0%,14%{transform:rotate(-70deg)}30%,48%{transform:rotate(35deg)}62%,84%{transform:rotate(110deg)}100%{transform:rotate(-70deg)}}
+  @keyframes fadermove{0%,18%{transform:translateY(0)}45%,60%{transform:translateY(26px)}82%,100%{transform:translateY(4px)}}
+  @keyframes ride{from{offset-distance:0%}to{offset-distance:100%}}
+  @keyframes bump{0%{transform:scale(1)}12%{transform:scale(1.14)}40%,100%{transform:scale(1)}}
+  @keyframes tapeflow{to{stroke-dashoffset:-70}}
+  @keyframes vujump{0%{transform:rotate(-38deg)}22%{transform:rotate(18deg)}38%{transform:rotate(-6deg)}55%{transform:rotate(30deg)}72%{transform:rotate(4deg)}100%{transform:rotate(-38deg)}}
+  @keyframes stepon{0%,17%{fill-opacity:.95}18%,100%{fill-opacity:0}}
+  @keyframes platter{to{transform:rotate(360deg)}}
+  @keyframes slowspin{to{transform:rotate(360deg)}}
+  @keyframes ringdraw{0%{stroke-dashoffset:100}42%{stroke-dashoffset:0}58%{stroke-dashoffset:0}100%{stroke-dashoffset:-100}}
+  @keyframes ping{0%{transform:scale(.4);opacity:.8}75%{transform:scale(2.6);opacity:0}100%{transform:scale(2.6);opacity:0}}
+  .fl{animation:drift 9s ease-in-out infinite}
+  .collage .fl:nth-child(2n),.hero-field .fl:nth-child(2n){animation-duration:12s;animation-delay:-4s}
+  .collage .fl:nth-child(3n),.hero-field .fl:nth-child(3n){animation-duration:14s;animation-delay:-7s}
+  @keyframes drift{0%,100%{transform:translate(0,var(--py,0px))}50%{transform:translate(4px,calc(var(--py,0px) - 8px)) rotate(.4deg)}}
+  .hero{display:grid;grid-template-columns:minmax(0,1.02fr) minmax(0,.98fr);align-items:center;
+    gap:4vw;min-height:calc(100vh - 51px)}
+  .platter-zone{position:relative;justify-self:end;width:min(100%,640px);isolation:isolate}
+  .hero-platter{position:relative;width:100%;aspect-ratio:1;border-radius:50%;overflow:hidden;
+    animation:platter 14s linear infinite}
+  .hero-platter img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  .hero-platter .pd-cyc{opacity:0;animation:pfade var(--pcycle,30s) linear infinite}
+  .hero-waves{position:absolute;inset:0;z-index:0;color:var(--ink);pointer-events:none}
+  .hero-waves.sand{filter:blur(.8px)}   /* ?chladni: one GPU blur for the sand's softness */
+  .hw-spin{animation:hwspin linear infinite;transform-box:view-box;transform-origin:center}
+  .hw-br{animation:hwbreathe ease-in-out infinite;transform-box:view-box;transform-origin:center}
+  @keyframes hwspin{to{transform:rotate(360deg)}}
+  @keyframes hwbreathe{0%,100%{transform:scale(1)}50%{transform:scale(var(--ba,1.02))}}
+  .hero-head{display:inline-block}
+  .panel.rack-top{position:static;width:100%;z-index:auto;margin-bottom:26px;
+    grid-template-rows:1fr 1fr;background:none;border:0}
+  .rack-top .cell{border:1px solid var(--ink);background:var(--g)}
+  .rack-top .cell.lo{margin-top:-1px}
+  .rack-top .cell:not(:first-child){margin-left:-1px}
+  @media (max-width:900px){
+    .hero{grid-template-columns:1fr;min-height:auto;gap:40px;padding-top:80px}
+    .platter-zone{justify-self:center;width:min(78vw,420px)}
+    .hero-head{display:block}
+  }
+  .era-open{position:relative;margin-bottom:clamp(88px,11vh,150px)}
+  .era-open .numeral{position:sticky;top:84px;z-index:4;pointer-events:none;width:max-content}
+  @media (prefers-reduced-motion: reduce){.fl,.gm svg,.gm svg *,.hw-spin,.hw-br,.hero-platter .pd-cyc,.row.playing img.sleeve,.hero-wash{animation:none}}
+
+  /* year maps: grey ground (Jackson 09-19, was plate orange); a full-bleed
+     slab whose map fills the content width between the band's side pads */
+  .diagram{--g:#D6D4CF;--ink:#141414;--dim:#5F5D58;
+    background:var(--g);color:var(--ink);
+    margin:clamp(80px,10vh,130px) calc(var(--pad) * -1) 0;
+    padding:clamp(56px,8vh,100px) var(--pad) clamp(44px,6vh,72px);
+    overflow-x:auto}
+  .diagram svg{width:100%;height:auto;max-width:940px;min-width:640px;display:block;margin:0 auto}
+  .dia-title{font-family:var(--disp);font-size:clamp(26px,3.4vw,38px);font-weight:400;
+    letter-spacing:.015em;color:var(--ink);margin:0 auto clamp(28px,4vh,46px);text-align:center;max-width:940px}
+  .diagram text{font-family:var(--util);font-size:13px;fill:var(--ink)}
+  .diagram svg.dg-wide{max-width:1140px}
+  .diagram svg.dg-wide text{font-size:15.5px}
+  .diagram svg.dg-wide .dm{font-size:14px}
+  .diagram .dm{opacity:.75;font-size:12px}
+  .diagram line{stroke:currentColor;stroke-width:1}
+  .diagram .h{fill:none;stroke:currentColor;stroke-width:1.2}
+  .diagram .f{fill:currentColor}
+  .diagram rect.h{stroke-width:1}
+  .diagram figcaption{font-family:var(--body);font-style:italic;font-size:14.5px;color:var(--dim);margin:18px auto 0;max-width:62ch;text-align:center}
+  .diagram .key{font-family:var(--util);font-style:normal;font-size:11px;display:table;margin:14px auto 0;padding:6px 12px;border:1px solid var(--ink);color:var(--ink)}
+
+  /* record maps: one column per year, sleeves stacked in their year */
+  .rmap{overflow-x:auto}
+  /* one grid track per year across the FULL content width (fluid, Jackson
+     09-19): a sleeve fills its track minus an 8px gutter, capped at 160px so
+     the 320px thumb tier stays crisp on 2x screens; under a 36px track the
+     plate scrolls sideways instead of shrinking the sleeves further */
+  .rm{display:grid;grid-template-columns:repeat(var(--n),minmax(36px,1fr));align-items:end;width:100%;
+    font-family:var(--util);color:var(--ink);border-bottom:1px solid #1A1510}
+  .rm-col{min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;position:relative}
+  .rm-gap{min-width:0}
+  .rm-col::after{content:'';position:absolute;left:50%;bottom:-7px;width:1px;height:6px;background:#1A1510}
+  .rm-stack{display:flex;flex-direction:column-reverse;gap:6px;padding-bottom:12px;width:calc(100% - 8px);max-width:160px}
+  .rm-year{font-size:11px;line-height:16px;opacity:.85;position:absolute;top:100%;margin-top:10px;left:50%;transform:translateX(-50%)}
+  .rm-col.und{border-left:1px dashed rgba(26,21,16,.5)}
+  .rm-rec{width:100%;padding:0;border:0;background:none;cursor:pointer;display:block}
+  .rm-sl{display:block;width:100%;height:auto;aspect-ratio:1;object-fit:cover;box-shadow:0 0 0 1px #1A1510;transition:transform .25s;position:relative}
+  .rm-sl.blank{background:#1A1510;opacity:.35}
+  .rm-rec:hover .rm-sl{transform:scale(1.6);z-index:3}
+  .rm-rec.playing .rm-sl{border-radius:50%;animation:platter 4s linear infinite}
+  .rmap figcaption{margin-top:44px;max-width:76ch}
+  .rmap [data-reveal]{opacity:0;transform:translateY(8px);transition:opacity .5s ease,transform .5s ease}
+  .rmap [data-reveal].in{opacity:1;transform:none}
+  .tease-note{font-family:var(--body);font-style:italic;font-size:15.5px;color:var(--dim);margin-top:22px}
+
+  /* MOBILE (Jackson 09-20, 'better mobile experience without breaking desktop'):
+     no choreography below 900px, so the sticky numeral only rode over the
+     collage and the note - it sits in flow now; play triangles reach the
+     44px touch minimum; year maps get a 44px track floor, snap points and
+     end padding so the sideways scroll reads and lands on a column */
+  @media (max-width:900px){
+    .era-open .numeral{position:static}
+    button.dot.pv{min-width:44px;min-height:44px;padding:16px;margin:-16px;display:inline-flex;align-items:center;justify-content:center}
+    .rm{grid-template-columns:repeat(var(--n),minmax(44px,1fr));padding-right:24px}
+    .rm-col{scroll-snap-align:start}
+    .rmap{scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch}
+  }
+  .colophon{padding-top:clamp(72px,10vh,130px) !important;padding-bottom:clamp(48px,7vh,90px) !important}
+  .colophon .sec-title{margin-top:0}
+  .colophoto{display:block;width:100%;max-width:530px;height:auto;margin:32px 0 40px}
+  footer.band{padding-top:20px !important;padding-bottom:80px !important}
+  footer .credit{display:inline-block;margin-top:10px;color:var(--dim);font-size:13.5px}
+  footer .ja-mark{display:block;width:56px;height:auto;margin-top:22px}
+  footer .src{font-family:var(--body);font-style:italic;font-size:14.5px;color:var(--dim);max-width:56ch;line-height:28px}
+
+  /* reveals */
+  [data-reveal]{opacity:0;transform:translateY(14px);transition:opacity .7s ease,transform .7s ease}
+  [data-reveal].in{opacity:1;transform:none}
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto}
+    [data-reveal]{opacity:1;transform:none;transition:none}
+  }
+  @media (max-width:720px){
+    nav a{padding:10px 12px}
+    .row{grid-template-columns:22px 56px 1fr auto}
+    .sleeve{width:56px;height:56px}
+    .collage{position:static;aspect-ratio:auto !important;display:flex;flex-wrap:wrap;gap:10px}
+    .collage img{position:static;width:46% !important}
+    .note{grid-column:3 / -1}
+    nav .mast,nav .wip{display:none}
+  }
+</style>
+<style>html,body{margin:0;overflow:hidden}html,body{background:#101010}.band.era-01{padding:0!important;margin:0;min-height:0;background:#101010}.crate{--csw:clamp(380px,40vw,700px)}.crate{margin:0!important}[data-reveal]{opacity:1;transform:none;transition:none}</style>
+<script>
+(function(){
+  var room=false, H=document.documentElement, SETTLE=0;
+  if(room){ H.classList.add('ew-room');
+    // the playground ledger's rectangle, as a .credit-classed spacer: the cover's text-window
+    // measurement (rack, h1, thesis, credit) then keeps the sand out from under the ledger too
+    addEventListener('DOMContentLoaded', function(){ var t=document.querySelector('.hero-text'); if(t){ var sp=document.createElement('div'); sp.className='credit ew-ledger'; sp.setAttribute('aria-hidden','true'); t.appendChild(sp); } }); }
+  var raf=window.requestAnimationFrame.bind(window), pend=[], asleep=false, hot=false, first=true, timer=0;
+  var touch=matchMedia('(hover: none)').matches;
+  function sleep(){ asleep=true; H.classList.add('ew-asleep'); }
+  function wake(){ asleep=false; H.classList.remove('ew-asleep'); var p=pend; pend=[]; p.forEach(function(cb){ raf(cb); }); }
+  function arm(){ if(!room||touch) return; clearTimeout(timer); timer=setTimeout(function(){ if(!hot) sleep(); }, SETTLE); }
+  window.requestAnimationFrame=function(cb){
+    if(first){ first=false; arm(); }
+    if(asleep){ if(pend.indexOf(cb)<0) pend.push(cb); return 0; }
+    return raf(cb);
+  };
+  addEventListener('message', function(e){ var m=e.data&&e.data.ew; if(m==='wake'){ hot=true; clearTimeout(timer); wake(); } else if(m==='sleep'){ hot=false; sleep(); } });
+  addEventListener('resize', function(){ if(room&&!touch&&!hot){ wake(); arm(); } });
+})();
+</script>
+<style>html.ew-room p.thesis,html.ew-room p.credit{display:none}
+html.ew-room .ew-ledger{position:fixed;left:88px;bottom:76px;width:568px;height:282px;visibility:hidden;pointer-events:none}html.ew-asleep *{animation-play-state:paused!important}
+/* room: the playground ledger floats bottom-left (141px tall + 38px inset = 179px of band), so
+   the title block (rack -> h1, ~206px on the page) must clear it. Units here are the embed's,
+   i.e. 2x the page. Tall bands (>= 536px on the page, 1072px here): the cover stays centred
+   with a 22vh bottom reserve (composition biased upward, like the old teaser's mark). Below
+   that the 640px platter owns the row and centring cannot lift the title, so the title pins
+   to the top; --r ramps both its offset and the reserve from the 430px floor (0) up to the
+   boundary so nothing jumps during a resize. Stacked phones: tighter top, platter tucked
+   right, just above the ledger. */
+html.ew-room .hero{padding-bottom:22vh}
+@media (max-height:1071px){html.ew-room .hero{--r:max(0px,calc(100vh - 860px));padding-top:48px;padding-bottom:calc(var(--r) * 1.11)}html.ew-room .hero-text{align-self:start;margin-top:calc(var(--r) * .915)}}
+@media (max-width:900px){html.ew-room .hero{padding-top:40px;padding-bottom:0;gap:24px}html.ew-room .hero-text{align-self:auto;margin-top:0}html.ew-room .platter-zone{justify-self:end;width:min(44vw,232px)}html.ew-room .ew-ledger{left:40px;bottom:40px;width:512px;height:264px}}</style>
+</head><body>
+<section class="band era-01" id="era-01" data-era="01">
+<div class="ledger"><div class="row" data-key="basic channel|bcd 2" data-reveal><button class="dot pv mute" data-prev="deezer:486272962" data-url="https://cdnt-preview.dzcdn.net/api/1/1/0/3/3/0/0337875a907cd20100d703ca9dfe1567.mp3?hdnea=exp=1787894319~acl=/api/1/1/0/3/3/0/0337875a907cd20100d703ca9dfe1567.mp3*~data=user_id=0,application_id=42~hmac=b3ef206aed117ecda9e622e26f45ca1eaf4118fa73de4eebf02f5cbee59cf98b" data-link="https://www.deezer.com/track/486272962" title="30-second preview — Basic Channel · Phylyps Trak">▶</button><img class="sleeve" data-art="a7" data-lgart="a199" alt="Basic Channel — Bcd-2 sleeve"><div class="who"><span class="artist">Basic Channel</span><span class="release">Bcd-2</span></div><div class="note">2008 Compilation of earlier releases: Some of the most &quot;important&quot; tracks of the techno world.</div></div><div class="row" data-prev="deezer:486262502" data-key="basic channel|q1 1" data-reveal><span class="dot mute"></span><img class="sleeve" data-art="a8" data-lgart="a200" alt="Basic Channel — Q1.1 sleeve"><div class="who"><span class="artist">Basic Channel</span><span class="release">Q1.1</span></div><div class="note">Basic Channel, 1993. <br><br>A personal favorite. One of the punchier, &quot;floor-focused&quot; releases, but not aggressive.</div><button class="bc" data-embed="track=3691258059" data-url="https://jackmaster.bandcamp.com/track/q11-l">listen</button></div><div class="row" data-key="basic channel|quadrant dub" data-reveal><button class="dot pv mute" data-prev="deezer:486273632" data-url="https://cdnt-preview.dzcdn.net/api/1/1/8/f/d/0/8fd47b9b015e2217a090e543e59342bb.mp3?hdnea=exp=1787894320~acl=/api/1/1/8/f/d/0/8fd47b9b015e2217a090e543e59342bb.mp3*~data=user_id=0,application_id=42~hmac=7b8406552b4e1b523b2694af3a511f0227f01c7fb0e5a01cf839dd027599eb2b" data-link="https://www.deezer.com/track/486273632" title="30-second preview — Basic Channel · Quadrant Dub I">▶</button><img class="sleeve" data-art="a9" data-lgart="a0" alt="Basic Channel — Quadrant Dub sleeve"><div class="who"><span class="artist">Basic Channel</span><span class="release">Quadrant Dub</span></div></div><div class="row" data-key="basic channel|lyot rmx" data-reveal><button class="dot pv mute" data-prev="deezer:486254192" data-url="https://cdnt-preview.dzcdn.net/api/1/1/a/a/6/0/aa63698147f764277add13de4abba656.mp3?hdnea=exp=1787894321~acl=/api/1/1/a/a/6/0/aa63698147f764277add13de4abba656.mp3*~data=user_id=0,application_id=42~hmac=5d13736a8f24e8ba5e1aab784975a1e3c1eaf3b0a5c3438d938a72cbb6e6a425" data-link="https://www.deezer.com/track/486254192" title="30-second preview — Basic Channel · Lyot Rmx">▶</button><img class="sleeve" data-art="a10" data-lgart="a201" alt="Basic Channel — Lyot Rmx sleeve"><div class="who"><span class="artist">Basic Channel</span><span class="release">Lyot Rmx</span></div></div><div class="row" data-key="basic channel|basic reshape" data-reveal><button class="dot pv mute" data-prev="deezer:486300152" data-url="https://cdnt-preview.dzcdn.net/api/1/1/1/5/e/0/15ea25195c4c5c8b22c7e54ddb24a108.mp3?hdnea=exp=1787894321~acl=/api/1/1/1/5/e/0/15ea25195c4c5c8b22c7e54ddb24a108.mp3*~data=user_id=0,application_id=42~hmac=1583d20886daeddc32ddf189e9b38a1cb41b19e1dd721020ef833589db42c925" data-link="https://www.deezer.com/track/486300152" title="30-second preview — Basic Channel · Remake (Basic Reshape)">▶</button><img class="sleeve" data-art="a11" data-lgart="a202" alt="Basic Channel — Basic Reshape sleeve"><div class="who"><span class="artist">Basic Channel</span><span class="release">Basic Reshape</span></div></div><div class="row" data-key="maurizio|ploy" data-reveal><button class="dot pv mute" data-prev="deezer:486291532" data-url="https://cdnt-preview.dzcdn.net/api/1/1/4/2/9/0/429fbedb6d33166be4fba0d0be88429e.mp3?hdnea=exp=1787894322~acl=/api/1/1/4/2/9/0/429fbedb6d33166be4fba0d0be88429e.mp3*~data=user_id=0,application_id=42~hmac=6379ad93894e21ecdddadecb98abcc8bc2c238da25a05ad07c2761244d62342b" data-link="https://www.deezer.com/track/486291532" title="30-second preview — Maurizio · Ploy (Ur Mix)">▶</button><img class="sleeve" data-art="a12" data-lgart="a203" alt="Maurizio — Ploy sleeve"><div class="who"><span class="artist">Maurizio</span><span class="release">Ploy</span></div><div class="note">Their first release. More &quot;proto&quot; dub techno. Also includes an Underground Resistance remix, a Detroit Techno classic.</div></div><div class="row" data-prev="deezer:486290932" data-key="maurizio|domina" data-reveal><span class="dot mute"></span><img class="sleeve" data-art="a13" data-lgart="a204" alt="Maurizio — Domina sleeve"><div class="who"><span class="artist">Maurizio</span><span class="release">Domina</span></div><div class="note">Both sides are all-time classics. Maurizio Mix is dubbier, Carl Craig Remix is very Detroit.</div><button class="bc" data-embed="track=2421839846" data-url="https://djgirl1.bandcamp.com/track/domina-dj-girl-remix">listen</button></div><div class="row" data-key="maurizio|m series m 4 m 4 5 m 5 m 6 m 7" data-reveal><button class="dot pv mute" data-prev="deezer:486251212" data-url="https://cdnt-preview.dzcdn.net/api/1/1/6/1/a/0/61ac269529fa283da9bb3130df664a1b.mp3?hdnea=exp=1787894323~acl=/api/1/1/6/1/a/0/61ac269529fa283da9bb3130df664a1b.mp3*~data=user_id=0,application_id=42~hmac=57ed8bb2d292f59d7c319e3d86be3e6192a14ea3a65f645650249749bb5e7fb6" data-link="https://www.deezer.com/track/486251212" title="30-second preview — Maurizio · M06a (Edit)">▶</button><img class="sleeve" data-art="a14" data-lgart="a205" alt="Maurizio — M-Series (M-4, M-4.5, M-5, M-6, M-7). sleeve"><div class="who"><span class="artist">Maurizio</span><span class="release">M-Series (M-4, M-4.5, M-5, M-6, M-7).</span></div><div class="note">the later Maurizio releases. Sparse and spacier stuff that hadthe blueprints for both the hazier, contemplative vibe that the genre is typically associated with and the &quot;minimal&quot; stuff of the late 90s/00s. The &quot;M-Series&quot; compilation is a collection of edits of the original releases.</div></div><div class="row" data-key="rhythm sound|s t compilation" data-reveal><button class="dot pv mute" data-prev="deezer:486260742" data-url="https://cdnt-preview.dzcdn.net/api/1/1/0/e/e/0/0ee6f14dc7acbd963eda45a09b45d44d.mp3?hdnea=exp=1789957364~acl=/api/1/1/0/e/e/0/0ee6f14dc7acbd963eda45a09b45d44d.mp3*~data=user_id=0,application_id=42~hmac=63cbc637f57b02530f40cd3d7e762c3bd41826df0ec1d154fd91837e4ca4b83a" data-link="https://www.deezer.com/track/486260742" title="30-second preview — Rhythm &amp; Sound · No Partial">▶</button><img class="sleeve" data-art="a15" data-lgart="a206" alt="Rhythm &amp; Sound — S/T compilation sleeve"><div class="who"><span class="artist">Rhythm &amp; Sound</span><span class="release">S/T compilation</span></div><div class="note">Compilation of early R&amp;S releases</div></div><div class="row" data-key="rhythm sound|versions" data-reveal><button class="dot pv mute" data-prev="deezer:486272692" data-url="https://cdnt-preview.dzcdn.net/api/1/1/a/0/5/0/a059263cbca63832eaefaaeddbf989d0.mp3?hdnea=exp=1787894325~acl=/api/1/1/a/0/5/0/a059263cbca63832eaefaaeddbf989d0.mp3*~data=user_id=0,application_id=42~hmac=aa375b42e6187a11d49a5ce1f489fa8794ec5244c1363759edc5c4668807ccab" data-link="https://www.deezer.com/track/486272692" title="30-second preview — Rhythm &amp; Sound · King Version">▶</button><img class="sleeve" data-art="a16" data-lgart="a207" alt="Rhythm &amp; Sound — Versions sleeve"><div class="who"><span class="artist">Rhythm &amp; Sound</span><span class="release">Versions</span></div></div><div class="row" data-key="rhythm sound|w the artists" data-reveal><button class="dot pv mute" data-prev="deezer:486271442" data-url="https://cdnt-preview.dzcdn.net/api/1/1/f/9/7/0/f97f5166b19e04dae9fef045705dec9b.mp3?hdnea=exp=1787894325~acl=/api/1/1/f/9/7/0/f97f5166b19e04dae9fef045705dec9b.mp3*~data=user_id=0,application_id=42~hmac=2cc06cd82db92192c7ebb773473c00c941dc6e0741514b7c6d6687ba87f6c660" data-link="https://www.deezer.com/track/486271442" title="30-second preview — Rhythm &amp; Sound · King in My Empire">▶</button><img class="sleeve" data-art="a17" data-lgart="a208" alt="Rhythm &amp; Sound — W/ the artists sleeve"><div class="who"><span class="artist">Rhythm &amp; Sound</span><span class="release">W/ the artists</span></div><div class="note">Vocal versions of their earlier releases</div></div><div class="row" data-key="round one round five|1993 99 main street records" data-reveal><button class="dot pv mute" data-prev="deezer:486279302" data-url="https://cdnt-preview.dzcdn.net/api/1/1/8/4/9/0/84924ce0166c1d33c7a5308f89285676.mp3?hdnea=exp=1787894326~acl=/api/1/1/8/4/9/0/84924ce0166c1d33c7a5308f89285676.mp3*~data=user_id=0,application_id=42~hmac=7650b8d6c51c3384946ab824f9858d0e01b22e1f3abcc11112d18f14a017f8c0" data-link="https://www.deezer.com/track/486279302" title="30-second preview — Round One · I&#x27;m Your Brother (Club Version)">▶</button><img class="sleeve" data-art="a18" data-lgart="a209" alt="Round One - Round Five — 1993-99 Main Street Records sleeve"><div class="who"><span class="artist">Round One - Round Five</span><span class="release">1993-99 Main Street Records</span></div><div class="note">Compilation of every release on the Main Street label</div></div><div class="row pri" data-prev="deezer:67431931" data-key="monolake|hongkong" data-reveal><span class="dot">●</span><img class="sleeve" data-art="a19" data-lgart="a1" alt="Monolake — Hongkong sleeve"><div class="who"><span class="artist">Monolake</span><span class="release">Hongkong</span></div><div class="note">Robert Henke is another master/hugely influential artist. An engineer at Dubplates &amp; Mastering who went on to be one of the co-founders of Ableton. Worth exploring his catalog (later releases are more IDM/experimental/whatever stuff). &quot;Occam&quot; is such a good groove.</div><button class="bc" data-embed="album=1856090930" data-url="https://roberthenke.bandcamp.com/album/hongkong-2">listen</button></div><div class="row" data-prev="deezer:1299540" data-key="vladislav delay|multila" data-reveal><span class="dot mute"></span><img class="sleeve" data-art="a20" data-lgart="a210" alt="Vladislav Delay — Multila sleeve"><div class="who"><span class="artist">Vladislav Delay</span><span class="release">Multila</span></div><div class="note">More abstract/experimental/ambient, has released several other classic albums. Was also one of the main Mille Plateaux artists of the clicks&amp;cuts era</div><button class="bc" data-embed="album=2864385992" data-url="https://vladislavdelay.bandcamp.com/album/multila-2020-remaster">listen</button></div><div class="row pri" data-prev="deezer:17193190" data-key="porter ricks|biokinetics" data-reveal><span class="dot">●</span><img class="sleeve" data-art="a21" data-lgart="a2" alt="Porter Ricks — Biokinetics sleeve"><div class="who"><span class="artist">Porter Ricks</span><span class="release">Biokinetics</span></div><button class="bc" data-embed="album=367523111" data-url="https://forceincmilleplateaux.bandcamp.com/album/biokinetics">listen</button></div><div class="row pri" data-key="substance|session elements" data-reveal><button class="dot pv" data-prev="deezer:486439922" data-url="https://cdnt-preview.dzcdn.net/api/1/1/e/f/2/0/ef2bbe2c86d0338fe52ea319530c4660.mp3?hdnea=exp=1787894328~acl=/api/1/1/e/f/2/0/ef2bbe2c86d0338fe52ea319530c4660.mp3*~data=user_id=0,application_id=42~hmac=24fd8a62c06e4c678d4c882da0b5abfefe20a513ad1a0422fb73803ee71b74f2" data-link="https://www.deezer.com/track/486439922" title="30-second preview — Substance · Sensualize">▶</button><img class="sleeve" data-art="a22" data-lgart="a3" alt="Substance — Session Elements sleeve"><div class="who"><span class="artist">Substance</span><span class="release">Session Elements</span></div><div class="note">aka DJ Pete, one of the original Hard Wax people.</div></div><div class="row" data-prev="deezer:933730522" data-key="fluxion|vibrant forms" data-reveal><span class="dot mute"></span><img class="sleeve" data-art="a23" data-lgart="a211" alt="Fluxion — Vibrant Forms sleeve"><div class="who"><span class="artist">Fluxion</span><span class="release">Vibrant Forms</span></div><button class="bc" data-embed="album=403251274" data-url="https://vibrantmusic.bandcamp.com/album/fluxion-vibrant-forms">listen</button></div><div class="row pri" data-key="vainquer|reductions 95 97" data-reveal><span class="dot">●</span><span class="sleeve"></span><div class="who"><span class="artist">Vainquer</span><span class="release">Reductions 95-97</span></div><a class="bc" href="https://bandcamp.com/search?q=Vainquer+Reductions+95-97" target="_blank" rel="noopener">listen ↗</a></div><div class="row pri" data-key="substance vainquer|libration" data-reveal><button class="dot pv" data-prev="deezer:486427782" data-url="https://cdnt-preview.dzcdn.net/api/1/1/9/9/0/0/9903e4721b712aca57b559021eabe25f.mp3?hdnea=exp=1787894331~acl=/api/1/1/9/9/0/0/9903e4721b712aca57b559021eabe25f.mp3*~data=user_id=0,application_id=42~hmac=5263a1268f00c2562581666818b766ace86f924deacb38dcd02362b269444f0b" data-link="https://www.deezer.com/track/486427782" title="30-second preview — Substance · Libration">▶</button><img class="sleeve" data-art="a24" data-lgart="a4" alt="Substance/Vainquer — Libration sleeve"><div class="who"><span class="artist">Substance/Vainquer</span><span class="release">Libration</span></div></div><div class="row pri" data-key="substance vainquer|remixes chapter 1" data-reveal><button class="dot pv" data-prev="deezer:486449742" data-url="https://cdnt-preview.dzcdn.net/api/1/1/c/b/1/0/cb1669613e59bcf559b0770b08b2376f.mp3?hdnea=exp=1787894332~acl=/api/1/1/c/b/1/0/cb1669613e59bcf559b0770b08b2376f.mp3*~data=user_id=0,application_id=42~hmac=69609c7873ede0ebba1ae4dd2358513329fed30d7db161e17906e5503a431f66" data-link="https://www.deezer.com/track/486449742" title="30-second preview — Substance · Immersion (Sleeparchive Remix)">▶</button><img class="sleeve" data-art="a25" data-lgart="a5" alt="Substance/Vainquer — Remixes Chapter 1 sleeve"><div class="who"><span class="artist">Substance/Vainquer</span><span class="release">Remixes Chapter 1</span></div><div class="note">Specifically the Sleeparchive remix (another Hard Wax employee&#x27;s</div></div><div class="row pri" data-prev="deezer:3547769341" data-key="blue hour|untitled substance remix" data-reveal><span class="dot">●</span><img class="sleeve" data-art="a26" data-lgart="a6" alt="Blue Hour — Untitled (Substance Remix) sleeve"><div class="who"><span class="artist">Blue Hour</span><span class="release">Untitled (Substance Remix)</span></div><button class="bc" data-embed="track=1857589508" data-url="https://bluehour909.bandcamp.com/track/untitled-substance-remix-2">listen</button></div><div class="row pri" data-key="substance vainquer|relish" data-reveal><button class="dot pv" data-prev="deezer:486441982" data-url="https://cdnt-preview.dzcdn.net/api/1/1/7/5/1/0/751e631c63d7c91ef282d831f09306e5.mp3?hdnea=exp=1787894333~acl=/api/1/1/7/5/1/0/751e631c63d7c91ef282d831f09306e5.mp3*~data=user_id=0,application_id=42~hmac=3b9ef65e975893fcc5566b1ee8044b37648d278735a14ee731f6628d08118bb7" data-link="https://www.deezer.com/track/486441982" title="30-second preview — Substance · Relish (Shed Remix)">▶</button><img class="sleeve" data-art="a27" data-lgart="a212" alt="Substance/Vainquer — Relish sleeve"><div class="who"><span class="artist">Substance/Vainquer</span><span class="release">Relish</span></div><div class="note">Shed Remix is very good</div></div></div>
+
+<div class="ledger"><div class="row pri" data-key="deepchord presents echospace|the coldest season" data-reveal><button class="dot pv" data-prev="deezer:728581532" data-url="https://cdnt-preview.dzcdn.net/api/1/1/0/0/a/0/00a225df1857dd61a155f6cd4b65e966.mp3?hdnea=exp=1787894333~acl=/api/1/1/0/0/a/0/00a225df1857dd61a155f6cd4b65e966.mp3*~data=user_id=0,application_id=42~hmac=646210925136cd1496c86228fb7f79a85f71831551ecd12c46bd7f6f0404b395" data-link="https://www.deezer.com/track/728581532" title="30-second preview — Deepchord Presents: Echospace · Aequinoxium">▶</button><img class="sleeve" data-art="a28" data-lgart="a213" alt="Deepchord Presents Echospace — The Coldest season sleeve"><div class="who"><span class="artist">Deepchord Presents Echospace</span><span class="release">The Coldest season</span></div></div><div class="row pri" data-key="deepchord presents echospace|liumin" data-reveal><button class="dot pv" data-prev="deezer:728572892" data-url="https://cdnt-preview.dzcdn.net/api/1/1/9/3/8/0/938f9e849de6cc96111397c8ce32d20b.mp3?hdnea=exp=1787894334~acl=/api/1/1/9/3/8/0/938f9e849de6cc96111397c8ce32d20b.mp3*~data=user_id=0,application_id=42~hmac=71e083ea7619cef7ea7be06c297072736add118cdc913ee675430f89964fbfee" data-link="https://www.deezer.com/track/728572892" title="30-second preview — Deepchord Presents: Echospace · In Echospace">▶</button><img class="sleeve" data-art="a29" data-lgart="a214" alt="Deepchord Presents Echospace — Liumin sleeve"><div class="who"><span class="artist">Deepchord Presents Echospace</span><span class="release">Liumin</span></div></div><div class="row pri" data-key="intrusion|the seduction of silence" data-reveal><button class="dot pv" data-prev="deezer:7930768" data-url="https://cdnt-preview.dzcdn.net/api/1/1/6/2/a/0/62a9de328c19bb197e6b5c4762d26f48.mp3?hdnea=exp=1787894335~acl=/api/1/1/6/2/a/0/62a9de328c19bb197e6b5c4762d26f48.mp3*~data=user_id=0,application_id=42~hmac=f391b9f881c82ceeba96d74200b734f8f359034419528fbb543b462885836d5f" data-link="https://www.deezer.com/track/7930768" title="30-second preview — Intrusion · Seduction">▶</button><img class="sleeve" data-art="a30" data-lgart="a215" alt="Intrusion — The seduction of Silence sleeve"><div class="who"><span class="artist">Intrusion</span><span class="release">The seduction of Silence</span></div><div class="note">More Rhythm &amp; Sound-schooled</div></div><div class="row" data-key="deepchord|hash bar loops" data-reveal><button class="dot pv mute" data-prev="deezer:11619792" data-url="https://cdnt-preview.dzcdn.net/api/1/1/1/a/8/0/1a8375a07fac0c410a037669c6d3bb8b.mp3?hdnea=exp=1787894335~acl=/api/1/1/1/a/8/0/1a8375a07fac0c410a037669c6d3bb8b.mp3*~data=user_id=0,application_id=42~hmac=828ad7d7514bdd8bddb61deae425fcfd231b4af8534acfd17c6daa31bb51ebf1" data-link="https://www.deezer.com/track/11619792" title="30-second preview — DeepChord · Oude Kerk">▶</button><img class="sleeve" data-art="a31" data-lgart="a216" alt="Deepchord — Hash Bar Loops sleeve"><div class="who"><span class="artist">Deepchord</span><span class="release">Hash Bar Loops</span></div></div><div class="row" data-prev="deezer:518019532" data-key="deepchord|sommer" data-reveal><span class="dot mute"></span><img class="sleeve" data-art="a32" data-lgart="a217" alt="Deepchord — Sommer sleeve"><div class="who"><span class="artist">Deepchord</span><span class="release">Sommer</span></div><button class="bc" data-embed="album=3783781734" data-url="https://soma-records.bandcamp.com/album/sommer">listen</button></div><div class="row pri" data-key="cv313|dimensional space" data-reveal><button class="dot pv" data-prev="deezer:3605867202" data-url="https://cdnt-preview.dzcdn.net/api/1/1/b/1/7/0/b1781daebb9a70b49709af00ceb6bd8a.mp3?hdnea=exp=1787894336~acl=/api/1/1/b/1/7/0/b1781daebb9a70b49709af00ceb6bd8a.mp3*~data=user_id=0,application_id=42~hmac=2e454f0e1b36683af11b8331622d4b6643a3c3f4f1a3540f33da8820c3a52c7f" data-link="https://www.deezer.com/track/3605867202" title="30-second preview — cv313 · Sella Bay">▶</button><img class="sleeve" data-art="a33" data-lgart="a218" alt="Cv313 — Dimensional Space sleeve"><div class="who"><span class="artist">Cv313</span><span class="release">Dimensional Space</span></div></div><div class="row" data-key="cv313|fading lights" data-reveal><button class="dot pv mute" data-prev="deezer:93354286" data-url="https://cdnt-preview.dzcdn.net/api/1/1/1/d/1/0/1d15a3b30406a6bd9d95aea4744ae60b.mp3?hdnea=exp=1787894337~acl=/api/1/1/1/d/1/0/1d15a3b30406a6bd9d95aea4744ae60b.mp3*~data=user_id=0,application_id=42~hmac=92f87e3e08970c48b388be008ba3312c27366b8329c6c32387978a265c16d918" data-link="https://www.deezer.com/track/93354286" title="30-second preview — cv313 · Fading Lights">▶</button><img class="sleeve" data-art="a34" data-lgart="a219" alt="Cv313 — Fading Lights sleeve"><div class="who"><span class="artist">Cv313</span><span class="release">Fading Lights</span></div></div><div class="row" data-key="cv313 federsen|altering dimensions part 1 2" data-reveal><button class="dot pv mute" data-prev="itunes:1893266267" data-url="https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/93/f3/8b/93f38b33-53bc-ff52-e403-6a5350c94018/mzaf_2581731370488875111.plus.aac.p.m4a" data-link="https://music.apple.com/us/song/1893266267" title="30-second preview — Cv313 &amp; Federsen · First Dimension">▶</button><span class="sleeve"></span><div class="who"><span class="artist">Cv313 &amp; Federsen</span><span class="release">Altering Dimensions Part 1 &amp; 2</span></div><div class="note">Federsen is another prolific artist worth checking out</div></div><div class="row" data-key="rod modell|kettle point echocord 2015" data-reveal><span class="dot mute"></span><img class="sleeve" data-art="a35" data-lgart="a220" alt="Rod Modell — Kettle Point (Echocord, 2015) sleeve"><div class="who"><span class="artist">Rod Modell</span><span class="release">Kettle Point (Echocord, 2015)</span></div><a class="bc" href="https://bandcamp.com/search?q=Rod+Modell+Kettle+Point+%28Echocord%2C+2015%29" target="_blank" rel="noopener">listen ↗</a></div><div class="row" data-key="rod modell|sacred geometry echocord 2015" data-reveal><span class="dot mute"></span><img class="sleeve" data-art="a36" data-lgart="a221" alt="Rod Modell — sacred geometry (Echocord, 2015) sleeve"><div class="who"><span class="artist">Rod Modell</span><span class="release">sacred geometry (Echocord, 2015)</span></div><a class="bc" href="https://bandcamp.com/search?q=Rod+Modell+sacred+geometry+%28Echocord%2C+2015%29" target="_blank" rel="noopener">listen ↗</a></div><div class="row" data-key="mokira|axis audio echospace model i" data-reveal><button class="dot pv mute" data-prev="deezer:135335280" data-url="https://cdnt-preview.dzcdn.net/api/1/1/5/c/1/0/5c1476bbfd59459f51bc3870a3683068.mp3?hdnea=exp=1787894340~acl=/api/1/1/5/c/1/0/5c1476bbfd59459f51bc3870a3683068.mp3*~data=user_id=0,application_id=42~hmac=005ff218358f06a466e8bc43e6938df91b58f267aad371ad1259504c62975b89" data-link="https://www.deezer.com/track/135335280" title="30-second preview — Mokira · Axis Audio (Echospace Model II) (Echospace)">▶</button><img class="sleeve" data-art="a37" data-lgart="a222" alt="Mokira — Axis audio (echospace model I) sleeve"><div class="who"><span class="artist">Mokira</span><span class="release">Axis audio (echospace model I)</span></div><div class="note">The whole &quot;time axis manipulation&quot; series is good, the silent servant mix is great.  is more dubbed out ambient stuff than techno</div></div><div class="row" data-key="soultek|paradigm" data-reveal><button class="dot pv mute" data-prev="deezer:3400484481" data-url="https://cdnt-preview.dzcdn.net/api/1/1/5/d/8/0/5d84d72c555a58c65255643f48b13bf8.mp3?hdnea=exp=1787894341~acl=/api/1/1/5/d/8/0/5d84d72c555a58c65255643f48b13bf8.mp3*~data=user_id=0,application_id=42~hmac=23dd4e97552906e288388fcf366a21aa77191c9e64a5e7d35f1664cea92556c4" data-link="https://www.deezer.com/track/3400484481" title="30-second preview — Soultek · Paradigm">▶</button><img class="sleeve" data-art="a38" data-lgart="a223" alt="Soultek — Paradigm sleeve"><div class="who"><span class="artist">Soultek</span><span class="release">Paradigm</span></div></div><div class="row pri" data-prev="deezer:88824199" data-key="conforce|machine conspiracy" data-reveal><span class="dot">●</span><img class="sleeve" data-art="a39" data-lgart="a224" alt="Conforce — Machine Conspiracy sleeve"><div class="who"><span class="artist">Conforce</span><span class="release">Machine Conspiracy</span></div><div class="note">Probably the most well-known release on the label Meanwhile, which was a good dub techno label of the late 2000s - early 2010s. On the whole, I&#x27;d call Conforce&#x27;s stuff Detroit-style techno, but this is his most dub-focused (and best imo)</div><button class="bc" data-embed="album=3943163614" data-url="https://conforce.bandcamp.com/album/machine-conspiracy">listen</button></div><div class="row pri" data-key="luke hess|ep01" data-reveal><button class="dot pv" data-prev="deezer:3238465611" data-url="https://cdnt-preview.dzcdn.net/api/1/1/4/7/4/0/474519efcda0a1e181596d48f03ab736.mp3?hdnea=exp=1787894346~acl=/api/1/1/4/7/4/0/474519efcda0a1e181596d48f03ab736.mp3*~data=user_id=0,application_id=42~hmac=d7e241445300bf87abd1d4809ae34341b0d7d787b61c6b2eceee158e96693975" data-link="https://www.deezer.com/track/3238465611" title="30-second preview — Luke Hess · Ephraim">▶</button><img class="sleeve" data-art="a40" data-lgart="a225" alt="Luke Hess — EP01 sleeve"><div class="who"><span class="artist">Luke Hess</span><span class="release">EP01</span></div><div class="note">Detroit guy - nothing groundbreaking, just solid dubbed-out stuff. love Reel to Real, perfect opener track</div></div><div class="row pri" data-key="luke hess|dubout 2" data-reveal><button class="dot pv" data-prev="deezer:3088737961" data-url="https://cdnt-preview.dzcdn.net/api/1/1/b/0/8/0/b083323705f837ea2b4a4c085d6e2383.mp3?hdnea=exp=1787894347~acl=/api/1/1/b/0/8/0/b083323705f837ea2b4a4c085d6e2383.mp3*~data=user_id=0,application_id=42~hmac=8be4cef78eddaa32571b6ba10946047e4ea93ab45773ed9dbe8e37c1c1095bc4" data-link="https://www.deezer.com/track/3088737961" title="30-second preview — Luke Hess · SHALOM DUB">▶</button><img class="sleeve" data-art="a41" data-lgart="a226" alt="Luke Hess — Dubout #2 sleeve"><div class="who"><span class="artist">Luke Hess</span><span class="release">Dubout #2</span></div></div><div class="row pri" data-prev="itunes:311463788" data-key="luke hess|believe receive" data-reveal><span class="dot">●</span><img class="sleeve" data-art="a42" data-lgart="a227" alt="Luke Hess — Believe &amp; Receive sleeve"><div class="who"><span class="artist">Luke Hess</span><span class="release">Believe &amp; Receive</span></div><div class="note">Shed remix is so good</div><button class="bc" data-embed="album=1098098244" data-url="https://lukehess.bandcamp.com/album/believe-receive">listen</button></div><div class="row pri" data-prev="deezer:1817949657" data-key="quantec|deep in mind" data-reveal><span class="dot">●</span><img class="sleeve" data-art="a43" data-lgart="a228" alt="Quantec — Deep in Mind sleeve"><div class="who"><span class="artist">Quantec</span><span class="release">Deep in Mind</span></div><div class="note">Straightforward dub techno from label called Echocord, one of the main dub techno labels of the 2010s.</div><button class="bc" data-embed="album=3010554251" data-url="https://neighbour-recordings.bandcamp.com/album/deep-in-mind">listen</button></div><div class="row pri" data-prev="deezer:100324836" data-key="quantec|subsurfer structure" data-reveal><span class="dot">●</span><img class="sleeve" data-art="a44" data-lgart="a229" alt="Quantec — Subsurfer Structure sleeve"><div class="who"><span class="artist">Quantec</span><span class="release">Subsurfer Structure</span></div><button class="bc" data-embed="album=3245053953" data-url="https://echocord.bandcamp.com/album/subsurfer-structure">listen</button></div><div class="row" data-prev="deezer:100324418" data-key="quantec|unusual signals" data-reveal><span class="dot mute"></span><img class="sleeve" data-art="a45" data-lgart="a230" alt="Quantec — Unusual Signals sleeve"><div class="who"><span class="artist">Quantec</span><span class="release">Unusual Signals</span></div><button class="bc" data-embed="album=2451001367" data-url="https://echocord.bandcamp.com/album/unusual-signals">listen</button></div><div class="row pri" data-prev="deezer:79314669" data-key="yagya|sleepygirls" data-reveal><span class="dot">●</span><img class="sleeve" data-art="a46" data-lgart="a231" alt="Yagya — Sleepygirls sleeve"><div class="who"><span class="artist">Yagya</span><span class="release">Sleepygirls</span></div><div class="note">Yagya goes closer to ambient, chill-out vibes - albums are treated more as continuous mixes than individual tracks. This is my favorite album of his, a little more house-focused.</div><button class="bc" data-embed="album=1366827324" data-url="https://yagya.bandcamp.com/album/sleepygirls">listen</button></div><div class="row pri" data-key="segue|pacifica" data-reveal><button class="dot pv" data-prev="itunes:1480323241" data-url="https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview123/v4/3e/1a/38/3e1a384d-e1ea-314e-6922-bb70eb112bc0/mzaf_9494483558402922949.plus.aac.p.m4a" data-link="https://music.apple.com/us/song/1480323241" title="30-second preview — Segue · Honest and Truly">▶</button><img class="sleeve" data-art="a47" data-lgart="a232" alt="Segue — Pacifica sleeve"><div class="who"><span class="artist">Segue</span><span class="release">Pacifica</span></div><div class="note">Silent Season, 2013<br><br>Silent Season is this Victoria, BC-based label that releases mix of ambient, dub/deep techno. &quot;Music for the rainforests of Vancouver Island&quot; or something</div></div><div class="row pri" data-key="vladislav delay|recovery idea the mike huckaby s y n t h remix" data-reveal><button class="dot pv" data-prev="deezer:1310907" data-url="https://cdnt-preview.dzcdn.net/api/1/1/0/c/2/0/0c21738c5d794984f1cd467fef5ad39b.mp3?hdnea=exp=1789875410~acl=/api/1/1/0/c/2/0/0c21738c5d794984f1cd467fef5ad39b.mp3*~data=user_id=0,application_id=42~hmac=5cbf52ad49203ead514a3c5b73bcac97c40b2148eea42582e0d42cfb4174b2f3" data-link="https://www.deezer.com/track/1310907" title="30-second preview — Vladislav Delay · Recovery IDea">▶</button><img class="sleeve" data-art="a48" data-lgart="a233" alt="Vladislav Delay — Recovery IDea (The Mike Huckaby S Y N T H Remix) sleeve"><div class="who"><span class="artist">Vladislav Delay</span><span class="release">Recovery IDea (The Mike Huckaby S Y N T H Remix)</span></div><div class="note">Semantica Records, 2009 <br><br>Mike Huckaby was a master, one of the later-generation Detroit artists. Probably the most outright dubby of the Detroit artists, but passed away a few years ago. He&#x27;s held in high esteem by this crowd: Steven Hitchell of Echospace put out a commemorative release, &quot;cv313 plays Mike Huckaby - Our Life with the Wave&quot;, with Federsen recently.</div></div><div class="row pri" data-key="mike huckaby|my life with the wave" data-reveal><span class="dot">●</span><img class="sleeve" data-art="a49" data-lgart="a234" alt="Mike Huckaby — My Life with the Wave sleeve"><div class="who"><span class="artist">Mike Huckaby</span><span class="release">My Life with the Wave</span></div><div class="note">S Y N T H, 2007</div><a class="bc" href="https://bandcamp.com/search?q=Mike+Huckaby+My+Life+with+the+Wave" target="_blank" rel="noopener">listen ↗</a></div></div>
+</section>
+<script>window.ART={"a0": "art/f68c7954ac50.jpg", "a1": "art/d50446342d14.jpg", "a10": "art/91880a3dfef4.jpg", "a11": "art/ca6bbbae63a6.jpg", "a12": "art/54bd70a539b3.jpg", "a13": "art/56ec827e4970.jpg", "a14": "art/dbbd73963a7b.jpg", "a15": "art/8c769d7738b4.jpg", "a16": "art/7aaf6ed0bcde.jpg", "a17": "art/1133e17ab55d.jpg", "a18": "art/204a5475ccc7.jpg", "a19": "art/59d1829caa38.jpg", "a199": "art/2a6537ecd749.jpg", "a2": "art/e532cae86d17.jpg", "a20": "art/8e694ac1c915.jpg", "a200": "art/807c17a0ae86.jpg", "a201": "art/7e000cf626a0.jpg", "a202": "art/595f6db66cc2.jpg", "a203": "art/0174401f9580.jpg", "a204": "art/64cb7506efcc.jpg", "a205": "art/02c2dc03f848.jpg", "a206": "art/aa945ccbb912.jpg", "a207": "art/5f9c9c8fdfe2.jpg", "a208": "art/fe175b427503.jpg", "a209": "art/ce6dc8e18c4c.jpg", "a21": "art/36d5a057ecb2.jpg", "a210": "art/9d1b8dee0b10.jpg", "a211": "art/f3fe24595ead.jpg", "a212": "art/727f80fd292e.jpg", "a213": "art/56a581c1f5ea.jpg", "a214": "art/ed036a32f3c7.jpg", "a215": "art/831cec8f0a77.jpg", "a216": "art/a2eda86678a3.jpg", "a217": "art/4899f0c1c8b7.jpg", "a218": "art/c66765f1f484.jpg", "a219": "art/779538b23527.jpg", "a22": "art/96234089e49a.jpg", "a220": "art/cdc227b0f123.jpg", "a221": "art/96984f0720d5.jpg", "a222": "art/523da1d3c2d1.jpg", "a223": "art/600e25d9a2a5.jpg", "a224": "art/a996b48b3c67.jpg", "a225": "art/926cc3ea0c9c.jpg", "a226": "art/53e181f5c05f.jpg", "a227": "art/30f5aa6a29cf.jpg", "a228": "art/0ff799ae3a4d.jpg", "a229": "art/5fcc07144cec.jpg", "a23": "art/d103e69cad15.jpg", "a230": "art/966e5ae37a26.jpg", "a231": "art/482b14ebc70a.jpg", "a232": "art/9e9a2910672e.jpg", "a233": "art/9f348ddeeed2.jpg", "a234": "art/c30bf49c753d.jpg", "a24": "art/26704b73a6eb.jpg", "a25": "art/dc00a97ddc9b.jpg", "a26": "art/98f1bcf4f485.jpg", "a27": "art/69023e028bec.jpg", "a28": "art/0bcaf3da4203.jpg", "a29": "art/480b3ad8333e.jpg", "a3": "art/dbc4c8632444.jpg", "a30": "art/07f98ad5b9f8.jpg", "a31": "art/f337bc5ce405.jpg", "a32": "art/8d87ac237033.jpg", "a33": "art/9e4dea59d9a4.jpg", "a34": "art/3f1878cd8650.jpg", "a35": "art/e8b40a3a6f48.jpg", "a36": "art/68dfb645f6e4.jpg", "a37": "art/708ac437c3fe.jpg", "a38": "art/f1ab9403faae.jpg", "a39": "art/03a87ec11e9f.jpg", "a4": "art/015228f42003.jpg", "a40": "art/cfb0712d8d7b.jpg", "a41": "art/bcac3bb6e782.jpg", "a42": "art/433af9666e5f.jpg", "a43": "art/40506516032f.jpg", "a44": "art/05d303e7b78f.jpg", "a45": "art/6ea8e55a4dff.jpg", "a46": "art/cca01f55ed71.jpg", "a47": "art/0d89d831bf67.jpg", "a48": "art/038bd7f76ade.jpg", "a49": "art/df51321ad244.jpg", "a5": "art/ed129d8e9544.jpg", "a6": "art/5cc41b188755.jpg", "a7": "art/07c339ed5289.jpg", "a8": "art/244c3fff69d6.jpg", "a9": "art/01c2a2ee4d8f.jpg"};window.__artFill=function(){for(const el of document.querySelectorAll("img[data-art]:not([src])"))el.src=ART[el.dataset.art];};</script>
+<script>window.__SAND={"name":"factory","audio":{"fft":1024,"smoothing":0.5,"floorDb":-85,"ceilDb":-8,"floorHz":43,"xoverHz":[129,474,1981,7967],"beat":{"flux":0.045,"ratio":1.04,"floor":0.25,"refractoryMs":200,"avg":0.06}},"env":{"band":0.32,"rms":0.3,"base":0.015,"peak":0.996,"gate":0.015},"kick":{"burst":0.7,"decay":0.8},"figure":{"spokes":{"base":3,"centroid":4,"mid":4,"midHit":2,"min":3,"max":10},"rings":{"base":2,"high":3,"highHit":1.5,"min":2,"max":6},"wobble":{"base":12,"mid":28,"high":30,"max":70},"starAt":0.6,"reread":0.12,"dwell":0.4,"morph":0.35,"families":{"rings":true,"wheel":true,"star":true,"mixed":true,"curvy":true}},"spin":{"base":0.02,"high":0.2,"kick":0.08},"shake":{"base":0.3,"rms":1.7,"kick":1.8,"bass":1.25},"sand":{"n":36000,"size":0.9,"spread":0.24,"alpha":[0.42,0.62,0.82],"ink":"#5C5C54","blur":0.5,"pull":3,"jitter":2,"jitterAmp":1.2,"gain":1.9,"grid":8,"exclude":0.48,"cap":7,"kick":1.6},"float":{"shake":0.4,"pull":0.12,"jitter":1.0,"flow":0.3,"morph":2.4,"every":7}};</script>
+<script>
+(function(){
+__artFill();
+  const io = new IntersectionObserver(es => es.forEach(x => {
+    if (x.isIntersecting) { x.target.classList.add('in'); io.unobserve(x.target); }
+  }), {rootMargin: '0px 0px -8% 0px'});
+  // smoke only burns while the hero is on screen
+  const hw = [...document.querySelectorAll('.hero-wash')];
+  if (hw.length) {
+    const hio = new IntersectionObserver(es => es.forEach(x =>
+      hw.forEach(w => w.style.animationPlayState = x.isIntersecting ? 'running' : 'paused')));
+    hio.observe(document.querySelector('header.hero'));
+  }
+  // ledger rows don't trickle in on scroll: the whole tracklist reveals in
+  // one cascade the first time the ledger arrives, then it's just there
+  document.querySelectorAll('[data-reveal]').forEach(el => {
+    if (!el.closest('.ledger')) io.observe(el);
+  });
+  const lio = new IntersectionObserver(es => es.forEach(x => {
+    if (!x.isIntersecting) return;
+    x.target.querySelectorAll('[data-reveal]').forEach(el => el.classList.add('in'));
+    lio.unobserve(x.target);
+  }), {rootMargin: '0px 0px -8% 0px'});
+  document.querySelectorAll('.ledger').forEach(l => lio.observe(l));
+
+  // stagger ledger rows slightly within each ledger
+  document.querySelectorAll('.ledger').forEach(l =>
+    [...l.querySelectorAll('.row')].forEach((r, i) => r.style.transitionDelay = (Math.min(i, 8) * 45) + 'ms'));
+
+  // parallax drift on collage sleeves, hero field, and marks
+  const fxs = [...document.querySelectorAll('.fx')];
+  if (fxs.length && !matchMedia('(prefers-reduced-motion: reduce)').matches
+      && matchMedia('(min-width: 720px)').matches) {
+    let tick = false;
+    const upd = () => {
+      const vh = innerHeight;
+      fxs.forEach(el => {
+        const r = el.getBoundingClientRect();
+        const c = (r.top + r.height / 2 - vh / 2) / vh;
+        el.style.setProperty('--py', (-c * 110 * parseFloat(el.dataset.depth || 0.08)).toFixed(1) + 'px');
+      });
+      tick = false;
+    };
+    addEventListener('scroll', () => { if (!tick) { tick = true; requestAnimationFrame(upd); } }, {passive: true});
+    upd();
+  }
+
+  // diagrams draw themselves on approach — saul bass timing:
+  // lines travel first, nodes pop after their line, labels arrive last
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    document.querySelectorAll('.diagram svg').forEach(svg => {
+      let t = 0;
+      [...svg.querySelectorAll('line, circle, rect, path, text')].forEach(el => {
+        if (el.tagName === 'line') {
+          const len = Math.hypot(el.x2.baseVal.value - el.x1.baseVal.value,
+                                 el.y2.baseVal.value - el.y1.baseVal.value);
+          el.style.strokeDasharray = len; el.style.strokeDashoffset = len;
+          el.dataset.k = 'line'; el.dataset.d = t; t += 110;
+        } else if (el.tagName === 'text') {
+          el.style.opacity = '0';
+          el.dataset.k = 'text'; el.dataset.d = t; t += 35;
+        } else {
+          el.style.transform = 'scale(0)';
+          el.style.transformBox = 'fill-box'; el.style.transformOrigin = 'center';
+          el.dataset.k = 'pop'; el.dataset.d = t; t += 55;
+        }
+      });
+    });
+    const dio = new IntersectionObserver(es => es.forEach(x => {
+      if (!x.isIntersecting) return;
+      dio.unobserve(x.target);
+      x.target.querySelectorAll('[data-k]').forEach(el => {
+        const d = el.dataset.d + 'ms';
+        if (el.dataset.k === 'line') {
+          el.style.transition = 'stroke-dashoffset .34s cubic-bezier(.65,0,.35,1) ' + d;
+          el.style.strokeDashoffset = '0';
+        } else if (el.dataset.k === 'text') {
+          el.style.transition = 'opacity .3s ease ' + d;
+          el.style.opacity = '1';
+        } else {
+          el.style.transition = 'transform .32s cubic-bezier(.3,1.6,.5,1) ' + d;
+          el.style.transform = 'scale(1)';
+        }
+      });
+    }), {rootMargin: '0px 0px -22% 0px'});
+    document.querySelectorAll('.diagram svg').forEach(sv => dio.observe(sv));
+  }
+
+  // inline players: build the Bandcamp iframe on demand, themed to the era
+  const hex = c => {
+    const m = c.match(/\d+/g); if (!m) return '000000';
+    return m.slice(0,3).map(n => (+n).toString(16).padStart(2,'0')).join('');
+  };
+  // embeds only run where third-party iframes are allowed; elsewhere the exact
+  // album page opens directly (never a dead player, never a search page)
+  const EMBEDS_OK = /jacksonalexanderstudio\.com|localhost|127\.0\.0\.1/.test(location.hostname);
+
+  // 30s previews. Stable Deezer/iTunes ids are baked into the rows; playable
+  // URLs expire (~2h on Deezer), so they are refreshed via JSONP shortly after
+  // load and kept on the button — a click then starts audio SYNCHRONOUSLY
+  // inside the user gesture, which is what Safari/Chrome autoplay rules want.
+  // now-playing bar: whatever was touched last stays named in a fixed corner
+  // card — click the text to scroll back to its row, the square to stop it
+  let npRow = null;
+  const np = document.createElement('div');
+  np.id = 'npbar';
+  np.innerHTML = '<button class="np-gl" title="play/pause">▶</button>' +
+    '<span class="np-mid"><button class="np-t"><span class="np-a"></span><span class="np-r"></span></button>' +
+    '<span class="np-sub"><span class="np-tl"><span class="np-tf"></span></span>' +
+    '<span class="np-time"><span class="np-cur">0:00</span>&hairsp;/&hairsp;<span class="np-dur">0:00</span></span>' +
+    '<span class="np-vl" title="volume"><span class="np-vf"></span></span></span>' +
+    '<span class="np-nx"></span></span>' +
+    '<a class="np-fl" target="_blank" rel="noopener">bandcamp ↗</a>' +
+    '<button class="np-x" title="stop">■</button>';
+  document.body.appendChild(np);
+  // the sleeve of whatever is sounding rounds into a disc and spins at 33
+  // — same lifecycle as the bar: whatever the bar names, the sleeve spins
+  const spinRow = row => {
+    document.querySelectorAll('.row.playing').forEach(r => r.classList.remove('playing'));
+    if (row) row.classList.add('playing');
+  };
+  const npShow = (row, pv) => {
+    if (!row) return;
+    npRow = row;
+    const a = row.querySelector('.artist'), r = row.querySelector('.release');
+    np.querySelector('.np-a').textContent = a ? a.textContent : '';
+    np.querySelector('.np-r').textContent = r ? r.textContent : '';
+    // scannable timeline only for preview audio (a strip seeks inside itself);
+    // full-track link: song.link when the row has one, else the album page
+    np.classList.toggle('pv', !!pv);
+    if (!pv) np.querySelector('.np-gl').textContent = '▶';
+    const wrap = row.querySelector('.playwrap'),
+          fl = np.querySelector('.np-fl');
+    const u = (wrap && wrap.dataset.url) || '';
+    if (u) fl.href = u; else fl.removeAttribute('href');
+    fl.style.display = u ? '' : 'none';
+    np.classList.add('on');
+    spinRow(row);
+  };
+  const npHide = () => { np.classList.remove('on'); npRow = null; spinRow(null); };
+  np.querySelector('.np-t').addEventListener('click', () => {
+    if (npRow) npRow.scrollIntoView({behavior: 'smooth', block: 'center'});
+  });
+  const npGl = np.querySelector('.np-gl');
+  npGl.addEventListener('click', () => {
+    // pause/resume for preview audio; strips control themselves in-player
+    if (!np.classList.contains('pv') || !PV) return;
+    if (AU.paused) {
+      AU.play(); npGl.textContent = '❚❚';
+      PV.btn.textContent = '■'; spinRow(npRow);
+    } else {
+      AU.pause(); npGl.textContent = '▶';
+      PV.btn.textContent = '▶'; spinRow(null);
+    }
+  });
+  // crate hooks (2026-09-19): in the crate the record's own ▶ pauses and
+  // resumes instead of stopping — the bar's ■ is the stop — so the tracklist
+  // and the flow can both show a pause state while a track sounds
+  window.__pvState = btn => (!PV || PV.btn !== btn) ? 'other' : PV.armed ? 'armed' : AU.paused ? 'paused' : 'playing';
+  window.__pvToggle = () => npGl.click();
+  const npVl = np.querySelector('.np-vl'), npVf = np.querySelector('.np-vf');
+  let VOL = 80;
+  try { VOL = Math.max(0, Math.min(100, +(localStorage.getItem('uuvol') ?? 80))); } catch (e) {}
+  npVf.style.width = VOL + '%';
+  const setVol = frac => {
+    VOL = Math.round(Math.max(0, Math.min(1, frac)) * 100);
+    npVf.style.width = VOL + '%';
+    AU.volume = VOL / 100;
+    try { localStorage.setItem('uuvol', VOL); } catch (e) {}
+  };
+  let vdrag = false;
+  const vfrac = ev => {
+    const r = npVl.getBoundingClientRect();
+    return (ev.clientX - r.left) / r.width;
+  };
+  npVl.addEventListener('pointerdown', ev => {
+    vdrag = true; setVol(vfrac(ev));
+    try { npVl.setPointerCapture(ev.pointerId); } catch (e) {}
+  });
+  npVl.addEventListener('pointermove', ev => { if (vdrag) setVol(vfrac(ev)); });
+  npVl.addEventListener('pointerup', () => vdrag = false);
+  const npTf = np.querySelector('.np-tf'),
+        npCur = np.querySelector('.np-cur'),
+        npDur = np.querySelector('.np-dur'),
+        npFmt = s => Math.floor(s / 60) + ':' + String(Math.floor(s % 60)).padStart(2, '0');
+  np.querySelector('.np-tl').addEventListener('click', ev => {
+    if (!PV || !PV.audio.duration) return;
+    const r = ev.currentTarget.getBoundingClientRect();
+    PV.audio.currentTime = Math.max(0, Math.min(1, (ev.clientX - r.left) / r.width)) * PV.audio.duration;
+  });
+
+  let PV = null;
+  const pvStop = () => {
+    if (!PV) return;
+    PV.audio.pause(); cancelAnimationFrame(PV.raf);
+    PV.btn.textContent = '▶'; PV.bar.remove(); PV = null;
+    npTf.style.width = '0'; npCur.textContent = '0:00';
+    npGl.textContent = '▶';
+    np.querySelector('.np-nx').classList.remove('on');
+    npHide();
+  };
+  np.querySelector('.np-x').addEventListener('click', () => {
+    pvStop(); silence(null); npHide();
+  });
+  const pvUrl = btn => new Promise(res => {
+    const parts = btn.dataset.prev.split(':'), src = parts[0], id = parts[1];
+    const cb = '__pv' + Math.random().toString(36).slice(2);
+    const s = document.createElement('script');
+    let t = 0;
+    const done = u => { delete window[cb]; s.remove(); clearTimeout(t); res(u || null); };
+    t = setTimeout(() => done(null), 4000);
+    window[cb] = d => done(src === 'deezer' ? d && d.preview
+                                            : ((d && d.results || [])[0] || {}).previewUrl);
+    s.src = src === 'deezer'
+      ? 'https://api.deezer.com/track/' + id + '?output=jsonp&callback=' + cb
+      : 'https://itunes.apple.com/lookup?id=' + id + '&callback=' + cb;
+    s.onerror = () => done(null);
+    document.head.appendChild(s);
+  });
+  const pvRefresh = btn => pvUrl(btn).then(u => { if (u) btn.dataset.fresh = u; return u; });
+  if (EMBEDS_OK) addEventListener('load', () =>
+    document.querySelectorAll('button.pv').forEach((b, i) =>
+      setTimeout(() => pvRefresh(b), 500 + i * 250)));
+
+  // one voice at a time, strips included. A cross-origin iframe can't be
+  // paused, but a click inside one moves document.activeElement to it — and
+  // reloading an iframe stops its audio. Track touched strips; touching a
+  // new player silences every other one.
+  const hot = new Set();
+  const silence = keep => {
+    hot.forEach(f => {
+      if (f !== keep && f.isConnected) {
+        // src re-assignment is NOT enough: on a loading="lazy" iframe that
+        // sits far outside the viewport Chrome defers the re-navigation and
+        // the old document keeps playing (two tracks at once). Removing the
+        // node destroys its browsing context unconditionally; the clone
+        // keeps lazy loading so a far-off strip doesn't refetch.
+        f.replaceWith(f.cloneNode());
+      }
+    });
+    hot.clear();
+    if (keep) hot.add(keep);
+  };
+  const stripTouched = f => {
+    if (!f || hot.has(f) || !f.isConnected) return;
+    pvStop(); silence(f); npShow(f.closest('.row'));
+  };
+  setInterval(() => {
+    const ae = document.activeElement;
+    if (ae && ae.tagName === 'IFRAME' && ae.closest('.playwrap')) stripTouched(ae);
+  }, 400);
+  // the poll alone misses strips: Safari often never moves activeElement into
+  // a cross-origin iframe, and fast player-switching can slip the 400ms
+  // window. The reliable cross-browser signal is: the pointer is over the
+  // strip AND our window fires blur (focus moved into the iframe) while the
+  // page as a whole still has focus (cmd-tab away has hasFocus() false).
+  let overStrip = null;
+  document.addEventListener('mouseover', ev => {
+    overStrip = (ev.target.tagName === 'IFRAME' && ev.target.closest('.playwrap'))
+      ? ev.target : null;
+  });
+  addEventListener('blur', () => {
+    const f = overStrip;
+    setTimeout(() => { if (document.hasFocus()) stripTouched(f); }, 60);
+  });
+
+  // one persistent, gesture-activated element: browsers let it keep playing
+  // new sources without a fresh click, which is what auto-advance needs
+  const AU = new Audio();
+  AU.crossOrigin = 'anonymous';   // both preview hosts send ACAO:* (checked 2026-09-19) - needed for analysis
+  AU.volume = VOL / 100;
+  // loudness/beat of the sounding preview for the crate plates. The graph is
+  // built on the first (gesture-driven) play; the element's audio then flows
+  // element -> analyser -> speakers.
+  let ACX = null, ANA = null, FD = null, bassAvg = 0, lastBeat = 0, prevBass = 0; window.__beats = 0;
+  const ensureAnalyser = () => {
+    if (ANA || !(window.AudioContext || window.webkitAudioContext)) return;
+    try {
+      ACX = new (window.AudioContext || window.webkitAudioContext)();
+      const src = ACX.createMediaElementSource(AU);
+      ANA = ACX.createAnalyser(); ANA.fftSize = 1024; ANA.smoothingTimeConstant = 0.5;
+      ANA.minDecibels = -85; ANA.maxDecibels = -8;   // headroom: with the default -30 dB ceiling the bass bins pinned at 255 and no kick could register
+      src.connect(ANA); ANA.connect(ACX.destination);
+      FD = new Uint8Array(ANA.frequencyBinCount);
+    } catch (e) { ANA = null; }
+  };
+  // per-frame spectrum for the plates: four bands (0-1), where the energy
+  // sits (centroid 0-1, log-spaced), loudness, and a bass-onset beat.
+  // bins are ~43 Hz wide (fft 1024 at 44.1k): bass 1-3, low-mid 4-11,
+  // mid 12-46, high 47-185.
+  const SILENT = {rms: 0, bass: 0, lowmid: 0, mid: 0, high: 0, centroid: 0.3, beat: false};
+  window.__audioLevel = () => {
+    if (!ANA || AU.paused) return SILENT;
+    // INPUT stage of the Chladni patch (tuner 2026-09-20): analyser range,
+    // fft, smoothing and the band crossovers (Hz -> bins at the context's
+    // sample rate) are read live; the factory values are the 09-19 constants
+    const ap = (window.__SAND || {}).audio || {};
+    if (ap.fft && ANA.fftSize !== ap.fft) { try { ANA.fftSize = ap.fft; FD = new Uint8Array(ANA.frequencyBinCount); } catch (e) {} }
+    if (ap.ceilDb != null && (ANA.maxDecibels !== ap.ceilDb || ANA.minDecibels !== ap.floorDb)) { try { ANA.minDecibels = -200; ANA.maxDecibels = ap.ceilDb; ANA.minDecibels = Math.min(ap.floorDb, ap.ceilDb - 1); } catch (e) {} }
+    if (ap.smoothing != null && ANA.smoothingTimeConstant !== ap.smoothing) ANA.smoothingTimeConstant = ap.smoothing;
+    ANA.getByteFrequencyData(FD);
+    const hzb = ((ACX && ACX.sampleRate) || 44100) / ANA.fftSize, top = FD.length - 1;
+    const bin = hz => Math.max(1, Math.min(top, Math.round(hz / hzb)));
+    const lo = ap.floorHz != null ? bin(ap.floorHz) : 1;
+    const X = ap.xoverHz ? ap.xoverHz.map(bin) : [3, 11, 46, 185];
+    X[0] = Math.max(X[0], lo); for (let i = 1; i < 4; i++) X[i] = Math.max(X[i], X[i - 1] + 1);
+    const hi = Math.min(top, X[3]);
+    const band = (a, b) => { let s = 0; for (let i = a; i <= b; i++) s += FD[i]; return s / 255 / (b - a + 1); };
+    let s = 0, wsum = 0, w = 0;
+    for (let i = lo; i <= hi; i++) { const v = FD[i] / 255; s += v * v; wsum += Math.log2(i + 1) * v; w += v; }
+    const rms = Math.sqrt(s / (hi - lo + 1));
+    const l0 = Math.log2(lo + 1), l1 = Math.log2(hi + 1);
+    const centroid = w > 0 ? Math.min(1, Math.max(0, (wsum / w - l0) / (l1 - l0))) : 0.3;
+    const bass = band(lo, X[0]), lowmid = band(X[0] + 1, X[1]), mid = band(X[1] + 1, X[2]), high = band(X[2] + 1, hi);
+    // a kick = bass rising sharply frame to frame (spectral flux), not bass
+    // being loud (it always is in this music)
+    const bt = ap.beat || {flux: 0.045, ratio: 1.04, floor: 0.25, refractoryMs: 200, avg: 0.06};
+    const flux = bass - prevBass; prevBass = bass;
+    bassAvg = bassAvg * (1 - bt.avg) + bass * bt.avg;
+    const now = performance.now(); let beat = false;
+    if (flux > bt.flux && bass > bassAvg * bt.ratio && bass > bt.floor && now - lastBeat > bt.refractoryMs) { beat = true; lastBeat = now; window.__beats++; }
+    return {rms, bass, lowmid, mid, high, centroid, beat};
+  };
+  const pvNext = btn => {
+    const all = [...document.querySelectorAll('button.pv')];
+    return all[all.indexOf(btn) + 1] || null;
+  };
+  const pvPlay = (btn, u) => {
+    pvStop(); silence(null);
+    const bar = document.createElement('span');
+    bar.className = 'pvbar';
+    btn.closest('.row').appendChild(bar);
+    PV = {audio: AU, btn: btn, bar: bar, raf: 0, armed: false};
+    npShow(btn.closest('.row'), true);
+    // next-up line: what the chain will land on when this track runs out
+    const nx = np.querySelector('.np-nx');
+    const nr = window.__crateNextRow ? window.__crateNextRow()
+             : (pvNext(btn) && pvNext(btn).closest('.row'));
+    const na = nr && nr.querySelector('.artist'), nrel = nr && nr.querySelector('.release');
+    if (na) {
+      nx.textContent = 'Next: ' + na.textContent + (nrel ? ' · ' + nrel.textContent : '');
+      nx.classList.add('on');
+    } else nx.classList.remove('on');
+    const tick = () => {
+      if (!PV || PV.btn !== btn) return;
+      const pct = (AU.duration ? AU.currentTime / AU.duration * 100 : 0) + '%';
+      bar.style.width = pct; npTf.style.width = pct;
+      npCur.textContent = npFmt(AU.currentTime);
+      npDur.textContent = AU.duration ? npFmt(AU.duration) : '0:00';
+      PV.raf = requestAnimationFrame(tick);
+    };
+    btn.textContent = '■';
+    npGl.textContent = '❚❚';
+    tick();
+    AU.onended = () => {
+      // an active alternate view (the crate) may own the advance: it slides
+      // to the next record and starts it itself
+      if (window.__pvChain) { pvStop(); window.__pvChain(); return; }
+      // playlist behavior: roll straight into the next previewable row.
+      // Bandcamp strips are sealed cross-origin players (no end signal, no
+      // programmatic start), so the chain passes over them.
+      const nb = pvNext(btn);
+      pvStop();
+      if (nb && nb.dataset.fresh) pvPlay(nb, nb.dataset.fresh);
+      else if (nb) pvRefresh(nb).then(v => { if (v) pvPlay(nb, v); });
+    };
+    AU.onerror = () => { pvStop(); delete btn.dataset.fresh; pvRefresh(btn); };
+    ensureAnalyser();
+    if (ACX && ACX.state !== 'running') { try { ACX.resume(); } catch (e) {} }
+    AU.src = u;
+    const pr = AU.play();
+    if (pr && pr.catch) pr.catch(() => {
+      // autoplay veto: arm the button — the next click replays synchronously
+      if (PV && PV.btn === btn) { PV.armed = true; btn.textContent = '▶'; }
+    });
+  };
+
+  document.addEventListener('click', ev => {
+    const btn = ev.target.closest('button.bc, button.pv'); if (!btn) return;
+    if (btn.classList.contains('pv')) {
+      if (!EMBEDS_OK) { window.open(btn.dataset.link, '_blank', 'noopener'); return; }
+      if (PV && PV.btn === btn) {
+        if (PV.armed) {
+          PV.armed = false; btn.textContent = '■';
+          const rp = PV.audio.play();
+          if (rp && rp.catch) rp.catch(() => { if (PV && PV.btn === btn) { PV.armed = true; btn.textContent = '▶'; } });
+        }
+        else pvStop();
+        return;
+      }
+      const fresh = btn.dataset.fresh;
+      if (fresh) { pvPlay(btn, fresh); return; }
+      pvStop();
+      btn.textContent = '…';
+      pvUrl(btn).then(u => {
+        if (btn.textContent !== '…') return;
+        if (!u) { btn.textContent = '▶'; window.open(btn.dataset.link, '_blank', 'noopener'); return; }
+        btn.dataset.fresh = u;
+        pvPlay(btn, u);
+      });
+      return;
+    }
+    if (!EMBEDS_OK) { window.open(btn.dataset.url, '_blank', 'noopener'); return; }
+  });
+
+  // hosted: every Bandcamp row carries its slim strip from the start — the
+  // player is right there, one press. loading="lazy" keeps offscreen strips
+  // from fetching until scrolled near, so 83 embeds don't stampede the load.
+  if (EMBEDS_OK) document.querySelectorAll('button.bc:not(.pv)').forEach(btn => {
+    const row = btn.closest('.row');
+    const cs = getComputedStyle(row.closest('.ledger') || row.closest('section.band'));
+    const bg = hex(cs.backgroundColor), lk = hex(getComputedStyle(row.querySelector('.dot')).color);
+    const wrap = document.createElement('div');
+    wrap.className = 'playwrap';
+    wrap.dataset.url = btn.dataset.url;
+    wrap.innerHTML = '<iframe title="player" src="https://bandcamp.com/EmbeddedPlayer/' + btn.dataset.embed +
+      '/size=large/tracklist=false/artwork=none/bgcol=' + bg + '/linkcol=' + lk + '/transparent=true/" ' +
+      'seamless loading="lazy"></iframe>';
+    row.appendChild(wrap);
+    // album matches get a toggle: swap the title player for the full
+    // tracklist embed (Bandcamp's tracklist=true variant) and back
+    if (btn.dataset.embed.indexOf('album=') === 0) {
+      const tog = document.createElement('button');
+      tog.className = 'alb';
+      tog.textContent = 'full album ↓';
+      tog.addEventListener('click', () => {
+        const f = wrap.querySelector('iframe');
+        const open = tog.dataset.open === '1';
+        tog.dataset.open = open ? '' : '1';
+        tog.textContent = open ? 'full album ↓' : 'title track ↑';
+        f.style.height = open ? '' : '390px';
+        f.src = open ? f.src.replace('/tracklist=true/', '/tracklist=false/')
+                     : f.src.replace('/tracklist=false/', '/tracklist=true/');
+      });
+      wrap.appendChild(tog);
+    }
+    btn.remove();
+  });
+
+  // rack strip hugs the title: width = the widest rendered line's ink width,
+  // so it stops at the final letterform (re-fit after fonts load and on resize)
+
+    const STILL = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const CHLADNI = !new URLSearchParams(location.search).has('rings');
+    const mulberry = seed => () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+    const strHash = str => { let h = 2166136261; for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; };
+    const makeSand = (cv, opt) => {
+      const c2 = cv.getContext('2d');
+      const rnd = opt.rng || Math.random;
+      const pick = arr => arr[Math.floor(rnd() * arr.length)];
+      let G = 8; const FIRST_HOLD = 5, HOLD = 3.5, LOOSEN = 1.4, MORPH = 2.6;   // hold -> loosen -> morph (G = field grid, a patch knob for the crate plates)
+      let geo = null, sand = null, modes = null, modesNext = null, modeT0 = 0, lastType = '';
+      let rIn = 300, rOut = 1100, field = null, fW = 0, fH = 0, fieldDirty = true, first = true;
+      let running = false, settleT0 = 0, inkc = '#121212', phase = 'on', phaseT0 = 0;
+      let dens = null;   // grains per field cell (opt.spread only)
+      const newModes = () => {
+        let type; do { type = pick(['star', 'wheel', 'wheel', 'rings', 'rings', 'curvy', 'curvy', 'mixed']); } while (type === lastType);
+        lastType = type;
+        const rot = rnd() * Math.PI, ph = rnd() * Math.PI;
+        if (type === 'star')  return {type, m: pick([3, 4, 5, 6, 7, 8, 10, 12]), rot};
+        if (type === 'wheel') return {type, m: pick([3, 4, 5, 6, 8, 10, 12]), n: pick([1, 2, 2, 3]), rot, ph};
+        if (type === 'rings') return {type, n: pick([3, 4, 5, 6, 8]), m: pick([4, 5, 6, 8, 10, 12]), wob: 18 + rnd() * 40, rot, ph};
+        if (type === 'curvy') { const m = pick([2, 3, 4, 5]); return {type, m, n: pick([1, 2]), m2: m + pick([1, 2, 3]), n2: pick([1, 2]), w2: 0.6 + rnd() * 0.4, rot, rot2: rnd() * Math.PI, ph, ph2: rnd() * Math.PI}; }
+        return {type, m: pick([3, 4, 6, 8]), n: pick([3, 4, 5]), m2: pick([5, 6, 8, 12]), wob: 14 + rnd() * 26, rot, ph};
+      };
+      const S = (m, th, rot) => Math.cos(m * (th - rot));
+      const C = (n, r, ph) => Math.cos(Math.PI * n * (r - rIn) / (rOut - rIn) + ph);
+      const amp = (x, y, sh) => {
+        const dx = x - geo.cx, dy = y - geo.cy, r = Math.hypot(dx, dy), th = Math.atan2(dy, dx);
+        switch (sh.type) {
+          // CHLADNI'S SQUARE PLATE (1787): cos(m pi u) cos(n pi v) +- cos(n pi u) cos(m pi v)
+          // over a rotated square of half-side D — the catalogue figures with
+          // their curved diagonals; the field tiles beyond the plate
+          case 'plate': {
+            const cr = Math.cos(sh.rot), sr = Math.sin(sh.rot), D = sh.D || 0.42 * Math.min(geo.w, geo.h);
+            const u = (dx * cr + dy * sr) / D, v = (-dx * sr + dy * cr) / D;
+            return 0.5 * (Math.cos(sh.m * Math.PI * u) * Math.cos(sh.n * Math.PI * v) + sh.s * Math.cos(sh.n * Math.PI * u) * Math.cos(sh.m * Math.PI * v));
+          }
+          // ROSETTES: k plane waves at equal angles interfere — 3 give the
+          // hexagonal lattice, 5 the pentagonal quasi-lattice (the sacred
+          // geometry end of the catalogue); lam = wavelength in px
+          case 'hex': case 'penta': {
+            const k = sh.type === 'hex' ? 3 : 5, K = 2 * Math.PI / (sh.lam || 120); let s = 0;
+            for (let i = 0; i < k; i++) { const a = sh.rot + i * Math.PI / k; s += Math.cos(K * (dx * Math.cos(a) + dy * Math.sin(a))); }
+            return s / k;
+          }
+          case 'star':  return S(sh.m, th, sh.rot);
+          case 'wheel': return S(sh.m, th, sh.rot) * C(sh.n, r, sh.ph);
+          case 'rings': return C(sh.n, r + sh.wob * Math.cos(sh.m * (th - sh.rot)), sh.ph);
+          case 'curvy': return (S(sh.m, th, sh.rot) * C(sh.n, r, sh.ph) + sh.w2 * S(sh.m2, th, sh.rot2) * C(sh.n2, r, sh.ph2)) / (1 + sh.w2);
+          default:      return 0.55 * S(sh.m, th, sh.rot) + 0.7 * C(sh.n, r + sh.wob * Math.cos(sh.m2 * (th - sh.rot)), sh.ph);
+        }
+      };
+      // the text window is FEATHERED: sand thins over ~70px toward the text
+      // block instead of stopping at an edge (a hard rectangle showed as a
+      // void in the dispersed state). keep() = probability a grain may sit
+      // at (x,y): 0 inside the text bounds, 1 beyond the feather.
+      const FEATHER = 70;
+      const keep = (x, y) => {
+        const c = geo.cut; if (!c) return 1;
+        const ix = c.x + c.pad, iy = c.y + c.pad, iw = c.w - 2 * c.pad, ih = c.h - 2 * c.pad;
+        const dx = Math.max(ix - x, 0, x - (ix + iw)), dy = Math.max(iy - y, 0, y - (iy + ih));
+        const d = Math.hypot(dx, dy);
+        if (d < 6) return 0;
+        const u = Math.min(1, (d - 6) / FEATHER); return u * u * (3 - 2 * u);
+      };
+      const inCut = (x, y) => Math.random() > keep(x, y);
+      const spawn = () => {
+        for (let k = 0; k < 24; k++) {
+          const x = Math.random() * geo.w, y = Math.random() * geo.h;
+          if (Math.random() < keep(x, y) && Math.hypot(x - geo.cx, y - geo.cy) > geo.pr + 6) return [x, y];
+        }
+        return [0, 0];
+      };
+      const buildField = (sm) => {
+        fW = Math.ceil(geo.w / G) + 2; fH = Math.ceil(geo.h / G) + 2;
+        if (!field || field.length !== fW * fH) field = new Float32Array(fW * fH);
+        for (let gy = 0; gy < fH; gy++) for (let gx = 0; gx < fW; gx++) {
+          const x = gx * G, y = gy * G;
+          let v = amp(x, y, modes);
+          if (modesNext) v = (1 - sm) * v + sm * amp(x, y, modesNext);
+          field[gy * fW + gx] = Math.abs(v);
+        }
+        fieldDirty = false;
+      };
+      const seed = () => {
+        const N = opt.p ? opt.p.sand.n : opt.n;   // the crate plates take their grain count from the patch
+        sand = new Float32Array(N * 2);
+        for (let i = 0; i < N; i++) { const p = spawn(); sand[i * 2] = p[0]; sand[i * 2 + 1] = p[1]; }
+        rIn = geo.pr + 6;
+        rOut = Math.max(Math.hypot(geo.cx, geo.cy), Math.hypot(geo.w - geo.cx, geo.cy), Math.hypot(geo.cx, geo.h - geo.cy), Math.hypot(geo.w - geo.cx, geo.h - geo.cy));
+        if (opt.drift || !modes) modes = newModes();
+        modesNext = null; modeT0 = performance.now() / 1000; fieldDirty = true; first = true; settleT0 = performance.now(); phase = 'on';
+      };
+      const simulate = (now, shakeIn) => {
+        const t = now / 1000;
+        let driftK = 1, jitterK = 0, sm = 0, shake = shakeIn, flowK = 0, r = null;
+        // MATERIAL knobs of the patch (crate plates only; the hero keeps the
+        // literals): pull down the gradient, base + amplitude jitter, field
+        // gain, and the field grid (a grid change rebuilds the field)
+        const PS = opt.p ? opt.p.sand : null;
+        const DK = PS ? PS.pull : 3.0, JB = PS ? PS.jitter : 2.0, JA = PS ? PS.jitterAmp : 1.2, GN = PS ? PS.gain : 1.9;
+        if (PS && PS.grid >= 3 && PS.grid !== G) { G = PS.grid; fieldDirty = true; }
+        // REACTIVE drive (crate plates, 2026-09-19): opt.react(t) returns the
+        // shake for this frame (from the playing record's loudness) and a beat
+        // flag that throws the plate into a quick loosen -> morph to a new figure
+        const LO = LOOSEN; let MO = opt.react ? 0.35 : MORPH;
+        if (opt.react) {
+          // the figure FOLLOWS THE SPECTRUM (Jackson 09-19: the fast spectral
+          // version, "tamed ~30%"): react() hands back the figure the sound
+          // calls for; when it differs from the one on the plate, and the
+          // current one has held for a beat, the field crossfades to it in
+          // ~0.35s. The shake from the loudness carries the agitation.
+          r = opt.react(t); shake = r.shake; if (r.morph) MO = r.morph;
+          if (r.modes && phase === 'on' && r.modes.key !== modes.key && t - modeT0 > (r.dwell || 0)) { modesNext = r.modes; phase = 'morph'; phaseT0 = t; }
+        }
+        if (opt.drift) {
+          // hold -> LOOSEN: the pull drops to ~a tenth and the shake ramps up,
+          // so every line spreads into a soft cloud that still traces its
+          // figure -> MORPH: the field crossfades to the next figure while
+          // the pull returns and the cloud refines into it -> hold. The
+          // sand never goes shapeless after the initial settle.
+          const hold = opt.react ? Infinity : (first ? FIRST_HOLD : HOLD);
+          if (phase === 'on' && t - modeT0 > hold) { phase = 'loosen'; phaseT0 = t; modesNext = newModes(); }
+          if (phase === 'loosen') {
+            const u = Math.min(1, (t - phaseT0) / LO), e = u * u * (3 - 2 * u);
+            driftK = 1 - 0.88 * e; jitterK = (opt.react ? 4.5 : 7.5) * e;
+            if (u >= 1) { phase = 'morph'; phaseT0 = t; }
+          }
+          if (phase === 'morph') {
+            const u = Math.min(1, (t - phaseT0) / MO); sm = u * u * (3 - 2 * u);
+            if (!opt.react) { driftK = 0.12 + 0.88 * sm; jitterK = 7.5 * (1 - sm); }
+            fieldDirty = true;
+            if (u >= 1) { modes = modesNext; modesNext = null; phase = 'on'; modeT0 = t; first = false; sm = 0; fieldDirty = true; }
+          }
+          if (fieldDirty || !field) buildField(sm);
+        } else if (fieldDirty || !field) buildField(0);
+        // FLOAT (crate plates, Jackson 09-19): with nothing to hear the driver
+        // asks for a weak pull, extra wander and a slow flow through space, so
+        // the grains keep drifting instead of settling onto the lines
+        if (r && r.pull != null) { driftK *= r.pull; jitterK += r.jitter || 0; flowK = r.flow || 0; }
+        const {cx, cy, w, h, pr} = geo, n = sand.length;
+        // SPREAD (crate plates, Jackson 09-19/20): the lines were piling up into
+        // solid clumps. Grains are counted per field cell each frame; in a cell
+        // over the cap they are pushed down the density gradient and kicked, so
+        // the dense zones keep space and visible motion inside them
+        const SP = opt.spread;
+        if (SP) {
+          if (!dens || dens.length !== fW * fH) dens = new Uint16Array(fW * fH); else dens.fill(0);
+          for (let i = 0; i < n; i += 2) {
+            const gx = Math.min(fW - 2, Math.max(1, (sand[i] / G) | 0)), gy = Math.min(fH - 2, Math.max(1, (sand[i + 1] / G) | 0));
+            dens[gy * fW + gx]++;
+          }
+        }
+        for (let i = 0; i < n; i += 2) {
+          let x = sand[i], y = sand[i + 1];
+          const gx = Math.min(fW - 2, Math.max(1, (x / G) | 0)), gy = Math.min(fH - 2, Math.max(1, (y / G) | 0));
+          const k = gy * fW + gx, a = field[k];
+          const dax = field[k + 1] - field[k - 1], day = field[k + fW] - field[k - fW];
+          const gl = Math.hypot(dax, day) + 1e-6, v = Math.min(1, a * GN);
+          const drift = DK * v * driftK * shake, j = ((JB + JA * v) + jitterK) * shake;
+          x -= dax / gl * drift; y -= day / gl * drift;
+          x += (Math.random() - 0.5) * j; y += (Math.random() - 0.5) * j;
+          if (SP) {
+            const c = dens[k], o = c > SP.cap ? (c - SP.cap) / SP.cap : 0;
+            if (o) {
+              const dgx = dens[k + 1] - dens[k - 1], dgy = dens[k + fW] - dens[k - fW], gm = Math.abs(dgx) + Math.abs(dgy) + 1;
+              const kk = SP.kick * Math.min(2, o);
+              x -= kk * dgx / gm + (Math.random() - 0.5) * kk; y -= kk * dgy / gm + (Math.random() - 0.5) * kk;
+            }
+          }
+          if (flowK) { x += flowK * (Math.sin(y * 0.006 + t * 0.35) + 0.5 * Math.sin(x * 0.011 - t * 0.21)); y += flowK * (Math.cos(x * 0.006 + t * 0.29) + 0.5 * Math.cos(y * 0.013 + t * 0.17)); }
+          const kp = keep(x, y);
+          if (x < 0 || x > w || y < 0 || y > h || kp === 0 || (kp < 1 && Math.random() > kp + 0.85) || Math.hypot(x - cx, y - cy) < pr + 4) { const p = spawn(); x = p[0]; y = p[1]; }
+          sand[i] = x; sand[i + 1] = y;
+        }
+      };
+      const render = () => {
+        const {dpr, w, h} = geo, n = sand.length;
+        c2.setTransform(dpr, 0, 0, dpr, 0, 0);
+        c2.clearRect(0, 0, w, h);
+        const PS = opt.p ? opt.p.sand : null;
+        c2.fillStyle = PS && PS.ink ? PS.ink : inkc;
+        // crate plates: denser, bolder material - size, spread and the three alphas from the patch
+        const AL = PS ? PS.alpha : (opt.alpha || [0.34, 0.52, 0.7]), GS = PS ? PS.size : (opt.grain || 1), SPR = PS ? PS.spread : 0.24;
+        const bands = [[0, n / 3, AL[0]], [n / 3, 2 * n / 3, AL[1]], [2 * n / 3, n, AL[2]]];
+        for (const [i0, i1, al] of bands) {
+          c2.globalAlpha = al;
+          for (let i = (i0 | 0) & ~1; i < i1; i += 2) {
+            const g = (1.3 + ((i >> 1) % 9) * SPR) * GS;
+            c2.fillRect(sand[i] - g / 2, sand[i + 1] - g / 2, g, g);
+          }
+        }
+        c2.globalAlpha = 1;
+      };
+      const step = (now) => { if (!geo || !sand) return; simulate(now, STILL ? 0 : 1); render(); };
+      const tick = (now) => {
+        if (!running) return;
+        step(now);
+        if (opt.drift || now - settleT0 < opt.settleMs) requestAnimationFrame(tick); else running = false;
+      };
+      const api = {
+        fit() {
+          geo = opt.geo(); if (!geo || !geo.w || !geo.h) return;
+          if (opt.size) {
+            const dpr = Math.min(devicePixelRatio || 1, 2);
+            if (cv.width !== Math.round(geo.w * dpr) || cv.height !== Math.round(geo.h * dpr)) { cv.width = Math.round(geo.w * dpr); cv.height = Math.round(geo.h * dpr); }
+            cv.style.width = geo.w + 'px'; cv.style.height = geo.h + 'px';
+            geo.dpr = dpr;
+          }
+          inkc = getComputedStyle(cv).color || inkc;
+          seed();
+          if (STILL) { for (let k = 0; k < 220; k++) simulate(performance.now(), 1); }
+          render();
+        },
+        step,
+        start() { if (STILL || running || !sand) return; running = true; settleT0 = performance.now(); requestAnimationFrame(tick); },
+        stop() { running = false; },
+        release() { running = false; sand = null; field = null; if (opt.size) { cv.width = 0; cv.height = 0; } },
+        get live() { return !!sand; },
+        get grains() { return sand; },
+        get figure() { return modes; }
+      };
+      return api;
+    };
+    window.__makeSand = makeSand; window.__STILL = STILL;
+})();
+</script>
+<script>
+// panel: capture the crate's sand api; the plate floats at rest instead of stopping
+(function(){ var orig=window.__makeSand; if(!orig) return; window.__makeSand=function(cv,opt){ var api=orig(cv,opt); api.stop=function(){}; window.__crateSand=api; return api; }; })();
+</script>
+<script>
+// crate view (?crate): every chapter's ledgers re-rendered as a horizontal
+// record bin. Pure alternate view over the same DOM: sleeves cloned into a
+// draggable rail, the focused record's info + its ORIGINAL player controls
+// moved into a panel below (moved back on blur, killing its audio). The
+// panel presents itself as a .row so one-voice / now-playing / spin all
+// keep working. The end-of-track chain belongs to the crate that last held
+// focus and walks its records in order, auto-playing each (Bandcamp records
+// sound via their 30s preview - their iframe can't be auto-started).
+// the crate is the DEFAULT playlist view on desktop (Jackson, 2026-09-07);
+// ?ledger restores the classic list, and mobile always keeps it
+if (!new URLSearchParams(location.search).has('ledger')
+    && matchMedia('(min-width: 900px)').matches) {
+  // flow geometry knobs (Jackson 09-19, "see the sliver three tracks away"):
+  // ?fo = first queue offset, ?fp = pitch between queued covers, both in % of
+  // a cover width. Defaults = the shipped look (74 / 32); at 1440x900 that
+  // shows one or two covers per side, ?fo=64&fp=16 shows four.
+  const FQ = new URLSearchParams(location.search);
+  const FO = (parseFloat(FQ.get('fo')) || 74) / 100, FP = (parseFloat(FQ.get('fp')) || 32) / 100;
+  const initCrate = band => {
+    const ledgers = [...band.querySelectorAll('.ledger')];
+    const rows = [...band.querySelectorAll('.ledger .row')];
+    if (!rows.length) return;
+    const crate = document.createElement('div');
+    crate.className = 'crate';
+    // tracklist + flow is the default (Jackson 2026-09-19); ?nolist = flow alone
+    const LIST = !new URLSearchParams(location.search).has('nolist');
+    if (LIST) crate.classList.add('list');
+    if ('IntersectionObserver' in window) new IntersectionObserver(es => es.forEach(e => { crate.classList.toggle('asleep', !e.isIntersecting); if (typeof sandSync === 'function') sandSync(); }), {rootMargin: '40% 0px 40% 0px'}).observe(crate);
+    // THE PLAYER (Jackson 09-19: the cover flow dropped "to have better eyes on
+    // the visualizer"): the right three quarters hold the active record as a
+    // platter over the Chladni plate, an expanded info panel beside it, and
+    // the prev/next bar beneath
+    crate.innerHTML = (LIST ? '<div class="crate-list-wrap"><div class="crate-list"></div></div>' : '') +
+      '<div class="crate-player"><div class="cp-inner">' +
+      '<figure class="cp-platter"><img class="cp-disc" alt=""><span class="cp-blank"></span></figure>' +
+      '<div class="crate-side"><div class="crate-panel row"></div></div>' +
+      '<div class="crate-nav">' +
+      '<button class="cn-prev" title="previous">←</button>' +
+      '<span class="cn-track"><span class="cn-fill"></span></span>' +
+      '<button class="cn-next" title="next">→</button>' +
+      '<span class="cn-count"></span></div>' +
+      '</div></div>';
+    ledgers[0].before(crate);
+    ledgers.forEach(l => l.style.display = 'none');
+    const player = crate.querySelector('.crate-player');
+    const platter = crate.querySelector('.cp-platter'), disc = crate.querySelector('.cp-disc');
+    const panel = crate.querySelector('.crate-panel');
+    const pos = crate.querySelector('.cn-count');
+    const fill = crate.querySelector('.cn-fill');
+    const nav = crate.querySelector('.crate-nav');
+    const side = crate.querySelector('.crate-side');
+    // the text list: one row per record (artist + release only — Matt's notes
+    // live in the panel under the flow; Jackson 09-19: "clean and simple").
+    // Any click on a row = jump the flow there AND play. Records with no
+    // preview get the search link instead of a play button.
+    const list = crate.querySelector('.crate-list');
+    const lrows = [];
+    if (list) rows.forEach((r, i) => {
+      const li = document.createElement('div');
+      li.className = 'tl-row' + (r.classList.contains('pri') ? ' pri' : '');
+      li.dataset.i = i;
+      const who = r.querySelector('.who'), note = r.querySelector('.note');
+      const canPlay = !!(r.querySelector('button.dot.pv') || r.dataset.prev);
+      const link = r.querySelector('a.bc');
+      const im = r.querySelector('img.sleeve');
+      li.innerHTML = (im ? '<img class="tl-art" alt="" src="' + im.src + '">' : '<span class="tl-art blank"></span>') + '<div class="tl-text">' +
+        (who ? '<span class="tl-artist">' + who.querySelector('.artist').innerHTML + '</span>' +
+               '<span class="tl-release">' + who.querySelector('.release').innerHTML + '</span>' : '') +
+        '</div>' +
+        (canPlay ? '<button class="tl-play" title="play">&#9654;</button>'
+                 : link ? '<a class="tl-play mute" href="' + link.href + '" target="_blank" rel="noopener" title="find it">&#8599;</a>'
+                        : '<span></span>');
+      // any click on a row plays that record in the box (Jackson 09-19); on the
+      // row already up, the text starts it if it is silent and the round
+      // button toggles pause/resume
+      li.addEventListener('click', e => {
+        own();
+        if (e.target.closest('a')) return;
+        const onBtn = !!e.target.closest('button.tl-play');
+        if (i === idx) {
+          const b = panel.querySelector('button.dot.pv'); if (!b) return;
+          const st = window.__pvState ? window.__pvState(b) : 'other';
+          if (onBtn || st !== 'playing') b.click();
+          return;
+        }
+        focus(i, true);
+      });
+      list.appendChild(li); lrows.push(li);
+    });
+    const followList = () => {
+      const l = lrows[idx];
+      if (!list || !l) return;
+      list.scrollTo({top: Math.max(0, l.offsetTop - list.clientHeight / 2 + l.offsetHeight / 2), behavior: 'smooth'});
+    };
+    const figs = [];   // the flow is gone; the platter shows the active record
+    let idx = -1, moved = [];
+    // the plate: seeded lazily on first play, runs only while this crate's
+    // record sounds and the crate is on screen, freezes on its last frame
+    let sand = null;
+    if (window.__makeSand && !new URLSearchParams(location.search).has('nosand')) {
+      // the plate lives INSIDE the record box (the flow pane), never behind
+      // the tracklist, centered on the active record (Jackson 09-19)
+      const cv = document.createElement('canvas'); cv.className = 'crate-sand'; cv.setAttribute('aria-hidden', 'true');
+      player.prepend(cv);
+      const geoOf = () => {
+        const r = player.getBoundingClientRect(), on = platter.getBoundingClientRect();
+        return {w: Math.round(r.width), h: Math.round(r.height),
+                cx: on ? on.left - r.left + on.width / 2 : r.width * 0.5, cy: on ? on.top - r.top + on.height / 2 : r.height * 0.5,
+                pr: on ? on.width * window.__SAND.sand.exclude : 0};   // no grains wasted under the record: they gather around it, like the hero's platter
+      };
+      // spectrum -> figure. A dub techno spectrum barely moves in absolute
+      // terms (bass sits near full scale), so each band is read as its
+      // EXCESS over its own slow baseline: a kick is bass above baseline, a
+      // hat is highs above baseline, a stab is mids above baseline. Then,
+      // like a real plate where the exciting frequency picks the pattern:
+      // the centroid sets the spoke count and mid transients add spokes,
+      // high transients add rings and wobble, the band furthest above its
+      // baseline picks the figure family (bass -> rings, mids -> wheel,
+      // highs -> star/mixed). Loudness sets how hard the grains shake; a kick
+      // throws them and snaps the rotation a notch.
+      // EVERY constant here is a knob of the CHLADNI PATCH (window.__SAND =
+      // data/chladni.json, dialled in on :8933/?tune, 2026-09-20), read live
+      // so a knob turn shows on the plate the same frame. The factory patch
+      // = the 09-19 numbers ("fast spectral, tamed ~30%").
+      const P = () => window.__SAND;
+      const E = {rms: 0, bass: 0, lowmid: 0, mid: 0, high: 0, centroid: 0.3};
+      const BASE = {bass: 0.5, lowmid: 0.3, mid: 0.2, high: 0.15};
+      const PEAK = {bass: 0.3, lowmid: 0.1, mid: 0.05, high: 0.04};     // per-band auto-gain: mids/highs are tiny next to the bass
+      let rot = Math.random() * Math.PI, lastT = 0, burst = 0, target = null, lastFig = 0, sign = 1;
+      // FLOAT figures: with nothing to hear the plate wanders through the
+      // hero families on its own, a new one every float.every seconds
+      let wander = null, wanderT0 = -1e9;
+      // EVERY TRACK IS ITS OWN PLATE (Jackson 09-20: 'completely change for each
+      // new track ... not one long flow'). A track's key seeds a personality:
+      // which family each band-lead calls for, spoke/ring/wobble offsets, spin
+      // direction and a home rotation. On a track change the envelopes,
+      // baselines and peaks start over, the grains are thrown (a big burst)
+      // and the figure is re-read at once, so the plate visibly resets.
+      let PERS = null, lastTrack = null, BASE0 = null, PEAK0 = null;
+      const newTrack = key => {
+        let h = 2166136261; for (let i = 0; i < key.length; i++) { h ^= key.charCodeAt(i); h = Math.imul(h, 16777619); }
+        const rnd = () => { h |= 0; h = h + 0x6D2B79F5 | 0; let q = Math.imul(h ^ h >>> 15, 1 | h); q = q + Math.imul(q ^ q >>> 7, 61 | q) ^ q; return ((q ^ q >>> 14) >>> 0) / 4294967296; };
+        const tag = (h >>> 0).toString(16).slice(0, 4) + ':';   // in every figure key, so a new track always re-reads
+        const fams = ['rings', 'wheel', 'star', 'mixed', 'curvy'];   // curvy = the hero's hyperbolic pair, a fifth voice (09-20: 'more variance')
+        for (let i = fams.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [fams[i], fams[j]] = [fams[j], fams[i]]; }
+        // geometry that is fixed per track (09-20, 'individuality with each new
+        // song'): ring phase, the second mode's weight/phase/count/offset, the
+        // wobble gain, spin speed + direction, how long a figure dwells
+        PERS = {key, tag, fam: {b: fams[0], m: fams[1], h: fams[2]},
+                mOff: Math.floor(rnd() * 6) - 2, nOff: Math.floor(rnd() * 4) - 1, wobK: 0.5 + rnd() * 1.3, wobOff: Math.floor(rnd() * 5) * 6,
+                ph: rnd() * Math.PI, ph2: rnd() * Math.PI, w2: 0.35 + rnd() * 0.65, n2: 1 + Math.floor(rnd() * 3), m2Off: 1 + Math.floor(rnd() * 6), rot2K: 0.3 + rnd() * 1.1,
+                spin: (rnd() < 0.5 ? -1 : 1) * (0.5 + rnd() * 1.1), dwellK: 0.6 + rnd() * 1.4, rot0: rnd() * Math.PI};
+        rot = PERS.rot0; sign = rnd() < 0.5 ? -1 : 1;
+        if (BASE0) { for (const k in BASE) BASE[k] = BASE0[k]; for (const k in PEAK) PEAK[k] = PEAK0[k]; }
+        for (const k in E) E[k] = k === 'centroid' ? 0.3 : 0;
+        lastTrack = key; lastFig = -1e9; wanderT0 = -1e9; target = null; wander = null;
+        crate.__pers = PERS;
+      };
+      const FAM = ['rings', 'wheel', 'mixed', 'star'];
+      const allowed = type => { const f = P().figure.families; return f[type] ? type : (FAM.find(k => f[k]) || 'rings'); };
+      const randomFigure = () => {
+        const type = allowed(FAM[Math.floor(Math.random() * 4)]);
+        const m = 3 + Math.floor(Math.random() * 7), n = 2 + Math.floor(Math.random() * 4), wob = 12 + 6 * Math.floor(Math.random() * 9);
+        return {type, m, n, s: sign, lam: 120, m2: m + 4, wob, rot, rot2: rot * 0.7, ph: 0, ph2: 0, w2: 0.8, n2: 1, key: 'w' + type + m + '/' + n + '/' + wob};
+      };
+      const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+      const nm = k => clamp(E[k] / (PEAK[k] + 0.005), 0, 1);                    // band at 0..1 of its own recent peak
+      const xs = k => clamp((E[k] - BASE[k]) / (BASE[k] + 0.01), -1, 2.5);      // band above its own baseline (a hit)
+      const figureFor = () => {
+        const F = P().figure, SP = F.spokes, RG = F.rings, WB = F.wobble;
+        const xb = xs('bass'), xm = xs('mid'), xh = xs('high');
+        const m = Math.round(clamp(SP.base + SP.centroid * E.centroid + SP.mid * nm('mid') + SP.midHit * xm, SP.min, SP.max));
+        const n = Math.round(clamp(RG.base + RG.high * nm('high') + RG.highHit * xh, RG.min, RG.max));
+        const wob = Math.round(clamp(WB.base + WB.mid * nm('mid') + WB.high * nm('high'), WB.base, WB.max) / 6) * 6;
+        const lead = xb >= xm && xb >= xh ? 'b' : xm >= xh ? 'm' : 'h';
+        SCOPE.lead = lead;
+        // the four centered hero families only (Jackson 09-19: the mirrored
+        // plate figures read "over done", the hex/penta lattices "too
+        // complicated"); a family switched off in the patch falls to the next
+        // the track's personality picks the family for each lead and shifts the
+        // counts, so two tracks with the same spectrum still read differently
+        const want = PERS ? PERS.fam[lead] : (lead === 'b' ? 'rings' : lead === 'm' ? 'wheel' : (E.centroid > F.starAt ? 'star' : 'mixed'));
+        const type = allowed(want);
+        const mm = PERS ? clamp(m + PERS.mOff, SP.min, SP.max) : m, nn = PERS ? clamp(n + PERS.nOff, RG.min, RG.max) : n;
+        const ww = Math.round(wob * (PERS ? PERS.wobK : 1) + (PERS ? PERS.wobOff : 0));
+        const Q = PERS || {tag: '', ph: 0, ph2: 0, w2: 0.8, n2: 1, m2Off: 4, rot2K: 0.7};
+        return {type, m: mm, n: nn, s: sign, lam: 120, m2: mm + Q.m2Off, wob: ww, rot, rot2: rot * Q.rot2K, ph: Q.ph, ph2: Q.ph2, w2: Q.w2, n2: Q.n2, key: Q.tag + type + mm + '/' + nn + '/' + ww};
+      };
+      // the tuner's scope reads this every frame: raw bands, envelopes,
+      // baselines, peaks, burst, shake and the figure the sound calls for
+      const SCOPE = crate.__scope = {a: null, E, BASE, PEAK, burst: 0, shake: 0, silent: true, key: '', rot: 0, beat: -1, t: 0, lead: ''};
+      (window.__crates = window.__crates || []).push(crate);
+      // substance (Jackson 09-19: "not enough sand doing the movement"): 2.6x the
+      // grains, a third bigger, a notch brighter - still far back. The counts
+      // and alphas in this literal are fallbacks; the patch's sand block wins.
+      sand = window.__makeSand(cv, {n: 36000, grain: 1.3, alpha: [0.42, 0.62, 0.82], drift: true, size: true, geo: geoOf, get p() { return window.__SAND; },
+        // anti-clump (Jackson 09-19): grains per field cell over sand.cap get pushed apart by sand.kick px; read live from the patch, factory 7 / 1.6 with grain size .9 (Jackson 09-20: 'too thick', 30% finer)
+        get spread() { const sd = (window.__SAND || {}).sand || {}; return {cap: sd.cap != null ? sd.cap : 7, kick: sd.kick != null ? sd.kick : 1.6}; },
+        react: (t) => {
+          const p = P(), EN = p.env, KK = p.kick, SPN = p.spin, SH = p.shake, F = p.figure, FL = p.float;
+          const a = window.__audioLevel ? window.__audioLevel() : E;
+          if (!BASE0) { BASE0 = {...BASE}; PEAK0 = {...PEAK}; }
+          const tk = (rows[idx] && rows[idx].dataset.key) || String(idx);
+          if (tk !== lastTrack) { newTrack(tk); burst = KK.burst * 2.5; SCOPE.beat = t; }
+          const dt = lastT ? Math.min(0.1, t - lastT) : 0.016; lastT = t;
+          // the fast spectral drive, ~30% more subtle than its first cut
+          // (Jackson 09-19): envelopes a touch slower, kick bursts and gains
+          // at 70%, the figure re-read every 120ms and held at least 0.4s
+          for (const k in E) E[k] += (a[k] - E[k]) * (k === 'rms' ? EN.rms : EN.band);
+          for (const k in BASE) BASE[k] += (a[k] - BASE[k]) * EN.base;
+          for (const k in PEAK) PEAK[k] = a[k] > PEAK[k] ? a[k] : PEAK[k] * EN.peak;
+          rot += dt * (SPN.base + SPN.high * E.high) * (PERS ? PERS.spin : 1);
+          if (a.beat) { burst = KK.burst; rot += SPN.kick; SCOPE.beat = t; }
+          burst *= KK.decay;
+          const silent = !(a.rms > EN.gate);
+          if (t - lastFig > F.reread) {
+            lastFig = t;
+            if (!silent) target = figureFor();
+            else { if (t - wanderT0 > FL.every) { wanderT0 = t; wander = randomFigure(); } target = wander; }
+          }
+          SCOPE.a = a; SCOPE.burst = burst; SCOPE.silent = silent; SCOPE.key = target ? target.key : ''; SCOPE.rot = rot; SCOPE.t = t;
+          if (!silent) {
+            const shake = SH.base + SH.rms * E.rms + SH.kick * burst + SH.bass * Math.max(0, xs('bass'));
+            crate.__shake = SCOPE.shake = shake; crate.__float = false;
+            return {shake, modes: target, dwell: F.dwell * (PERS ? PERS.dwellK : 1), morph: F.morph};
+          }
+          // FLOAT (Jackson 09-19): a Bandcamp strip (or a pause) gives the plate
+          // nothing to hear. The old 0.08 shake let the grains congeal into one
+          // static figure; now they keep drifting in space - a weak pull toward
+          // the lines, extra wander, a slow flow, and the figure itself drifts to
+          // a new one every few seconds over a slow crossfade
+          crate.__shake = SCOPE.shake = FL.shake; crate.__float = true;
+          return {shake: FL.shake, modes: target, dwell: F.dwell, pull: FL.pull, jitter: FL.jitter, flow: FL.flow, morph: FL.morph};
+        }});
+      crate.__sand = sand;
+      addEventListener('resize', () => { if (sand.live) sand.fit(); });
+    }
+    const sandSync = () => {
+      if (!sand) return;
+      const on = panel.classList.contains('playing') && !crate.classList.contains('asleep');
+      if (on) { if (!sand.live) sand.fit(); sand.start(); } else sand.stop();
+    };
+    const restore = () => {
+      const alb = panel.querySelector('button.alb');
+      if (alb && alb.dataset.open === '1') alb.click();
+      moved.forEach(m => m.parent.insertBefore(m.node, m.next));
+      moved = [];
+    };
+    const take = node => {
+      if (!node) return;
+      moved.push({node: node, parent: node.parentNode, next: node.nextSibling});
+      panel.appendChild(node);
+    };
+    const byKey = {};
+    rows.forEach((r, i) => { if (r.dataset.key) byKey[r.dataset.key] = i; });
+    // the playlist keeps going (Jackson 09-19): when a crate runs out of
+    // records the walk continues into the NEXT chapter's crate, in page
+    // order, without moving the page - the now-playing bar carries it
+    const ORDER = ['era-01', 'era-02', 'era-03', 'era-04', 'era-05', 'era-a'];
+    const chainable = r => !!(r.querySelector('button.dot.pv') || r.dataset.prev);
+    window.__crateRows = window.__crateRows || {};  window.__crateRows[band.id] = rows;
+    window.__crateStart = window.__crateStart || {};
+    window.__crateStart[band.id] = () => {
+      const first = rows.findIndex(chainable); if (first < 0) return false;
+      if (first === idx) { const b = panel.querySelector('button.dot.pv'); if (b && window.__pvState && window.__pvState(b) !== 'playing') b.click(); }
+      else focus(first, true);
+      return true;
+    };
+    const nextCrateRow = () => {
+      for (let m = ORDER.indexOf(band.id) + 1; m < ORDER.length; m++) {
+        const rs = window.__crateRows[ORDER[m]]; const r = rs && rs.find(chainable);
+        if (r) return r;
+      }
+      return null;
+    };
+    window.__crateGo = window.__crateGo || {};
+    window.__crateGo[band.id] = (key, play) => {
+      const i = byKey[key]; if (i == null) return false;
+      crate.scrollIntoView({behavior: 'smooth', block: 'start'});
+      if (i === idx) { const b = panel.querySelector('button.dot.pv'); if (play && b && window.__pvState && window.__pvState(b) !== 'playing') b.click(); }
+      else focus(i, play);
+      return true;
+    };
+    // this crate owns the end-of-track walk from the moment any of its
+    // play paths is used - not only when the focused record changes (a play
+    // on the already-focused first row used to start audio before the crate
+    // had claimed the chain, 09-19)
+    const own = () => {
+      window.__pvChain = chain; window.__crateChain = chain;
+      window.__crateNextRow = () => {
+        for (let j = idx + 1; j < rows.length; j++)
+          if (chainable(rows[j])) return rows[j];
+        return nextCrateRow();
+      };
+    };
+    const focus = (i, play) => {
+      i = Math.max(0, Math.min(rows.length - 1, i));
+      if (i === idx) return;
+      const stop = document.querySelector('#npbar .np-x');
+      if (stop) stop.click();
+      restore();
+      idx = i;
+      // the player's end handler asks for __pvChain; this was registered as
+      // __crateChain, so the crate never owned the advance (09-19): the
+      // fallback walked the hidden ledger's preview buttons instead,
+      // skipping every Bandcamp record and leaving the platter behind
+      own();
+      lrows.forEach((l, j) => l.classList.toggle('on', j === idx));
+      followList();
+      const r = rows[idx];
+      // the platter shows the record: hi-res art when the registry has it
+      const im = r.querySelector('img.sleeve');
+      const art = im && ((im.dataset.lgart && window.ART && ART[im.dataset.lgart]) || im.src);
+      platter.classList.toggle('blank', !art);
+      if (art) disc.src = art; else disc.removeAttribute('src');
+      panel.classList.remove('playing');
+      panel.innerHTML = '';
+      if (r.classList.contains('pri'))
+        panel.insertAdjacentHTML('beforeend', '<span class="dot" style="color:#E8481C">&#9679; start here</span>');
+      const who = r.querySelector('.who');
+      if (who) panel.appendChild(who.cloneNode(true));
+      const note = r.querySelector('.note');
+      if (note) panel.appendChild(note.cloneNode(true));
+      take(r.querySelector('.playwrap'));
+      const alb = panel.querySelector('button.alb');
+      if (alb && alb.dataset.open !== '1') alb.click();
+      take(r.querySelector('button.dot.pv'));
+      take(r.querySelector('.ls') || r.querySelector('a.bc'));
+      if (!panel.querySelector('button.dot.pv') && r.dataset.prev) {
+        const hb = document.createElement('button');
+        hb.className = 'dot pv';
+        hb.dataset.prev = r.dataset.prev;
+        hb.style.display = 'none';
+        panel.appendChild(hb);
+      }
+      pos.textContent = (idx + 1) + ' / ' + rows.length;
+      fill.style.width = (idx / (rows.length - 1) * 100) + '%';
+      if (play) {
+        const b = panel.querySelector('button.dot.pv');
+        if (b) b.click();
+      }
+    };
+    const chain = () => {
+      for (let j = idx + 1; j < rows.length; j++) {
+        if (chainable(rows[j])) { focus(j, true); return; }
+      }
+      for (let m = ORDER.indexOf(band.id) + 1; m < ORDER.length; m++) {
+        const st = window.__crateStart[ORDER[m]];
+        if (st && st()) return;
+      }
+    };
+    panel.addEventListener('click', e => {
+      const b = e.target.closest('button.dot.pv');
+      if (!b || !window.__pvState) return;
+      own();
+      const st = window.__pvState(b);
+      if (st === 'playing' || st === 'paused') { e.stopPropagation(); e.preventDefault(); window.__pvToggle(); }
+    }, true);
+    new MutationObserver(() => {
+      const on = panel.classList.contains('playing');
+      platter.classList.toggle('playing', on);
+      lrows.forEach((l, j) => l.classList.toggle('playing', on && j === idx));
+      sandSync();
+      // the record's sleeve on the chapter's map spins while it sounds
+      document.querySelectorAll('.rm-rec.playing').forEach(b => b.classList.remove('playing'));
+      if (on && rows[idx].dataset.key)
+        document.querySelectorAll('.rm-rec[data-key="' + CSS.escape(rows[idx].dataset.key) + '"]').forEach(b => b.classList.add('playing'));
+      // both play controls read pause while the record sounds, play otherwise
+      const b = panel.querySelector('button.dot.pv');
+      if (b && b.textContent !== '\u2026') { b.textContent = on ? '\u275A\u275A' : '\u25B6'; b.title = on ? 'pause' : 'play'; }
+      lrows.forEach((l, j) => {
+        const tb = l.querySelector('button.tl-play'); if (!tb) return;
+        const p = on && j === idx; tb.textContent = p ? '\u275A\u275A' : '\u25B6'; tb.title = p ? 'pause' : 'play';
+      });
+    }).observe(panel, {attributes: true, attributeFilter: ['class']});
+    crate.querySelector('.cn-prev').addEventListener('click', () => focus(idx - 1, true));
+    crate.querySelector('.cn-next').addEventListener('click', () => focus(idx + 1, true));
+    crate.querySelector('.cn-track').addEventListener('click', e => {
+      const rct = e.currentTarget.getBoundingClientRect();
+      focus(Math.round((e.clientX - rct.left) / rct.width * (rows.length - 1)));
+    });
+    crate.addEventListener('keydown', e => {
+      if (e.key === 'ArrowRight') focus(idx + 1, true);
+      if (e.key === 'ArrowLeft') focus(idx - 1, true);
+    });
+    crate.tabIndex = -1;
+    focus(0);
+  };
+  window.__pvChain = () => { if (window.__crateChain) window.__crateChain(); return true; };
+  // record maps: a sleeve click plays that record in its chapter's crate;
+  // ties (a record two rows made together) drawn once rows have height
+  document.addEventListener('click', e => {
+    const b = e.target.closest('.rm-rec'); if (!b) return;
+    const go = window.__crateGo && window.__crateGo['era-' + b.dataset.era];
+    if (go) go(b.dataset.key, true);
+  });
+
+  ['era-01', 'era-02', 'era-03', 'era-04', 'era-05', 'era-a'].forEach(id => {
+    const band = document.getElementById(id);
+    if (band) initCrate(band);
+  });
+  // the ledgers used to close these blocks flush; with them hidden, text
+  // would sit on a hard 0px edge - restore the bottom breath wherever the
+  // last visible element is now type instead of a slab
+  const BREATH = 'clamp(64px,9vh,110px)';
+  // plates were designed to kiss the ledger slab above them (margin 0 via
+  // .ledger+.diagram); with ledgers hidden the adjacency fires off an
+  // invisible element and plates cram against text - restore the token
+  // whenever a plate's first VISIBLE predecessor is type, not a slab
+  document.querySelectorAll('section.band[data-era] .diagram').forEach(d => {
+    let pv = d.previousElementSibling;
+    while (pv && (pv.offsetHeight === 0 || getComputedStyle(pv).display === 'none'))
+      pv = pv.previousElementSibling;
+    if (pv && !pv.matches('.crate, .ledger, .subnote, .diagram'))
+      d.style.marginTop = 'clamp(80px,10vh,130px)';
+  });
+  // a section title whose only content was its ledger heads nothing once
+  // the crate has absorbed that ledger: hide it with the ledger. On the
+  // ledger page (<900px) nothing is absorbed and it stays. (09-19: chapter
+  // 01's Echospace title after the year map, its note now in the essay)
+  document.querySelectorAll('section.band[data-era] .ledger').forEach(l => {
+    if (l.style.display !== 'none') return;
+    const t = l.previousElementSibling;
+    if (t && t.matches('.sec-title')) t.style.display = 'none';
+  });
+  document.querySelectorAll('section.band[data-era]').forEach(b => {
+    const vis = [...b.children].filter(el =>
+      el.offsetHeight > 0 && getComputedStyle(el).display !== 'none');
+    const last = vis[vis.length - 1];
+    if (last && !last.matches('.crate, .diagram'))
+      b.style.paddingBottom = BREATH;
+  });
+  if (window.ScrollTrigger) ScrollTrigger.refresh();
+  document.querySelectorAll('.vmark').forEach(m => {
+    if (m._slabs) m._slabs = [...m.closest('section.band').querySelectorAll('.ledger, .crate')];
+  });
+  if (window.__vtune) window.__vtune();
+  // geometry-aware scroll restoration: the browser restores scrollY against
+  // the PRE-crate layout, then the crate build shifts thousands of px above
+  // you - a reload mid-page then reads as "the jump is back". Remember the
+  // section + depth instead, and re-land AFTER the build settles.
+  try { history.scrollRestoration = 'manual'; } catch (e) {}
+  const SECS = () => [...document.querySelectorAll('header.hero, section.band[id]')];
+  let saveT = 0;
+  addEventListener('scroll', () => {
+    const now = Date.now();
+    if (now - saveT < 300) return;
+    saveT = now;
+    let cur = null;
+    for (const sec of SECS()) {
+      const top = sec.getBoundingClientRect().top + scrollY;
+      if (top <= scrollY + 10) cur = {id: sec.id || 'hero', dy: scrollY - top};
+      else break;
+    }
+    if (cur) try { sessionStorage.setItem('uupos', JSON.stringify(cur)); } catch (e) {}
+  }, {passive: true});
+  if (!location.hash) {
+    let pos = null;
+    try { pos = JSON.parse(sessionStorage.getItem('uupos')); } catch (e) {}
+    if (pos) {
+      const el = pos.id === 'hero' ? document.querySelector('header.hero') : document.getElementById(pos.id);
+      if (el) {
+        const top = el.getBoundingClientRect().top + scrollY;
+        scrollTo({top: top + Math.min(pos.dy, el.offsetHeight), behavior: 'instant'});
+        if (window.ScrollTrigger) ScrollTrigger.update();
+      }
+    }
+  }
+}
+</script>
+<script>
+(function(){
+  var start=function(){ var api=window.__crateSand; if(!api) return; api.fit(); api.start(); };
+  addEventListener("load", function(){ setTimeout(start, 60); });
+  var rt=0; addEventListener("resize", function(){ clearTimeout(rt); rt=setTimeout(function(){ var api=window.__crateSand; if(api){ api.fit(); api.start(); } }, 150); });
+  // the parent sizes the iframe to the crate: report its height
+  // the parent sizes the iframe to the crate (+ room for the now-playing bar while it is up)
+  var crate=document.querySelector(".crate"), np=document.getElementById("npbar");
+  var report=function(){ if(!crate) return; try{ parent.postMessage({ewPlayerH: crate.offsetHeight + (np && np.classList.contains("on") ? 124 : 0)}, "*"); }catch(e){} };
+  if(crate && window.ResizeObserver) new ResizeObserver(report).observe(crate);
+  if(np && window.MutationObserver) new MutationObserver(report).observe(np, {attributes:true, attributeFilter:["class"]});
+  addEventListener("load", report);
+})();
+</script>
+</body></html>
