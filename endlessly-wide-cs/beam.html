@@ -469,6 +469,18 @@
   .rmap [data-reveal].in{opacity:1;transform:none}
   .tease-note{font-family:var(--body);font-style:italic;font-size:15.5px;color:var(--dim);margin-top:22px}
 
+  /* MOBILE (Jackson 09-20, 'better mobile experience without breaking desktop'):
+     no choreography below 900px, so the sticky numeral only rode over the
+     collage and the note - it sits in flow now; play triangles reach the
+     44px touch minimum; year maps get a 44px track floor, snap points and
+     end padding so the sideways scroll reads and lands on a column */
+  @media (max-width:900px){
+    .era-open .numeral{position:static}
+    button.dot.pv{min-width:44px;min-height:44px;padding:16px;margin:-16px;display:inline-flex;align-items:center;justify-content:center}
+    .rm{grid-template-columns:repeat(var(--n),minmax(44px,1fr));padding-right:24px}
+    .rm-col{scroll-snap-align:start}
+    .rmap{scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch}
+  }
   .colophon{padding-top:clamp(72px,10vh,130px) !important;padding-bottom:clamp(48px,7vh,90px) !important}
   .colophon .sec-title{margin-top:0}
   .colophoto{display:block;width:100%;max-width:530px;height:auto;margin:32px 0 40px}
