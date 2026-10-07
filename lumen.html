@@ -36,16 +36,6 @@ img{display:block;max-width:100%}
 a{color:inherit;text-decoration:none}
 button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
 
-/* ── THE AMBIENT MIRROR: the page is lit by the room itself ── */
-#ambient{position:fixed;inset:-20vh -20vw;z-index:0;pointer-events:none}
-.amb{position:absolute;width:58vw;height:58vw;border-radius:50%;
-  filter:blur(110px);opacity:.13;transition:background 1.4s ease;
-  animation:amb-breathe 8s ease-in-out infinite;background:#14151c}
-.amb[data-zone="left"]{left:-16vw;top:26vh}
-.amb[data-zone="wall_left"]{left:16vw;top:-18vh;animation-delay:-2s}
-.amb[data-zone="wall_right"]{left:46vw;top:-18vh;animation-delay:-4.2s}
-.amb[data-zone="right"]{right:-16vw;top:26vh;animation-delay:-6.1s}
-@keyframes amb-breathe{0%,100%{opacity:.10}50%{opacity:.165}}
 main,.zone,#topbar,#ftr2{position:relative;z-index:1}
 
 /* ── TOPBAR ── */
@@ -133,84 +123,23 @@ input[type="range"]::-moz-range-thumb{width:13px;height:13px;border-radius:50%;b
 .wheel-hint{font:300 10px/1.8 var(--mono);letter-spacing:.04em;color:var(--moon-faint)}
 
 /* ── DESK ── */
-.desk-section{padding:56px 46px 50px}
-.desk-head{display:flex;align-items:baseline;gap:24px;flex-wrap:wrap;margin-bottom:34px}
-.desk-preset-row{display:flex;align-items:center;gap:14px;margin-left:auto;flex-wrap:wrap}
-#deskName{background:none;border:none;border-bottom:1px solid rgba(236,240,252,.18);color:var(--moon);
-  font:400 11px/1 var(--mono);letter-spacing:.06em;padding:8px 0;width:180px;outline:none;transition:border-color .3s,box-shadow .3s}
-#deskName:focus{border-color:rgba(236,240,252,.5);box-shadow:0 10px 18px -12px rgba(236,240,252,.35)}
-#deskName::placeholder{color:var(--moon-faint)}
-#deskPresets,.strip select{background:rgba(236,240,252,.05);border:none;border-radius:8px;color:var(--moon);
-  font:400 10px/1 var(--mono);letter-spacing:.05em;padding:9px 11px;outline:none}
-.desk-strips{display:flex;gap:10px;flex-wrap:wrap;align-items:stretch}
-.strip{flex:1;min-width:132px;max-width:195px;padding:20px 12px 16px;display:flex;flex-direction:column;gap:14px;align-items:center;
-  border-radius:18px;background:radial-gradient(70% 45% at 50% 0%,rgba(236,240,252,.035),transparent 75%)}
-.strip.master{background:radial-gradient(70% 45% at 50% 0%,rgba(236,240,252,.06),transparent 78%)}
-.strip-name{font:300 10px/1 var(--disp);letter-spacing:.3em;text-transform:uppercase;color:var(--moon)}
-.strip-fader{writing-mode:vertical-lr;direction:rtl;width:2px;height:112px}
-.knob-row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
-.knob{display:flex;flex-direction:column;align-items:center;gap:6px;cursor:ns-resize;user-select:none;touch-action:none}
-.knob-dial{width:34px;height:34px;border-radius:50%;position:relative;
-  background:radial-gradient(circle at 34% 28%,rgba(236,240,252,.18),rgba(236,240,252,.03) 70%);
-  box-shadow:inset 0 0 10px rgba(0,0,0,.5),0 0 14px rgba(236,240,252,.07)}
-.knob:hover .knob-dial{box-shadow:inset 0 0 10px rgba(0,0,0,.5),0 0 20px rgba(236,240,252,.18)}
-.knob-dial::after{content:'';position:absolute;left:50%;top:3px;width:2px;height:10px;border-radius:1px;background:#fff;
-  box-shadow:0 0 6px rgba(255,255,255,.9);transform-origin:50% 14px;transform:translateX(-50%) rotate(var(--kang,0deg))}
-.knob-label{font:500 9px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--moon)}
-.knob:hover .knob-label{text-shadow:0 0 12px rgba(255,255,255,.6)}
-.knob-val{font:300 9px/1 var(--mono);color:var(--moon-faint)}
-.strip-pp{display:flex;align-items:center;gap:6px;font:400 8px/1 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--moon-dim);cursor:pointer}
-.strip-pp input{accent-color:#fff}
 .mini-wheel{position:relative;width:54px;height:54px;border-radius:50%;cursor:crosshair;touch-action:none;
   box-shadow:0 0 16px rgba(236,240,252,.08)}
 .mini-wheel canvas{width:100%;height:100%;display:block;border-radius:50%}
 .mini-wheel .mw-dot{position:absolute;width:10px;height:10px;border-radius:50%;border:none;
   box-shadow:0 0 6px rgba(255,255,255,.95),0 0 16px rgba(255,255,255,.45),inset 0 0 2px rgba(0,0,0,.4);
   transform:translate(-50%,-50%);pointer-events:none}
-body.midi-learning .midi-bound{box-shadow:0 0 0 1px rgba(255,185,102,.8),0 0 18px rgba(255,185,102,.35)}
-.midi-learn-target{box-shadow:0 0 0 1px rgba(255,185,102,.9),0 0 22px rgba(255,185,102,.5)!important;
-  animation:dotpulse 1s ease-in-out infinite}
-.pad-rack{display:grid;grid-template-columns:repeat(8,1fr);gap:12px;margin-top:30px}
-.pad{aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;
-  cursor:pointer;user-select:none;border-radius:16px;background:rgba(236,240,252,.045);transition:all .25s ease}
-.pad:hover{background:rgba(236,240,252,.08);box-shadow:0 0 20px rgba(236,240,252,.1)}
-.pad:active,.pad.hit{background:rgba(236,240,252,.16);box-shadow:0 0 30px rgba(236,240,252,.35)}
-.pad.active{background:rgba(236,240,252,.1);box-shadow:0 0 24px rgba(236,240,252,.2)}
-.pad-num{font:300 13px/1 var(--disp);color:var(--moon-dim)}
-.pad-label{font:400 8px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--moon-faint)}
-.pad-set{font:400 7px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--moon-faint);padding:3px 6px}
-.pad-set:hover{color:#fff;text-shadow:0 0 10px rgba(255,255,255,.6)}
-.desk-hint,.desk-offline{font:300 10px/1.8 var(--mono);color:var(--moon-faint);letter-spacing:.05em;margin-top:20px}
 
 /* ── LIBRARY ── */
 #grid{padding:56px 46px 150px}
-.preset-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:44px 30px;align-items:start}
-.preset{position:relative}
-.preset-canvas-wrap{position:relative;aspect-ratio:16/10;background:#000;overflow:hidden;cursor:pointer;
-  border-radius:18px;transition:transform .5s cubic-bezier(.22,1,.36,1),box-shadow .5s;
-  box-shadow:0 18px 60px rgba(0,0,0,.55)}
-.preset-canvas-wrap:hover{transform:translateY(-5px);
-  box-shadow:0 26px 70px rgba(0,0,0,.6),0 0 44px rgba(236,240,252,.09)}
-.preset canvas{width:100%;height:100%;display:block}
-.preset-run{position:absolute;top:14px;left:16px;font:400 8px/1 var(--mono);letter-spacing:.24em;text-transform:uppercase;
-  color:#fff;opacity:0;transition:opacity .3s;pointer-events:none;display:flex;align-items:center;gap:8px;
-  text-shadow:0 0 10px rgba(0,0,0,.8)}
-.preset.playing .preset-run{opacity:1}
-.preset-run::before{content:'';width:6px;height:6px;border-radius:50%;background:#fff;
-  box-shadow:0 0 8px #fff;animation:dotpulse 1.6s ease-in-out infinite}
-.preset-cast{position:absolute;top:12px;right:14px;font:400 8px/1 var(--mono);letter-spacing:.2em;text-transform:uppercase;
-  color:#fff;background:rgba(5,5,7,.55);backdrop-filter:blur(8px);border-radius:9px;padding:8px 13px;
-  opacity:0;transition:all .3s;pointer-events:none}
-.live .preset-canvas-wrap:hover .preset-cast{opacity:1;pointer-events:all}
-.live .preset.playing .preset-cast{opacity:1;pointer-events:all}
-.preset-cast:hover{background:rgba(236,240,252,.18);box-shadow:0 0 18px rgba(236,240,252,.3)}
-.preset-info{display:flex;align-items:baseline;gap:13px;margin-top:18px}
-.preset-num{font:300 11px/1 var(--disp);color:var(--moon-faint);letter-spacing:.06em;flex-shrink:0}
-.preset-title{font:300 12px/1.3 var(--disp);letter-spacing:.22em;text-transform:uppercase;color:var(--moon)}
-.preset-meta{margin-left:auto;font:300 9px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--moon-faint);flex-shrink:0}
-.preset-tagline{margin-top:9px;font:300 11px/1.75 var(--mono);color:var(--moon-dim);letter-spacing:.01em;max-width:52ch}
-.preset-tags{display:flex;gap:10px;margin-top:12px}
-.preset-tag{font:400 8px/1 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--moon-faint)}
+.preset-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(172px,1fr));gap:10px}
+.preset{display:flex;align-items:center;gap:13px;padding:14px 17px;border-radius:12px;
+  background:rgba(236,240,252,.045);transition:all .3s ease;cursor:pointer;text-align:left}
+.preset:hover{background:rgba(236,240,252,.09);box-shadow:0 0 18px rgba(236,240,252,.1)}
+.preset.playing{background:rgba(236,240,252,.11);box-shadow:0 0 24px rgba(236,240,252,.2)}
+.preset.playing .preset-dot{animation:dotpulse 1.6s ease-in-out infinite}
+.preset-dot{width:11px;height:11px;border-radius:50%;flex-shrink:0;transition:box-shadow .3s}
+.preset-title{font:300 10px/1.4 var(--disp);letter-spacing:.14em;text-transform:uppercase;color:var(--moon)}
 .console-empty{grid-column:1/-1;padding:100px 20px;text-align:center;font:300 12px/1.8 var(--mono);color:var(--moon-faint)}
 
 /* ── NOW PLAYING ── */
@@ -236,22 +165,14 @@ body.midi-learning .midi-bound{box-shadow:0 0 0 1px rgba(255,185,102,.8),0 0 18p
   .pad-rack{grid-template-columns:repeat(4,1fr)}
   #nowbar{left:16px;right:16px;transform:translateY(160%);width:auto}
   #nowbar.show{transform:translateY(0)}
-  .amb{filter:blur(70px)}
 }
 @media(max-width:600px){.preset-grid{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){
-  .amb,.link-line.live .link-dot,.preset-run::before,.lm2-dot{animation:none}
+  .link-line.live .link-dot,.lm2-dot{animation:none}
 }
 </style>
 </head>
 <body>
-
-<div id="ambient" aria-hidden="true">
-  <div class="amb" data-zone="left"></div>
-  <div class="amb" data-zone="wall_left"></div>
-  <div class="amb" data-zone="wall_right"></div>
-  <div class="amb" data-zone="right"></div>
-</div>
 
 <div id="topbar">
   <span class="lm2">lumen<span class="lm2-dot"></span><span class="lm2-ja">ja</span></span>
@@ -293,24 +214,6 @@ body.midi-learning .midi-bound{box-shadow:0 0 0 1px rgba(255,185,102,.8),0 0 18p
 </div>
 
 <!-- DESK -->
-<div class="desk-section">
-  <div class="desk-head">
-    <h2 class="console-section-title" style="margin:0;padding:0;border:none">Desk &mdash; L-05 Live</h2>
-    <div class="desk-preset-row">
-      <input id="deskName" type="text" placeholder="preset title&hellip;" autocomplete="off">
-      <button class="desk-btn" id="deskSave">Save</button>
-      <select id="deskPresets"><option value="">saved presets&hellip;</option></select>
-      <button class="desk-btn" id="midiLearn">MIDI learn</button>
-    </div>
-  </div>
-  <div class="desk-offline" id="deskOffline">Studio link offline &mdash; the desk wakes with it. Faders and knobs here drive the physical engine in real time.</div>
-  <div class="desk-strips" id="deskStrips" style="display:none"></div>
-  <div class="pad-rack" id="padRack" style="display:none"></div>
-  <p class="desk-hint" id="deskHint" style="display:none">Faders set channel gain &middot; drag knobs vertically &middot; changes hit the lamps live while L-05 runs &middot; MIDI: arm learn, click a control, move a knob on your hardware &mdash; bindings persist in this browser.</p>
-</div>
-
-<!-- CONTROLS -->
-
 <!-- GRID -->
 <div id="grid"></div>
 
@@ -422,285 +325,36 @@ body.midi-learning .midi-bound{box-shadow:0 0 0 1px rgba(255,185,102,.8),0 0 18p
   // ── SIMULATORS ──
   // Each returns [{rgb:[r,g,b], bri:0..1} x2] for (right, left) at time t.
 
-  function seededAnchorPath(anchors, legLen, seed) {
-    // deterministic anchor sequence per preset so the preview is stable
-    var seq = [];
-    var s = seed;
-    for (var i = 0; i < 64; i++) {
-      s = (s * 9301 + 49297) % 233280;
-      seq.push(anchors[Math.floor(s / 233280 * anchors.length)]);
-    }
-    return function(t) {
-      var leg = Math.floor(t / legLen);
-      var f = easeCos((t % legLen) / legLen);
-      return lerpHue(seq[leg % seq.length], seq[(leg + 1) % seq.length], f);
-    };
-  }
+  var PRESET_COLORS = {
+    'groove-mode': [255, 200, 95], 'adytum': [125, 112, 255],
+    'auto-spotify': [182, 132, 255], 'strobe': [242, 245, 255],
+    'live': [122, 220, 255], 'live-v1': [122, 220, 255],
+    'four-floor': [122, 172, 255], 'chladni': [236, 211, 160],
+    'dub': [92, 202, 172]
+  };
 
-  function makeGroove(sim) {
-    var path = seededAnchorPath(sim.anchors, 25, 11);
-    return function(t) {
-      var energy = 20 * Math.sin(2 * Math.PI * t / 55);
-      var swell = Math.sin(2 * Math.PI * t / sim.swellPeriod);
-      var briR = (170 + energy + 55 * swell) / 254;
-      var briL = (170 + energy - 55 * swell) / 254;
-      var sat = 205 + 35 * Math.sin(2 * Math.PI * t / 37);
-      var hR = path(t);
-      var hL = path(Math.max(0, t - sim.hueLag));
-      return [
-        { rgb: hueToRgb(hR, sat, 254), bri: briR },
-        { rgb: hueToRgb(hL, sat, 254), bri: briL }
-      ];
-    };
-  }
-
-  function makeAdytum(sim) {
-    var INDIGO = 47000, VIOLET = 51500, BLUE = 44000, EMBER = 6500, GOLD = 9500;
-    var BEAT = 60 / 123, P16 = 16 * BEAT;
-    return function(raw) {
-      var t = (raw * sim.speed) % 396;           // 381s arc + a beat of dark
-      var swell = Math.sin(2 * Math.PI * t / P16);
-      var R, L;
-      if (t < 45) {
-        var b = (8 + 6 * (0.5 + 0.5 * Math.sin(2 * Math.PI * t / (2 * P16)))) / 254;
-        R = { rgb: hueToRgb(INDIGO, 254, 254), bri: b };
-        L = { rgb: hueToRgb(BLUE, 254, 254), bri: b * 0.7 };
-      } else if (t < 120) {
-        var d = (t - 45) / 75, mid = 20 + 45 * d, amp = 12 + 30 * d;
-        R = { rgb: hueToRgb(INDIGO, 254, 254), bri: (mid + amp * swell) / 254 };
-        L = { rgb: hueToRgb(VIOLET, 245, 254), bri: (mid - amp * swell) / 254 };
-      } else if (t < 240) {
-        var u = (t - 120) / 120;
-        var flame = 0.5 + 0.5 * Math.sin(2 * Math.PI * (t - 120) / (4 * P16));
-        var glow = 60 + 80 * u, fB = (glow + 50 * flame) / 254, dB = (30 + 25 * (1 - flame)) / 254;
-        var rHot = flame > 0.5;
-        R = { rgb: hueToRgb(rHot ? EMBER : INDIGO, rHot ? 235 : 254, 254), bri: rHot ? fB : dB };
-        L = { rgb: hueToRgb(!rHot ? EMBER : INDIGO, !rHot ? 235 : 254, 254), bri: !rHot ? fB : dB };
-      } else if (t < 330) {
-        var s8 = Math.sin(2 * Math.PI * t / (8 * BEAT));
-        R = { rgb: hueToRgb(GOLD, 220, 254), bri: (150 + 70 * s8) / 254 };
-        L = { rgb: hueToRgb(VIOLET, 235, 254), bri: (150 - 70 * s8) / 254 };
-      } else if (t < 381) {
-        var w = (t - 330) / 51, b2 = (120 * (1 - w) * (1 - w) + 4) / 254;
-        R = { rgb: hueToRgb(lerpHue(GOLD, INDIGO, w), 250, 254), bri: b2 };
-        L = { rgb: hueToRgb(INDIGO, 254, 254), bri: b2 * 0.8 };
-      } else {
-        var out = 1 - (t - 381) / 15;
-        R = { rgb: hueToRgb(EMBER, 254, 254), bri: Math.max(0, 0.05 * out) };
-        L = { rgb: [0, 0, 0], bri: 0 };
-      }
-      return [R, L];
-    };
-  }
-
-  function hexToRgb(hex) {
-    var m = /^#?([0-9a-f]{6})$/i.exec(hex || '');
-    if (!m) return [255, 255, 255];
-    var n = parseInt(m[1], 16);
-    return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
-  }
-
-  function makeStatic(sim) {
-    // registry may express colors as rgb arrays or css hex strings
-    var cols = sim.rgb || (sim.css || []).map(hexToRgb);
-    var a = cols[0] || [255, 255, 255], b = cols[1] || a;
-    var bri = typeof sim.bri === 'number' ? sim.bri : 0.5;
-    return function() {
-      return [{ rgb: a, bri: bri }, { rgb: b, bri: bri }];
-    };
-  }
-
-  // AUTO preview: emulates following a playlist — every ~24s a new "track"
-  // arrives with a different mood palette and tempo.
-  var AUTO_MOODS = [
-    { anchors: [48500, 52000, 56500, 61000], swell: 8.6 },   // trap purples
-    { anchors: [43000, 45500, 39000, 50000], swell: 5.9 },   // electronic blues
-    { anchors: [6500, 10000, 56500, 2000],  swell: 11.4 },   // soul brass + rose
-    { anchors: [0, 5500, 10000, 63500],     swell: 6.8 },    // rock embers
-    { anchors: [8000, 11000, 45500, 39000], swell: 14.2 }    // ambient warmth
-  ];
-  function makeAuto() {
-    var TRACK = 24;
-    return function(t) {
-      var m = AUTO_MOODS[Math.floor(t / TRACK) % AUTO_MOODS.length];
-      var into = t % TRACK;
-      var fade = Math.min(1, into / 2.5);                    // crossfade on "track change"
-      var sw = Math.sin(2 * Math.PI * t / m.swell);
-      var leg = 8;
-      var i = Math.floor(t / leg);
-      var f = easeCos((t % leg) / leg);
-      var hR = lerpHue(m.anchors[i % m.anchors.length], m.anchors[(i + 1) % m.anchors.length], f);
-      var lagT = Math.max(0, t - m.swell / 3);
-      var j = Math.floor(lagT / leg);
-      var hL = lerpHue(m.anchors[j % m.anchors.length], m.anchors[(j + 1) % m.anchors.length], easeCos((lagT % leg) / leg));
-      var briR = (160 + 60 * sw) / 254 * fade;
-      var briL = (160 - 60 * sw) / 254 * fade;
-      return [
-        { rgb: hueToRgb(hR, 235, 254), bri: briR },
-        { rgb: hueToRgb(hL, 235, 254), bri: briL }
-      ];
-    };
-  }
-
-  // STROBE preview: kept to ~2.5 flashes/sec (under the WCAG three-per-second
-  // seizure threshold) — slightly slower than the real thing, same character.
-  // Color advances per pop; unison sections clash complements; every 8th
-  // pop is a cold white accent.
-  var STROBE_COLORS = [[255, 30, 10], [255, 40, 200], [40, 90, 255], [120, 255, 40], [255, 130, 20], [150, 60, 255], [30, 220, 255], [255, 60, 150]];
-  var STROBE_WHITE = [235, 240, 255];
-  function strobePop(step, offset) {
-    if (step % 8 === 7) return STROBE_WHITE;
-    return STROBE_COLORS[(step + (offset || 0)) % STROBE_COLORS.length];
-  }
-  function makeStrobe() {
-    var RATE = 2.5, SECTION = 9;
-    return function(t) {
-      var step = Math.floor(t * RATE);
-      var section = Math.floor(t / SECTION);
-      var pattern = section % 3;                 // alternate / unison / bursts
-      var inSection = t % SECTION;
-      if (inSection > SECTION - 0.8) {
-        return [{ rgb: STROBE_WHITE, bri: 0 }, { rgb: STROBE_WHITE, bri: 0 }];
-      }
-      if (pattern === 1) {                       // unison: clashing complements
-        var on = step % 2 === 0;
-        return [
-          { rgb: strobePop(step), bri: on ? 1 : 0 },
-          { rgb: strobePop(step, 4), bri: on ? 1 : 0 }
-        ];
-      }
-      var rightOn;
-      if (pattern === 2) {                       // bursts: 2 + 2
-        var burstOn = step % 2 === 0;
-        rightOn = Math.floor(step / 2) % 2 === 0;
-        return [
-          { rgb: strobePop(step), bri: burstOn && rightOn ? 1 : 0 },
-          { rgb: strobePop(step), bri: burstOn && !rightOn ? 1 : 0 }
-        ];
-      }
-      rightOn = step % 2 === 0;                  // alternate ping-pong
-      return [
-        { rgb: strobePop(step), bri: rightOn ? 1 : 0 },
-        { rgb: strobePop(step), bri: rightOn ? 0 : 1 }
-      ];
-    };
-  }
-
-  function simulatorFor(p) {
-    if (!p.sim || !p.sim.kind) return makeStatic({ rgb: [[200, 190, 170], [200, 190, 170]], bri: 0.3 });
-    if (p.sim.kind === 'groove') return makeGroove(p.sim);
-    if (p.sim.kind === 'adytum') return makeAdytum(p.sim);
-    if (p.sim.kind === 'auto') return makeAuto();
-    if (p.sim.kind === 'strobe') return makeStrobe();
-    if (p.sim.kind === 'static' && p.sim.rgb) return makeStatic(p.sim);
-    return makeStatic({ rgb: [[200, 190, 170], [200, 190, 170]], bri: 0.3 });
-  }
-
-  // ── CANVAS RENDER ──
-  // Two lamp glows in a dark room: soft radial pools with a floor line.
-  // Two luminous columns on black — the pair of Hue Play floor lamps as a
-  // graphic mark, not a rendered room. Glow stays tight so the field around
-  // them reads dark.
-  function drawRoom(ctx, w, h, lamps) {
-    ctx.globalCompositeOperation = 'source-over';
-    ctx.fillStyle = '#050505';
-    ctx.fillRect(0, 0, w, h);
-    ctx.globalCompositeOperation = 'lighter';
-    var positions = [w * 0.66, w * 0.34];    // right lamp, left lamp
-    var barTop = h * 0.24, barBot = h * 0.76;
-    var cy = (barTop + barBot) / 2;
-    for (var i = 0; i < 2; i++) {
-      var lamp = lamps[i], x = positions[i];
-      var raw = Math.max(0, Math.min(1, lamp.bri));
-      var r = lamp.rgb;
-      if (raw > 0.004) {
-        var b = Math.pow(raw, 0.75);
-        // halo: tight radial pool behind the column
-        var reach = h * (0.12 + 0.26 * b);
-        var g = ctx.createRadialGradient(x, cy, 0, x, cy, reach);
-        g.addColorStop(0, 'rgba(' + (r[0] | 0) + ',' + (r[1] | 0) + ',' + (r[2] | 0) + ',' + (0.5 * b) + ')');
-        g.addColorStop(0.5, 'rgba(' + (r[0] | 0) + ',' + (r[1] | 0) + ',' + (r[2] | 0) + ',' + (0.14 * b) + ')');
-        g.addColorStop(1, 'rgba(0,0,0,0)');
-        ctx.fillStyle = g;
-        ctx.fillRect(x - reach, cy - reach, reach * 2, reach * 2);
-        // column glow: soft vertical capsule drawn as stacked gradient
-        var gw = 6 + 20 * b;
-        var vg = ctx.createLinearGradient(x - gw, 0, x + gw, 0);
-        vg.addColorStop(0, 'rgba(0,0,0,0)');
-        vg.addColorStop(0.5, 'rgba(' + (r[0] | 0) + ',' + (r[1] | 0) + ',' + (r[2] | 0) + ',' + (0.55 * b) + ')');
-        vg.addColorStop(1, 'rgba(0,0,0,0)');
-        ctx.fillStyle = vg;
-        ctx.fillRect(x - gw, barTop, gw * 2, barBot - barTop);
-        // hot core: brightens toward white with intensity
-        var core = [
-          Math.min(255, r[0] + (255 - r[0]) * 0.7 * b),
-          Math.min(255, r[1] + (255 - r[1]) * 0.7 * b),
-          Math.min(255, r[2] + (255 - r[2]) * 0.7 * b)
-        ];
-        ctx.fillStyle = 'rgba(' + (core[0] | 0) + ',' + (core[1] | 0) + ',' + (core[2] | 0) + ',' + (0.85 * b + 0.1) + ')';
-        ctx.fillRect(x - 1.5, barTop, 3, barBot - barTop);
-      } else {
-        // off: the unlit column, barely there
-        ctx.globalCompositeOperation = 'source-over';
-        ctx.fillStyle = 'rgba(255,255,255,.07)';
-        ctx.fillRect(x - 1, barTop, 2, barBot - barTop);
-        ctx.globalCompositeOperation = 'lighter';
-      }
-    }
-    ctx.globalCompositeOperation = 'source-over';
-  }
-
-  // ── BUILD GRID ──
-  var grid = document.getElementById('grid');
-  var animated = [];   // {canvas, ctx, sim, el}
-
-  function metaFor(p) {
-    if (p.type === 'scene') return 'scene';
-    if (p.loop) return 'loop ∞';
-    var m = Math.floor(p.duration / 60), s = ('0' + Math.round(p.duration % 60)).slice(-2);
-    return m + ':' + s;
+  function presetColor(p) {
+    if (p.sim && p.sim.kind === 'static' && p.sim.rgb) return p.sim.rgb[0];
+    return PRESET_COLORS[p.id] || [205, 210, 228];
   }
 
   function buildCard(p) {
-    var el = document.createElement('article');
+    var el = document.createElement('button');
     el.className = 'preset';
     el.setAttribute('data-id', p.id);
+    el.title = p.tagline || p.title;
+    var c = presetColor(p);
+    var rgb = (c[0] | 0) + ',' + (c[1] | 0) + ',' + (c[2] | 0);
     el.innerHTML =
-      '<div class="preset-canvas-wrap">' +
-        '<canvas></canvas>' +
-        '<span class="preset-run">In the room</span>' +
-        '<button class="preset-cast">Cast to studio &nearr;</button>' +
-      '</div>' +
-      '<div class="preset-info">' +
-        '<span class="preset-num">' + p.num + '</span>' +
-        '<h3 class="preset-title">' + p.title + '</h3>' +
-        '<span class="preset-meta">' + metaFor(p) + '</span>' +
-      '</div>' +
-      '<p class="preset-tagline">' + p.tagline + '</p>' +
-      '<div class="preset-tags">' + p.mood.map(function(m) {
-        return '<span class="preset-tag">' + m + '</span>';
-      }).join('') + '</div>';
-
-    var canvas = el.querySelector('canvas');
-    var wrap = el.querySelector('.preset-canvas-wrap');
-    function size() {
-      var r = wrap.getBoundingClientRect();
-      if (r.width < 4) return;   // not laid out yet
-      canvas.width = r.width * (window.devicePixelRatio || 1) / 2;
-      canvas.height = r.height * (window.devicePixelRatio || 1) / 2;
-    }
-    animated.push({ canvas: canvas, ctx: canvas.getContext('2d'), sim: simulatorFor(p), el: el, size: size });
-
-    el.querySelector('.preset-cast').addEventListener('click', function(e) {
-      e.stopPropagation();
-      cast(p);
-    });
+      '<span class="preset-dot" style="background:rgb(' + rgb + ');' +
+      'box-shadow:0 0 9px rgba(' + rgb + ',.9),0 0 22px rgba(' + rgb + ',.35)"></span>' +
+      '<span class="preset-title">' + p.title + '</span>';
+    el.addEventListener('click', function() { cast(p); });
     return el;
   }
 
   function render(list) {
     grid.innerHTML = '';
-    animated = [];
     if (!list.length) {
       grid.innerHTML = '<div class="console-empty">Nothing matches &mdash; the room stays dark.</div>';
     }
@@ -716,8 +370,6 @@ body.midi-learning .midi-bound{box-shadow:0 0 0 1px rgba(255,185,102,.8),0 0 18p
       inSec.forEach(function(p) { g.appendChild(buildCard(p)); });
       grid.appendChild(g);
     });
-    // size canvases only after the cards are in the document and laid out
-    requestAnimationFrame(function() { animated.forEach(function(a) { a.size(); }); });
     markPlaying();
   }
 
@@ -726,12 +378,6 @@ body.midi-learning .midi-bound{box-shadow:0 0 0 1px rgba(255,185,102,.8),0 0 18p
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   function frame(now) {
     var t = (now - t0) / 1000;
-    animated.forEach(function(a) {
-      // a single misbehaving preset must never kill the shared loop
-      try {
-        drawRoom(a.ctx, a.canvas.width, a.canvas.height, a.sim(reduceMotion ? 6 : t));
-      } catch (e) { /* skip this card this frame */ }
-    });
     if (typeof drawWheel === 'function' && wheelBase) {
       drawWheel();
       drawRoom(wheelPrevCtx, wheelPrev.width, wheelPrev.height, wheelLampStates());
@@ -739,9 +385,6 @@ body.midi-learning .midi-bound{box-shadow:0 0 0 1px rgba(255,185,102,.8),0 0 18p
     if (!reduceMotion) requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
-  window.addEventListener('resize', function() {
-    animated.forEach(function(a) { a.size(); });
-  });
 
   // the sections organize the library; no search layer needed
   function apply() {
@@ -967,75 +610,9 @@ body.midi-learning .midi-bound{box-shadow:0 0 0 1px rgba(255,185,102,.8),0 0 18p
     { id: 'vocal', label: 'Vocal', trigger: false }
   ];
   var deskControls = {};       // ctlId -> {get,set,min,max,el}
-  var deskReady = false;
-  var deskPushTimer = null;
 
   function fmtS(v) { return v >= 1 ? v.toFixed(2) + 's' : Math.round(v * 1000) + 'ms'; }
   function fmtP(v) { return Math.round(v * 100) + '%'; }
-
-  function registerCtl(id, el, min, max, get, set) {
-    deskControls[id] = { el: el, min: min, max: max, get: get, set: set };
-    el.setAttribute('data-ctl', id);
-    el.addEventListener('click', function(e) {
-      if (midiLearnArmed) { e.stopPropagation(); midiTarget(id); }
-    });
-  }
-
-  var KNOB_HELP = {
-    'Sense': 'Sensitivity — how easily this channel reacts',
-    'Attack': 'Attack — how fast the light rises',
-    'Decay': 'Decay — fall time from the peak to the sustain level',
-    'Sustain': 'Sustain — the level held after the peak',
-    'Release': 'Release — how long the light takes to fade out',
-    'Glow': 'Base glow — the always-on light under everything',
-    'Drift': 'Color drift — seconds per trip through the palette'
-  };
-
-  function makeKnob(id, label, min, max, val, fmt, log) {
-    var wrap = document.createElement('div');
-    wrap.className = 'knob';
-    wrap.innerHTML = '<div class="knob-dial"></div><span class="knob-label">' + label + '</span><span class="knob-val"></span>';
-    wrap.title = KNOB_HELP[label] || label;
-    var dial = wrap.querySelector('.knob-dial');
-    var valEl = wrap.querySelector('.knob-val');
-    var cur = val;
-    function frac(v) {
-      if (log) return (Math.log(v) - Math.log(min)) / (Math.log(max) - Math.log(min));
-      return (v - min) / (max - min);
-    }
-    function fromFrac(f) {
-      f = Math.max(0, Math.min(1, f));
-      if (log) return Math.exp(Math.log(min) + f * (Math.log(max) - Math.log(min)));
-      return min + f * (max - min);
-    }
-    function render() {
-      dial.style.setProperty('--kang', (frac(cur) * 270 - 135) + 'deg');
-      valEl.textContent = fmt(cur);
-    }
-    function set(v, silent) {
-      cur = Math.max(min, Math.min(max, v));
-      render();
-      if (!silent) deskPush();
-    }
-    var dragY = null, dragF = null;
-    wrap.addEventListener('pointerdown', function(e) {
-      if (midiLearnArmed) return;
-      dragY = e.clientY; dragF = frac(cur);
-      wrap.setPointerCapture(e.pointerId);
-    });
-    wrap.addEventListener('pointermove', function(e) {
-      if (dragY === null) return;
-      if (!(e.buttons & 1)) { dragY = null; return; }   // button released off-target
-      set(fromFrac(dragF + (dragY - e.clientY) / 150));
-    });
-    wrap.addEventListener('pointerup', function() { dragY = null; });
-    wrap.addEventListener('pointercancel', function() { dragY = null; });
-    wrap.addEventListener('lostpointercapture', function() { dragY = null; });
-    render();
-    registerCtl(id, wrap, min, max, function() { return cur; },
-                function(v, s) { set(v, s); });
-    return wrap;
-  }
 
   var _miniDisc = null;
   function miniDisc() {
@@ -1062,436 +639,9 @@ body.midi-learning .midi-bound{box-shadow:0 0 0 1px rgba(255,185,102,.8),0 0 18p
     _miniDisc = c;
     return c;
   }
+  function deskSetLive() {}
 
-  function makeMiniWheel(cid, h0, s0) {
-    var wrap = document.createElement('div');
-    wrap.className = 'mini-wheel';
-    var cv = document.createElement('canvas');
-    cv.width = cv.height = 108;
-    wrap.appendChild(cv);
-    cv.getContext('2d').drawImage(miniDisc(), 0, 0);
-    var dot = document.createElement('div');
-    dot.className = 'mw-dot';
-    wrap.appendChild(dot);
-    var hue = h0, sat = s0;
-    function render() {
-      var ang = (hue - 0.5) * 2 * Math.PI;
-      var r = sat * 50;                       // % of half-size
-      dot.style.left = (50 + Math.cos(ang) * r) + '%';
-      dot.style.top = (50 + Math.sin(ang) * r) + '%';
-      var rgb = hueToRgb(hue * 65535, sat * 254, 254);
-      dot.style.background = 'rgb(' + (rgb[0] | 0) + ',' + (rgb[1] | 0) + ',' + (rgb[2] | 0) + ')';
-    }
-    function fromEvent(e) {
-      var rect = wrap.getBoundingClientRect();
-      var dx = e.clientX - rect.left - rect.width / 2;
-      var dy = e.clientY - rect.top - rect.height / 2;
-      hue = ((Math.atan2(dy, dx) / (2 * Math.PI)) + 0.5) % 1;
-      sat = Math.min(1, Math.hypot(dx, dy) / (rect.width / 2));
-      render();
-      deskPush();
-    }
-    var down = false;
-    wrap.addEventListener('pointerdown', function(e) {
-      if (midiLearnArmed) return;
-      down = true;
-      try { wrap.setPointerCapture(e.pointerId); } catch (err) {}
-      fromEvent(e);
-    });
-    wrap.addEventListener('pointermove', function(e) {
-      if (!down) return;
-      if (!(e.buttons & 1)) { down = false; return; }
-      fromEvent(e);
-    });
-    wrap.addEventListener('pointerup', function() { down = false; });
-    wrap.addEventListener('pointercancel', function() { down = false; });
-    wrap.addEventListener('lostpointercapture', function() { down = false; });
-    render();
-    registerCtl(cid + '.hue', wrap, 0, 1,
-                function() { return hue; },
-                function(v, s) { hue = ((v % 1) + 1) % 1; render(); if (!s) deskPush(); });
-    // saturation registered separately so MIDI can map it too
-    var satProxy = document.createElement('span');
-    registerCtl(cid + '.sat', satProxy, 0, 1,
-                function() { return sat; },
-                function(v, s) { sat = Math.max(0, Math.min(1, v)); render(); if (!s) deskPush(); });
-    return wrap;
-  }
 
-  function makeFader(id, min, max, val) {
-    var f = document.createElement('input');
-    f.type = 'range'; f.className = 'strip-fader';
-    f.min = min; f.max = max; f.step = 0.01; f.value = val;
-    f.addEventListener('input', function() { deskPush(); });
-    registerCtl(id, f, min, max, function() { return parseFloat(f.value); },
-                function(v, s) { f.value = v; if (!s) deskPush(); });
-    return f;
-  }
-
-  function buildDesk() {
-    var host = document.getElementById('deskStrips');
-    DESK_CHANNELS.forEach(function(c) {
-      var strip = document.createElement('div');
-      strip.className = 'strip';
-      var name = document.createElement('div');
-      name.className = 'strip-name'; name.textContent = c.label;
-      strip.appendChild(name);
-      strip.appendChild(makeMiniWheel(c.id, 0.6, 0.9));
-      strip.appendChild(makeFader(c.id + '.gain', 0, 1.2, 0.8));
-      var row1 = document.createElement('div'); row1.className = 'knob-row';
-      row1.appendChild(makeKnob(c.id + '.sens', 'Sense', 0, 1, 0.5, fmtP));
-      row1.appendChild(makeKnob(c.id + '.a', 'Attack', 0.002, 1, 0.05, fmtS, true));
-      strip.appendChild(row1);
-      var row2 = document.createElement('div'); row2.className = 'knob-row';
-      if (c.trigger) {
-        row2.appendChild(makeKnob(c.id + '.d', 'Decay', 0.01, 1, 0.1, fmtS, true));
-        row2.appendChild(makeKnob(c.id + '.s', 'Sustain', 0, 1, 1.0, fmtP));
-      }
-      row2.appendChild(makeKnob(c.id + '.r', 'Release', 0.05, 3, 0.6, fmtS, true));
-      strip.appendChild(row2);
-      var route = document.createElement('select');
-      ['floor', 'mids', 'crowns', 'bar', 'wall', 'room'].forEach(function(r) {
-        var o = document.createElement('option'); o.value = r; o.textContent = r;
-        route.appendChild(o);
-      });
-      route.addEventListener('change', function() { deskPush(); });
-      registerCtl(c.id + '.route', route, 0, 3,
-                  function() { return route.value; },
-                  function(v, s) { route.value = v; if (!s) deskPush(); });
-      strip.appendChild(route);
-      if (c.trigger) {
-        var pp = document.createElement('label');
-        pp.className = 'strip-pp';
-        pp.innerHTML = '<input type="checkbox"><span>ping-pong</span>';
-        var cb = pp.querySelector('input');
-        cb.addEventListener('change', function() { deskPush(); });
-        registerCtl(c.id + '.pingpong', pp, 0, 1,
-                    function() { return cb.checked; },
-                    function(v, s) { cb.checked = !!v; if (!s) deskPush(); });
-        strip.appendChild(pp);
-      }
-      host.appendChild(strip);
-    });
-    // master strip
-    var m = document.createElement('div');
-    m.className = 'strip master';
-    var mn = document.createElement('div');
-    mn.className = 'strip-name'; mn.textContent = 'Master';
-    m.appendChild(mn);
-    m.appendChild(makeFader('master.brightness', 0, 1, 1));
-    var mr = document.createElement('div'); mr.className = 'knob-row';
-    mr.appendChild(makeKnob('master.base', 'Glow', 0, 0.5, 0.16, fmtP));
-    mr.appendChild(makeKnob('master.drift', 'Drift', 30, 600, 210,
-                            function(v) { return Math.round(v) + 's'; }, true));
-    m.appendChild(mr);
-    host.appendChild(m);
-  }
-
-  function deskParams() {
-    var p = { master: {
-      brightness: deskControls['master.brightness'].get(),
-      base: deskControls['master.base'].get(),
-      drift: deskControls['master.drift'].get()
-    }, channels: {} };
-    DESK_CHANNELS.forEach(function(c) {
-      var ch = {
-        gain: deskControls[c.id + '.gain'].get(),
-        sens: deskControls[c.id + '.sens'].get(),
-        a: deskControls[c.id + '.a'].get(),
-        r: deskControls[c.id + '.r'].get(),
-        route: deskControls[c.id + '.route'].get(),
-        hue: deskControls[c.id + '.hue'].get(),
-        sat: deskControls[c.id + '.sat'].get()
-      };
-      if (c.trigger) {
-        ch.d = deskControls[c.id + '.d'].get();
-        ch.s = deskControls[c.id + '.s'].get();
-        ch.pingpong = deskControls[c.id + '.pingpong'].get();
-      }
-      p.channels[c.id] = ch;
-    });
-    return p;
-  }
-
-  function deskApply(p, silent) {
-    if (!p || !p.channels) return;
-    function setIf(id, v) {
-      if (deskControls[id] && v !== undefined) deskControls[id].set(v, true);
-    }
-    setIf('master.brightness', (p.master || {}).brightness);
-    setIf('master.base', (p.master || {}).base);
-    setIf('master.drift', (p.master || {}).drift);
-    DESK_CHANNELS.forEach(function(c) {
-      var ch = p.channels[c.id] || {};
-      ['gain', 'sens', 'a', 'd', 's', 'r', 'route', 'pingpong', 'hue', 'sat'].forEach(function(k) {
-        setIf(c.id + '.' + k, ch[k]);
-      });
-    });
-  }
-
-  var lastDeskTouch = 0;
-  function deskPush() {
-    if (!deskReady || !live) return;
-    lastDeskTouch = Date.now();
-    clearTimeout(deskPushTimer);
-    deskPushTimer = setTimeout(function() {
-      fetch(DAEMON + '/live/params', { method: 'POST',
-        body: JSON.stringify(deskParams()) }).catch(function() {});
-    }, 150);
-  }
-
-  // the Tap Dial (and anything else server-side) also edits the params —
-  // pull them back into the UI whenever the user's hands are off the desk,
-  // so the page never clobbers dial moves with stale state
-  setInterval(function() {
-    if (!deskReady || !live) return;
-    if (Date.now() - lastDeskTouch < 3000) return;
-    fetch(DAEMON + '/live/params').then(function(r) { return r.json(); })
-      .then(function(p) {
-        if (Date.now() - lastDeskTouch < 3000) return;
-        deskApply(p, true);
-      }).catch(function() {});
-  }, 2000);
-
-  function refreshDeskPresets() {
-    fetch(DAEMON + '/live/presets').then(function(r) { return r.json(); })
-      .then(function(d) {
-        var sel = document.getElementById('deskPresets');
-        sel.innerHTML = '<option value="">saved presets&hellip;</option>';
-        (d.presets || []).forEach(function(p) {
-          var o = document.createElement('option');
-          o.value = p.name; o.textContent = p.name;
-          sel.appendChild(o);
-        });
-      }).catch(function() {});
-  }
-
-  function initDesk() {
-    buildDesk();
-    document.getElementById('deskSave').addEventListener('click', function() {
-      var name = document.getElementById('deskName').value.trim();
-      if (!name || !live) return;
-      fetch(DAEMON + '/live/presets', { method: 'POST',
-        body: JSON.stringify({ name: name, params: deskParams() }) })
-        .then(function() { refreshDeskPresets(); });
-    });
-    document.getElementById('deskPresets').addEventListener('change', function() {
-      if (!this.value || !live) return;
-      fetch(DAEMON + '/live/preset/load', { method: 'POST',
-        body: JSON.stringify({ name: this.value }) })
-        .then(function(r) { return r.json(); })
-        .then(function(d) { deskApply(d.params, true); });
-    });
-    initMIDI();
-  }
-
-  function deskSetLive(on) {
-    document.getElementById('deskStrips').style.display = on ? '' : 'none';
-    document.getElementById('padRack').style.display = on ? '' : 'none';
-    document.getElementById('deskHint').style.display = on ? '' : 'none';
-    document.getElementById('deskOffline').style.display = on ? 'none' : '';
-    if (on && !deskReady) {
-      deskReady = true;
-      fetch(DAEMON + '/live/params').then(function(r) { return r.json(); })
-        .then(function(p) { deskApply(p, true); }).catch(function() {});
-      refreshDeskPresets();
-    }
-  }
-
-  // ── MIDI LEARN ──
-  var midiLearnArmed = false;
-  var midiLearnCtl = null;
-  var midiMap = {};
-  try { midiMap = JSON.parse(localStorage.getItem('lumen-midi-map') || '{}'); } catch (e) {}
-
-  function midiTarget(id) {
-    midiLearnCtl = id;
-    Object.keys(deskControls).forEach(function(k) {
-      deskControls[k].el.classList.toggle('midi-learn-target', k === id);
-    });
-    if (id !== null) padTarget(null);
-  }
-
-  // ── PAD RACK ──
-  var PADS = [
-    { id: 'deep',   n: '1', label: 'Deep',   kind: 'vibe', preset: 'DEEP' },
-    { id: 'groove', n: '2', label: 'Groove', kind: 'vibe', preset: 'GROOVE' },
-    { id: 'wash',   n: '3', label: 'Wash',   kind: 'vibe', preset: 'WASH' },
-    { id: 'peak',   n: '4', label: 'Peak',   kind: 'vibe', preset: 'PEAK' },
-    { id: 'blind',  n: '5', label: 'Blind',  kind: 'hold' },
-    { id: 'flash',  n: '6', label: 'Flash',  kind: 'shot' },
-    { id: 'sweep',  n: '7', label: 'Sweep',  kind: 'shot' },
-    { id: 'ember',  n: '8', label: 'Ember',  kind: 'toggle' }
-  ];
-  var padEls = {};
-  var padMap = {};
-  var padLearnId = null;
-  try { padMap = JSON.parse(localStorage.getItem('lumen-midi-pads') || '{}'); } catch (e) {}
-
-  function padTarget(id) {
-    padLearnId = id;
-    Object.keys(padEls).forEach(function(k) {
-      padEls[k].classList.toggle('midi-learn-target', k === id);
-    });
-    if (id !== null) {
-      midiLearnCtl = null;
-      Object.keys(deskControls).forEach(function(k) {
-        deskControls[k].el.classList.remove('midi-learn-target');
-      });
-    }
-  }
-
-  function padMarkBound() {
-    Object.keys(padEls).forEach(function(k) {
-      padEls[k].classList.toggle('midi-bound',
-        Object.keys(padMap).some(function(mk) { return padMap[mk] === k; }));
-    });
-  }
-
-  function padHit(el) {
-    el.classList.add('hit');
-    setTimeout(function() { el.classList.remove('hit'); }, 140);
-  }
-
-  function padTrigger(pad, down) {
-    if (!live) return;
-    var el = padEls[pad.id];
-    if (pad.kind === 'vibe') {
-      if (!down) return;
-      padHit(el);
-      fetch(DAEMON + '/live/preset/load', { method: 'POST',
-        body: JSON.stringify({ name: pad.preset }) })
-        .then(function(r) { return r.json(); })
-        .then(function(d) {
-          if (d.params) deskApply(d.params, true);
-          PADS.forEach(function(p) {
-            if (p.kind === 'vibe') padEls[p.id].classList.toggle('latched', p.id === pad.id);
-          });
-        }).catch(function() {});
-    } else if (pad.kind === 'hold') {
-      el.classList.toggle('hit', down);
-      fetch(DAEMON + '/live/fx', { method: 'POST',
-        body: JSON.stringify({ type: down ? 'blind_on' : 'blind_off' }) }).catch(function() {});
-    } else if (pad.kind === 'shot') {
-      if (!down) return;
-      padHit(el);
-      fetch(DAEMON + '/live/fx', { method: 'POST',
-        body: JSON.stringify({ type: pad.id }) }).catch(function() {});
-    } else if (pad.kind === 'toggle') {
-      if (!down) return;
-      el.classList.toggle('latched');
-      fetch(DAEMON + '/live/fx', { method: 'POST',
-        body: JSON.stringify({ type: 'ember_toggle' }) }).catch(function() {});
-    }
-  }
-
-  function buildPads() {
-    var rack = document.getElementById('padRack');
-    PADS.forEach(function(pad) {
-      var el = document.createElement('div');
-      el.className = 'pad';
-      el.innerHTML = '<span class="pad-num">' + pad.n + '</span>' +
-                     '<span class="pad-label">' + pad.label + '</span>' +
-                     '<span class="pad-kind">' +
-                     ({ vibe: 'vibe', hold: 'hold', shot: 'one-shot', toggle: 'toggle' })[pad.kind] +
-                     '</span>';
-      if (pad.kind === 'vibe') {
-        var setBtn = document.createElement('button');
-        setBtn.className = 'pad-set';
-        setBtn.textContent = 'set';
-        setBtn.title = 'Save the current desk as ' + pad.preset;
-        setBtn.addEventListener('click', function(e) {
-          e.stopPropagation();
-          fetch(DAEMON + '/live/presets', { method: 'POST',
-            body: JSON.stringify({ name: pad.preset, params: deskParams() }) })
-            .then(function() { padHit(el); }).catch(function() {});
-        });
-        el.appendChild(setBtn);
-      }
-      el.addEventListener('pointerdown', function(e) {
-        if (midiLearnArmed) { e.stopPropagation(); padTarget(pad.id); return; }
-        padTrigger(pad, true);
-      });
-      el.addEventListener('pointerup', function() {
-        if (midiLearnArmed) return;
-        if (pad.kind === 'hold') padTrigger(pad, false);
-      });
-      el.addEventListener('pointercancel', function() {
-        if (pad.kind === 'hold') padTrigger(pad, false);
-      });
-      rack.appendChild(el);
-      padEls[pad.id] = el;
-    });
-    padMarkBound();
-  }
-
-  function markBound() {
-    Object.keys(deskControls).forEach(function(k) {
-      deskControls[k].el.classList.toggle('midi-bound',
-        Object.keys(midiMap).some(function(mk) { return midiMap[mk] === k; }));
-    });
-  }
-
-  function initMIDI() {
-    document.getElementById('midiLearn').addEventListener('click', function() {
-      midiLearnArmed = !midiLearnArmed;
-      this.classList.toggle('armed', midiLearnArmed);
-      document.body.classList.toggle('midi-learning', midiLearnArmed);
-      if (!midiLearnArmed) midiTarget(null);
-    });
-    if (!navigator.requestMIDIAccess) return;
-    navigator.requestMIDIAccess().then(function(access) {
-      function bindInputs() {
-        access.inputs.forEach(function(input) {
-          input.onmidimessage = function(msg) {
-            var d = msg.data;
-            var status = d[0] & 0xF0;
-            // NOTES drive the pad rack
-            if (status === 0x90 || status === 0x80) {
-              var nkey = 'n' + (d[0] & 0x0F) + ':' + d[1];
-              var isDown = status === 0x90 && d[2] > 0;
-              if (midiLearnArmed && padLearnId && isDown) {
-                padMap[nkey] = padLearnId;
-                localStorage.setItem('lumen-midi-pads', JSON.stringify(padMap));
-                padTarget(null); padMarkBound();
-                return;
-              }
-              var padId = padMap[nkey];
-              if (padId) {
-                var pad = PADS.filter(function(p) { return p.id === padId; })[0];
-                if (pad) padTrigger(pad, isDown);
-              }
-              return;
-            }
-            if (status !== 0xB0) return;              // CC only
-            var key = (d[0] & 0x0F) + ':' + d[1];
-            if (midiLearnArmed && midiLearnCtl) {
-              midiMap[key] = midiLearnCtl;
-              localStorage.setItem('lumen-midi-map', JSON.stringify(midiMap));
-              midiTarget(null); markBound();
-              return;
-            }
-            var ctlId = midiMap[key];
-            var ctl = ctlId && deskControls[ctlId];
-            if (!ctl) return;
-            if (typeof ctl.get() === 'boolean') { ctl.set(d[2] >= 64); return; }
-            if (typeof ctl.get() === 'string') {
-              var routes = ['floor', 'mids', 'crowns', 'bar', 'wall', 'room'];
-              ctl.set(routes[Math.min(5, Math.floor(d[2] / 22))]);
-              return;
-            }
-            ctl.set(ctl.min + (d[2] / 127) * (ctl.max - ctl.min));
-          };
-        });
-      }
-      bindInputs();
-      access.onstatechange = bindInputs;
-      markBound();
-    }).catch(function() {});
-  }
-
-  initDesk();
-  buildPads();
 
   // ── THE ROOM: per-light live rack ──────────────────────────────────────
   // Four fixtures, each showing its REAL current color (polled), each with
@@ -1554,22 +704,9 @@ body.midi-learning .midi-bound{box-shadow:0 0 0 1px rgba(255,185,102,.8),0 0 18p
     }, 140);
   }
 
-  var ambEls = {};
-  document.querySelectorAll('.amb').forEach(function(el) {
-    ambEls[el.getAttribute('data-zone')] = el;
-  });
-
   function paintFixture(zone) {
     var els = roomEls[zone];
     var st = roomState[zone];
-    if (ambEls[zone] && st) {
-      // the page is lit by the room: each quadrant glow takes its lamp's color
-      var rgb = st.on ? (st.colormode === 'ct' ? ctRgb(st.ct)
-                : hueToRgb(st.hue, st.sat, 254)) : [10, 10, 14];
-      var k = st.on ? (0.25 + 0.75 * (st.bri / 254)) : 1;
-      ambEls[zone].style.background = 'rgb(' + (rgb[0] * k | 0) + ',' +
-        (rgb[1] * k | 0) + ',' + (rgb[2] * k | 0) + ')';
-    }
     if (!els || !st) return;
     els.glyph.style.background = fixtureColor(st);
     els.glyph.style.boxShadow = fixtureGlow(st);
