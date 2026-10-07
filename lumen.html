@@ -91,6 +91,29 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
 .link-line.live{color:var(--dim)}
 @keyframes dotpulse{0%,100%{opacity:1}50%{opacity:.35}}
 
+/* ── THE ROOM (per-light live rack) ── */
+.room-section{padding:44px 52px 40px;border-bottom:1px solid var(--br)}
+.room-rack{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.fixture{border:1px solid var(--br);padding:18px 12px 16px;display:flex;flex-direction:column;align-items:center;gap:12px;transition:opacity .3s}
+.room-rack.locked .fixture{opacity:.4;pointer-events:none}
+.fixture-stage{height:84px;display:flex;align-items:flex-end;justify-content:center}
+.fixture-glyph{border-radius:4px;transition:background .3s,box-shadow .3s}
+.fixture-glyph.bar{width:10px;height:76px}
+.fixture-glyph.wash{width:62px;height:24px;border-radius:10px 10px 4px 4px}
+.fixture-name{font:500 9px/1 var(--sf);letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.85)}
+.fixture-bri{-webkit-appearance:none;appearance:none;width:100%;height:1px;background:rgba(255,255,255,.25);outline:none}
+.fixture-bri::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:13px;height:13px;border-radius:50%;background:#fff;cursor:pointer;border:none}
+.fixture-bri::-moz-range-thumb{width:13px;height:13px;border-radius:50%;background:#fff;cursor:pointer;border:none}
+.fixture-power{font:500 9px/1 var(--sf);letter-spacing:.18em;text-transform:uppercase;color:var(--faint);border:1px solid var(--br);padding:7px 13px;transition:color .2s,border-color .2s,background .2s}
+.fixture-power.on{color:#fff;border-color:rgba(255,255,255,.4)}
+.fixture-power:hover{border-color:var(--accent);color:#fff}
+.fixture.unreachable .fixture-name::after{content:' · offline';color:var(--accent);letter-spacing:.08em}
+.room-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:28px}
+@media(max-width:900px){
+  .room-section{padding:28px 20px 28px}
+  .room-rack{grid-template-columns:repeat(2,1fr)}
+}
+
 /* ── COLOR WHEEL ── */
 .wheel-section{padding:44px 52px 40px;border-bottom:1px solid var(--br)}
 .wheel-row{display:flex;gap:48px;align-items:center;flex-wrap:wrap}
@@ -274,6 +297,15 @@ body.midi-learning .midi-bound{outline:1px solid var(--accent);outline-offset:3p
       <span id="linktext">Studio link &mdash; checking&hellip;</span>
     </div>
   </div>
+</div>
+
+<!-- THE ROOM -->
+<div class="room-section">
+  <div class="room-head">
+    <h2 class="console-section-title" style="margin:0;border:none;padding:0">The Room</h2>
+    <button class="desk-btn" id="roomTake" style="display:none">Take the room</button>
+  </div>
+  <div class="room-rack" id="roomRack"></div>
 </div>
 
 <!-- COLOR WHEEL -->
@@ -1517,6 +1549,199 @@ body.midi-learning .midi-bound{outline:1px solid var(--accent);outline-offset:3p
   initDesk();
   buildPads();
 
+  // ── THE ROOM: per-light live rack ──────────────────────────────────────
+  // Four fixtures, each showing its REAL current color (polled), each with
+  // its own wheel, brightness, and power. While a show runs the rack locks
+  // (shows own the room) until "Take the room".
+  var ROOM_FIXTURES = [
+    { zone: 'left',       label: 'Left Bar',  kind: 'bar'  },
+    { zone: 'wall_left',  label: 'Wall L',    kind: 'wash' },
+    { zone: 'wall_right', label: 'Wall R',    kind: 'wash' },
+    { zone: 'right',      label: 'Right Bar', kind: 'bar'  }
+  ];
+  var roomState = {};          // zone -> {id,on,bri,hue,sat,...}
+  var roomEls = {};            // zone -> {glyph,card,bri,power,setDot}
+  var lastRoomTouch = 0;
+  var roomLocked = false;
+  var roomSendTimers = {};
+
+  function ctRgb(ct) {
+    if (ct == null) return [255, 228, 192];
+    if (ct > 320) return [255, 200, 140];
+    if (ct > 230) return [255, 235, 210];
+    return [222, 236, 255];
+  }
+
+  function fixtureColor(st) {
+    if (!st || !st.on) return 'rgba(255,255,255,.07)';
+    var rgb = st.colormode === 'ct' ? ctRgb(st.ct)
+            : hueToRgb(st.hue, st.sat, 254);
+    var k = 0.35 + 0.65 * (st.bri / 254);
+    return 'rgb(' + (rgb[0] * k | 0) + ',' + (rgb[1] * k | 0) + ',' + (rgb[2] * k | 0) + ')';
+  }
+
+  function fixtureGlow(st) {
+    if (!st || !st.on) return 'none';
+    var rgb = st.colormode === 'ct' ? ctRgb(st.ct)
+            : hueToRgb(st.hue, st.sat, 254);
+    var a = 0.15 + 0.5 * (st.bri / 254);
+    return '0 0 22px rgba(' + (rgb[0] | 0) + ',' + (rgb[1] | 0) + ',' + (rgb[2] | 0) + ',' + a + '), 0 0 60px rgba(' + (rgb[0] | 0) + ',' + (rgb[1] | 0) + ',' + (rgb[2] | 0) + ',' + (a * 0.4) + ')';
+  }
+
+  function roomSet(zone, patch) {
+    var st = roomState[zone] || {};
+    Object.assign(st, patch);
+    roomState[zone] = st;
+    lastRoomTouch = Date.now();
+    paintFixture(zone);
+    clearTimeout(roomSendTimers[zone]);
+    roomSendTimers[zone] = setTimeout(function() {
+      var body = {};
+      var out = { transitiontime: 2 };
+      ['on', 'bri', 'hue', 'sat'].forEach(function(k) {
+        if (patch[k] !== undefined) out[k] = patch[k];
+      });
+      if (patch.on === undefined) out.on = true;
+      body[st.id] = out;
+      fetch(DAEMON + '/set', { method: 'POST',
+        body: JSON.stringify({ lights: body }) })
+        .then(function() { running = 'wheel'; markPlaying(); roomLock(); })
+        .catch(function() {});
+    }, 140);
+  }
+
+  function paintFixture(zone) {
+    var els = roomEls[zone];
+    var st = roomState[zone];
+    if (!els || !st) return;
+    els.glyph.style.background = fixtureColor(st);
+    els.glyph.style.boxShadow = fixtureGlow(st);
+    els.bri.value = st.bri || 0;
+    els.power.textContent = st.on ? 'On' : 'Off';
+    els.power.classList.toggle('on', !!st.on);
+    els.card.classList.toggle('unreachable', st.reachable === false);
+    if (els.setDot && st.colormode !== 'ct') {
+      els.setDot(st.hue / 65535, st.sat / 254);
+    }
+  }
+
+  function makeRoomWheel(zone) {
+    var wrap = document.createElement('div');
+    wrap.className = 'mini-wheel';
+    var cv = document.createElement('canvas');
+    cv.width = cv.height = 108;
+    wrap.appendChild(cv);
+    cv.getContext('2d').drawImage(miniDisc(), 0, 0);
+    var dot = document.createElement('div');
+    dot.className = 'mw-dot';
+    wrap.appendChild(dot);
+    var hue = 0.1, sat = 0.5;
+    function render() {
+      var ang = (hue - 0.5) * 2 * Math.PI;
+      var r = sat * 50;
+      dot.style.left = (50 + Math.cos(ang) * r) + '%';
+      dot.style.top = (50 + Math.sin(ang) * r) + '%';
+      var rgb = hueToRgb(hue * 65535, sat * 254, 254);
+      dot.style.background = 'rgb(' + (rgb[0] | 0) + ',' + (rgb[1] | 0) + ',' + (rgb[2] | 0) + ')';
+    }
+    function fromEvent(e) {
+      var rect = wrap.getBoundingClientRect();
+      var dx = e.clientX - rect.left - rect.width / 2;
+      var dy = e.clientY - rect.top - rect.height / 2;
+      hue = ((Math.atan2(dy, dx) / (2 * Math.PI)) + 0.5) % 1;
+      sat = Math.min(1, Math.hypot(dx, dy) / (rect.width / 2));
+      render();
+      roomSet(zone, { hue: Math.round(hue * 65535),
+                      sat: Math.round(sat * 254), on: true,
+                      colormode: 'hs' });
+    }
+    var down = false;
+    wrap.addEventListener('pointerdown', function(e) {
+      down = true;
+      try { wrap.setPointerCapture(e.pointerId); } catch (err) {}
+      fromEvent(e);
+    });
+    wrap.addEventListener('pointermove', function(e) {
+      if (!down) return;
+      if (!(e.buttons & 1)) { down = false; return; }
+      fromEvent(e);
+    });
+    wrap.addEventListener('pointerup', function() { down = false; });
+    wrap.addEventListener('pointercancel', function() { down = false; });
+    render();
+    return { el: wrap, setDot: function(h, s) { hue = h; sat = s; render(); } };
+  }
+
+  function buildRoom() {
+    var rack = document.getElementById('roomRack');
+    ROOM_FIXTURES.forEach(function(f) {
+      var card = document.createElement('div');
+      card.className = 'fixture';
+      var stage = document.createElement('div');
+      stage.className = 'fixture-stage';
+      var glyph = document.createElement('div');
+      glyph.className = 'fixture-glyph ' + f.kind;
+      stage.appendChild(glyph);
+      var name = document.createElement('div');
+      name.className = 'fixture-name';
+      name.textContent = f.label;
+      var wheel = makeRoomWheel(f.zone);
+      var bri = document.createElement('input');
+      bri.type = 'range'; bri.min = 1; bri.max = 254; bri.value = 150;
+      bri.className = 'fixture-bri';
+      bri.addEventListener('input', function() {
+        roomSet(f.zone, { bri: parseInt(bri.value, 10), on: true });
+      });
+      var power = document.createElement('button');
+      power.className = 'fixture-power';
+      power.textContent = 'Off';
+      power.addEventListener('click', function() {
+        var st = roomState[f.zone] || {};
+        roomSet(f.zone, { on: !st.on });
+      });
+      card.appendChild(stage);
+      card.appendChild(name);
+      card.appendChild(wheel.el);
+      card.appendChild(bri);
+      card.appendChild(power);
+      rack.appendChild(card);
+      roomEls[f.zone] = { card: card, glyph: glyph, bri: bri,
+                          power: power, setDot: wheel.setDot };
+    });
+  }
+
+  function roomLock() {
+    roomLocked = !!(running && running !== 'wheel');
+    document.getElementById('roomRack').classList.toggle('locked', roomLocked && live);
+    document.getElementById('roomTake').style.display =
+      (roomLocked && live) ? '' : 'none';
+  }
+
+  document.getElementById('roomTake').addEventListener('click', function() {
+    fetch(DAEMON + '/stop', { method: 'POST' })
+      .then(function(r) { return r.json(); })
+      .then(function() { running = null; markPlaying(); roomLock(); })
+      .catch(function() {});
+  });
+
+  function roomPoll() {
+    if (!live) return;
+    fetch(DAEMON + '/lights/state').then(function(r) { return r.json(); })
+      .then(function(d) {
+        if (!d.lights) return;
+        running = d.status && d.status.running;
+        roomLock();
+        if (Date.now() - lastRoomTouch < 3000) return;
+        Object.keys(d.lights).forEach(function(zone) {
+          roomState[zone] = d.lights[zone];
+          paintFixture(zone);
+        });
+      }).catch(function() {});
+  }
+
+  buildRoom();
+  setInterval(roomPoll, 2500);
+
   // ── DAEMON LINK ──
   var linkline = document.getElementById('linkline');
   var linktext = document.getElementById('linktext');
@@ -1535,6 +1760,7 @@ body.midi-learning .midi-bound{outline:1px solid var(--accent);outline-offset:3p
       nowbar.classList.remove('show');
     }
     if (typeof updateTakeBtn === 'function') updateTakeBtn();
+    if (typeof roomLock === 'function') roomLock();
   }
 
   function setLive(on) {
