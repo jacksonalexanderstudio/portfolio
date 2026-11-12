@@ -1518,7 +1518,11 @@ void main(){
   dx += (ink1 * 0.018 + ink3 * 0.010) * meta * psych;
   dy += (ink2 * 0.018 + ink3 * 0.010) * meta * psych;`;
 
-  var warpVariants = [warpQ0, warpQ1, warpQ2, warpQ3];
+  // Top-right (1) and bottom-left (3) use the same calm warp as bottom-right (2): gentle pull + soft
+  // curl, no "hot" liquid-light boost. Each starts at a different point in the cycle so the three
+  // don't move in lockstep. (warpQ1 / warpQ3 above are the older, more intense versions, kept unused.)
+  function calmWarp(phase) { return warpQ2.replace('+ 47.0;', '+ ' + phase.toFixed(1) + ';'); }
+  var warpVariants = [warpQ0, calmWarp(11.0), warpQ2, calmWarp(83.0)];
 
   function mkShader(type, src) {
     var s = gl.createShader(type);
@@ -1696,16 +1700,13 @@ void main(){
     var panelIntensity = [1.0, 0.0, 0.0, 0.0]; // start Q0 hot
     var panelSeed = [Math.random() * 100, Math.random() * 100, Math.random() * 100, Math.random() * 100];
 
-    // Image swap stays on its own timer
-    setInterval(function() {
-      switchPanel(activePanel);
-      activePanel = (activePanel + 1) % 4;
-    }, PANEL_INTERVAL);
-
-    // Q2 gets its own faster swap — 25% quicker
-    setInterval(function() {
-      switchPanel(2);
-    }, Math.round(PANEL_INTERVAL * 0.75));
+    // Image swaps: ONE clock for every quadrant, driven by the frame loop (see frame()).
+    // Clockwise over the three image quadrants — top-right(1) -> bottom-right(2) -> bottom-left(3);
+    // top-left(0) sits under the black text block. One swap starts every PANEL_INTERVAL, and the
+    // fade lasts exactly that long, so one quadrant is changing at a time, evenly spaced.
+    var swapOrder = [1, 2, 3];
+    var swapPos = 0;
+    var nextSwap = t0 + PANEL_INTERVAL;
 
     // Hot quadrant cycles much slower — lets it linger and seep
     setInterval(function() {
@@ -1716,6 +1717,11 @@ void main(){
 
     function frame(now) {
       raf = requestAnimationFrame(frame);
+      if (now >= nextSwap) { // missed beats (background tab) are skipped, never replayed
+        switchPanel(swapOrder[swapPos]);
+        swapPos = (swapPos + 1) % swapOrder.length;
+        nextSwap = now + PANEL_INTERVAL;
+      }
       var t = (now - t0) / 1000;
       var w = canvas.width, h = canvas.height;
 
