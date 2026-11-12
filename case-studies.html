@@ -266,8 +266,9 @@ body.img-hover #cur{filter:invert(1)}
 #cs-15 .cs-hero-img{aspect-ratio:2/1}
 #cs-15 .cs-meta{flex-wrap:wrap;row-gap:20px}
 #cs-15 .cs-credits{margin-top:80px}
-#cs-15 .cs-outcome-gallery[data-masonry].masonry{display:block;position:relative}
-#cs-15 .cs-outcome-gallery[data-masonry].masonry img{position:absolute;top:0;left:0;height:auto;object-fit:cover;background:none}
+/* photoshoot galleries: masonry, light to dark (any .cs-outcome-gallery flagged data-masonry) */
+.cs-outcome-gallery[data-masonry].masonry{display:block;position:relative}
+.cs-outcome-gallery[data-masonry].masonry img{position:absolute;top:0;left:0;height:auto;object-fit:cover;background:none}
 #cs-15 .cs-credits .cs-meta{margin-top:24px;margin-bottom:0}
 </style>
 </head>
@@ -562,22 +563,22 @@ body.img-hover #cur{filter:invert(1)}
 
     <div class="cs-outcome fi">
       <div class="cs-section-label swp">Project Gallery</div>
-      <div class="cs-outcome-gallery cs-grid-3">
-        <img class="cs-contain" src="rocket-ramps-r2/rr-blackt-11.jpg" alt="Round-two tee, black colorway">
-        <img class="cs-contain" src="rocket-ramps-r2/rr-blackt-17.jpg" alt="Round-two tee, black colorway, print detail">
-        <img class="cs-contain" src="rocket-ramps-r2/rr-blackt-18.jpg" alt="Round-two tee, black colorway">
-                <img class="cs-contain" src="rocket-ramps-r2/rr-blackt-25.jpg" alt="Round-two tee, black colorway">
-        <img class="cs-contain" src="rocket-ramps-r2/rr-blackt-32.jpg" alt="Round-two tee, black colorway">
-        <img class="cs-contain" src="rocket-ramps-r2/rr-blackt-34.jpg" alt="Round-two tee, black colorway">
-        <img class="cs-contain" src="rocket-ramps-r2/rr-blackt-37.jpg" alt="Round-two tee, black colorway">
-        <img class="cs-contain" src="rocket-ramps-r2/rr-brownt-11.jpg" alt="Round-two tee, rust colorway, back print">
-        <img class="cs-contain" src="rocket-ramps-r2/rr-brownt.jpg" alt="Round-two tee, rust colorway">
-        <img class="cs-contain" src="rocket-ramps-r2/rr-brownt-14.jpg" alt="Round-two tee, rust colorway">
-        <img class="cs-contain" src="rocket-ramps-r2/rr-brownt-23.jpg" alt="Round-two tee, rust colorway">
-        <img class="cs-contain" src="rocket-ramps-r2/rr-brownt-24.jpg" alt="Round-two tee, rust colorway">
-        <img class="cs-contain" src="rocket-ramps-r2/rr-brownt-25.jpg" alt="Round-two tee, rust colorway">
-        <img class="cs-contain" src="rocket-ramps-r2/rr-blackt-20.jpg" alt="Round-two tees on the crew">
-        <img class="cs-contain" src="rocket-ramps-r2/rr-squad-37.jpg" alt="Round-two tees on the crew">
+      <div class="cs-outcome-gallery cs-grid-3" data-masonry>
+        <img src="rocket-ramps-r2/rr-brownt-14.jpg" alt="Round-two tee, rust colorway" loading="lazy" style="aspect-ratio:1067/1600">
+        <img src="rocket-ramps-r2/rr-brownt-11.jpg" alt="Round-two tee, rust colorway, back print" loading="lazy" style="aspect-ratio:1600/1067">
+        <img src="rocket-ramps-r2/rr-brownt-25.jpg" alt="Round-two tee, rust colorway" loading="lazy" style="aspect-ratio:1600/1067">
+        <img src="rocket-ramps-r2/rr-brownt-23.jpg" alt="Round-two tee, rust colorway" loading="lazy" style="aspect-ratio:1600/1067">
+        <img src="rocket-ramps-r2/rr-squad-37.jpg" alt="Round-two tees on the crew" loading="lazy" style="aspect-ratio:1600/1067">
+        <img src="rocket-ramps-r2/rr-brownt.jpg" alt="Round-two tee, rust colorway" loading="lazy" style="aspect-ratio:1600/1067">
+        <img src="rocket-ramps-r2/rr-blackt-11.jpg" alt="Round-two tee, black colorway" loading="lazy" style="aspect-ratio:1600/1067">
+        <img src="rocket-ramps-r2/rr-brownt-24.jpg" alt="Round-two tee, rust colorway" loading="lazy" style="aspect-ratio:1600/1067">
+        <img src="rocket-ramps-r2/rr-blackt-20.jpg" alt="Round-two tees on the crew" loading="lazy" style="aspect-ratio:2000/1333">
+        <img src="rocket-ramps-r2/rr-blackt-25.jpg" alt="Round-two tee, black colorway" loading="lazy" style="aspect-ratio:1600/1067">
+        <img src="rocket-ramps-r2/rr-blackt-18.jpg" alt="Round-two tee, black colorway" loading="lazy" style="aspect-ratio:1600/1067">
+        <img src="rocket-ramps-r2/rr-blackt-17.jpg" alt="Round-two tee, black colorway, print detail" loading="lazy" style="aspect-ratio:1600/1067">
+        <img src="rocket-ramps-r2/rr-blackt-34.jpg" alt="Round-two tee, black colorway" loading="lazy" style="aspect-ratio:1600/1067">
+        <img src="rocket-ramps-r2/rr-blackt-32.jpg" alt="Round-two tee, black colorway" loading="lazy" style="aspect-ratio:1067/1600">
+        <img src="rocket-ramps-r2/rr-blackt-37.jpg" alt="Round-two tee, black colorway" loading="lazy" style="aspect-ratio:1600/1067">
       </div>
     </div>
 
@@ -656,15 +657,15 @@ body.img-hover #cur{filter:invert(1)}
 
     <div class="cs-outcome fi">
       <div class="cs-section-label swp">Project Gallery</div>
-      <div class="cs-outcome-gallery cs-grid-3">
-        <img src="mr-porter-cs/mrp-cs-08.jpg" alt="Peyote Bird SS26 campaign" loading="lazy">
-        <img src="mr-porter-cs/mrp-cs-19.jpg" alt="Peyote Bird SS26 campaign" loading="lazy">
-        <img src="mr-porter-cs/mrp-cs-27.jpg" alt="Peyote Bird SS26 campaign" loading="lazy">
-        <img src="mr-porter-cs/mrp-cs-33.jpg" alt="Peyote Bird SS26 campaign" loading="lazy">
-        <img src="mr-porter-cs/mrp-cs-40.jpg" alt="Peyote Bird SS26 campaign" loading="lazy">
-        <img src="mr-porter-cs/mrp-cs-45.jpg" alt="Peyote Bird SS26 campaign" loading="lazy">
-        <img src="mr-porter-cs/mrp-cs-47.jpg" alt="Peyote Bird SS26 campaign" loading="lazy">
-        <img src="mr-porter-cs/mrp-cs-52.jpg" alt="Peyote Bird SS26 campaign" loading="lazy">
+      <div class="cs-outcome-gallery cs-grid-3" data-masonry>
+        <img src="mr-porter-cs/mrp-cs-33.jpg" alt="Peyote Bird SS26 campaign" loading="lazy" style="aspect-ratio:1600/2000">
+        <img src="mr-porter-cs/mrp-cs-45.jpg" alt="Peyote Bird SS26 campaign" loading="lazy" style="aspect-ratio:1600/2000">
+        <img src="mr-porter-cs/mrp-cs-52.jpg" alt="Peyote Bird SS26 campaign" loading="lazy" style="aspect-ratio:1999/720">
+        <img src="mr-porter-cs/mrp-cs-08.jpg" alt="Peyote Bird SS26 campaign" loading="lazy" style="aspect-ratio:1600/2000">
+        <img src="mr-porter-cs/mrp-cs-19.jpg" alt="Peyote Bird SS26 campaign" loading="lazy" style="aspect-ratio:1600/2000">
+        <img src="mr-porter-cs/mrp-cs-47.jpg" alt="Peyote Bird SS26 campaign" loading="lazy" style="aspect-ratio:2000/1333">
+        <img src="mr-porter-cs/mrp-cs-40.jpg" alt="Peyote Bird SS26 campaign" loading="lazy" style="aspect-ratio:1600/2000">
+        <img src="mr-porter-cs/mrp-cs-27.jpg" alt="Peyote Bird SS26 campaign" loading="lazy" style="aspect-ratio:1600/2000">
       </div>
     </div>
 
@@ -1511,24 +1512,27 @@ body.img-hover #cur{filter:invert(1)}
 })();
 </script>
 <script>
-/* masonry: Peyote Bird F/W 2027 gallery. Shortest-column placement in source order (lightbox order unchanged). */
+/* masonry for photoshoot galleries: every .cs-outcome-gallery[data-masonry]. Shortest-column placement
+   in source order (so the lightbox order is unchanged); ratios are stamped inline on each img. */
 (function(){
-  var g=document.querySelector('#cs-15 .cs-outcome-gallery[data-masonry]'); if(!g) return;
-  var imgs=[].slice.call(g.querySelectorAll('img'));
+  var gs=[].slice.call(document.querySelectorAll('.cs-outcome-gallery[data-masonry]')); if(!gs.length) return;
   function ratio(i){var a=(i.style.aspectRatio||'1/1').split('/');return (+a[1])/(+a[0]);}
   function lay(){
-    var W=g.clientWidth, cols=window.innerWidth<=768?2:3, gap=window.innerWidth<=768?8:24;
-    var cw=(W-gap*(cols-1))/cols, h=[]; for(var c=0;c<cols;c++)h.push(0);
-    g.classList.add('masonry');
-    imgs.forEach(function(i){
-      var c=h.indexOf(Math.min.apply(null,h)), ih=cw*ratio(i);
-      i.style.width=cw+'px'; i.style.height=ih+'px';
-      i.style.transform='translate('+(c*(cw+gap))+'px,'+h[c]+'px)';
-      h[c]+=ih+gap;
+    var small=window.innerWidth<=768, cols=small?2:3, gap=small?16:48;
+    gs.forEach(function(g){
+      var W=g.clientWidth; if(!W) return;
+      var cw=(W-gap*(cols-1))/cols, h=[]; for(var c=0;c<cols;c++)h.push(0);
+      g.classList.add('masonry');
+      [].slice.call(g.querySelectorAll('img')).forEach(function(i){
+        var c=h.indexOf(Math.min.apply(null,h)), ih=cw*ratio(i);
+        i.style.width=cw+'px'; i.style.height=ih+'px';
+        i.style.transform='translate('+(c*(cw+gap))+'px,'+h[c]+'px)';
+        h[c]+=ih+gap;
+      });
+      g.style.height=(Math.max.apply(null,h)-gap)+'px';
     });
-    g.style.height=(Math.max.apply(null,h)-gap)+'px';
   }
-  lay(); addEventListener('resize',lay);
+  lay(); addEventListener('resize',lay); addEventListener('load',lay);
 })();
 </script>
 </body>
